@@ -493,6 +493,48 @@ curl -X POST http://localhost:3001/api/pilot/reset-demo
 
 ## 🌐 Deployment
 
+### Vercel Deployment Setup
+
+1. **Connect Repository to Vercel**
+   - Import your GitHub repository: `Michaelgomes2442/AuditaAI`
+   - Set root directory to: `frontend`
+   - Framework preset: `Next.js`
+
+2. **Configure Environment Variables**
+   In your Vercel dashboard, go to Project Settings → Environment Variables and add:
+
+   ```bash
+   # Database (Required)
+   DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+
+   # NextAuth (Required)
+   NEXTAUTH_URL=https://auditaai.vercel.app
+   NEXTAUTH_SECRET=your-secure-random-secret-here
+
+   # API Configuration (Required)
+   NEXT_PUBLIC_API_URL=https://auditaai.vercel.app/api
+
+   # Stripe Payments (Required for paid features)
+   STRIPE_SECRET_KEY=sk_test_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+
+   # Email Notifications (Required for notifications)
+   RESEND_API_KEY=re_...
+   RESEND_FROM_EMAIL=AuditaAI <noreply@auditaai.com>
+
+   # Optional: OpenAI API (for AI features)
+   OPENAI_API_KEY=sk-...
+   ```
+
+3. **Stripe Webhook Configuration**
+   - Create webhook endpoint: `https://auditaai.vercel.app/api/stripe/webhook`
+   - Events to listen for: `checkout.session.completed`, `invoice.payment_succeeded`
+   - Copy webhook secret to `STRIPE_WEBHOOK_SECRET`
+
+4. **Deploy**
+   - Vercel will automatically build and deploy on every push to `main`
+   - Monitor deployment in Vercel dashboard
+
 ### Local Development
 ```bash
 ./start-pilot-demo.sh
