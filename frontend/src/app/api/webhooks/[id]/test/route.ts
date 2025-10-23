@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { PrismaClient } from '@/generated/prisma';
 import { executeWebhook } from '@/lib/webhook-executor';
 
@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -30,7 +30,8 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const webhookId = parseInt(params.id);
+    const { id } = await context.params;
+    const webhookId = parseInt(id);
     const webhook = await prisma.webhook.findUnique({
       where: { id: webhookId }
     });

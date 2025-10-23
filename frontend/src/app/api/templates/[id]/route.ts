@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { PrismaClient } from '@/generated/prisma';
 
 const prisma = new PrismaClient();
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -29,7 +29,8 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const templateId = parseInt(params.id);
+    const { id } = await context.params;
+    const templateId = parseInt(id);
     const template = await prisma.testTemplate.findUnique({
       where: { id: templateId }
     });
@@ -71,7 +72,7 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -89,9 +90,10 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const templateId = parseInt(params.id);
+      const { id } = await context.params;
+      const parsedId = parseInt(id);
     const template = await prisma.testTemplate.findUnique({
-      where: { id: templateId }
+        where: { id: parsedId }
     });
 
     if (!template) {
@@ -122,7 +124,7 @@ export async function PATCH(
     } = body;
 
     const updated = await prisma.testTemplate.update({
-      where: { id: templateId },
+      where: { id: parsedId },
       data: {
         ...(name !== undefined && { name }),
         ...(description !== undefined && { description }),
@@ -150,7 +152,7 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -168,7 +170,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const templateId = parseInt(params.id);
+    const { id } = await context.params;
+    const templateId = parseInt(id);
     const template = await prisma.testTemplate.findUnique({
       where: { id: templateId }
     });

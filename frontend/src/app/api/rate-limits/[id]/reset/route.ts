@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prismadb';
 // POST /api/rate-limits/[id]/reset - Reset usage counter
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,7 +22,8 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const rateLimitId = parseInt(params.id);
+    const { id } = await context.params;
+    const rateLimitId = parseInt(id);
     if (isNaN(rateLimitId)) {
       return NextResponse.json({ error: 'Invalid rate limit ID' }, { status: 400 });
     }

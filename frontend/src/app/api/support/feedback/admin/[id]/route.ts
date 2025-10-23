@@ -6,10 +6,11 @@ const prisma = new PrismaClient();
 // PATCH - Update feedback status or add response
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await context.params;
+    const parsedId = parseInt(id);
     const body = await request.json();
     const { status, response } = body;
 
@@ -31,9 +32,9 @@ export async function PATCH(
       updateData.respondedBy = adminUserId;
     }
 
-    const feedback = await prisma.feedback.update({
-      where: { id },
-      data: updateData,
+      const feedback = await prisma.feedback.update({
+        where: { id: parsedId },
+        data: updateData,
     });
 
     // In production, send email notification to user
@@ -52,14 +53,15 @@ export async function PATCH(
 // DELETE - Delete feedback
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await context.params;
+    const parsedId = parseInt(id);
 
     // In production, verify admin role
     await prisma.feedback.delete({
-      where: { id },
+      where: { id: parsedId },
     });
 
     return NextResponse.json({ success: true });

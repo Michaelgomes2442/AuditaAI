@@ -5,8 +5,9 @@ import { authOptions } from '@/lib/auth';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { teamId: string; memberId: string } }
+  context: { params: Promise<{ teamId: string; memberId: string }> }
 ) {
+  const { teamId, memberId } = await context.params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -22,14 +23,14 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const teamId = parseInt(params.teamId);
-    const memberId = parseInt(params.memberId);
+  const teamIdNum = parseInt(teamId);
+  const memberIdNum = parseInt(memberId);
     
     // Check if user is admin or owner
     const membership = await prisma.teamMember.findFirst({
       where: {
-        teamId,
-        userId: user.id,
+  teamId: teamIdNum,
+  userId: user.id,
         role: { in: ['OWNER', 'ADMIN'] },
       },
     });
@@ -44,7 +45,7 @@ export async function PATCH(
     const { role } = await request.json();
 
     const updatedMember = await prisma.teamMember.update({
-      where: { id: memberId },
+  where: { id: memberIdNum },
       data: { role },
       include: {
         user: {
@@ -69,8 +70,9 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { teamId: string; memberId: string } }
+  context: { params: Promise<{ teamId: string; memberId: string }> }
 ) {
+  const { teamId, memberId } = await context.params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -86,14 +88,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const teamId = parseInt(params.teamId);
-    const memberId = parseInt(params.memberId);
+  const teamIdNum = parseInt(teamId);
+  const memberIdNum = parseInt(memberId);
     
     // Check if user is admin or owner
     const membership = await prisma.teamMember.findFirst({
       where: {
-        teamId,
-        userId: user.id,
+  teamId: teamIdNum,
+  userId: user.id,
         role: { in: ['OWNER', 'ADMIN'] },
       },
     });
@@ -106,7 +108,7 @@ export async function DELETE(
     }
 
     await prisma.teamMember.delete({
-      where: { id: memberId },
+  where: { id: memberIdNum },
     });
 
     return NextResponse.json({ success: true });

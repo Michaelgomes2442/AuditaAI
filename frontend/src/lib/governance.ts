@@ -1,6 +1,8 @@
 import { createHash } from 'crypto';
 import { prisma } from '@/lib/prismadb';
-import { AuditRecord, LamportState } from '@prisma/client';
+// Removed invalid import: AuditRecord, LamportState from @prisma/client
+
+import type { AuditRecord, LamportState } from "@/generated/prisma";
 
 interface BlockData {
   previousHash: string;

@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prismadb';
 // PATCH /api/rate-limits/[id] - Update a rate limit
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,7 +22,8 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const rateLimitId = parseInt(params.id);
+    const { id } = await context.params;
+    const rateLimitId = parseInt(id);
     if (isNaN(rateLimitId)) {
       return NextResponse.json({ error: 'Invalid rate limit ID' }, { status: 400 });
     }
@@ -63,7 +64,7 @@ export async function PATCH(
 // DELETE /api/rate-limits/[id] - Delete a rate limit
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -79,7 +80,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const rateLimitId = parseInt(params.id);
+    const { id } = await context.params;
+    const rateLimitId = parseInt(id);
     if (isNaN(rateLimitId)) {
       return NextResponse.json({ error: 'Invalid rate limit ID' }, { status: 400 });
     }

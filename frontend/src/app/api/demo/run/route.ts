@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 
 // Simulate model responses with CRIES scoring
 const runModelComparison = async (prompt: string, models: string[]) => {

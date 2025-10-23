@@ -54,12 +54,15 @@ export async function GET(request: Request) {
           log.action,
           log.details || "",
         ]
-          .map((field) => 
-            // Escape fields that contain commas or quotes
-            field.includes(",") || field.includes('"') 
-              ? `"${field.replace(/"/g, '""')}"` 
-              : field
-          )
+          .map((field) => {
+            if (typeof field === "string") {
+              // Escape fields that contain commas or quotes
+              return field.includes(",") || field.includes('"')
+                ? `"${field.replace(/"/g, '""')}"`
+                : field;
+            }
+            return String(field);
+          })
           .join(",")
       ),
     ];

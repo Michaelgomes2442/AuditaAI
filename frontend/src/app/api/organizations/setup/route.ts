@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { Role, Permission } from "@prisma/client";
+import type { Role, Permission } from "@/generated/prisma";
+import { Role as RoleEnum, Permission as PermissionEnum } from "@/generated/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -25,18 +26,18 @@ export async function POST(req: Request) {
       data: {
         email,
         password: hashedPassword,
-        role: role as Role,
+  role: role as Role,
         orgId: organization.id,
         permissions: {
           set: [
-            Permission.READ_LOGS,
-            Permission.WRITE_LOGS,
-            Permission.MANAGE_USERS,
-            Permission.MANAGE_TEAMS,
-            Permission.VERIFY_RECORDS,
-            Permission.EXPORT_DATA,
-            Permission.VIEW_ANALYTICS,
-            Permission.MANAGE_SETTINGS,
+            PermissionEnum.READ_LOGS,
+            PermissionEnum.WRITE_LOGS,
+            PermissionEnum.MANAGE_USERS,
+            PermissionEnum.MANAGE_TEAMS,
+            PermissionEnum.VERIFY_RECORDS,
+            PermissionEnum.EXPORT_DATA,
+            PermissionEnum.VIEW_ANALYTICS,
+            PermissionEnum.MANAGE_SETTINGS,
           ],
         },
       },

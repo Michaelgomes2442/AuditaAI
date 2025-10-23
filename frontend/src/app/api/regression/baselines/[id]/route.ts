@@ -5,14 +5,15 @@ const prisma = new PrismaClient();
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await context.params;
+    const parsedId = parseInt(id);
     const { isActive } = await req.json();
 
     const baseline = await prisma.regressionBaseline.update({
-      where: { id },
+      where: { id: parsedId },
       data: { isActive },
     });
 

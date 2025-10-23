@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { prisma } from '@/lib/prismadb';
 import fs from 'fs';
 import path from 'path';
@@ -8,8 +8,9 @@ import path from 'path';
 // DELETE - Remove a Rosetta version (Architect only)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   try {
     const session = await getServerSession(authOptions as any) as any;
     
@@ -27,7 +28,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden - Architect access only' }, { status: 403 });
     }
 
-    const rosettaId = params.id;
+  const rosettaId = id;
 
     // Prevent deletion of canonical rosetta
     if (rosettaId === 'canonical' || rosettaId.includes('rosetta-canonical')) {

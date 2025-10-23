@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
 
 // This is a placeholder for WebSocket endpoint
 // In production, you would use a proper WebSocket server (e.g., Socket.io, ws)

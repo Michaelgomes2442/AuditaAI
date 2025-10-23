@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { PrismaClient } from '@/generated/prisma';
 
 const prisma = new PrismaClient();
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -29,7 +29,8 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const templateId = parseInt(params.id);
+    const { id } = await context.params;
+    const templateId = parseInt(id);
     const template = await prisma.testTemplate.findUnique({
       where: { id: templateId }
     });
@@ -85,7 +86,7 @@ export async function POST(
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions as any) as any;
@@ -103,7 +104,8 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const templateId = parseInt(params.id);
+    const { id } = await context.params;
+    const templateId = parseInt(id);
     const template = await prisma.testTemplate.findUnique({
       where: { id: templateId }
     });

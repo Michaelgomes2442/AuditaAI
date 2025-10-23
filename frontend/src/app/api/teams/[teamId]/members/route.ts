@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { teamId: string } }
+  context: { params: Promise<{ teamId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,16 +22,16 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const teamId = parseInt(params.teamId);
-    
+    const { teamId } = await context.params;
+    const parsedTeamId = parseInt(teamId);
     // Check if user is admin or owner of the team
-    const membership = await prisma.teamMember.findFirst({
-      where: {
-        teamId,
-        userId: user.id,
-        role: { in: ['OWNER', 'ADMIN'] },
-      },
-    });
+      const membership = await prisma.teamMember.findFirst({
+        where: {
+          teamId: parsedTeamId,
+          userId: user.id,
+          role: { in: ['OWNER', 'ADMIN'] },
+        },
+      });
 
     if (!membership) {
       return NextResponse.json(
@@ -57,7 +57,7 @@ export async function POST(
     // Check if already a member
     const existingMember = await prisma.teamMember.findFirst({
       where: {
-        teamId,
+  teamId: Number(teamId),
         userId: invitedUser.id,
       },
     });
@@ -70,12 +70,12 @@ export async function POST(
     }
 
     // Add member
-    const newMember = await prisma.teamMember.create({
-      data: {
-        teamId,
-        userId: invitedUser.id,
-        role: role || 'MEMBER',
-      },
+      const newMember = await prisma.teamMember.create({
+        data: {
+          teamId: parsedTeamId,
+          userId: invitedUser.id,
+          role: role || 'MEMBER',
+        },
       include: {
         user: {
           select: {
