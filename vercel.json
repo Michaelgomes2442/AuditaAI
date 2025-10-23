@@ -6,9 +6,6 @@
   },
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
-  "pnpm": {
-    "approveBuilds": true
-  },
   "framework": "nextjs",
   "functions": {
     "api/**/*.ts": {
