@@ -31,7 +31,7 @@ async function createFounderAccounts() {
         email: 'tristanbarbaste@gmail.com',
         password: tristanPassword,
         name: 'Tristan',
-        role: 'USER',
+        role: 'ADMIN',
         tier: 'PAID',
         status: 'ACTIVE'
       }
