@@ -4,11 +4,12 @@
     "NEXTAUTH_URL": "https://auditaai.vercel.app",
     "NEXT_PUBLIC_API_URL": "https://auditaai.vercel.app/api"
   },
-  "build": {
-    "env": {
-      "NEXT_TELEMETRY_DISABLED": "1"
-    }
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install",
+  "pnpm": {
+    "approveBuilds": true
   },
+  "framework": "nextjs",
   "functions": {
     "api/**/*.ts": {
       "memory": 1024,
@@ -31,6 +32,5 @@
       "destination": "http://localhost:3001/:path*"
     }
   ],
-  "regions": ["iad1"],
-  "framework": "nextjs"
+  "regions": ["iad1"]
 }
