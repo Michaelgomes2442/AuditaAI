@@ -436,7 +436,16 @@ export default function PilotPage() {
       console.log('   Governance:', useGovernance);
       console.log('   Prompt length:', liveTestPrompt.length);
       
-      const res = await fetch('http://localhost:3001/api/pilot/run-test', { 
+      // Validate API keys for selected models before calling server
+      if (selectedModels.some(m => m.startsWith('gpt-')) && !(apiKeys.openai)) {
+        setShowApiKeys(true);
+        alert('OpenAI API key required for GPT models. Please add it in the API Keys panel.');
+        setRunning(false);
+        return;
+      }
+
+      // Use relative path so deployed frontend hits the same origin backend (no hardcoded localhost)
+      const res = await fetch('/api/pilot/run-test', { 
         method: 'POST', 
         headers: { 
           'Content-Type': 'application/json',

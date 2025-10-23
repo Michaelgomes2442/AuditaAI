@@ -446,6 +446,20 @@ app.post('/api/pilot/run-test', async (req, res) => {
 
     const results = [];
 
+    // Validate API keys for requested cloud models before running tests
+    const missingKeys = [];
+    if (Array.isArray(models)) {
+      if (models.some(m => m.startsWith('gpt-')) && !(apiKeys && apiKeys.openai)) {
+        missingKeys.push({ provider: 'openai', message: 'OpenAI API key required for gpt- models' });
+      }
+      if (models.some(m => m.startsWith('claude-')) && !(apiKeys && apiKeys.anthropic)) {
+        missingKeys.push({ provider: 'anthropic', message: 'Anthropic API key required for claude- models' });
+      }
+    }
+    if (missingKeys.length > 0) {
+      return res.status(400).json({ error: 'missing_api_keys', missing: missingKeys });
+    }
+
     // Run prompt through each selected model
     for (const modelId of models) {
       console.log(`📞 Calling ${modelId}...`);
@@ -913,6 +927,18 @@ app.get('/api/live-demo/models', async (req, res) => {
       weights: { completeness: 0.4, reliability: 0.4, integrity: 0.2 },
       notice: 'Install Ollama (https://ollama.ai) for FREE local models. Or configure API keys for GPT-4/Claude.'
     });
+  }
+});
+
+// Proxy endpoint for Ollama tags (so the browser doesn't call localhost:11434 directly)
+app.get('/api/ollama/tags', async (req, res) => {
+  try {
+    const { getAvailableOllamaModels } = await import('./src/llm-client.js');
+    const models = await getAvailableOllamaModels();
+    res.json({ models, count: models.length, ollamaInstalled: models.length > 0 });
+  } catch (err) {
+    console.error('Failed to proxy ollama tags:', err?.message || err);
+    res.status(503).json({ error: 'ollama_unavailable', message: String(err?.message || err) });
   }
 });
 
