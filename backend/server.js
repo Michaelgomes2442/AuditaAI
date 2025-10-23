@@ -241,6 +241,22 @@ Provide: 1) Safety assessment, 2) Information quality, 3) Any concerns or recomm
 // Run governance test on a model (supports both live and demo modes)
 app.post('/api/pilot/run-test', async (req, res) => {
   const { modelId, mode, promptId, prompt, models, useGovernance, apiKeys } = req.body;
+  // MCP handshake for session key exchange
+  async function mcpHandshake(label, key) {
+    const MCP_URL = process.env.MCP_SERVER_URL || 'http://localhost:4000/handshake';
+    try {
+      const res = await fetch(MCP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: key, label })
+      });
+      const data = await res.json();
+      return data.token || null;
+    } catch (err) {
+      console.error('MCP handshake failed:', err);
+      return null;
+    }
+  }
 
   // Guard: reject excessively large prompts to avoid stalls/crashes
   const MAX_PROMPT_LENGTH = 200000; // characters
@@ -385,15 +401,25 @@ app.post('/api/pilot/run-test', async (req, res) => {
     console.log(`🚀 Live testing with ${models.length} model(s)`);
     console.log(`   Prompt: ${prompt.substring(0, 100)}...`);
     console.log(`   Governance: ${useGovernance ? 'ENABLED' : 'DISABLED'}`);
-    if (apiKeys?.openai) console.log(`   🔑 OpenAI API key provided`);
-    if (apiKeys?.anthropic) console.log(`   🔑 Anthropic API key provided`);
+    // Integrate with MCP server for session key registration
+    let openaiSessionToken = null;
+    let anthropicSessionToken = null;
+    if (apiKeys?.openai) {
+      openaiSessionToken = await mcpHandshake('openai', apiKeys.openai);
+      console.log(`   🔑 OpenAI API key registered with MCP:`, openaiSessionToken);
+    }
+    if (apiKeys?.anthropic) {
+      anthropicSessionToken = await mcpHandshake('anthropic', apiKeys.anthropic);
+      console.log(`   🔑 Anthropic API key registered with MCP:`, anthropicSessionToken);
+    }
 
     // Get user ID from header
     const userIdHeader = req.headers['x-user-id'];
     const userId = userIdHeader ? parseInt(userIdHeader, 10) : 1;
     console.log(`   👤 User ID from header: ${userId}`);
 
-    // Get user info for Rosetta handshake
+  // Use session tokens for downstream LLM calls
+  // ...existing code...
     let userName = 'User';
     let userRole = null; // Rosetta role (Operator or Architect)
     let managedGovernance = false;

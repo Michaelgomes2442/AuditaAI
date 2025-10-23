@@ -13,3 +13,38 @@ Server running on port 3001
    4. Lamport receipts generated for each analysis
    5. Compare: Standard LLM vs Rosetta-governed LLM
 
+Client connected: PxLCcmCUvKN_nBiZAAAB
+Client connected: VLZ2y_9eoDv_POyEAAAD
+🚀 Live testing with 2 model(s)
+   Prompt: briefly, explain 2+2...
+   Governance: DISABLED
+   🔑 Anthropic API key provided
+   👤 User ID from header: 3
+   🏗️  ARCHITECT tier → ARCHITECT role (full control)
+   👤 User: Michael Gomes (Architect)
+📞 Calling gpt-4-turbo-preview...
+❌ Live testing failed: Error: OpenAI API key not configured. Provide an API key or use free Ollama models (llama3.2, mistral, phi)
+    at callLLM (file:///home/michaelgomes/AuditaAI/backend/src/llm-client.js:625:13)
+    at file:///home/michaelgomes/AuditaAI/backend/server.js:490:31
+🚀 Live testing with 2 model(s)
+   Prompt: briefly, explain 2+2...
+   Governance: DISABLED
+   🔑 Anthropic API key provided
+   👤 User ID from header: 3
+   🏗️  ARCHITECT tier → ARCHITECT role (full control)
+   👤 User: Michael Gomes (Architect)
+📞 Calling gpt-4-turbo-preview...
+❌ Live testing failed: Error: OpenAI API key not configured. Provide an API key or use free Ollama models (llama3.2, mistral, phi)
+    at callLLM (file:///home/michaelgomes/AuditaAI/backend/src/llm-client.js:625:13)
+    at file:///home/michaelgomes/AuditaAI/backend/server.js:490:31
+🚀 Live testing with 1 model(s)
+   Prompt: briefly, explain 2+2...
+   Governance: DISABLED
+   🔑 Anthropic API key provided
+   👤 User ID from header: 3
+   🏗️  ARCHITECT tier → ARCHITECT role (full control)
+   👤 User: Michael Gomes (Architect)
+📞 Calling gpt-4-turbo-preview...
+❌ Live testing failed: Error: OpenAI API key not configured. Provide an API key or use free Ollama models (llama3.2, mistral, phi)
+    at callLLM (file:///home/michaelgomes/AuditaAI/backend/src/llm-client.js:625:13)
+    at file:///home/michaelgomes/AuditaAI/backend/server.js:490:31

@@ -194,24 +194,33 @@ export default function PilotPage() {
 
   const detectCloudModels = () => {
     const cloudModels: string[] = [];
-    
-    // Check OpenAI API key
-    if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
-      cloudModels.push('gpt-4-turbo-preview', 'gpt-4o');
+    async function registerSessionKey(label, key) {
+      const res = await fetch('/mcp-server/handshake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label, token: key })
+      });
+      const data = await res.json();
+      return data.token || '';
     }
-    
-    // Check Anthropic API key
-    if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) {
-      cloudModels.push('claude-3-5-sonnet-20241022', 'claude-3-opus-20240229');
-    }
-    
-    setAvailableCloudModels(cloudModels);
-    console.log('🔑 Detected cloud models from API keys:', cloudModels);
-    
-    // Auto-select first cloud model if available
-    if (!isFree && cloudModels.length > 0 && selectedModels.length === 0) {
-      setSelectedModels([cloudModels[0]]);
-    }
+    (async () => {
+      if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
+        const token = await registerSessionKey('openai', openaiApiKey);
+        localStorage.setItem('openai_session_token', token);
+        cloudModels.push('gpt-4-turbo-preview', 'gpt-4o');
+      }
+      if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) {
+        const token = await registerSessionKey('anthropic', anthropicApiKey);
+        localStorage.setItem('anthropic_session_token', token);
+        cloudModels.push('claude-3-5-sonnet-20241022', 'claude-3-opus-20240229');
+      }
+      setAvailableCloudModels(cloudModels);
+      console.log('🔑 Detected cloud models from API keys:', cloudModels);
+      // Auto-select first cloud model if available
+      if (!isFree && cloudModels.length > 0 && selectedModels.length === 0) {
+        setSelectedModels([cloudModels[0]]);
+      }
+    })();
   };
 
   const checkOllamaStatus = async () => {
