@@ -132,7 +132,7 @@ export function setupWebSocket(server: HttpServer, prisma: PrismaClient) {
             user: {
               select: {
                 id: true,
-                organizationId: true,
+                organization: true,
                 email: true
               }
             }

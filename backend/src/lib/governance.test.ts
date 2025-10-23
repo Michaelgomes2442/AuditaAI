@@ -13,10 +13,10 @@ type BlockData = {
 const createTestRecord = (overrides?: Partial<AuditRecord>): AuditRecord => ({
   id: 1,
   action: 'TEST',
-  category: 'TEST',
+  category: 'SYSTEM',
   details: null as Prisma.JsonValue,
   metadata: null as Prisma.JsonValue,
-  status: 'COMPLETE',
+  status: 'SUCCESS',
   userId: 1,
   organizationId: 1,
   lamport: 1,

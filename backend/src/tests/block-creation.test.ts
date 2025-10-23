@@ -36,9 +36,7 @@ describe('Block Creation Integration', () => {
     // Clean up existing test data in correct order
     await prisma.block.deleteMany({
       where: {
-        organization: {
-          name: 'Test Organization'
-        }
+        organizationId: org?.id
       }
     });
     await prisma.auditRecord.deleteMany({
@@ -81,7 +79,7 @@ describe('Block Creation Integration', () => {
       });
       await prisma.user.deleteMany({
         where: {
-          organizationId: org.id
+          orgId: org.id
         }
       });
       await prisma.organization.deleteMany({
@@ -103,7 +101,8 @@ describe('Block Creation Integration', () => {
     user = await prisma.user.create({
       data: {
         email: 'test@example.com',
-        organizationId: org.id,
+        password: 'hashedpassword',
+        orgId: org.id,
         role: 'USER'
       }
     });
@@ -113,10 +112,10 @@ describe('Block Creation Integration', () => {
       return prisma.auditRecord.create({
         data: {
           action: `TEST_${i}`,
-          category: 'TEST',
+          category: 'SYSTEM',
           details: { test: true },
           metadata: { version: '1.0' },
-          status: 'COMPLETE',
+          status: 'SUCCESS',
           userId: user!.id,
           organizationId: org!.id,
           lamport: i + 1,
@@ -151,7 +150,7 @@ describe('Block Creation Integration', () => {
           select: {
             id: true,
             email: true,
-            organizationId: true
+            organization: true
           }
         }
       }
@@ -250,7 +249,7 @@ describe('Block Creation Integration', () => {
           select: {
             id: true,
             email: true,
-            organizationId: true
+            organization: true
           }
         }
       }

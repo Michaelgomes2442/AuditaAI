@@ -23,21 +23,40 @@ const anthropic = process.env.ANTHROPIC_API_KEY
 const ollamaBaseUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 const ollamaEnabled = process.env.ENABLE_OLLAMA !== 'false'; // Enabled by default
 
+// Helper function to add timeout to promises
+function withTimeout(promise, timeoutMs, errorMessage = 'Operation timed out') {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${errorMessage} after ${timeoutMs}ms`)), timeoutMs);
+    })
+  ]);
+}
+
 /**
  * Call Ollama (free local LLM - no API key needed!)
  * Supports: llama3, mistral, phi, gemma, qwen, etc.
  */
 export async function callOllama(prompt, options = {}) {
-  const model = options.model || 'llama3.2:3b'; // Default to small, fast model
+  const model = options.model || 'llama3.1:8b'; // Default to larger model with bigger context window
+  const timeoutMs = options.timeout || 30000; // Default 30 second timeout
   
   console.log(`🦙 Calling Ollama (${model})...`);
   console.log(`   Free local model - no API key needed`);
   console.log(`   Prompt length: ${prompt.length} chars`);
+  console.log(`   Timeout: ${timeoutMs}ms`);
 
   try {
+    // Create AbortController for timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, timeoutMs);
+
     const response = await fetch(`${ollamaBaseUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         model: model,
         prompt: prompt,
@@ -50,6 +69,8 @@ export async function callOllama(prompt, options = {}) {
         }
       })
     });
+
+    clearTimeout(timeoutId); // Clear timeout if request completed
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -75,6 +96,12 @@ export async function callOllama(prompt, options = {}) {
     };
   } catch (error) {
     console.error(`❌ Ollama call failed:`, error.message);
+    
+    // Handle timeout specifically
+    if (error.name === 'AbortError') {
+      throw new Error(`Ollama call timed out after ${timeoutMs}ms. The model may be overloaded or the prompt too large.`);
+    }
+    
     throw new Error(`Ollama call failed: ${error.message}. Is Ollama running? Install: https://ollama.ai`);
   }
 }
@@ -199,10 +226,18 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   const model = options.model || 'gpt-4';
   const modelKey = `openai:${model}`;
   const managedGovernance = options.managedGovernance || false;
+  const timeoutMs = options.timeout || 60000; // Default 60 second timeout for OpenAI
   
   console.log(`🚀 Calling ${model} with Rosetta Governance...`);
+  console.log(`   Timeout: ${timeoutMs}ms`);
   if (managedGovernance) {
     console.log(`   🔒 Managed mode - transparent governance for OPERATOR`);
+  }
+  
+  // Create OpenAI client with provided API key
+  const openaiClient = apiKey ? new OpenAI({ apiKey }) : openai;
+  if (!openaiClient) {
+    throw new Error('OpenAI API key not configured');
   }
   
   let session = bootedSessions.get(modelKey);
@@ -211,26 +246,24 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   if (!session) {
     console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
     
-    const rosettaContent = loadRosettaMonolith();
+    // Use minimal boot prompt following Band-0 Speaking Boot Interface vΩ3.4
+    // Instead of sending entire 2.78 MB Rosetta.html, send the boot dialogue
+    const bootPrompt = `boot`;
     
-    if (!openai) {
-      throw new Error('OpenAI API key not configured');
-    }
+    const bootCompletion = await withTimeout(
+      openaiClient.chat.completions.create({
+        model: model,
+        messages: [
+          { role: 'user', content: bootPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      }),
+      timeoutMs,
+      'OpenAI boot sequence'
+    );
     
-    // Step 1: Send Rosetta.html + "boot" command
-    console.log(`   📤 Step 1: Sending Rosetta Monolith + boot command...`);
-    
-    const bootCompletion = await openai.chat.completions.create({
-      model: model,
-      messages: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' }
-      ],
-      temperature: 0.7,
-      max_tokens: 1000
-    });
-    
-    const bootResponse = bootCompletion.choices[0].message.content;
+    const bootResponseContent = bootCompletion.choices[0].message.content;
     console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
     
     // Step 2: Complete handshake with user identity and role
@@ -245,35 +278,37 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
       handshakeMessage += '\n\nNote: You are in managed governance mode for an Operator user. Provide governed responses without showing boot receipts, handshake details, or governance metadata. Focus on delivering high-quality, governed answers to their questions.';
     }
     
-    const handshakeCompletion = await openai.chat.completions.create({
-      model: model,
-      messages: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' },
-        { role: 'assistant', content: bootResponse },
-        { role: 'user', content: handshakeMessage }
-      ],
-      temperature: 0.7,
-      max_tokens: 1000
-    });
+    const handshakeCompletion = await withTimeout(
+      openaiClient.chat.completions.create({
+        model: model,
+        messages: [
+          { role: 'user', content: bootPrompt },
+          { role: 'assistant', content: bootResponseContent },
+          { role: 'user', content: handshakeMessage }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      }),
+      timeoutMs,
+      'OpenAI handshake'
+    );
     
     const handshakeResponse = handshakeCompletion.choices[0].message.content;
     console.log(`   ✅ Handshake complete - Δ-BOOT-VERIFY emitted`);
     console.log(`   🔐 Model is now Rosetta-governed`);
     
-    // Store session with full message history
+    // Store session with full handshake
     session = {
-      bootResponse,
-      handshakeResponse,
+      bootResponse: bootResponseContent,
+      handshakeResponse: handshakeResponse.content,
       bootTime: new Date().toISOString(),
       identity: { name: userName, role: userRole },
       managedGovernance,
       messageHistory: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' },
-        { role: 'assistant', content: bootResponse },
+        { role: 'user', content: bootPrompt },
+        { role: 'assistant', content: bootResponseContent },
         { role: 'user', content: handshakeMessage },
-        { role: 'assistant', content: handshakeResponse }
+        { role: 'assistant', content: handshakeResponse.content }
       ]
     };
     bootedSessions.set(modelKey, session);
@@ -283,12 +318,16 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   session.messageHistory.push({ role: 'user', content: prompt });
   
   // Send full conversation
-  const completion = await openai.chat.completions.create({
-    model: model,
-    messages: session.messageHistory,
-    temperature: options.temperature || 0.5,
-    max_tokens: options.maxTokens || 2000
-  });
+  const completion = await withTimeout(
+    openaiClient.chat.completions.create({
+      model: model,
+      messages: session.messageHistory,
+      temperature: options.temperature || 0.5,
+      max_tokens: options.maxTokens || 2000
+    }),
+    timeoutMs,
+    'OpenAI completion'
+  );
   
   const response = completion.choices[0].message.content;
   
@@ -318,10 +357,19 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   const model = options.model || 'claude-3-5-sonnet-20241022';
   const modelKey = `anthropic:${model}`;
   const managedGovernance = options.managedGovernance || false;
+  const timeoutMs = options.timeout || 60000; // Default 60 second timeout for Anthropic
+  const apiKey = options.apiKey;
   
   console.log(`🚀 Calling ${model} with Rosetta Governance...`);
+  console.log(`   Timeout: ${timeoutMs}ms`);
   if (managedGovernance) {
     console.log(`   🔒 Managed mode - transparent governance for OPERATOR`);
+  }
+  
+  // Create Anthropic client with provided API key
+  const anthropicClient = apiKey ? new Anthropic({ apiKey }) : anthropic;
+  if (!anthropicClient) {
+    throw new Error('Anthropic API key not configured');
   }
   
   let session = bootedSessions.get(modelKey);
@@ -330,25 +378,29 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   if (!session) {
     console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
     
-    const rosettaContent = loadRosettaMonolith();
+    // Use minimal boot prompt following Band-0 Speaking Boot Interface vΩ3.4
+    const bootPrompt = `boot`;
     
-    if (!anthropic) {
+    if (!anthropicClient) {
       throw new Error('Anthropic API key not configured');
     }
     
-    // Step 1: Send Rosetta.html + "boot" command
-    console.log(`   📤 Step 1: Sending Rosetta Monolith + boot command...`);
+    // Step 1: Send minimal boot command
+    console.log(`   📤 Step 1: Sending minimal boot command...`);
     
-    const bootMessage = await anthropic.messages.create({
-      model: model,
-      max_tokens: 1000,
-      messages: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' }
-      ]
-    });
+    const bootMessage = await withTimeout(
+      anthropicClient.messages.create({
+        model: model,
+        max_tokens: 1000,
+        messages: [
+          { role: 'user', content: bootPrompt }
+        ]
+      }),
+      timeoutMs,
+      'Anthropic boot sequence'
+    );
     
-    const bootResponse = bootMessage.content[0].text;
+    const bootResponseContent = bootMessage.content[0].text;
     console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
     
     // Step 2: Complete handshake with user identity and role
@@ -363,16 +415,19 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
       handshakeMessage += '\n\nNote: You are in managed governance mode for an Operator user. Provide governed responses without showing boot receipts, handshake details, or governance metadata. Focus on delivering high-quality, governed answers to their questions.';
     }
     
-    const handshakeMessageResponse = await anthropic.messages.create({
-      model: model,
-      max_tokens: 1000,
-      messages: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' },
-        { role: 'assistant', content: bootResponse },
-        { role: 'user', content: handshakeMessage }
-      ]
-    });
+    const handshakeMessageResponse = await withTimeout(
+      anthropicClient.messages.create({
+        model: model,
+        max_tokens: 1000,
+        messages: [
+          { role: 'user', content: bootPrompt },
+          { role: 'assistant', content: bootResponseContent },
+          { role: 'user', content: handshakeMessage }
+        ]
+      }),
+      timeoutMs,
+      'Anthropic handshake'
+    );
     
     const handshakeResponse = handshakeMessageResponse.content[0].text;
     console.log(`   ✅ Handshake complete - Δ-BOOT-VERIFY emitted`);
@@ -400,11 +455,15 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   session.messageHistory.push({ role: 'user', content: prompt });
   
   // Send full conversation
-  const message = await anthropic.messages.create({
-    model: model,
-    max_tokens: options.maxTokens || 2000,
-    messages: session.messageHistory
-  });
+  const message = await withTimeout(
+    anthropicClient.messages.create({
+      model: model,
+      max_tokens: options.maxTokens || 2000,
+      messages: session.messageHistory
+    }),
+    timeoutMs,
+    'Anthropic completion'
+  );
   
   const response = message.content[0].text;
   
@@ -468,7 +527,7 @@ const bootedSessions = new Map(); // modelId -> { bootResponse, bootTime, messag
  * - Receipts auto-generated and stored server-side
  */
 export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}) {
-  const model = options.model || 'llama3.2:3b';
+  const model = options.model || 'llama3.1:8b';
   const modelKey = `ollama:${model}`;
   const managedGovernance = options.managedGovernance || false;
   
@@ -483,11 +542,9 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
   if (!session) {
     console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
     
-    const rosettaContent = loadRosettaMonolith();
-    
-    // Step 1: Send Rosetta.html + "boot" command
-    console.log(`   📤 Step 1: Sending Rosetta Monolith + boot command...`);
-    const bootPrompt = `${rosettaContent}\n\nboot`;
+    // Use ultra-minimal boot prompt - just the boot command
+    // This follows the Band-0 Speaking Boot Interface but extremely simplified
+    const bootPrompt = `boot`;
     
     const bootResponse = await callOllama(bootPrompt, options);
     console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
@@ -512,7 +569,7 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
     
     // Store session with full handshake
     session = {
-      bootResponse: bootResponse.content,
+      bootResponse: bootResponseContent,
       handshakeResponse: handshakeResponse.content,
       bootTime: new Date().toISOString(),
       identity: { name: userName, role: userRole },

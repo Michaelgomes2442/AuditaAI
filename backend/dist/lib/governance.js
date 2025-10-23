@@ -1,9 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateBlockHash = generateBlockHash;
-exports.calculateCRIESMetrics = calculateCRIESMetrics;
-const crypto_1 = require("crypto");
-function generateBlockHash(blockData) {
+import { createHash } from 'crypto';
+export function generateBlockHash(blockData) {
     const blockString = JSON.stringify({
         previousHash: blockData.previousHash,
         records: blockData.records.map(r => ({
@@ -18,9 +14,9 @@ function generateBlockHash(blockData) {
         timestamp: blockData.timestamp,
         lamportClock: blockData.lamportClock
     });
-    return (0, crypto_1.createHash)('sha256').update(blockString).digest('hex');
+    return createHash('sha256').update(blockString).digest('hex');
 }
-function calculateCRIESMetrics(records) {
+export function calculateCRIESMetrics(records) {
     // Calculate Consistency Score (0-1)
     const consistency = calculateConsistencyScore(records);
     // Calculate Reproducibility Score (0-1)
@@ -42,6 +38,8 @@ function calculateCRIESMetrics(records) {
     };
 }
 function calculateConsistencyScore(records) {
+    if (records.length <= 1)
+        return 1;
     // Check lamport clock consistency
     let lamportViolations = 0;
     for (let i = 1; i < records.length; i++) {
@@ -56,11 +54,13 @@ function calculateConsistencyScore(records) {
             timeViolations++;
         }
     }
-    const lamportScore = 1 - (lamportViolations / records.length);
-    const timeScore = 1 - (timeViolations / records.length);
+    const lamportScore = 1 - (lamportViolations / (records.length - 1));
+    const timeScore = 1 - (timeViolations / (records.length - 1));
     return (lamportScore + timeScore) / 2;
 }
 function calculateReproducibilityScore(records) {
+    if (records.length === 0)
+        return 1;
     // Check if all records have proper metadata
     let validMetadataCount = 0;
     for (const record of records) {
@@ -74,6 +74,8 @@ function calculateReproducibilityScore(records) {
     return validMetadataCount / records.length;
 }
 function calculateIntegrityScore(records) {
+    if (records.length <= 1)
+        return 1;
     // Check hash pointer integrity
     let validHashPointers = 0;
     for (let i = 1; i < records.length; i++) {
@@ -86,13 +88,15 @@ function calculateIntegrityScore(records) {
     return validHashPointers / (records.length - 1);
 }
 function calculateExplainabilityScore(records) {
+    if (records.length === 0)
+        return 1;
     // Check if records have proper details and categorization
     let explainableRecords = 0;
     for (const record of records) {
         const hasValidDetails = record.details &&
             typeof record.details === 'object' &&
             Object.keys(record.details).length > 0;
-        const hasCategory = record.category !== undefined;
+        const hasCategory = record.category !== undefined && record.category.length > 0;
         const hasAction = record.action && record.action.length > 0;
         if (hasValidDetails && hasCategory && hasAction) {
             explainableRecords++;
@@ -101,12 +105,14 @@ function calculateExplainabilityScore(records) {
     return explainableRecords / records.length;
 }
 function calculateSecurityScore(records) {
+    if (records.length === 0)
+        return 1;
     // Check for proper user attribution and event categorization
     let secureRecords = 0;
     for (const record of records) {
-        const hasUser = record.userId !== undefined && record.user !== undefined;
-        const hasProperCategory = record.category !== undefined;
-        const hasStatus = record.status !== undefined;
+        const hasUser = record.userId !== undefined;
+        const hasProperCategory = record.category !== undefined && record.category.length > 0;
+        const hasStatus = record.status !== undefined && record.status.length > 0;
         if (hasUser && hasProperCategory && hasStatus) {
             secureRecords++;
         }

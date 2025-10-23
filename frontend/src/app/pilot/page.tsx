@@ -65,7 +65,7 @@ export default function PilotPage() {
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [liveTestPrompt, setLiveTestPrompt] = useState('');
   const [selectedModels, setSelectedModels] = useState<string[]>([]); // Start empty, auto-select when Ollama detected
-  const [useGovernance, setUseGovernance] = useState(true);
+  const [useGovernance, setUseGovernance] = useState(!isFree); // Free users: strictly false, Paid users: default true
   const [liveTestResult, setLiveTestResult] = useState<any>(null);
   const [showLiveTestModal, setShowLiveTestModal] = useState(false);
   const [comparisonResult, setComparisonResult] = useState<any>(null);
@@ -90,6 +90,13 @@ export default function PilotPage() {
       shouldShowModal: showLiveTestModal && liveTestResult
     });
   }, [showLiveTestModal, liveTestResult]);
+
+  // Force governance to false for free users
+  useEffect(() => {
+    if (isFree && useGovernance) {
+      setUseGovernance(false);
+    }
+  }, [isFree, useGovernance]);
 
   const fetchRosettaData = async () => {
     setLoading(true);
@@ -1673,12 +1680,14 @@ export default function PilotPage() {
                       🚀 Boot Rosetta
                     </button>
                     <button
-                      onClick={() => setUseGovernance(!useGovernance)}
+                      onClick={() => !isFree && setUseGovernance(!useGovernance)}
+                      disabled={isFree}
                       className={`px-4 py-2 rounded font-mono text-sm transition-all ${
                         useGovernance
                           ? 'bg-green-500/20 border border-green-500/50 text-green-300'
                           : 'bg-slate-700 border border-white/10 text-slate-400'
-                      }`}
+                      } ${isFree ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+                      title={isFree ? 'Governance requires a paid subscription' : 'Toggle Rosetta governance system'}
                     >
                       {useGovernance ? 'ON' : 'OFF'}
                     </button>

@@ -9,7 +9,7 @@
  */
 
 import crypto from 'crypto';
-import canon from '../../config/rosetta-canonical.json';
+const canon = require('../../config/rosetta-canonical.json');
 
 // CRIES Component Definitions from Canon
 interface CRIESComponent {
