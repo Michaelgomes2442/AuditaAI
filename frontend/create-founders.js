@@ -16,7 +16,7 @@ async function createFounderAccounts() {
         email: 'founder@auditaai.com',
         password: founderPassword,
         name: 'Michael Gomes',
-        role: 'ADMIN',
+        role: 'ARCHITECT',
         tier: 'ARCHITECT',
         status: 'ACTIVE'
       }
