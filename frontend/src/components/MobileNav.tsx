@@ -29,7 +29,6 @@ export default function MobileNav({ className = '' }: MobileNavProps) {
     { href: '/support', label: 'Support', icon: MessageSquare },
     { href: '/security', label: 'Security', icon: Shield },
     { href: '/sso', label: 'SSO', icon: Building2 },
-    { href: '/language', label: 'Language', icon: Globe },
     { href: '/lab', label: 'Lab', icon: Beaker },
     { href: '/templates', label: 'Templates', icon: FileText },
     { href: '/webhooks', label: 'Webhooks', icon: Webhook },

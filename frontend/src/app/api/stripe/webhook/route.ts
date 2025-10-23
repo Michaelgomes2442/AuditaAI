@@ -3,10 +3,6 @@ import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prismadb';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover'
-});
-
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 /**
@@ -15,6 +11,17 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
  */
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Stripe client only when needed
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover'
+    });
     const body = await request.text();
     const headersList = await headers();
     const signature = headersList.get('stripe-signature')!;

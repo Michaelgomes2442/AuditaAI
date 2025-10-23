@@ -3,15 +3,23 @@ import Stripe from 'stripe';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prismadb';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover'
-});
-
 /**
  * Create Stripe Checkout Session for PAID tier upgrade
  */
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Stripe client only when needed
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover'
+    });
+
     const session = await getServerSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

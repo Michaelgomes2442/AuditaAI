@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -282,10 +283,12 @@ export default function ModelComparisonPage() {
         </div>
 
         {/* Advanced Filters */}
-        <AdvancedFilters
-          onFiltersChange={applyFilters}
-          onReset={handleReset}
-        />
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <AdvancedFilters
+            onFiltersChange={applyFilters}
+            onReset={handleReset}
+          />
+        </Suspense>
 
         {/* Results Table */}
         <Card className="bg-gray-900/50 border-gray-800">

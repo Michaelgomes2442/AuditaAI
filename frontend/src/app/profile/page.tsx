@@ -461,23 +461,6 @@ export default function ProfilePage() {
                   Toggle between light and dark mode
                 </p>
               </div>
-
-              {/* Language Selector */}
-              <div>
-                <label className="text-sm font-mono font-bold text-slate-400 mb-3 block flex items-center gap-2">
-                  <Globe className="w-4 h-4" />
-                  LANGUAGE
-                </label>
-                <div className="flex items-center gap-4 px-4 py-3 rounded-lg bg-slate-900/50 border border-white/10">
-                  <span className="text-sm font-mono text-slate-300">Select your preferred language</span>
-                  <div className="ml-auto">
-                    <LanguageSwitcher />
-                  </div>
-                </div>
-                <p className="text-xs text-slate-500 font-mono mt-2">
-                  Change the interface language
-                </p>
-              </div>
             </div>
           </div>
         </div>
