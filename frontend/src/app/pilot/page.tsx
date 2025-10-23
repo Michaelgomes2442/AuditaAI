@@ -95,29 +95,91 @@ export default function PilotPage() {
     setLoading(true);
     try {
       const [bootRes, registryRes, stateRes] = await Promise.all([
-        fetch('http://localhost:3001/api/rosetta/boot'),
-        fetch('http://localhost:3001/api/rosetta/registry'),
-        fetch('http://localhost:3001/api/rosetta/state')
+        fetch('http://localhost:3001/api/rosetta/boot').catch(() => ({ ok: false })),
+        fetch('http://localhost:3001/api/rosetta/registry').catch(() => ({ ok: false })),
+        fetch('http://localhost:3001/api/rosetta/state').catch(() => ({ ok: false }))
       ]);
 
-      if (bootRes.ok) {
-        const bootData = await bootRes.json();
+      if (bootRes.ok && typeof (bootRes as any).json === 'function') {
+        const bootData = await (bootRes as Response).json();
         setReceipt(bootData);
+      } else {
+        // Fallback demo data when backend is not available
+        setReceipt({
+          receipt_type: "DEMO_RECEIPT",
+          status: "active",
+          lamport: 42,
+          trace_id: "demo-trace-123",
+          ts: new Date().toISOString(),
+          witness: "demo-witness",
+          band: "demo-band",
+          notes: "Demo mode - backend not available"
+        });
       }
 
-      if (registryRes.ok) {
-        const regData = await registryRes.json();
+      if (registryRes.ok && typeof (registryRes as any).json === 'function') {
+        const regData = await (registryRes as Response).json();
         setRegistry(regData);
+      } else {
+        // Fallback demo registry data
+        setRegistry({
+          receipts: [
+            {
+              type: "governance_test",
+              lamport: 42,
+              sha256: "demo-sha256-hash",
+              timestamp: new Date().toISOString()
+            }
+          ],
+          lamport_chain: {
+            current: 42,
+            verified: true
+          }
+        });
       }
 
-      if (stateRes.ok) {
-        const stateData = await stateRes.json();
+      if (stateRes.ok && typeof (stateRes as any).json === 'function') {
+        const stateData = await (stateRes as Response).json();
         setGovernanceState(stateData);
+      } else {
+        // Fallback demo governance state
+        setGovernanceState({
+          sigma: 0.87,
+          omega: 0.91,
+          last_updated: new Date().toISOString(),
+          total_events: 156
+        });
       }
 
       setLastRefresh(new Date());
     } catch (error) {
       console.error('Error fetching Rosetta data:', error);
+      // Set fallback demo data on any error
+      setReceipt({
+        receipt_type: "DEMO_RECEIPT",
+        status: "active",
+        lamport: 42,
+        trace_id: "demo-trace-123",
+        ts: new Date().toISOString(),
+        witness: "demo-witness",
+        band: "demo-band",
+        notes: "Demo mode - backend not available"
+      });
+      setRegistry({
+        receipts: [{
+          type: "governance_test",
+          lamport: 42,
+          sha256: "demo-sha256-hash",
+          timestamp: new Date().toISOString()
+        }],
+        lamport_chain: { current: 42, verified: true }
+      });
+      setGovernanceState({
+        sigma: 0.87,
+        omega: 0.91,
+        last_updated: new Date().toISOString(),
+        total_events: 156
+      });
     } finally {
       setLoading(false);
     }
