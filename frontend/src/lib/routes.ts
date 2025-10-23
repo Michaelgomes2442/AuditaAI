@@ -35,7 +35,7 @@ export function getRoute(path: keyof typeof staticRoutes | string): string {
     typeof route === 'string' ? route : Object.values(route)
   );
   
-  if (!allPaths.includes(normalizedPath)) {
+  if (!(allPaths as string[]).includes(normalizedPath)) {
     console.warn(`Warning: Route "${normalizedPath}" is not defined in routes configuration`);
   }
   

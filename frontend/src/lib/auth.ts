@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../app/api/auth/[...nextauth]/route";
-import { appRoutes } from "./routes";
+import { staticRoutes } from "./routes";
 
 export { authOptions };
 
@@ -27,7 +27,7 @@ export async function getUser() {
 export async function requireUser() {
   const session = await getUser();
   if (!session) {
-    redirect(appRoutes.auth.signin);
+    redirect('/auth/signin' as any);
   }
   return session;
 }
@@ -35,7 +35,7 @@ export async function requireUser() {
 export async function requireAdmin() {
   const session = await requireUser();
   if (session.user.role !== UserRole.ADMIN) {
-    redirect(appRoutes.dashboard);
+    redirect('/dashboard' as any);
   }
   return session;
 }
