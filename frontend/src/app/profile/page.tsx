@@ -7,7 +7,6 @@ import { Shield, User, Mail, Calendar, Award, Edit, Save, X, Loader2, Palette, G
 import Link from 'next/link';
 import AuthNav from '@/components/AuthNav';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface UserProfile {
   id: number;

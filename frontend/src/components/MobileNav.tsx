@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Home, Zap, LayoutDashboard, Beaker, Receipt, CreditCard, Lightbulb, GitCompare, Activity, FileText, Webhook, Shield, Grid3x3, DollarSign, Target, TestTube, BookOpen, MessageSquare, Globe, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface MobileNavProps {
   className?: string;
@@ -116,8 +115,6 @@ export default function MobileNav({ className = '' }: MobileNavProps) {
           {/* Footer */}
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-gray-900/95 backdrop-blur-sm dark:bg-gray-950/95 dark:border-gray-700">
             <div className="flex items-center gap-3 mb-3">
-              <LanguageSwitcher />
-              <span className="text-sm text-gray-400">|</span>
               <ThemeToggle />
               <span className="text-sm text-gray-400">Theme</span>
             </div>

@@ -1,14 +1,5 @@
-import createMiddleware from 'next-intl/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { locales, defaultLocale } from './i18n';
-
-// Create the i18n middleware
-const i18nMiddleware = createMiddleware({
-  locales: locales,
-  defaultLocale: defaultLocale,
-  localeDetection: true
-});
 
 // Tier hierarchy (higher number = more permissions)
 const TIER_HIERARCHY = {
@@ -67,13 +58,6 @@ const adminRoutes = [
 ];
 
 export default async function middleware(request: NextRequest) {
-  // First, handle i18n routing
-  const i18nResponse = i18nMiddleware(request);
-  if (i18nResponse && i18nResponse.status !== 200) {
-    return i18nResponse;
-  }
-
-  // Continue with existing auth logic
   const { pathname } = request.nextUrl;
 
   // Skip middleware for API routes, static files, etc.
