@@ -14,6 +14,7 @@ export async function POST() {
       data: {
         userId: parseInt(session.user.id),
         action: 'TEST_EVENT',
+        category: 'SYSTEM',
         details: 'Test log entry created via E2E test',
         lamport: 0 // This should be handled by your Lamport clock mechanism
       }

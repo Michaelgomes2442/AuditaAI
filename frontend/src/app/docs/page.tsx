@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, BookOpen, Rocket, Sparkles, Code, Lightbulb, HelpCircle, ChevronRight, ExternalLink } from 'lucide-react';
+import { Search, BookOpen, Rocket, Sparkles, Code, Lightbulb, HelpCircle, ChevronRight, ExternalLink, Code2, Layers, GitBranch, Shield, ArrowLeft, FileText, ArrowRight } from 'lucide-react';
 import { docSections, DocArticle, DocSection } from '@/lib/docs-content';
 
 export default function DocsPage() {

@@ -3,6 +3,7 @@ import { Server as SocketServer } from 'socket.io';
 import { prisma } from '@/lib/prismadb';
 import { GovernanceService } from '@/lib/governance';
 import type { NextApiResponse } from 'next';
+import type { AuditCategory, AuditStatus } from '@/generated/prisma';
 
 export type NextApiResponseServerIO = NextApiResponse & {
   socket: {
@@ -127,10 +128,10 @@ export class AuditWebSocketService {
       const record = await prisma.auditRecord.create({
         data: {
           action: event.action,
-          category: event.category,
+          category: event.category as AuditCategory,
           details: event.details,
           userId: event.userId,
-          status: event.status,
+          status: (event.status as AuditStatus) || 'SUCCESS',
           lamport: 0, // Will be set when block is created
         },
         include: {

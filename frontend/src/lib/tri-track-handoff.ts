@@ -92,7 +92,6 @@ export async function initiateHandoff(payload: HandoffPayload): Promise<HandoffR
       command: payload.data.command || 'EXECUTE',
       target: payload.data.target || 'user',
       params: payload.data.params || {},
-      traceId,
     });
   } else if (payload.fromTrack === 'HUMAN' && payload.toTrack === 'AUDITAAI') {
     // C→B: Emit Δ-RESULT
@@ -101,7 +100,6 @@ export async function initiateHandoff(payload: HandoffPayload): Promise<HandoffR
       status: payload.data.status || 'success',
       output: payload.data.output || {},
       error: payload.data.error,
-      traceId,
     });
   } else {
     throw new Error('Invalid handoff configuration');

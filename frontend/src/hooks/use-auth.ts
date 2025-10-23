@@ -14,9 +14,9 @@ export function useAuth(requireAdmin = false) {
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
-        router.push(appRoutes.auth.signin());
+        router.push(appRoutes.auth.signin() as any);
       } else if (requireAdmin && !isAdmin) {
-        router.push(appRoutes.dashboard());
+        router.push(appRoutes.dashboard() as any);
       }
     }
   }, [isAuthenticated, isAdmin, isLoading, requireAdmin, router]);

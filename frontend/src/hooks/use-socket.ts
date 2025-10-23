@@ -30,7 +30,7 @@ type VerificationResult = {
 };
 
 export function useSocket(orgId?: string) {
-  const socket = useRef<Socket>();
+  const socket = useRef<Socket | null>(null);
   const [lastAuditUpdate, setLastAuditUpdate] = useState<AuditUpdate | null>(null);
   const [lastMetricsUpdate, setLastMetricsUpdate] = useState<MetricsUpdate | null>(null);
   const [lastVerification, setLastVerification] = useState<VerificationResult | null>(null);

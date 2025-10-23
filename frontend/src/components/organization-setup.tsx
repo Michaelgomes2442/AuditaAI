@@ -23,7 +23,7 @@ type OrganizationFormValues = z.infer<typeof organizationSchema>;
 
 export function OrganizationSetup() {
   const form = useForm<OrganizationFormValues>({
-    resolver: zodResolver(organizationSchema),
+    resolver: zodResolver(organizationSchema as any),
     defaultValues: {
       role: "ARCHITECT",
     },
