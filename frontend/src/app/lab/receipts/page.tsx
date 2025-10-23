@@ -31,7 +31,7 @@ export default function ReceiptsPage() {
       if (response.ok) {
         const data = await response.json();
         setRegistry(data);
-        
+
         // Convert registry to receipt format
         const receiptList = data.map((entry: any) => ({
           timestamp: entry.ts,
@@ -43,9 +43,14 @@ export default function ReceiptsPage() {
           path: entry.path
         }));
         setReceipts(receiptList);
+      } else {
+        // Enterprise feature - backend required
+        console.log('Enterprise feature: Backend required for receipts registry');
       }
     } catch (error) {
       console.error('Failed to fetch receipts:', error);
+      // Enterprise feature - backend required
+      console.log('Enterprise feature: Backend connection failed');
     } finally {
       setLoading(false);
     }
@@ -142,12 +147,29 @@ export default function ReceiptsPage() {
           </h3>
 
           {loading ? (
-            <div className="text-center py-12 text-gray-400 font-mono">
-              Loading receipts...
+            <div className="text-center py-12">
+              <div className="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/70 border border-cyan-500/30 rounded-lg">
+                <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="text-cyan-400 font-mono">Loading receipts...</div>
+              </div>
             </div>
           ) : receipts.length === 0 ? (
-            <div className="text-center py-12 text-gray-400 font-mono">
-              No receipts found. Generate governance events to create receipts.
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto bg-gradient-to-r from-slate-800/70 to-slate-900/70 border border-orange-500/30 rounded-xl p-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-full flex items-center justify-center">
+                  <Shield className="w-8 h-8 text-orange-400" />
+                </div>
+                <h3 className="text-xl font-mono font-bold text-white mb-2">Enterprise Backend Required</h3>
+                <p className="text-slate-300 font-mono text-sm mb-4">
+                  This feature requires the AuditaAI backend server to access live receipt data from the governance ledger.
+                </p>
+                <div className="text-xs text-slate-500 font-mono bg-slate-900/50 p-3 rounded border border-slate-600/50">
+                  <div className="font-semibold text-orange-400 mb-1">For Enterprise Deployments:</div>
+                  <div>• Deploy backend server with database access</div>
+                  <div>• Enable file system operations for receipt verification</div>
+                  <div>• Configure governance event processing</div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">

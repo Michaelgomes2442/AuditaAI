@@ -58,9 +58,14 @@ export default function LamportPage() {
           }
         }
         setChainValid(valid);
+      } else {
+        // Enterprise feature - backend required
+        console.log('Enterprise feature: Backend required for Lamport chain');
       }
     } catch (error) {
       console.error('Failed to fetch Lamport chain:', error);
+      // Enterprise feature - backend required
+      console.log('Enterprise feature: Backend connection failed');
     } finally {
       setLoading(false);
     }
@@ -190,12 +195,29 @@ export default function LamportPage() {
           </h3>
 
           {loading ? (
-            <div className="text-center py-12 text-gray-400 font-mono">
-              Loading chain...
+            <div className="text-center py-12">
+              <div className="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/70 border border-purple-500/30 rounded-lg">
+                <div className="w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="text-purple-400 font-mono">Loading Lamport chain...</div>
+              </div>
             </div>
           ) : chain.length === 0 ? (
-            <div className="text-center py-12 text-gray-400 font-mono">
-              No events in chain yet.
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto bg-gradient-to-r from-slate-800/70 to-slate-900/70 border border-orange-500/30 rounded-xl p-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full flex items-center justify-center">
+                  <Clock className="w-8 h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-mono font-bold text-white mb-2">Enterprise Backend Required</h3>
+                <p className="text-slate-300 font-mono text-sm mb-4">
+                  Lamport chain visualization requires the AuditaAI backend server to access live governance event data.
+                </p>
+                <div className="text-xs text-slate-500 font-mono bg-slate-900/50 p-3 rounded border border-slate-600/50">
+                  <div className="font-semibold text-purple-400 mb-1">For Enterprise Deployments:</div>
+                  <div>• Deploy backend with distributed event processing</div>
+                  <div>• Enable Lamport clock synchronization</div>
+                  <div>• Configure causal ordering validation</div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">

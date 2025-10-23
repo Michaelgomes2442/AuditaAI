@@ -74,6 +74,8 @@ export default function MathCanonPage() {
       }
     } catch (error) {
       console.error('Failed to load conversations:', error);
+      // Enterprise feature - backend required
+      console.log('Enterprise feature: Backend required for conversation data');
     }
   };
 
@@ -88,6 +90,8 @@ export default function MathCanonPage() {
       setLoading(false);
     } catch (error) {
       console.error('Failed to load Tri-Track state:', error);
+      // Enterprise feature - backend required
+      console.log('Enterprise feature: Backend required for Tri-Track state');
       setLoading(false);
     }
   };
@@ -281,10 +285,30 @@ export default function MathCanonPage() {
 
         {loading ? (
           <div className="text-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-            <p className="text-slate-400 font-mono">Loading Math Canon state...</p>
+            <div className="inline-flex items-center gap-3 px-6 py-4 bg-slate-800/70 border border-orange-500/30 rounded-lg">
+              <div className="w-6 h-6 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-orange-400 font-mono">Loading Math Canon state...</div>
+            </div>
           </div>
-        ) : tritrackState ? (
+        ) : !tritrackState ? (
+          <div className="text-center py-20">
+            <div className="max-w-md mx-auto bg-gradient-to-r from-slate-800/70 to-slate-900/70 border border-orange-500/30 rounded-xl p-8">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 rounded-full flex items-center justify-center">
+                <Calculator className="w-8 h-8 text-orange-400" />
+              </div>
+              <h3 className="text-xl font-mono font-bold text-white mb-2">Enterprise Backend Required</h3>
+              <p className="text-slate-300 font-mono text-sm mb-4">
+                Math Canon vΩ.8 visualization requires the AuditaAI backend server for real-time CRIES calculations and Tri-Track state.
+              </p>
+              <div className="text-xs text-slate-500 font-mono bg-slate-900/50 p-3 rounded border border-slate-600/50">
+                <div className="font-semibold text-orange-400 mb-1">For Enterprise Deployments:</div>
+                <div>• Deploy backend with Math Canon processing</div>
+                <div>• Enable real-time CRIES calculations</div>
+                <div>• Configure Tri-Track state monitoring</div>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="space-y-6">
             {/* Sigma & Omega Cards */}
             <div className="grid grid-cols-2 gap-6">
