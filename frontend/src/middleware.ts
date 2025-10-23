@@ -1,5 +1,14 @@
+import createMiddleware from 'next-intl/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { locales, defaultLocale } from './i18n';
+
+// Create the i18n middleware
+const i18nMiddleware = createMiddleware({
+  locales: locales,
+  defaultLocale: defaultLocale,
+  localeDetection: true
+});
 
 // Tier hierarchy (higher number = more permissions)
 const TIER_HIERARCHY = {
@@ -49,13 +58,22 @@ const protectedRoutes = [
   '/demo',
 ];
 
-// Routes that require admin access
+// Admin-only routes
 const adminRoutes = [
+  '/dev',
   '/admin',
-  '/settings/admin',
+  '/api/dev',
+  '/api/admin'
 ];
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
+  // First, handle i18n routing
+  const i18nResponse = i18nMiddleware(request);
+  if (i18nResponse && i18nResponse.status !== 200) {
+    return i18nResponse;
+  }
+
+  // Continue with existing auth logic
   const { pathname } = request.nextUrl;
 
   // Skip middleware for API routes, static files, etc.
@@ -70,18 +88,18 @@ export async function middleware(request: NextRequest) {
   // Tier-based access control for API routes
   if (pathname.startsWith('/api/')) {
     const userTier = request.headers.get('x-user-tier') as keyof typeof TIER_HIERARCHY || 'FREE';
-    
+
     // Find matching feature access rule
-    const requiredTiers = Object.entries(FEATURE_ACCESS).find(([route]) => 
+    const requiredTiers = Object.entries(FEATURE_ACCESS).find(([route]) =>
       pathname.startsWith(route)
     )?.[1];
 
     if (requiredTiers && !requiredTiers.includes(userTier)) {
       console.log(`🚫 Access denied: ${userTier} user attempted to access ${pathname}`);
       console.log(`   Required tiers: ${requiredTiers.join(', ')}`);
-      
+
       return NextResponse.json(
-        { 
+        {
           error: 'Tier upgrade required',
           message: `This feature requires ${requiredTiers[0]} tier or higher. Current tier: ${userTier}`,
           requiredTier: requiredTiers[0],
@@ -112,7 +130,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Get auth token (check both production and development cookie names)
-  const token = request.cookies.get('next-auth.session-token') || 
+  const token = request.cookies.get('next-auth.session-token') ||
                 request.cookies.get('__Secure-next-auth.session-token');
 
   // Redirect authenticated users from signin/signup to home
@@ -121,7 +139,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Allow access to public routes and their sub-paths
-  if (publicRoutes.includes(pathname) || 
+  if (publicRoutes.includes(pathname) ||
       pathname.startsWith('/docs') ||
       pathname.startsWith('/about') ||
       pathname.startsWith('/get-started') ||
@@ -134,7 +152,7 @@ export async function middleware(request: NextRequest) {
 
   // Check if route requires authentication
   const requiresAuth = protectedRoutes.some(route => pathname.startsWith(route));
-  
+
   if (requiresAuth) {
     if (!token) {
       // Redirect to signin if no token is present

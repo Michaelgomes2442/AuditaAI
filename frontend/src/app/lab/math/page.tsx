@@ -161,12 +161,12 @@ export default function MathCanonPage() {
                 <SheetContent className="bg-slate-900 border-orange-500/30 overflow-y-auto">
                   <SheetHeader>
                     <SheetTitle className="text-2xl font-mono text-orange-400">Math Canon Guide</SheetTitle>
-                    <SheetDescription className="text-slate-400 font-mono">CRIES formulas from Rosetta.html vΩ.8</SheetDescription>
+                    <SheetDescription className="text-slate-400 font-mono">CRIES formulas from Rosetta.html v0.8</SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-6 text-sm">
                     <div>
                       <h3 className="text-lg font-semibold text-white mb-2">What is Math Canon?</h3>
-                      <p className="text-slate-300 leading-relaxed">Math Canon vΩ.8 contains the canonical mathematical formulas for CRIES governance. These formulas (from Rosetta.html lines 444-445) define how sigma (σ), omega (Ω), and tri-track weights are calculated across the entire AuditaAI system.</p>
+                      <p className="text-slate-300 leading-relaxed">Math Canon v0.8 contains the canonical mathematical formulas for CRIES governance. These formulas (from Rosetta.html lines 444-445) define how sigma (σ), omega (ω), and tri-track weights are calculated across the entire AuditaAI system.</p>
                       <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg space-y-2">
                         <p className="text-xs text-blue-300 font-mono"><strong>Without Rosetta Boot (Baseline):</strong></p>
                         <p className="text-xs text-blue-200 font-mono ml-3">Track A = Track-A Analyzer monitoring LLM | Track B = Inactive | Track C = Core LLM</p>
@@ -179,8 +179,8 @@ export default function MathCanonPage() {
                       <h3 className="text-lg font-semibold text-white mb-2">Key Formulas</h3>
                       <ul className="list-disc list-inside space-y-1 text-slate-300 font-mono text-xs">
                         <li><strong>σ (Sigma):</strong> σ = √(C² + R² + I² + E² + S²) / √5</li>
-                        <li><strong>Ω (Omega):</strong> Ω = wA·σA + wB·σB + wC·σC</li>
-                        <li><strong>Δ Clarity:</strong> ΔΩ = Ωt - Ωt-1</li>
+                        <li><strong>ω (Omega):</strong> ω = wA·σA + wB·σB + wC·σC</li>
+                        <li><strong>Δ Clarity:</strong> Δω = ωt - ωt-1</li>
                         <li><strong>Weights:</strong> wA + wB + wC = 1.0</li>
                       </ul>
                     </div>
@@ -189,7 +189,7 @@ export default function MathCanonPage() {
                       <ol className="list-decimal list-inside space-y-2 text-slate-300">
                         <li><strong>Select Session:</strong> Choose which conversation to track<p className="ml-6 text-sm text-slate-400">Dropdown shows active LLM sessions with model name and timestamp</p></li>
                         <li><strong>Track Sigma:</strong> View C, R, I, E, S scores for all 3 tracks<p className="ml-6 text-sm text-slate-400">Track A = BEN Analyst (if Rosetta booted) or Track-A Analyzer, Track B = AuditaAI Governance (if booted), Track C = Core LLM (always active)</p></li>
-                        <li><strong>Composite Omega:</strong> Monitor weighted average across tracks<p className="ml-6 text-sm text-slate-400">Ω = wA·σA + wB·σB + wC·σC, where Ω &gt; 0.74 = passing governance threshold</p></li>
+                        <li><strong>Composite Omega:</strong> Monitor weighted average across tracks<p className="ml-6 text-sm text-slate-400">ω = wA·σA + wB·σB + wC·σC, where ω &gt; 0.74 = passing governance threshold</p></li>
                         <li><strong>Compare Modes:</strong> See improvement with Rosetta boot<p className="ml-6 text-sm text-slate-400">Unbooted: Basic monitoring | Booted: Full governance stack</p></li>
                         <li><strong>Auto-Refresh:</strong> Toggle live updates every 3 seconds<p className="ml-6 text-sm text-slate-400">Watch real-time changes as selected session executes</p></li>
                       </ol>
@@ -198,8 +198,8 @@ export default function MathCanonPage() {
                       <h3 className="text-lg font-semibold text-white mb-2">Business Value</h3>
                       <ul className="list-disc list-inside space-y-1 text-slate-300">
                         <li><strong>Canonical Source:</strong> Single mathematical truth for all governance calculations</li>
-                        <li><strong>Version Control:</strong> vΩ.8 ensures consistency across system updates</li>
-                        <li><strong>Auditable:</strong> Every Ω/σ value traceable to canonical formulas</li>
+                        <li><strong>Version Control:</strong> v0.8 ensures consistency across system updates</li>
+                        <li><strong>Auditable:</strong> Every ω/σ value traceable to canonical formulas</li>
                         <li><strong>Research Ready:</strong> Formula evolution tracked in Rosetta versions</li>
                       </ul>
                     </div>
@@ -216,7 +216,7 @@ export default function MathCanonPage() {
             <div>
               <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-3">
                 <Calculator className="h-4 w-4 text-orange-400" />
-                <span className="text-sm font-mono text-orange-400">MATH CANON vΩ.8</span>
+                <span className="text-sm font-mono text-orange-400">MATH CANON v0.8</span>
               </div>
               <h1 className="text-4xl font-mono font-bold bg-gradient-to-r from-white via-orange-200 to-yellow-200 bg-clip-text text-transparent">
                 Math Canon vΩ.8
@@ -298,7 +298,7 @@ export default function MathCanonPage() {
               </div>
               <h3 className="text-xl font-mono font-bold text-white mb-2">Enterprise Backend Required</h3>
               <p className="text-slate-300 font-mono text-sm mb-4">
-                Math Canon vΩ.8 visualization requires the AuditaAI backend server for real-time CRIES calculations and Tri-Track state.
+                Math Canon v0.8 visualization requires the AuditaAI backend server for real-time CRIES calculations and Tri-Track state.
               </p>
               <div className="text-xs text-slate-500 font-mono bg-slate-900/50 p-3 rounded border border-slate-600/50">
                 <div className="font-semibold text-orange-400 mb-1">For Enterprise Deployments:</div>
@@ -356,7 +356,7 @@ export default function MathCanonPage() {
                     <Omega className="w-6 h-6 text-cyan-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-mono font-bold text-cyan-400">Omega (Ω)</h2>
+                    <h2 className="text-xl font-mono font-bold text-cyan-400">Omega (ω)</h2>
                     <p className="text-xs text-slate-300 font-mono">Clarity/Alignment</p>
                   </div>
                 </div>
@@ -367,7 +367,7 @@ export default function MathCanonPage() {
                 
                 <div className="space-y-2 text-sm font-mono">
                   <div className="text-slate-300">
-                    <span className="text-cyan-400">Equation:</span> Ωᵗ₊₁ = Ωᵗ + η·Δclarity − γB·max(0, σᵗ − σ*)
+                    <span className="text-cyan-400">Equation:</span> ωᵗ₊₁ = ωᵗ + η·Δclarity − γB·max(0, σᵗ − σ*)
                   </div>
                   <div className="flex gap-4 mt-3">
                     <div>
@@ -555,24 +555,20 @@ export default function MathCanonPage() {
               <div className="flex items-start gap-3">
                 <Zap className="w-5 h-5 text-blue-400 mt-0.5" />
                 <div className="text-sm font-mono text-slate-300">
-                  <p className="text-blue-400 font-bold mb-2">MATH CANON vΩ.8</p>
+                  <p className="text-blue-400 font-bold mb-2">MATH CANON v0.8</p>
                   <p>
                     This page displays real-time Sigma and Omega calculations from the Rosetta Math Canon.
                     Sigma represents the weighted governance window across all three tracks (BEN Analyst, AuditaAI Governance, Core LLM).
                     Omega represents clarity/alignment, adjusted by learning rate and penalty factors.
                   </p>
                   <p className="mt-2">
-                    <span className="text-blue-400">Source:</span> Rosetta.html lines 444-445 • 
-                    <span className="text-blue-400 ml-2">Weights:</span> wA={tritrackState.weights.wA}, wB={tritrackState.weights.wB}, wC={tritrackState.weights.wC} • 
+                    <span className="text-blue-400">Source:</span> Rosetta.html lines 444-445 •
+                    <span className="text-blue-400 ml-2">Weights:</span> wA={tritrackState.weights.wA}, wB={tritrackState.weights.wB}, wC={tritrackState.weights.wC} •
                     <span className="text-blue-400 ml-2">Updated:</span> {new Date(tritrackState.timestamp).toLocaleTimeString()}
                   </p>
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-slate-400 font-mono">Failed to load Math Canon state</p>
           </div>
         )}
       </div>
