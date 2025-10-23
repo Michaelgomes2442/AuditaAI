@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prismadb";
 import { FileText, Shield, UserPlus } from "lucide-react";
 import BlockMetrics from "./metrics";
 
+export const dynamic = 'force-dynamic';
+
 async function getGovernanceStats() {
   const [userCount, adminCount] = await Promise.all([
     prisma.user.count(),
