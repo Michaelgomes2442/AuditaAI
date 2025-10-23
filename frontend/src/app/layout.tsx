@@ -6,8 +6,6 @@ import MobileNav from "@/components/MobileNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { UserProvider } from "@/contexts/UserContext";
 import UserProfileCorner from "@/components/UserProfileCorner";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,29 +27,24 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <AuthSessionProvider>
-              <UserProvider>
-                <UserProfileCorner />
-                <MobileNav />
-                {children}
-              </UserProvider>
-            </AuthSessionProvider>
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthSessionProvider>
+            <UserProvider>
+              <UserProfileCorner />
+              <MobileNav />
+              {children}
+            </UserProvider>
+          </AuthSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
