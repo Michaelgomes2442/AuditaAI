@@ -213,18 +213,67 @@ export default function PilotPage() {
       const res = await fetch('/api/pilot/ollama-status');
       if (res.ok) {
         const data = await res.json();
+
+        // If server indicates client-side check is needed, try Ollama directly from client
+        if (data.clientSideCheck) {
+          console.log('🔄 Server indicated client-side check needed, trying Ollama directly...');
+
+          try {
+            // Try to reach Ollama directly from client side
+            const ollamaResponse = await fetch('http://localhost:11434/api/tags', {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (ollamaResponse.ok) {
+              const ollamaData = await ollamaResponse.json();
+              const models = ollamaData.models || [];
+              const hasRequiredModel = models.some((m: any) => m.name === 'llama3.2:3b');
+
+              setOllamaStatus('ready');
+              setAvailableModels(models.map((m: any) => m.name));
+
+              console.log('✅ Ollama ready (client-side check):', models.length, 'models found');
+              console.log('📦 Available models:', models.map((m: any) => m.name));
+
+              // Auto-select available Ollama models for PAID users
+              if (!isFree && models.length > 0) {
+                const ollamaModels = models
+                  .map((m: any) => m.name)
+                  .filter((name: string) => !name.includes('gpt') && !name.includes('claude'));
+
+                if (ollamaModels.length > 0 && selectedModels.length === 0) {
+                  console.log('✨ Auto-selecting available Ollama models:', ollamaModels.slice(0, 2));
+                  setSelectedModels(ollamaModels.slice(0, 2)); // Auto-select first 2 models
+                }
+              }
+
+              return; // Success, exit early
+            }
+          } catch (clientError) {
+            console.log('❌ Client-side Ollama check failed:', clientError);
+          }
+
+          // If client-side check also fails, mark as missing
+          setOllamaStatus('missing');
+          setAvailableModels([]);
+          console.log('⚠️ Ollama not available - both server and client checks failed');
+          return;
+        }
+
+        // Handle server-side response normally
         setOllamaStatus(data.available ? 'ready' : 'missing');
-        
+
         if (data.available) {
           console.log('✓ Ollama ready:', data.message);
           console.log('📦 Available models:', data.models);
-          
+
           // Store available models
           setAvailableModels(data.models || []);
-          
+
           // Auto-select available Ollama models for PAID users
           if (!isFree && data.models && data.models.length > 0) {
-            const ollamaModels = data.models.filter((m: string) => 
+            const ollamaModels = data.models.filter((m: string) =>
               !m.includes('gpt') && !m.includes('claude')
             );
             if (ollamaModels.length > 0 && selectedModels.length === 0) {
