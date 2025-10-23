@@ -1,8 +1,8 @@
 {
   "version": 2,
   "env": {
-    "DATABASE_URL": "@database-url",
-    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "DATABASE_URL": "@DATABASE_URL",
+    "NEXTAUTH_SECRET": "@NEXTAUTH_SECRET",
     "NEXTAUTH_URL": "https://auditaai.vercel.app",
     "NEXT_PUBLIC_API_URL": "https://auditaai.vercel.app/api"
   },
