@@ -2,14 +2,16 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // For Vercel deployment, we can't check local Ollama from server-side
-    // Return a response that indicates client-side checking is needed
+    // For deployed sites (Vercel) the browser cannot reach a developer's local Ollama.
+    // Indicate that the client should not perform a direct localhost check and
+    // provide a server-side proxy path that the frontend can call instead.
     return NextResponse.json({
       available: false,
       models: [],
       hasRequiredModel: false,
-      message: 'Ollama status must be checked from client-side. Click "Recheck" to test local Ollama connection.',
-      clientSideCheck: true
+      message: 'Ollama status should be requested via server-side proxy. Using backend to query available models when possible.',
+      clientSideCheck: false,
+      serverProxy: '/api/ollama/tags'
     });
   } catch (error) {
     return NextResponse.json({

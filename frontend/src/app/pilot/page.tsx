@@ -218,82 +218,73 @@ export default function PilotPage() {
     setOllamaStatus('checking');
     try {
       const res = await fetch('/api/pilot/ollama-status');
-      if (res.ok) {
-        const data = await res.json();
+      if (!res.ok) {
+        setOllamaStatus('missing');
+        setAvailableModels([]);
+        return;
+      }
 
-        // If server indicates client-side check is needed, try Ollama directly from client
-        if (data.clientSideCheck) {
-          console.log('🔄 Server indicated client-side check needed, trying Ollama directly...');
+      const data = await res.json();
 
+      // If server suggests a client-side check, only attempt it when running locally.
+      if (data.clientSideCheck) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
           try {
-            // Try to reach Ollama directly from client side
-            const ollamaResponse = await fetch('http://localhost:11434/api/tags', {
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
-
+            const ollamaResponse = await fetch('http://localhost:11434/api/tags');
             if (ollamaResponse.ok) {
               const ollamaData = await ollamaResponse.json();
               const models = ollamaData.models || [];
-              const hasRequiredModel = models.some((m: any) => m.name === 'llama3.2:3b');
-
-              setOllamaStatus('ready');
+              setOllamaStatus(models.length > 0 ? 'ready' : 'missing');
               setAvailableModels(models.map((m: any) => m.name));
-
-              console.log('✅ Ollama ready (client-side check):', models.length, 'models found');
-              console.log('📦 Available models:', models.map((m: any) => m.name));
-
-              // Auto-select available Ollama models for PAID users
-              if (!isFree && models.length > 0) {
-                const ollamaModels = models
-                  .map((m: any) => m.name)
-                  .filter((name: string) => !name.includes('gpt') && !name.includes('claude'));
-
-                if (ollamaModels.length > 0 && selectedModels.length === 0) {
-                  console.log('✨ Auto-selecting available Ollama models:', ollamaModels.slice(0, 2));
-                  setSelectedModels(ollamaModels.slice(0, 2)); // Auto-select first 2 models
-                }
+              // Auto-select Ollama models for PAID users
+              if (!isFree && models.length > 0 && selectedModels.length === 0) {
+                const ollamaModels = models.map((m: any) => m.name).filter((name: string) => !name.includes('gpt') && !name.includes('claude'));
+                if (ollamaModels.length > 0) setSelectedModels(ollamaModels.slice(0, 2));
               }
-
-              return; // Success, exit early
+              return;
             }
           } catch (clientError) {
-            console.log('❌ Client-side Ollama check failed:', clientError);
-          }
-
-          // If client-side check also fails, mark as missing
-          setOllamaStatus('missing');
-          setAvailableModels([]);
-          console.log('⚠️ Ollama not available - both server and client checks failed');
-          return;
-        }
-
-        // Handle server-side response normally
-        setOllamaStatus(data.available ? 'ready' : 'missing');
-
-        if (data.available) {
-          console.log('✓ Ollama ready:', data.message);
-          console.log('📦 Available models:', data.models);
-
-          // Store available models
-          setAvailableModels(data.models || []);
-
-          // Auto-select available Ollama models for PAID users
-          if (!isFree && data.models && data.models.length > 0) {
-            const ollamaModels = data.models.filter((m: string) =>
-              !m.includes('gpt') && !m.includes('claude')
-            );
-            if (ollamaModels.length > 0 && selectedModels.length === 0) {
-              console.log('✨ Auto-selecting available Ollama models:', ollamaModels);
-              setSelectedModels(ollamaModels.slice(0, 2)); // Auto-select first 2 models
-            }
+            console.warn('Client-side Ollama check failed:', clientError);
           }
         } else {
-          console.log('⚠ Ollama not available:', data.message);
-          setAvailableModels([]);
+          console.log('Skipping client-side Ollama check: not running on localhost');
+        }
+
+        // If server provided a proxy path, use it (avoids browser -> localhost)
+        if (data.serverProxy) {
+          try {
+            const proxyRes = await fetch(data.serverProxy);
+            if (proxyRes.ok) {
+              const proxyData = await proxyRes.json();
+              const models = proxyData.models || [];
+              setOllamaStatus(models.length > 0 ? 'ready' : 'missing');
+              setAvailableModels(models.map((m: any) => m.name));
+              if (!isFree && models.length > 0 && selectedModels.length === 0) {
+                const ollamaModels = models.map((m: any) => m.name).filter((name: string) => !name.includes('gpt') && !name.includes('claude'));
+                if (ollamaModels.length > 0) setSelectedModels(ollamaModels.slice(0, 2));
+              }
+              return;
+            }
+          } catch (proxyErr) {
+            console.warn('Server proxy check failed:', proxyErr);
+          }
+        }
+
+        // If we reach here, both client-side and proxy checks failed
+        setOllamaStatus('missing');
+        setAvailableModels([]);
+        return;
+      }
+
+      // Normal server-side response handling
+      setOllamaStatus(data.available ? 'ready' : 'missing');
+      if (data.available) {
+        setAvailableModels(data.models || []);
+        if (!isFree && data.models && data.models.length > 0 && selectedModels.length === 0) {
+          const ollamaModels = data.models.filter((m: string) => !m.includes('gpt') && !m.includes('claude'));
+          if (ollamaModels.length > 0) setSelectedModels(ollamaModels.slice(0, 2));
         }
       } else {
-        setOllamaStatus('missing');
         setAvailableModels([]);
       }
     } catch (error) {
