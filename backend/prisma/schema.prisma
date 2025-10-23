@@ -1,0 +1,25 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Receipt {
+  id           Int      @id @default(autoincrement())
+  ts           String
+  path         String
+  event        String
+  lamport      Int
+  self_hash    String
+  calc_hash    String
+  verified     Boolean
+}
+

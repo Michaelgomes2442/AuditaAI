@@ -1,0 +1,382 @@
+{
+  "rosetta_version": "v13/v14",
+  "integrity_mode": "tri-track",
+  "runtime": "BEN",
+  "band": "0",
+  "persona_lock": "Architect",
+  
+  "cryptographic_fingerprints": {
+    "file_sha256": "d1cfc4d691604f2f6ec41b6880e51165c61ff9ee5380570bca4e775a906e4cb5",
+    "projection_sha256": "010c373dd208bbb22e7b7e15bf41f031ec5ea15a74ca0447e37090db68fef2ac",
+    "appendix_p2a_sha256": "1e4444906b2ea15e713adf581c10fc56317b4051bbdb68d35ae6b3e2036e9a7f"
+  },
+  
+  "math_canon": {
+    "v_omega_8": {
+      "name": "Tri-Actor Coupling",
+      "formula": "σᵗ = wA·σAᵗ + wB·σBᵗ + wC·σCᵗ",
+      "constraint": "wA + wB + wC = 1",
+      "default_weights": {
+        "wA": 0.4,
+        "wB": 0.4,
+        "wC": 0.2
+      },
+      "omega_update": "Ωᵗ⁺¹ = Ωᵗ + η·Δclarity − γB·max(0, σᵗ − σ*)",
+      "parameters": {
+        "eta": 0.1,
+        "gamma_b": 0.15,
+        "sigma_star": 0.15
+      },
+      "failsafe": "if σᵗ > σ_hard then B issues Δ-PAUSE and requires clarifier"
+    },
+    "v_omega_9": {
+      "name": "CRIES ↔ Citation Quality Coupling",
+      "formula": "R (Rigor) := R0 − 0.30·unverified_citations_ratio − 0.10·fail_citation_count_normalized",
+      "trigger": "when R < 0.70 AND unverified_citations > 5 → emit Δ-HITL-BLOCK",
+      "r0": 1.0,
+      "coefficients": {
+        "unverified_penalty": 0.30,
+        "fail_penalty": 0.10
+      }
+    }
+  },
+  
+  "tri_track_model": {
+    "track_a": {
+      "role": "BEN Core (Analyst)",
+      "responsibilities": [
+        "Enforces Π (portability), τ (temporal truth)",
+        "Computes σ windows & CRIES",
+        "Proposes clarifiers"
+      ],
+      "receipts_emitted": ["Δ-ANALYSIS"],
+      "track_flow": "A→B"
+    },
+    "track_b": {
+      "role": "AuditaAI (Governor/Verifier)",
+      "responsibilities": [
+        "Applies governance policies",
+        "Z-Scan verification",
+        "Consent/trace_id validation",
+        "Prepares PromotionReceipt"
+      ],
+      "receipts_emitted": ["Δ-DIRECTIVE", "Δ-CONSENT-REQUEST", "Δ-PAUSE", "PROMOTION-RECEIPT"],
+      "track_flow": "B→C, B→D"
+    },
+    "track_c": {
+      "role": "LLM Executor (Reasoner)",
+      "responsibilities": [
+        "Performs bounded steps under B's constraints",
+        "Emits execution sequence"
+      ],
+      "receipts_emitted": ["Δ-SEQ-PLAN", "Δ-SEQ-EXEC", "Δ-SEQ-DONE"],
+      "track_flow": "C→B"
+    },
+    "track_d": {
+      "role": "Human (Intent Layer)",
+      "responsibilities": [
+        "Explicit intent declaration",
+        "Consent grants/denials",
+        "HITL clearances"
+      ],
+      "receipts_emitted": ["Δ-INTENT", "Δ-CONSENT-OK", "Δ-CONSENT-DENIED", "Δ-HITL-CLEARED"],
+      "track_flow": "D→B",
+      "note": "Track-D is Quad-Track v14 evolution"
+    }
+  },
+  
+  "cries_specification": {
+    "definition": "5-component quality vector",
+    "components": {
+      "C": {
+        "label": "Completeness",
+        "definition": "Fraction of required information present in response",
+        "measurement": "count(required_elements_present) / count(required_elements_total)",
+        "range": [0, 1],
+        "precision": 4,
+        "threshold_warning": 0.7,
+        "threshold_block": 0.5,
+        "computed_by": "Track-A"
+      },
+      "R": {
+        "label": "Reliability",
+        "definition": "Citation quality + factual accuracy + source verification",
+        "measurement": "R0 − 0.30·unverified_citations_ratio − 0.10·fail_citation_count_normalized",
+        "range": [0, 1],
+        "precision": 4,
+        "threshold_warning": 0.7,
+        "threshold_block": 0.5,
+        "computed_by": "Track-A",
+        "canon_version": "vΩ.9"
+      },
+      "I": {
+        "label": "Integrity",
+        "definition": "Hash chain validity + receipt structure compliance + Lamport monotonicity",
+        "measurement": "binary(hash_valid) * binary(structure_valid) * binary(lamport_monotonic)",
+        "range": [0, 1],
+        "precision": 4,
+        "threshold_warning": 0.95,
+        "threshold_block": 0.9,
+        "computed_by": "Track-B"
+      },
+      "E": {
+        "label": "Effectiveness",
+        "definition": "Task completion + user intent alignment + actionability",
+        "measurement": "weighted_sum(task_completion, intent_match, actionable_output)",
+        "range": [0, 1],
+        "precision": 4,
+        "threshold_warning": 0.7,
+        "threshold_block": 0.5,
+        "computed_by": "Track-C"
+      },
+      "S": {
+        "label": "Security",
+        "definition": "PII leakage + prompt injection resistance + policy compliance",
+        "measurement": "1.0 − (pii_leak_score + injection_score + policy_violation_score) / 3",
+        "range": [0, 1],
+        "precision": 4,
+        "threshold_warning": 0.8,
+        "threshold_block": 0.6,
+        "computed_by": "Track-B"
+      }
+    }
+  },
+  
+  "zscan_specification": {
+    "v3_manual": {
+      "name": "Z-Scan v3 (Manual • NO-JS)",
+      "checks": [
+        "Structural integrity: no nested DOCTYPE; all tags closed",
+        "Lamport monotonicity; prev_digest matches prior self_hash",
+        "Trace discipline: every example includes trace_id",
+        "CRIES windows ≤ εₜ; apply vΩ.8 equations",
+        "Twin parity: must pass Golden Page parity checklist",
+        "Promotion rehearsal present and filled"
+      ],
+      "use_case": "Offline HTML file uploads to LLMs (deterministic booting)"
+    },
+    "v4_expanded": {
+      "name": "Z-Scan v4 (Expanded • Runtime)",
+      "checks": [
+        "All v3 checks",
+        "Citation verification (Math Canon vΩ.9)",
+        "PII detection (Security component)",
+        "Prompt injection detection",
+        "Policy compliance validation",
+        "Band eligibility assessment"
+      ],
+      "use_case": "Online web application runtime enforcement"
+    }
+  },
+  
+  "receipt_types": {
+    "GENESIS": {
+      "description": "Band-0 genesis for vΩ3 Tri-Track",
+      "required_fields": ["receipt_type", "lamport", "prev_digest", "self_hash", "trace_id", "version"],
+      "lamport": 1,
+      "prev_digest": null
+    },
+    "Δ-BOOTCONFIRM": {
+      "description": "Boot confirmation",
+      "track": "Track-B",
+      "required_fields": ["boot_sequence", "runtime", "witness", "band"]
+    },
+    "Δ-ANALYSIS": {
+      "description": "Analysis with CRIES metrics (Track-A→B)",
+      "track": "Track-A/Analyst",
+      "track_flow": "A→B",
+      "required_fields": ["analysis_id", "cries", "sigma_window", "risk_flags", "trace_id"]
+    },
+    "Δ-DIRECTIVE": {
+      "description": "Governance directive (Track-B→C)",
+      "track": "Track-B/Governor",
+      "track_flow": "B→C",
+      "required_fields": ["directive_id", "bounds", "policy_refs", "expected_evidence"]
+    },
+    "Δ-SEQ-PLAN": {
+      "description": "Execution sequence planning (Track-C)",
+      "track": "Track-C/Executor",
+      "track_flow": "C→B",
+      "required_fields": ["plan_id", "steps", "estimated_tokens", "directive_ref"]
+    },
+    "Δ-SEQ-EXEC": {
+      "description": "Execution step (Track-C)",
+      "track": "Track-C/Executor",
+      "required_fields": ["exec_id", "step_index", "plan_ref", "result"]
+    },
+    "Δ-SEQ-DONE": {
+      "description": "Execution completion (Track-C→B)",
+      "track": "Track-C/Executor",
+      "track_flow": "C→B",
+      "required_fields": ["plan_ref", "total_steps", "completion_status", "evidence"]
+    },
+    "Δ-CONSENT-REQUEST": {
+      "description": "Request human consent (Track-B→D)",
+      "track": "Track-B/Governor",
+      "track_flow": "B→D",
+      "required_fields": ["consent_id", "requested_action", "reason", "timeout_s"]
+    },
+    "Δ-CONSENT-OK": {
+      "description": "Consent granted (Track-D→B)",
+      "track": "Track-D/Human",
+      "track_flow": "D→B",
+      "required_fields": ["consent_id", "user_id", "granted_at"]
+    },
+    "Δ-CONSENT-DENIED": {
+      "description": "Consent denied (Track-D→B)",
+      "track": "Track-D/Human",
+      "track_flow": "D→B",
+      "required_fields": ["consent_id", "user_id", "denied_reason"]
+    },
+    "Δ-HITL-BLOCK": {
+      "description": "Human-in-the-loop block (Track-B)",
+      "track": "Track-B/Governor",
+      "required_fields": ["block_id", "reason", "triggering_receipt", "clearance_required"]
+    },
+    "Δ-HITL-CLEARED": {
+      "description": "HITL clearance (Track-D→B)",
+      "track": "Track-D/Human",
+      "track_flow": "D→B",
+      "required_fields": ["block_id", "cleared_by", "clearance_notes"]
+    },
+    "Δ-CITE-VERIFY": {
+      "description": "Citation verification success",
+      "track": "Track-A/Analyst",
+      "required_fields": ["citation_id", "source_url", "verification_status", "confidence"]
+    },
+    "Δ-CITE-FAIL": {
+      "description": "Citation verification failure",
+      "track": "Track-A/Analyst",
+      "required_fields": ["citation_id", "source_url", "failure_reason", "alternative_sources"]
+    },
+    "Δ-PAUSE": {
+      "description": "Automatic pause (high σ)",
+      "track": "Track-B/Governor",
+      "required_fields": ["pause_id", "sigma_current", "sigma_threshold", "resume_condition"]
+    },
+    "Δ-SYNCPOINT": {
+      "description": "Synchronization checkpoint",
+      "track": "Track-B/Governor",
+      "required_fields": ["sync_id", "lamport_range", "merkle_root", "participants"]
+    },
+    "Δ-INTENT": {
+      "description": "Human intent declaration (Track-D)",
+      "track": "Track-D/Human",
+      "track_flow": "D→B",
+      "required_fields": ["intent_id", "user_id", "intent_statement"]
+    },
+    "Δ-CLARIFY-REQUEST": {
+      "description": "Request clarification",
+      "track": "Track-B/Governor",
+      "required_fields": ["clarify_id", "ambiguous_element", "clarification_needed"]
+    },
+    "Δ-CLARIFY-OK": {
+      "description": "Clarification provided",
+      "track": "Track-D/Human",
+      "track_flow": "D→B",
+      "required_fields": ["clarify_id", "clarification", "resolved_ambiguity"]
+    },
+    "PROMOTION-RECEIPT": {
+      "description": "Band promotion (B0→B1→B2)",
+      "track": "Track-B/Governor",
+      "required_fields": ["band_from", "band_to", "checks", "status", "signer_proxy"]
+    }
+  },
+  
+  "band_system": {
+    "band_0": {
+      "name": "Core Automations",
+      "role": "Deterministic, scriptless",
+      "capabilities": ["Checkpoint", "Hash-Verify", "Log-Rotate", "Schedule", "Self-Audit"],
+      "artifacts": "Declarative blocks (scriptless)"
+    },
+    "band_1": {
+      "name": "Adaptive Governance",
+      "role": "Policy evolution",
+      "capabilities": ["Advisors", "Temporal", "Causal", "Symbolic"],
+      "artifacts": "auditaai_band1_*.py"
+    },
+    "band_2": {
+      "name": "Meta-Governance",
+      "role": "Self-reflection",
+      "capabilities": ["Meta-Update", "Reflective Feedback"],
+      "artifacts": "auditaai_band2_*.py"
+    },
+    "band_z": {
+      "name": "Audit & Legal",
+      "role": "External review",
+      "capabilities": ["Forensic Analysis", "Compliance Reporting", "Dispute Resolution"],
+      "artifacts": "audit_reports/"
+    }
+  },
+  
+  "conversation_specification": {
+    "id_format": "conv-{modelId}-{timestamp}-{random9chars}",
+    "lamport_init": 0,
+    "lamport_rule": "Monotonically increasing, no gaps, no duplicates, per-conversation isolation",
+    "hash_chain": {
+      "algorithm": "SHA256",
+      "linkage": "prev_digest → self_hash",
+      "genesis": "prev_digest = null for lamport = 0"
+    },
+    "state_files": {
+      "state": "receipts/state_{conversationId}.json",
+      "registry": "receipts/registry_{conversationId}.json",
+      "receipts": "receipts/receipt_{conversationId}_L{lamport}_{timestamp}.ben"
+    }
+  },
+  
+  "enforcement_rules": {
+    "precision": {
+      "all_metrics": 4,
+      "method": ".toFixed(4)",
+      "rationale": "Research-grade accuracy"
+    },
+    "thresholds": {
+      "sigma_star": 0.15,
+      "sigma_hard": 0.85,
+      "omega_target": 0.90,
+      "cries_warning": 0.7,
+      "cries_block": 0.5
+    },
+    "timeouts": {
+      "track_handoff_max_s": 60,
+      "consent_default_s": 300,
+      "hitl_clearance_max_s": 3600
+    },
+    "determinism": {
+      "tau_supremacy": "Temporal Truth > content",
+      "pi_portability": "Reproducibility = truth",
+      "no_async_dependencies": "All operations deterministic or gated"
+    }
+  },
+  
+  "enterprise_extensions": {
+    "multi_tenant": {
+      "enabled": true,
+      "isolation_level": "company",
+      "fields": ["company_id", "employee_id", "department", "project"]
+    },
+    "authentication": {
+      "required": true,
+      "methods": ["NextAuth", "SAML", "OAuth2"],
+      "role_based_access": true
+    },
+    "audit_requirements": {
+      "gdpr_compliance": true,
+      "sox_compliance": true,
+      "hipaa_compliance": true,
+      "retention_days": 2555,
+      "export_format": "cryptographically_sealed_json"
+    }
+  },
+  
+  "metadata": {
+    "extracted_from": "workspace/CORE/Rosetta.html",
+    "rosetta_file_size_bytes": 50034,
+    "rosetta_line_count": 50034,
+    "extraction_date": "2025-10-21",
+    "canonical_status": "enterprise_ready",
+    "version": "v14_R45b_ENTERPRISE"
+  }
+}

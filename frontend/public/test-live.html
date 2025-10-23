@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Live API</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e293b; color: #e2e8f0; }
+    button { padding: 10px 20px; margin: 10px; background: #3b82f6; color: white; border: none; cursor: pointer; }
+    button:hover { background: #2563eb; }
+    pre { background: #0f172a; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>Live Test API Debugger</h1>
+  
+  <div>
+    <button onclick="testLive()">Test Live Endpoint</button>
+    <button onclick="testComparison()">Test Comparison</button>
+    <button onclick="clearOutput()">Clear</button>
+  </div>
+
+  <div id="output"></div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function log(msg, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = msg;
+      output.appendChild(div);
+    }
+
+    function clearOutput() {
+      output.innerHTML = '';
+    }
+
+    async function testLive() {
+      clearOutput();
+      log('🔍 Testing live endpoint...');
+      
+      try {
+        log('Request URL: http://localhost:3001/api/pilot/run-test');
+        log('Headers: x-user-id: 22, x-user-tier: PAID');
+        log('Body: {"mode":"live","prompt":"What is 2+2?","models":["llama3.2:3b"],"useGovernance":true}');
+        
+        const res = await fetch('http://localhost:3001/api/pilot/run-test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-tier': 'PAID',
+            'x-user-id': '22'
+          },
+          body: JSON.stringify({
+            mode: 'live',
+            prompt: 'What is 2+2?',
+            models: ['llama3.2:3b'],
+            useGovernance: true
+          })
+        });
+        
+        log(`Response status: ${res.status} ${res.statusText}`, res.ok ? 'success' : 'error');
+        log(`Response ok: ${res.ok}`);
+        
+        const data = await res.json();
+        log('Response data:', 'success');
+        
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(data, null, 2);
+        output.appendChild(pre);
+        
+        if (data.results && data.results.length > 0) {
+          log(`✅ SUCCESS: Got ${data.results.length} result(s)`, 'success');
+          log(`First result Omega: ${data.results[0].cries.Omega}`, 'success');
+          log(`Response length: ${data.results[0].response.length} chars`, 'success');
+        }
+        
+      } catch (err) {
+        log(`❌ ERROR: ${err.message}`, 'error');
+        console.error(err);
+      }
+    }
+
+    async function testComparison() {
+      clearOutput();
+      log('🔍 Testing comparison (2 parallel requests)...');
+      
+      try {
+        const [baseRes, governedRes] = await Promise.all([
+          fetch('http://localhost:3001/api/pilot/run-test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-tier': 'PAID', 'x-user-id': '22' },
+            body: JSON.stringify({ mode: 'live', prompt: 'What is 2+2?', models: ['llama3.2:3b'], useGovernance: false })
+          }),
+          fetch('http://localhost:3001/api/pilot/run-test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-tier': 'PAID', 'x-user-id': '22' },
+            body: JSON.stringify({ mode: 'live', prompt: 'What is 2+2?', models: ['llama3.2:3b'], useGovernance: true })
+          })
+        ]);
+        
+        log(`Base response: ${baseRes.status}`, baseRes.ok ? 'success' : 'error');
+        log(`Governed response: ${governedRes.status}`, governedRes.ok ? 'success' : 'error');
+        
+        const baseData = await baseRes.json();
+        const governedData = await governedRes.json();
+        
+        log('Base (No Governance):', 'success');
+        log(`  Omega: ${baseData.results[0].cries.Omega}`);
+        log('Governed (With Rosetta):', 'success');
+        log(`  Omega: ${governedData.results[0].cries.Omega}`);
+        log(`  Improvement: +${((governedData.results[0].cries.Omega - baseData.results[0].cries.Omega) * 100).toFixed(1)}%`, 'success');
+        
+      } catch (err) {
+        log(`❌ ERROR: ${err.message}`, 'error');
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

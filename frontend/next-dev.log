@@ -1,0 +1,123 @@
+
+> frontend@0.1.0 dev /home/michaelgomes/AuditaAI/frontend
+> next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/michaelgomes/AuditaAI/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/michaelgomes/AuditaAI/frontend/pnpm-lock.yaml
+
+   ▲ Next.js 15.5.6
+   - Local:        http://localhost:3000
+   - Network:      http://10.255.255.254:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1683ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1469ms (611 modules)
+ GET / 200 in 1979ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 716ms (379 modules)
+ GET /favicon.ico 200 in 846ms
+ ✓ Compiled in 144ms (249 modules)
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/'
+}
+ ✓ Compiled in 159ms (249 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1894ms (954 modules)
+ GET / 500 in 2517ms
+ ⨯ ./src/app/api/auth/signup/route.ts:2:1
+Module not found: Can't resolve '../../../lib/prismadb'
+  1 | import { NextResponse } from "next/server";
+> 2 | import { prisma } from "../../../lib/prismadb";
+    | ^
+  3 | import bcrypt from "bcryptjs";
+  4 |
+  5 | export async function POST(req: Request) {
+
+https://nextjs.org/docs/messages/module-not-found
+ ○ Compiling /api/auth/[...nextauth] ...
+ ⨯ ./src/app/api/auth/signup/route.ts:2:1
+Module not found: Can't resolve '../../../lib/prismadb'
+  1 | import { NextResponse } from "next/server";
+> 2 | import { prisma } from "../../../lib/prismadb";
+    | ^
+  3 | import bcrypt from "bcryptjs";
+  4 |
+  5 | export async function POST(req: Request) {
+
+https://nextjs.org/docs/messages/module-not-found
+ GET / 500 in 4521ms
+ ⨯ ./src/app/api/auth/signup/route.ts:2:1
+Module not found: Can't resolve '../../../lib/prismadb'
+  1 | import { NextResponse } from "next/server";
+> 2 | import { prisma } from "../../../lib/prismadb";
+    | ^
+  3 | import bcrypt from "bcryptjs";
+  4 |
+  5 | export async function POST(req: Request) {
+
+https://nextjs.org/docs/messages/module-not-found
+ GET / 500 in 593ms
+ POST /api/auth/signup 500 in 5448ms
+ GET / 500 in 31ms
+ GET / 500 in 25ms
+ POST /api/auth/signup 500 in 24ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 500 in 534ms
+ ✓ Compiled /_not-found in 1883ms (1211 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 2083ms
+ GET / 200 in 219ms
+ ✓ Compiled in 1290ms (1225 modules)
+ GET /favicon.ico 200 in 340ms
+ GET /favicon.ico 200 in 10ms
+ POST /api/auth/signup 500 in 168ms
+ ✓ Compiled in 191ms (402 modules)
+ ✓ Compiled in 170ms (388 modules)
+ GET / 200 in 175ms
+ ✓ Compiled in 141ms (401 modules)
+ GET / 200 in 51ms
+ POST /api/auth/signup 500 in 17ms
+ ✓ Compiled in 152ms (401 modules)
+ GET / 200 in 36ms
+ ✓ Compiled in 133ms (401 modules)
+ GET / 200 in 48ms
+ ✓ Compiled in 190ms (401 modules)
+ GET / 200 in 79ms
+ ✓ Compiled in 1053ms (896 modules)
+ GET / 200 in 174ms
+ POST /api/auth/signup 200 in 155ms
+ POST /api/auth/signup 409 in 16ms
+ POST /api/auth/signup 200 in 95ms
+ ✓ Compiled /api/protected in 361ms (1112 modules)
+ GET /api/protected 401 in 542ms
+ ✓ Compiled /api/auth/[...nextauth] in 185ms (726 modules)
+ GET / 200 in 192ms
+ POST /api/auth/callback/credentials 302 in 795ms
+ GET /api/protected 401 in 28ms
+ ✓ Compiled in 394ms (1127 modules)
+ GET / 200 in 109ms
+ ✓ Compiled in 115ms (401 modules)
+ GET / 200 in 36ms
+ ✓ Compiled in 430ms (1127 modules)
+ GET / 200 in 74ms
+ POST /api/auth/signup 200 in 153ms
+ GET /api/protected 401 in 17ms
+ POST /api/auth/callback/credentials 302 in 66ms
+ GET /api/protected 200 in 82ms
+ ✓ Compiled in 109ms (401 modules)
+ GET / 200 in 40ms
+ ✓ Compiled in 999ms (885 modules)
+ GET / 200 in 184ms
+ GET / 200 in 228ms
+ GET / 200 in 53ms
+ ○ Compiling /signup ...
+ ✓ Compiled /signup in 936ms (882 modules)
+ GET /signup 200 in 1163ms

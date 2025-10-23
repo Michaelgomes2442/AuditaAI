@@ -1,0 +1,576 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3002 instead.
+   ▲ Next.js 15.5.6
+   - Local:        http://localhost:3002
+   - Network:      http://10.255.255.254:3002
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.8s
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 533ms (114 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 7.2s (1050 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET / 200 in 7998ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /api/auth/[...nextauth] in 2.2s (602 modules)
+ ✓ Compiled in 622ms (448 modules)
+ GET /favicon.ico 200 in 4124ms
+ GET / 200 in 144ms
+ GET /api/auth/session 200 in 3742ms
+ GET /api/auth/session 200 in 92ms
+ ○ Compiling /pilot ...
+ ✓ Compiled /pilot in 1024ms (1320 modules)
+ GET /pilot 200 in 1167ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 797ms (1327 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /api/pilot/ollama-status 404 in 1212ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /api/pilot/ollama-status 404 in 82ms
+ GET /api/user/profile 200 in 1323ms
+ GET /api/user/profile 200 in 49ms
+ GET /api/auth/session 200 in 139ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.1s (1325 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /api/user/profile 200 in 1904ms
+ GET /api/pilot/ollama-status 404 in 1870ms
+ GET /pilot 200 in 123ms
+ ✓ Compiled in 914ms (1339 modules)
+ GET /pilot 200 in 201ms
+ ✓ Compiled in 986ms (1338 modules)
+ GET /pilot 200 in 162ms
+ ✓ Compiled in 768ms (1068 modules)
+ GET /pilot 200 in 235ms
+ ✓ Compiled /api/auth/[...nextauth] in 212ms (856 modules)
+ GET /api/auth/session 200 in 610ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1660ms (1439 modules)
+ GET /profile 404 in 1368ms
+ ○ Compiling /profile ...
+ ✓ Compiled /profile in 1629ms (1336 modules)
+ GET /profile 200 in 1847ms
+ GET /profile 200 in 82ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /profile 200 in 401ms
+ ✓ Compiled /favicon.ico in 451ms (885 modules)
+ GET /favicon.ico 200 in 746ms
+ GET /api/auth/session 200 in 221ms
+ ✓ Compiled /api/user/profile in 377ms (887 modules)
+ GET /api/user/profile 200 in 696ms
+ ○ Compiling /dev ...
+ ✓ Compiled /dev in 1146ms (1377 modules)
+ GET /dev 200 in 1354ms
+ GET /api/user/profile 200 in 152ms
+ GET /api/user/profile 200 in 96ms
+ ○ Compiling /api/dev/users ...
+ ✓ Compiled /api/dev/users in 731ms (1379 modules)
+ GET /api/dev/users 200 in 978ms
+ GET /api/dev/users 200 in 125ms
+ ○ Compiling /api/dev/stats ...
+ ✓ Compiled /api/dev/stats in 513ms (1382 modules)
+ GET /api/dev/stats 200 in 790ms
+ GET /api/dev/stats 200 in 83ms
+ ○ Compiling /api/dev/rosettas ...
+ ✓ Compiled /api/dev/rosettas in 540ms (1384 modules)
+ GET /api/dev/rosettas 200 in 772ms
+ GET /api/dev/rosettas 200 in 60ms
+ GET /api/auth/session 200 in 156ms
+ ○ Compiling /demo ...
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled /live-demo in 83s (1435 modules)
+ GET /api/dev/users 200 in 78578ms
+ GET /lab 200 in 63888ms
+ GET /live-demo 200 in 63890ms
+ GET /profile 200 in 63893ms
+ GET /demo 200 in 63895ms
+ GET /demo 200 in 88165ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /api/dev/users 200 in 1525ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /profile 200 in 1789ms
+ GET /pilot 200 in 2317ms
+ GET /profile 200 in 2340ms
+ GET /favicon.ico 200 in 75ms
+ GET /favicon.ico 200 in 53ms
+ GET /favicon.ico 200 in 69ms
+ GET /favicon.ico 200 in 95ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 214ms
+ GET /favicon.ico 200 in 74ms
+ GET /favicon.ico 200 in 51ms
+ ○ Compiling /api/user/profile ...
+ ✓ Compiled /api/user/profile in 1269ms (1395 modules)
+ GET /api/auth/session 200 in 1659ms
+ GET /api/user/profile 200 in 1732ms
+ GET /api/pilot/ollama-status 200 in 1739ms
+ ✓ Compiled in 979ms (1409 modules)
+ GET /pilot 200 in 144ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 616ms (1400 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ POST /api/pilot/start-demo 404 in 898ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 903ms (1414 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ ⨯ ReferenceError: React is not defined
+    at PilotPage (src/app/pilot/page.tsx:76:3)
+  74 |   
+  75 |   // Log tier changes for debugging
+> 76 |   React.useEffect(() => {
+     |   ^
+  77 |     if (profile) {
+  78 |       console.log('👤 User tier updated:', { tier: profile.tier, role: profile.role, isFree, isPaid, isArchitect });
+  79 |     } {
+  digest: '3070232471'
+}
+ GET /pilot 500 in 889ms
+ GET /favicon.ico 200 in 123ms
+ GET /favicon.ico 200 in 77ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 713ms (1414 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ ⨯ ReferenceError: React is not defined
+    at PilotPage (src/app/pilot/page.tsx:76:3)
+  74 |   
+  75 |   // Log tier changes for debugging
+> 76 |   React.useEffect(() => {
+     |   ^
+  77 |     if (profile) {
+  78 |       console.log('👤 User tier updated:', { tier: profile.tier, role: profile.role, isFree, isPaid, isArchitect });
+  79 |     } {
+  digest: '3070232471'
+}
+ GET /pilot 500 in 864ms
+ GET /favicon.ico 200 in 55ms
+ GET /favicon.ico 200 in 75ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 968ms (1414 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 998ms
+ GET /favicon.ico 200 in 65ms
+ GET /favicon.ico 200 in 44ms
+ GET /api/user/profile 200 in 326ms
+ GET /api/auth/session 200 in 385ms
+ GET /api/pilot/ollama-status 200 in 446ms
+ ✓ Compiled in 600ms (1414 modules)
+ GET /pilot 200 in 106ms
+ GET /api/auth/session 200 in 255ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET / 200 in 274ms
+ GET /favicon.ico 200 in 56ms
+ GET /api/auth/session 200 in 77ms
+ ○ Compiling /get-started ...
+ ✓ Compiled /get-started in 2s (1413 modules)
+ GET /get-started 200 in 2190ms
+ ○ Compiling /model-comparison ...
+ ✓ Compiled /model-comparison in 6.5s (2467 modules)
+ GET /model-comparison 200 in 6692ms
+ ✓ Compiled in 764ms (1175 modules)
+ ✓ Compiled in 451ms (1175 modules)
+ GET /model-comparison 200 in 383ms
+ GET /model-comparison 200 in 68ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 507ms (1549 modules)
+ GET /api/auth/session 200 in 998ms
+ ✓ Compiled in 1075ms (2724 modules)
+ GET /model-comparison 200 in 189ms
+ ✓ Compiled in 971ms (2727 modules)
+ GET /model-comparison 200 in 150ms
+ ○ Compiling /api/user/profile ...
+ ✓ Compiled /api/user/profile in 734ms (1565 modules)
+ GET /api/user/profile 200 in 1038ms
+ GET /api/user/profile 200 in 52ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 687ms (2732 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ POST /api/chat/parallel-prompt 404 in 1069ms
+ GET /model-comparison 200 in 76ms
+ ✓ Compiled in 1090ms (2746 modules)
+ GET /model-comparison 200 in 150ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 3.2s (2747 modules)
+ GET /dashboard 200 in 3430ms
+ GET /dashboard 200 in 97ms
+ ✓ Compiled in 1500ms (2747 modules)
+ GET /dashboard 200 in 292ms
+ ○ Compiling /lab ...
+ ✓ Compiled /lab in 887ms (1577 modules)
+ GET /lab 200 in 1115ms
+ ○ Compiling /pilot ...
+ ✓ Compiled /pilot in 923ms (1585 modules)
+ GET /pilot 200 in 1144ms
+ GET /api/user/profile 200 in 308ms
+ ○ Compiling /api/pilot/ollama-status ...
+ ✓ Compiled / in 3.4s (2773 modules)
+ ✓ Compiled (2782 modules)
+ GET /api/user/profile 200 in 5046ms
+ GET /api/pilot/ollama-status 200 in 5163ms
+ GET / 200 in 2747ms
+ GET /api/pilot/ollama-status 200 in 309ms
+ GET / 200 in 498ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 1043ms (1597 modules)
+ GET /api/auth/session 200 in 2282ms
+ GET / 200 in 2307ms
+ GET /api/user/profile 200 in 138ms
+ ✓ Compiled in 2.3s (2771 modules)
+ GET / 200 in 232ms
+ ○ Compiling /rosetta-os ...
+ ✓ Compiled /rosetta-os in 1580ms (2777 modules)
+ GET /rosetta-os 200 in 1805ms
+ ✓ Compiled in 1678ms (2775 modules)
+ GET /rosetta-os 200 in 1104ms
+ GET /dashboard 200 in 171ms
+ GET / 200 in 145ms
+ GET / 200 in 92ms
+ ○ Compiling /live-demo ...
+ ✓ Compiled /live-demo in 1036ms (1300 modules)
+ GET /live-demo 200 in 1641ms
+ GET /live-demo 200 in 141ms
+ ✓ Compiled in 2.9s (1304 modules)
+ GET /live-demo 200 in 181ms
+ ○ Compiling /lab ...
+ ✓ Compiled /lab in 713ms (1307 modules)
+ GET /lab 200 in 968ms
+ GET /live-demo 200 in 116ms
+ ○ Compiling /pilot ...
+ ✓ Compiled /pilot in 592ms (1285 modules)
+ GET /pilot 200 in 805ms
+ ○ Compiling /api/pilot/ollama-status ...
+ ✓ Compiled /api/pilot/ollama-status in 796ms (1304 modules)
+ GET /api/pilot/ollama-status 200 in 1201ms
+ GET /api/pilot/ollama-status 200 in 90ms
+ ✓ Compiled in 3.5s (1967 modules)
+ GET /lab 200 in 319ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 1382ms (896 modules)
+ GET /api/auth/session 200 in 1930ms
+ ○ Compiling /api/user/profile ...
+ ✓ Compiled /api/user/profile in 609ms (910 modules)
+ GET /api/user/profile 200 in 1260ms
+ GET /pilot 200 in 305ms
+ ○ Compiling /api/pilot/ollama-status ...
+ ✓ Compiled /api/pilot/ollama-status in 652ms (912 modules)
+ GET /api/pilot/ollama-status 200 in 816ms
+ GET /api/pilot/ollama-status 200 in 71ms
+ ⨯ ./src/app/pilot/page.tsx
+Error:   [31mx[0m Unterminated string constant
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/pilot/page.tsx[0m:547:1]
+ [2m544[0m |                           <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
+ [2m545[0m |                         </div>
+ [2m546[0m |                         <div className="bg-slate-900/50 p-2 rounded">
+ [2m547[0m |                           <p className="text-xs text-slat
+     : [35;1m                                       ^^^^^^^^^^^^^^^^^^[0m
+     `----
+  [31mx[0m Unexpected eof
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/pilot/page.tsx[0m:547:1]
+ [2m544[0m |                           <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
+ [2m545[0m |                         </div>
+ [2m546[0m |                         <div className="bg-slate-900/50 p-2 rounded">
+ [2m547[0m |                           <p className="text-xs text-slat
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/pilot/page.tsx
+ ✓ Compiled in 2s (2102 modules)
+ GET /pilot 200 in 256ms
+ GET /api/pilot/ollama-status 200 in 109ms
+ GET /api/pilot/ollama-status 200 in 70ms
+ ✓ Compiled in 1381ms (1853 modules)
+ GET /pilot 200 in 345ms
+ ✓ Compiled in 1299ms (1853 modules)
+ ✓ Compiled /api/auth/[...nextauth] in 1ms (663 modules)
+ ✓ Compiled in 1ms (910 modules)
+ ✓ Compiled in 1ms (910 modules)
+ GET /api/pilot/ollama-status 200 in 2395ms
+ ✓ Compiled in 1ms (910 modules)
+ GET /pilot 200 in 2950ms
+ GET /api/auth/session 200 in 3568ms
+ ○ Compiling /api/user/profile ...
+ ✓ Compiled /api/user/profile in 789ms (912 modules)
+ GET /api/user/profile 200 in 1444ms
+ ✓ Compiled in 2.2s (2102 modules)
+ GET /pilot 200 in 202ms
+ ✓ Compiled in 1483ms (2102 modules)
+ GET /pilot 200 in 192ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 1453ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 4.7s (1834 modules)
+ ✓ Compiled in 1ms (661 modules)
+ GET /favicon.ico 200 in 4046ms
+ GET /pilot 200 in 1838ms
+ ✓ Compiled /api/auth/[...nextauth] in 374ms (665 modules)
+ ✓ Compiled (912 modules)
+ GET /api/auth/session 200 in 3229ms
+ GET /api/pilot/ollama-status 200 in 3362ms
+ GET /api/auth/session 200 in 152ms
+ ○ Compiling /api/user/profile ...
+ ✓ Compiled /api/user/profile in 1327ms (914 modules)
+ GET /api/user/profile 200 in 1892ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 712ms
+ GET /favicon.ico 200 in 113ms
+ GET /api/user/profile 200 in 200ms
+ GET /api/pilot/ollama-status 200 in 212ms
+ GET /api/auth/session 200 in 194ms
+ GET /api/auth/session 200 in 71ms
+ GET /api/user/profile 200 in 90ms
+ GET /api/user/profile 200 in 81ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 263ms
+ GET /api/pilot/ollama-status 200 in 227ms
+ GET /api/auth/session 200 in 200ms
+ GET /api/auth/session 200 in 142ms
+ GET /api/user/profile 200 in 109ms
+ GET /api/user/profile 200 in 88ms
+ GET /api/auth/session 200 in 230ms
+ GET /api/auth/session 200 in 164ms
+ GET /api/user/profile 200 in 110ms
+ GET /api/user/profile 200 in 117ms
+ GET /api/auth/session 200 in 158ms
+ GET /api/auth/session 200 in 194ms
+ GET /api/user/profile 200 in 169ms
+ GET /api/user/profile 200 in 134ms
+ GET /api/auth/session 200 in 317ms
+ GET /api/auth/session 200 in 206ms
+ GET /api/user/profile 200 in 139ms
+ GET /api/user/profile 200 in 112ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 329ms
+ GET /favicon.ico 200 in 102ms
+ GET /api/pilot/ollama-status 200 in 230ms
+ GET /api/auth/session 200 in 200ms
+ GET /api/user/profile 200 in 163ms
+ GET /api/auth/session 200 in 143ms
+ GET /api/user/profile 200 in 87ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 2504ms
+ GET /favicon.ico 200 in 108ms
+ GET /api/pilot/ollama-status 200 in 230ms
+ GET /api/auth/session 200 in 210ms
+ GET /api/auth/session 200 in 78ms
+ GET /api/auth/session 200 in 127ms
+ GET /api/user/profile 200 in 103ms
+ GET /api/user/profile 200 in 73ms
+ GET /api/user/profile 200 in 79ms
+ ✓ Compiled in 2.4s (1304 modules)
+ GET / 200 in 496ms
+ GET /pilot 200 in 548ms
+ GET /pilot 200 in 123ms
+ ✓ Compiled in 4.1s (2102 modules)
+ GET /pilot 200 in 409ms
+ GET / 200 in 405ms
+ GET /pilot 200 in 122ms
+ GET /api/auth/session 200 in 351ms
+ GET /api/auth/session 200 in 150ms
+ GET /api/user/profile 200 in 189ms
+ GET /api/auth/session 200 in 132ms
+ GET /api/user/profile 200 in 107ms
+ GET /api/user/profile 200 in 86ms
+ ⨯ ./src/app/pilot/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/pilot/page.tsx[0m:931:1]
+ [2m928[0m |             </div>
+ [2m929[0m |           </div>
+ [2m930[0m | 
+ [2m931[0m |           {/* Demo Prompts (Free users) */}
+     : [35;1m          ^[0m
+ [2m932[0m |           <div className="bg-slate-800/30 border border-white/5 rounded-lg p-6 hover:border-pink-500/30 transition-all">
+ [2m933[0m |             <div className="flex items-center justify-between mb-4">
+ [2m934[0m |               <h3 className="text-lg font-bold font-mono text-white">Demo Prompts</h3>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/pilot/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/app/pilot/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/pilot/page.tsx[0m:931:1]
+ [2m928[0m |             </div>
+ [2m929[0m |           </div>
+ [2m930[0m | 
+ [2m931[0m |           {/* Demo Prompts (Free users) */}
+     : [35;1m          ^[0m
+ [2m932[0m |           <div className="bg-slate-800/30 border border-white/5 rounded-lg p-6 hover:border-pink-500/30 transition-all">
+ [2m933[0m |             <div className="flex items-center justify-between mb-4">
+ [2m934[0m |               <h3 className="text-lg font-bold font-mono text-white">Demo Prompts</h3>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/pilot/page.tsx
+ GET /pilot 500 in 11537ms
+ GET / 500 in 11452ms
+ GET /pilot 500 in 219ms
+ GET / 500 in 234ms
+ GET /pilot 500 in 245ms
+ GET / 500 in 224ms
+ GET /pilot 500 in 152ms
+ GET /pilot 500 in 113ms
+ GET /pilot 500 in 234ms
+ GET /pilot 500 in 161ms
+ GET /pilot 500 in 176ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /pilot 500 in 691ms
+ ✓ Compiled /_error in 5.4s (2440 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /pilot 200 in 4240ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled (2426 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET / 200 in 951ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /pilot 200 in 862ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 1105ms
+ GET / 200 in 1126ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1775ms (1100 modules)
+ GET /favicon.ico 200 in 2005ms
+ GET /favicon.ico 200 in 109ms
+ GET /favicon.ico 200 in 104ms
+ GET /favicon.ico 200 in 105ms
+ GET /favicon.ico 200 in 144ms
+ ○ Compiling /api/pilot/ollama-status ...
+ ✓ Compiled /api/pilot/ollama-status in 1561ms (1102 modules)
+ GET /favicon.ico 200 in 2383ms
+ GET /api/auth/session 200 in 2832ms
+ GET /api/pilot/ollama-status 200 in 2903ms
+ GET /api/auth/session 200 in 303ms
+ GET /api/pilot/ollama-status 200 in 309ms
+ GET /api/user/profile 200 in 232ms
+ GET /api/auth/session 200 in 152ms
+ GET /api/user/profile 200 in 215ms
+ GET /api/auth/session 200 in 177ms
+ GET /api/user/profile 200 in 233ms
+ GET /api/auth/session 200 in 205ms
+ GET /api/user/profile 200 in 227ms
+ GET /api/auth/session 200 in 194ms
+ GET /api/user/profile 200 in 214ms
+ GET /api/auth/session 200 in 177ms
+ GET /api/user/profile 200 in 114ms
+ GET /api/user/profile 200 in 120ms
+ ✓ Compiled in 2.3s (2444 modules)
+ GET /pilot 200 in 781ms
+ GET / 200 in 799ms
+ GET /pilot 200 in 187ms
+ ✓ Compiled in 6.6s (2081 modules)
+ GET / 200 in 1442ms
+ GET /pilot 200 in 1573ms
+ GET /pilot 200 in 340ms
+ ⨯ ./src/app/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/page.tsx[0m:740:1]
+ [2m737[0m |           </div>
+ [2m738[0m |         </section>
+ [2m739[0m | 
+ [2m740[0m |         {/* Footer */}
+     : [35;1m        ^[0m
+ [2m741[0m |         <footer className="border-t border-white/10 py-12">
+ [2m742[0m |           <div className="container mx-auto px-8">
+ [2m743[0m |             <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/app/page.tsx
+Error:   [31mx[0m Expected '</', got '{'
+     ,-[[36;1;4m/home/michaelgomes/AuditaAI/frontend/src/app/page.tsx[0m:740:1]
+ [2m737[0m |           </div>
+ [2m738[0m |         </section>
+ [2m739[0m | 
+ [2m740[0m |         {/* Footer */}
+     : [35;1m        ^[0m
+ [2m741[0m |         <footer className="border-t border-white/10 py-12">
+ [2m742[0m |           <div className="container mx-auto px-8">
+ [2m743[0m |             <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/page.tsx
+ GET / 500 in 1948ms
+ GET /pilot 500 in 1947ms
+ GET /pilot 500 in 225ms
+ GET /pilot 500 in 202ms
+ GET /pilot 500 in 114ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled /_error in 6s (2174 modules)
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET / 200 in 1447ms
+ GET /pilot 200 in 10644ms
+ GET / 200 in 11573ms
+next-intl context not configured, using default locale
+next-intl context not configured, using default locale
+ GET /pilot 200 in 4324ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /api/auth/[...nextauth] in 3.9s (849 modules)
+ ✓ Compiled /api/pilot/ollama-status in 3ms (1098 modules)
+ ✓ Compiled in 1ms (1100 modules)
+ ✓ Compiled in 1ms (1100 modules)
+ GET /favicon.ico 200 in 9802ms
+ ✓ Compiled in 25ms (1100 modules)
+ POST /api/auth/_log 200 in 10905ms
+ GET /api/auth/session 200 in 9761ms
