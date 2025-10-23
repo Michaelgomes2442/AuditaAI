@@ -1,8 +1,8 @@
 {
   "version": 2,
   "env": {
-    "DATABASE_URL": "postgresql://neondb_owner:npg_L5wcVZMnA1xP@ep-curly-cell-adugikkr-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
-    "NEXTAUTH_SECRET": "b5Oq/EyRO79gDE/vbgGR7q4CnqdU7h/DLjR7VrdbwQw=",
+    "DATABASE_URL": "@database-url",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
     "NEXTAUTH_URL": "https://auditaai.vercel.app",
     "NEXT_PUBLIC_API_URL": "https://auditaai.vercel.app/api"
   },
