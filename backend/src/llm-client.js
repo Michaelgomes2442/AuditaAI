@@ -441,7 +441,7 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
       identity: { name: userName, role: userRole },
       managedGovernance,
       messageHistory: [
-        { role: 'user', content: rosettaContent },
+        { role: 'user', content: rosettaContext },
         { role: 'user', content: 'boot' },
         { role: 'assistant', content: bootResponse },
         { role: 'user', content: handshakeMessage },
