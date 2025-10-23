@@ -26,7 +26,13 @@ async function createFounderAccounts() {
     const tristanPassword = await bcrypt.hash('changeme', 10);
     const tristan = await prisma.user.upsert({
       where: { email: 'tristanbarbaste@gmail.com' },
-      update: {},
+      update: {
+        password: tristanPassword,
+        name: 'Tristan',
+        role: 'ADMIN',
+        tier: 'PAID',
+        status: 'ACTIVE'
+      },
       create: {
         email: 'tristanbarbaste@gmail.com',
         password: tristanPassword,
