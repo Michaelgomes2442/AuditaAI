@@ -20,6 +20,6 @@ export async function recordAudit(userId: number, action: string, details?: stri
   const lamport = state.lamport;
 
   return prisma.auditRecord.create({
-    data: { userId, action, details, lamport },
+    data: { userId, action, details, lamport, category: "SYSTEM" },
   });
 }
