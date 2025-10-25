@@ -3,7 +3,29 @@ import cors from "cors";
 import axios from "axios";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import { createRequire } from 'module';
+
+// Robustly load PrismaClient. In some local/workspace/pnpm layouts the
+// generated client may not resolve via the published `@prisma/client` entry
+// point, so try the standard package first and fall back to the generated
+// client inside `./node_modules/.prisma/client/default.js`.
+const requireCJS = createRequire(import.meta.url);
+let PrismaClient;
+try {
+  // Try the normal package entry
+  const pkg = requireCJS('@prisma/client');
+  PrismaClient = pkg.PrismaClient || (pkg.default && pkg.default.PrismaClient);
+} catch (err) {
+  try {
+    // Fallback: directly require the generated client file
+    const gen = requireCJS('./node_modules/.prisma/client/default.js');
+    PrismaClient = gen.PrismaClient || gen.PrismaClient;
+  } catch (err2) {
+    // Re-throw the original error with both causes attached for visibility
+    console.error('Failed to load @prisma/client and fallback generated client', err, err2);
+    throw err2;
+  }
+}
 import { createServer } from "http";
 import { setupWebSocket } from "./dist/websocket-loader.cjs";
 import { bootModelWithRosetta } from "./rosetta-boot.js";

@@ -4,9 +4,10 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "build": "echo 'Build complete'",
+  "start": "node server.js",
+  "dev": "node --watch server.js",
+  "build": "pnpm exec prisma generate && echo 'Build complete'",
+  "postinstall": "pnpm exec prisma generate",
     "test": "vitest run --dir src --reporter verbose"
   },
   "keywords": [],
