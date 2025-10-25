@@ -3133,7 +3133,16 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Account is not active' });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    // Guard bcrypt.compare to avoid runtime crashes if stored password is null
+    let validPassword = false;
+    try {
+      const storedPassword = user.password || '';
+      validPassword = await bcrypt.compare(password, storedPassword);
+    } catch (bcryptErr) {
+      console.error('bcrypt.compare failed during login:', bcryptErr && (bcryptErr.stack || bcryptErr.message) || String(bcryptErr));
+      // Treat as invalid credentials rather than crashing the function
+      validPassword = false;
+    }
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
