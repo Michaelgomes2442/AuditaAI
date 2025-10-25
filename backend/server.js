@@ -27,20 +27,65 @@ try {
   }
 }
 import { createServer } from "http";
-import { setupWebSocket } from "./dist/websocket-loader.cjs";
-import { bootModelWithRosetta } from "./rosetta-boot.js";
-import { computeCRIES, generateAnalysisReceipt } from "./src/track-a-analyzer.js";
-import {
-  callLLM,
-  callOllama,
-  callOllamaWithRosetta,
-  callGPT4WithRosetta,
-  callClaudeWithRosetta,
-  getRosettaGovernanceContext,
-  checkAPIAvailability,
-  clearBootSessions,
-  getBootSessionInfo
-} from "./src/llm-client.js";
+
+// Dynamically require potentially-missing local build artifacts. In a number
+// of build/deploy scenarios the `dist/` artifacts or local scripts may not be
+// present yet; load them defensively and provide no-op fallbacks so the server
+// can still start and surface meaningful runtime logs for debugging.
+let setupWebSocket = () => ({ io: null, notifyClients: async () => {} });
+let bootModelWithRosetta = async () => {};
+let computeCRIES = async () => ({});
+let generateAnalysisReceipt = async () => ({});
+let callLLM = async () => { throw new Error('llm client not available'); };
+let callOllama = async () => { throw new Error('ollama client not available'); };
+let callOllamaWithRosetta = async () => { throw new Error('ollama rosetta not available'); };
+let callGPT4WithRosetta = async () => { throw new Error('gpt4 rosetta not available'); };
+let callClaudeWithRosetta = async () => { throw new Error('claude rosetta not available'); };
+let getRosettaGovernanceContext = async () => ({});
+let checkAPIAvailability = async () => ({ ok: false });
+let clearBootSessions = async () => {};
+let getBootSessionInfo = async () => ({});
+
+try {
+  const ws = requireCJS('./dist/websocket-loader.cjs');
+  if (ws && typeof ws.setupWebSocket === 'function') setupWebSocket = ws.setupWebSocket;
+} catch (e) {
+  console.warn('Optional module ./dist/websocket-loader.cjs not available:', e.message);
+}
+
+try {
+  const rosetta = requireCJS('./rosetta-boot.js');
+  if (rosetta && typeof rosetta.bootModelWithRosetta === 'function') bootModelWithRosetta = rosetta.bootModelWithRosetta;
+} catch (e) {
+  console.warn('Optional module ./rosetta-boot.js not available:', e.message);
+}
+
+try {
+  const ta = requireCJS('./src/track-a-analyzer.js');
+  if (ta) {
+    computeCRIES = ta.computeCRIES || computeCRIES;
+    generateAnalysisReceipt = ta.generateAnalysisReceipt || generateAnalysisReceipt;
+  }
+} catch (e) {
+  console.warn('Optional module ./src/track-a-analyzer.js not available:', e.message);
+}
+
+try {
+  const llm = requireCJS('./src/llm-client.js');
+  if (llm) {
+    callLLM = llm.callLLM || callLLM;
+    callOllama = llm.callOllama || callOllama;
+    callOllamaWithRosetta = llm.callOllamaWithRosetta || callOllamaWithRosetta;
+    callGPT4WithRosetta = llm.callGPT4WithRosetta || callGPT4WithRosetta;
+    callClaudeWithRosetta = llm.callClaudeWithRosetta || callClaudeWithRosetta;
+    getRosettaGovernanceContext = llm.getRosettaGovernanceContext || getRosettaGovernanceContext;
+    checkAPIAvailability = llm.checkAPIAvailability || checkAPIAvailability;
+    clearBootSessions = llm.clearBootSessions || clearBootSessions;
+    getBootSessionInfo = llm.getBootSessionInfo || getBootSessionInfo;
+  }
+} catch (e) {
+  console.warn('Optional module ./src/llm-client.js not available:', e.message);
+}
 
 const app = express();
 const server = createServer(app);
