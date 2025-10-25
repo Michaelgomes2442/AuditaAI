@@ -13,7 +13,13 @@ export const authOptions = {
 
         try {
           // Call backend API for authentication
-          const backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+          let backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+          // If a Vercel protection bypass token is provided in env, append it
+          // to the backend URL so server-side calls can bypass deployment protection.
+          const bypassToken = process.env.VERCEL_BYPASS_TOKEN || process.env.BYPASS_TOKEN || '';
+          if (bypassToken && !backendUrl.includes('localhost')) {
+            backendUrl = `${backendUrl}${backendUrl.includes('?') ? '&' : '?'}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+          }
           const response = await fetch(`${backendUrl}/api/auth/login`, {
             method: 'POST',
             headers: {
