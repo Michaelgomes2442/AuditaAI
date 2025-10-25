@@ -1,3 +1,29 @@
+import express from "express";
+import cors from "cors";
+import axios from "axios";
+import crypto from "crypto";
+import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
+import { createServer } from "http";
+import { setupWebSocket } from "./dist/websocket-loader.cjs";
+import { bootModelWithRosetta } from "./rosetta-boot.js";
+import { computeCRIES, generateAnalysisReceipt } from "./src/track-a-analyzer.js";
+import {
+  callLLM,
+  callOllama,
+  callOllamaWithRosetta,
+  callGPT4WithRosetta,
+  callClaudeWithRosetta,
+  getRosettaGovernanceContext,
+  checkAPIAvailability,
+  clearBootSessions,
+  getBootSessionInfo
+} from "./src/llm-client.js";
+
+const app = express();
+const server = createServer(app);
+const prisma = new PrismaClient();
+
 // ==================== PERFORMANCE & SCALABILITY ====================
 // Load testing endpoint (for automated performance checks)
 app.post('/load-test', async (req, res) => {
@@ -117,26 +143,7 @@ import cors from "cors";
 import axios from "axios";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-import { createServer } from "http";
-import { setupWebSocket } from "./dist/websocket-loader.cjs";
-import { bootModelWithRosetta } from "./rosetta-boot.js";
-import { computeCRIES, generateAnalysisReceipt } from "./src/track-a-analyzer.js";
-import {
-  callLLM,
-  callOllama,
-  callOllamaWithRosetta,
-  callGPT4WithRosetta,
-  callClaudeWithRosetta,
-  getRosettaGovernanceContext,
-  checkAPIAvailability,
-  clearBootSessions,
-  getBootSessionInfo
-} from "./src/llm-client.js";
-
-const app = express();
-const server = createServer(app);
-const prisma = new PrismaClient();
+/* imports and app/prisma/server initialization moved to top of file to avoid hoisting/init order issues */
 
 // Set up WebSocket and pass Prisma client
 const { io, notifyClients } = setupWebSocket(server, prisma);
