@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://backend-git-main-michael-gomes-projects.vercel.app/api/$1"
+    }
+  ]
+}
