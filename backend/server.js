@@ -138,12 +138,7 @@ app.use((err, req, res, next) => {
   }
   res.status(500).json({ error: 'Internal server error', details: err.message });
 });
-import express from "express";
-import cors from "cors";
-import axios from "axios";
-import crypto from "crypto";
-import bcrypt from "bcryptjs";
-/* imports and app/prisma/server initialization moved to top of file to avoid hoisting/init order issues */
+/* imports moved to top of file */
 
 // Set up WebSocket and pass Prisma client
 const { io, notifyClients } = setupWebSocket(server, prisma);
