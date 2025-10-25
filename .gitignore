@@ -1,3 +1,28 @@
+node_modules/
+.pnp/
+.pnp.js
+.next/
+.env
+.env.local
+.env.*.local
+dist/
+build/
+coverage/
+.DS_Store
+.vscode/
+*.log
+
+# Playwright / test artifacts
+frontend/playwright-report/
+frontend/test-results/
+frontend/playwright-report/data/
+
+# Prisma generated native assets
+frontend/src/generated/prisma/
+
+# Local editors
+*.sublime-workspace
+*.sublime-project
 # Logs
 logs
 *.log
