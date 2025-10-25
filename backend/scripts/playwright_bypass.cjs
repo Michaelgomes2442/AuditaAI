@@ -22,6 +22,13 @@ async function run() {
     return `${BASE_URL}${path}`;
   };
 
+  // Append bypass query params to a url when a bypass token is present.
+  const urlForWithBypass = (path) => {
+    const base = urlFor(path);
+    if (!BYPASS_TOKEN) return base;
+    return `${base}${base.includes('?') ? '&' : '?'}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${BYPASS_TOKEN}`;
+  };
+
   const bypassUrl = `${BASE_URL}/?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${BYPASS_TOKEN}`;
   console.log('BYPASS URL:', bypassUrl);
 
@@ -29,14 +36,20 @@ async function run() {
     let resp = await page.goto(bypassUrl, { waitUntil: 'networkidle', timeout: 45000 });
     console.log('Initial navigation status:', resp && resp.status());
 
-    // If the bypass didn't immediately authenticate, try the vercel SSO API
-    // endpoint directly with the bypass token. This follows the documented
-    // redirect flow that sets cookies on the vercel.com domain.
-    if (resp && resp.status() === 401 && BYPASS_TOKEN) {
+    // If a bypass token is present, always attempt the vercel SSO API
+    // endpoint to ensure cookies are set on the vercel.com domain. Some
+    // deployments return 200 on the initial page but still require the
+    // SSO cookie to access protected API routes (login). Calling the SSO
+    // endpoint proactively avoids relying on a 401 trigger.
+    if (BYPASS_TOKEN) {
       const ssoUrl = `https://vercel.com/sso-api?url=${encodeURIComponent(urlFor('/health'))}&x-vercel-protection-bypass=${BYPASS_TOKEN}`;
-      console.log('Navigating to vercel SSO API:', ssoUrl);
-      resp = await page.goto(ssoUrl, { waitUntil: 'networkidle', timeout: 45000 });
-      console.log('SSO navigation status:', resp && resp.status());
+      console.log('Navigating to vercel SSO API (force):', ssoUrl);
+      try {
+        resp = await page.goto(ssoUrl, { waitUntil: 'networkidle', timeout: 45000 });
+        console.log('SSO navigation status:', resp && resp.status());
+      } catch (e) {
+        console.warn('SSO navigation failed:', e && (e.stack || e.message) || String(e));
+      }
     }
 
     const cookies = await context.cookies();
@@ -51,7 +64,7 @@ async function run() {
     const testEmail = `e2e+playwright+${Date.now()}@example.com`;
     const testPassword = 'Test1234!';
     const signupPayload = { email: testEmail, password: testPassword, confirmPassword: testPassword, name: 'Playwright E2E' };
-    const signupRes = await page.request.post(urlFor('/api/auth/signup'), {
+    const signupRes = await page.request.post(urlForWithBypass('/api/auth/signup'), {
       data: JSON.stringify(signupPayload),
       headers: { 'Content-Type': 'application/json' }
     });
@@ -63,7 +76,7 @@ async function run() {
     if (signupRes.status() === 201 || signupRes.status() === 200) {
       // Perform login via Playwright API request (server-side) for local testing
       try {
-        const loginRes = await page.request.post(urlFor('/api/auth/login'), {
+        const loginRes = await page.request.post(urlForWithBypass('/api/auth/login'), {
           data: JSON.stringify({ email: testEmail, password: testPassword }),
           headers: { 'Content-Type': 'application/json' }
         });
@@ -86,8 +99,8 @@ async function run() {
       const uiPassword = 'Test1234!';
       console.log('Starting UI signup flow for:', uiEmail);
 
-      // Navigate to signup page (browser context has bypass cookie)
-      await page.goto(urlFor('/signup'), { waitUntil: 'networkidle', timeout: 45000 });
+  // Navigate to signup page (browser context has bypass cookie)
+  await page.goto(urlForWithBypass('/signup'), { waitUntil: 'networkidle', timeout: 45000 });
 
       // Fill form fields by id
       await page.fill('#name', 'Playwright UI');
@@ -107,7 +120,7 @@ async function run() {
 
       // Now perform UI signin
       console.log('Starting UI signin for:', uiEmail);
-      await page.goto(urlFor('/signin'), { waitUntil: 'networkidle', timeout: 45000 });
+  await page.goto(urlForWithBypass('/signin'), { waitUntil: 'networkidle', timeout: 45000 });
       await page.fill('#email', uiEmail);
       await page.fill('#password', uiPassword);
 

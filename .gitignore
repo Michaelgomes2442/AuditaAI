@@ -180,3 +180,4 @@ vite.config.ts.timestamp-*
 workspace/CORE/Rosetta.html
 *.tar.gz
 *.backup
+.vercel

@@ -1,24 +1,21 @@
-[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
-node:events:502
-      throw er; // Unhandled 'error' event
-      ^
+nohup: ignoring input
 
-Error: listen EADDRINUSE: address already in use :::3001
-    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
-    at listenInCluster (node:net:1965:12)
-    at Server.listen (node:net:2067:7)
-    at file:///home/michaelgomes/AuditaAI/backend/server.js:2501:8
-    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
-    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
-Emitted 'error' event on Server instance at:
-    at emitErrorNT (node:net:1944:8)
-    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '::',
-  port: 3001
-}
+> backend@1.0.0 start /home/michaelgomes/AuditaAI/backend
+> node server.js
 
-Node.js v20.19.5
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+DATABASE_URL is not set — using in-memory fallback for local dev/testing
+Server running on port 3001
+
+🔗 Connecting to:
+   BEN Governance: http://127.0.0.1:8000
+   Receipts: /home/michaelgomes/AuditaAI/receipts
+
+📊 Real data flow:
+   1. Frontend calls /api/live-demo/parallel-prompt
+   2. Backend calls REAL LLMs via llm-client.js
+   3. Track-A analyzer computes REAL CRIES from LLM output
+   4. Lamport receipts generated for each analysis
+   5. Compare: Standard LLM vs Rosetta-governed LLM
+
+ ELIFECYCLE  Command failed.
