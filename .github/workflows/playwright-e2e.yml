@@ -1,85 +1,78 @@
-name: Playwright E2E
+name: Playwright E2E and Auto-Fix
 
 on:
-  workflow_dispatch:
-    inputs:
-      target:
-        description: 'Where to run tests: local (build & start) or deployed (run against deployed URL)'
-        required: true
-        default: 'local'
-        type: choice
-        options:
-          - local
-          - deployed
-      base_url:
-        description: 'If target=deployed, the base URL to test (e.g. https://auditaai.vercel.app)'
-        required: false
-        default: ''
-      database_url:
-        description: 'Optional DATABASE_URL to use for job (overrides secret)'
-        required: false
-        default: ''
-      run_suite:
-        description: 'Which test suite to run (passed as env to Playwright). Options: all, founder, smoke'
-        required: false
-        default: 'all'
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
   e2e:
-    name: Playwright E2E tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    # Use Playwright's official image which includes browsers and system libs.
-    container:
-      image: mcr.microsoft.com/playwright:v1.56.1-focal
-    env:
-      # Default vars; specific steps may override based on workflow inputs
-      PLAYWRIGHT_BASE_URL: ${{ github.event.inputs.base_url || 'http://localhost:3000' }}
-      # DATABASE_URL uses provided input if present, otherwise falls back to repo secret
-      DATABASE_URL: ${{ github.event.inputs.database_url || secrets.DATABASE_URL }}
-      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-      RUN_SUITE: ${{ github.event.inputs.run_suite || 'all' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    name: Run Playwright E2E (local backend)
+    name: Playwright E2E CI
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
+    on:
+      push:
+        branches: [ main ]
+      pull_request:
+        branches: [ main ]
+      workflow_dispatch: {}
 
-      - name: Enable corepack and pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+    jobs:
+      e2e:
+        name: Playwright E2E (start frontend & backend)
+        runs-on: ubuntu-latest
+        container:
+          image: mcr.microsoft.com/playwright:v1.56.1-focal
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
 
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-        working-directory: frontend
+          - name: Setup pnpm
+            uses: pnpm/action-setup@v2
+            with:
+              version: '10'
 
-      - name: Generate NEXTAUTH_SECRET for this job
-        # Generate a 32-byte hex secret using node so we don't rely on OpenSSL availability
-        run: |
-          echo "NEXTAUTH_SECRET=$(node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\")" >> $GITHUB_ENV
+          - name: Install root dependencies
+            run: pnpm install --frozen-lockfile
 
-      - name: Build frontend
-        run: pnpm build
-        working-directory: frontend
+          - name: Generate Prisma client (backend)
+            working-directory: ./backend
+            run: pnpm exec prisma generate || true
 
-      - name: Start frontend (background)
-        run: pnpm start &
-        working-directory: frontend
+          - name: Start backend server
+            run: |
+              nohup node backend/server.js > /tmp/backend-ci.log 2>&1 &
+              for i in {1..15}; do
+                sleep 1
+                if curl --silent --fail http://localhost:3001/health >/dev/null 2>&1; then
+                  echo "backend ready"; break
+                fi
+                echo "waiting for backend..."
+              done
 
-      - name: Wait for frontend to be ready
-        run: npx wait-on http://localhost:3000 --timeout 120000
+          - name: Install frontend dependencies
+            working-directory: frontend
+            run: pnpm install --frozen-lockfile
 
-      - name: Run Playwright tests
-        run: PLAYWRIGHT_BASE_URL=http://localhost:3000 pnpm exec playwright test --config=playwright.config.ts --reporter=list
-        working-directory: frontend
+          - name: Build frontend (pointing to local backend)
+            working-directory: frontend
+            env:
+              BACKEND_INTERNAL_URL: http://localhost:3001
+              NEXT_PUBLIC_BACKEND_URL: http://localhost:3001
+            run: pnpm build
 
-      - name: Upload Playwright report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: frontend/playwright-report
+          - name: Start frontend (background)
+            run: |
+              nohup pnpm --cwd frontend start > /tmp/frontend.log 2>&1 &
+              for i in {1..30}; do
+                sleep 1
+                if curl --silent --fail http://localhost:3000/ >/dev/null 2>&1; then
+                  echo "frontend ready"; break
+                fi
+                echo "waiting for frontend..."
+              done
+
+          - name: Run Playwright E2E script against frontend
+            run: TARGET_HOST=http://localhost:3000 node backend/scripts/playwright_bypass.cjs

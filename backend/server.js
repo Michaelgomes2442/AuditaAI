@@ -119,21 +119,36 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL === "") {
   console.warn('DATABASE_URL is not set — using in-memory fallback for local dev/testing');
   // Minimal in-memory fallback implementing the bits used by the signup/login flows.
   const fakeId = () => Math.floor(Date.now() / 1000);
+  // In-memory users store for local development so signup/login can be tested
+  const __inMemoryUsers = [];
   prisma = {
     user: {
       findUnique: async ({ where }) => {
-        // no persisted users in fallback
-        return null;
+        if (!where || !where.email) return null;
+        return __inMemoryUsers.find(u => u.email === where.email) || null;
       },
       create: async ({ data, select }) => {
-        // return a minimal user matching the Prisma select used in signup
-        return {
+        const user = {
           id: fakeId(),
           email: data.email,
+          password: data.password || null,
           name: data.name || null,
           role: data.role || 'USER',
-          tier: data.tier || 'FREE'
+          tier: data.tier || 'FREE',
+          status: data.status || 'ACTIVE',
+          createdAt: new Date(),
+          updatedAt: new Date()
         };
+        __inMemoryUsers.push(user);
+        // Respect `select` shape if present - return object containing selected fields
+        if (select && typeof select === 'object') {
+          const out = {};
+          for (const k of Object.keys(select)) {
+            if (k in user) out[k] = user[k];
+          }
+          return out;
+        }
+        return user;
       }
     },
     auditRecord: {
