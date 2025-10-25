@@ -1,0 +1,64 @@
+name: Vercel E2E (Playwright bypass)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  vercel-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Enable corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.0.0 --activate
+
+      - name: Install dependencies (workspace)
+        run: pnpm install --frozen-lockfile
+
+      - name: Pull Vercel env (optional)
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
+        run: |
+          echo "Attempting to pull Vercel env into .vercel.env (best-effort)."
+          npx vercel env pull .vercel.env --token "${{ secrets.VERCEL_TOKEN }}" --environment=preview --yes || true
+
+      - name: Show .vercel.env (masked)
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
+        run: |
+          echo "Contents of .vercel.env (first 50 lines)"
+          sed -n '1,50p' .vercel.env || true
+
+      - name: Run diagnostics (health / signup / login)
+        env:
+          TARGET_HOST: auditaai.vercel.app
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+        run: |
+          chmod +x scripts/diagnose_backend.sh
+          bash scripts/diagnose_backend.sh
+
+      - name: Run Playwright bypass E2E
+        env:
+          TARGET_HOST: auditaai.vercel.app
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+        run: |
+          chmod +x scripts/run_e2e_deploy.sh
+          bash scripts/run_e2e_deploy.sh
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-e2e-outputs
+          path: |
+            scripts/_outputs/**
+            playwright-report/**

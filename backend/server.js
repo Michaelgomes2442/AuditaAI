@@ -3112,18 +3112,35 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        password: true,
-        role: true,
-        tier: true,
-        status: true
-      }
-    });
+    // Defensive: ensure prisma is available and has the expected API
+    if (!prisma || !prisma.user || typeof prisma.user.findUnique !== 'function') {
+      const msg = 'Prisma client unavailable at login time';
+      console.error(msg);
+      const debugEnabled = String(process.env.DEBUG_LOGIN || '').toLowerCase() === 'true';
+      if (debugEnabled) return res.status(500).json({ error: 'Internal server error', debug: { message: msg } });
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { email },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          password: true,
+          role: true,
+          tier: true,
+          status: true
+        }
+      });
+    } catch (dbErr) {
+      console.error('Prisma query failed during login:', dbErr && (dbErr.stack || dbErr.message) || String(dbErr));
+      const debugEnabled = String(process.env.DEBUG_LOGIN || '').toLowerCase() === 'true';
+      if (debugEnabled) return res.status(500).json({ error: 'Internal server error', debug: { message: 'Prisma query failed', stack: (dbErr && (dbErr.stack || dbErr.message)) || String(dbErr) } });
+      return res.status(500).json({ error: 'Internal server error' });
+    }
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -3136,8 +3153,13 @@ app.post('/api/auth/login', async (req, res) => {
     // Guard bcrypt.compare to avoid runtime crashes if stored password is null
     let validPassword = false;
     try {
-      const storedPassword = user.password || '';
-      validPassword = await bcrypt.compare(password, storedPassword);
+      const storedPassword = typeof user.password === 'string' ? user.password : '';
+      // Extra defensive check: if storedPassword looks like a sentinel (null/empty), skip compare
+      if (!storedPassword) {
+        validPassword = false;
+      } else {
+        validPassword = await bcrypt.compare(password, storedPassword);
+      }
     } catch (bcryptErr) {
       console.error('bcrypt.compare failed during login:', bcryptErr && (bcryptErr.stack || bcryptErr.message) || String(bcryptErr));
       // Treat as invalid credentials rather than crashing the function
@@ -3156,6 +3178,7 @@ app.post('/api/auth/login', async (req, res) => {
       tier: user.tier
     });
   } catch (error) {
+    // Enhanced error handling: always log full stack and provide debug payload when enabled
     // Log full stack for diagnostics. In production this may be noisy; the
     // presence of `DEBUG_LOGIN` env var will also surface a truncated stack
     // in the HTTP response to help automated tests capture the error quickly.
@@ -3170,7 +3193,9 @@ app.post('/api/auth/login', async (req, res) => {
     if (debugEnabled) {
       // Return a limited debug payload so test runner can capture the stack.
       const stack = (error && (error.stack || error.message)) || String(error);
-      return res.status(500).json({ error: 'Internal server error', debug: { message: error && error.message, stack: stack.slice(0, 4000) } });
+      // Also include a short hint if Prisma was undefined
+      const prismaHint = (!prisma || !prisma.user) ? 'prisma_unavailable' : 'prisma_ok';
+      return res.status(500).json({ error: 'Internal server error', debug: { message: error && error.message, prisma: prismaHint, stack: stack.slice(0, 4000) } });
     }
 
     res.status(500).json({ error: 'Internal server error' });
