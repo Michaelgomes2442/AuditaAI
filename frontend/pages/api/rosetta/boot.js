@@ -1,3 +1,16 @@
+const { calculateCRIES } = require('../../../../frontend/lib/rosetta-boot');
+
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const { text } = req.body || {};
+    const result = calculateCRIES({ text });
+    return res.status(200).json({ ok: true, result });
+  } catch (err) {
+    console.error('rosetta/boot error', err);
+    return res.status(500).json({ ok: false, error: String(err) });
+  }
+};
 const path = require('path');
 const { applyRosettaBoot } = require(path.join('../../../lib/rosetta-boot'));
 

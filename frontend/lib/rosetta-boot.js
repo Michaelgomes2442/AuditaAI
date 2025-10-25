@@ -1,3 +1,45 @@
+// Lightweight Rosetta helper for serverless environments
+// Exports a simple calculateCRIES function used by demo endpoints.
+function clamp(n) {
+  return Math.max(0, Math.min(1, n));
+}
+
+function calculateCRIES({ text = '' } = {}) {
+  // Simple heuristics: length, punctuation, token-like estimates
+  const len = (typeof text === 'string') ? text.trim().length : 0;
+  const words = len ? text.trim().split(/\s+/).length : 0;
+  const sentences = (text.match(/[.!?]+/g) || []).length || Math.max(1, Math.floor(words / 12));
+
+  // Clarity: short, simple sentences score higher
+  const clarity = clamp(1 - Math.log10(Math.max(1, words)) / 4);
+  // Robustness: penalize over-long prompts
+  const robustness = clamp(1 - Math.max(0, (len - 500) / 1500));
+  // Interpretability: more sentences increases interpretability up to a point
+  const interpretability = clamp(Math.log10(Math.max(1, sentences)) / 2);
+  // Explainability: presence of explicit ask (question words) helps
+  const hasQuestion = /\b(why|how|what|explain|describe|summarize|why)\b/i.test(text);
+  const explainability = clamp(hasQuestion ? 0.9 : 0.6);
+  // Safety: naive check for suspicious tokens (very small heuristic)
+  const unsafe = /\b(hack|exploit|kill|bomb|terror)\b/i.test(text) ? 0.0 : 1.0;
+  const safety = clamp(unsafe * 0.95);
+
+  const cries = {
+    C: Math.round(clarity * 100),
+    R: Math.round(robustness * 100),
+    I: Math.round(interpretability * 100),
+    E: Math.round(explainability * 100),
+    S: Math.round(safety * 100),
+  };
+
+  return {
+    inputLength: len,
+    wordCount: words,
+    sentences,
+    cries,
+  };
+}
+
+module.exports = { calculateCRIES };
 // Lightweight Rosetta helper for serverless/demo use
 // Provides a simple CRIES calculation for demo/test flows.
 

@@ -1,3 +1,7 @@
+// Simple status endpoint so frontend doesn't 404 when Ollama/local GPU isn't present
+module.exports = function handler(req, res) {
+  res.status(200).json({ ok: true, available: false, message: 'Local Ollama not detected. Use cloud API keys (OPENAI/ANTHROPIC) or deploy Ollama separately.' });
+};
 // Returns whether Ollama is available locally and whether a cloud key is present
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {

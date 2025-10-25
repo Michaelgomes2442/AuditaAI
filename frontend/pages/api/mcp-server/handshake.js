@@ -1,3 +1,17 @@
+const crypto = require('crypto');
+
+module.exports = function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const { apiKey } = req.body || {};
+  if (!apiKey) return res.status(400).json({ error: 'apiKey required' });
+
+  // Derive a short token from the provided API key. This is intentionally stateless
+  // and NOT a replacement for proper auth. Use only for demo flows.
+  const secret = process.env.NEXTAUTH_SECRET || 'dev-secret';
+  const h = crypto.createHmac('sha256', secret).update(apiKey).digest('hex');
+  const token = h.slice(0, 32);
+  res.status(200).json({ ok: true, token });
+};
 // Simple handshake shim for demos: accepts an apiKey and returns an ephemeral token
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {

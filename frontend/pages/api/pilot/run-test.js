@@ -1,3 +1,22 @@
+const { calculateCRIES } = require('../../../../frontend/lib/rosetta-boot');
+
+// Demo runner: accepts { prompt, model, apiKey } and returns a simulated completion
+// This avoids making outgoing network calls from serverless code in the repo. For
+// production, replace the simulation with a proper proxy to the cloud provider.
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const { prompt = '', model = 'openai-gpt', apiKey } = req.body || {};
+
+  // Basic validation
+  if (!prompt) return res.status(400).json({ error: 'prompt required' });
+
+  // If an apiKey and model indicate a cloud provider, we could proxy request here.
+  // For safety in this repository, we return a synthetic completion.
+  const simulatedCompletion = `Simulated completion for model=${model}. Prompt length=${prompt.length}.`;
+  const cries = calculateCRIES({ text: prompt });
+
+  return res.status(200).json({ ok: true, completion: simulatedCompletion, cries });
+};
 const path = require('path');
 const { applyRosettaBoot } = require(path.join('../../../lib/rosetta-boot'));
 
