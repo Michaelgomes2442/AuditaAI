@@ -7,7 +7,7 @@
   "start": "node server.js",
   "dev": "node --watch server.js",
   "build": "pnpm exec prisma generate && echo 'Build complete'",
-  "postinstall": "pnpm exec prisma generate && node ./scripts/postinstall-copy-prisma-client.js || true",
+  "postinstall": "pnpm exec prisma generate && node ./scripts/postinstall-copy-prisma-client.cjs || true && node ./scripts/postinstall-copy-to-build.cjs || true && node ./scripts/check_prisma_artifacts.cjs || true",
     "test": "vitest run --dir src --reporter verbose"
   },
   "keywords": [],

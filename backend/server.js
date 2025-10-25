@@ -21,9 +21,18 @@ try {
     const gen = requireCJS('./node_modules/.prisma/client/default.js');
     PrismaClient = gen.PrismaClient || gen.PrismaClient;
   } catch (err2) {
-    // Re-throw the original error with both causes attached for visibility
-    console.error('Failed to load @prisma/client and fallback generated client', err, err2);
-    throw err2;
+    try {
+      // Second fallback: try loading a copied build of the generated client
+      const buildGen = requireCJS('./prisma-client-build/default.js');
+      PrismaClient = buildGen.PrismaClient || buildGen.PrismaClient;
+    } catch (err3) {
+      // Re-throw the original error with both causes attached for visibility
+      console.error('Failed to load @prisma/client and fallback generated client', err, err2, err3);
+      // Don't throw here; we'll attempt a runtime fallback later so the process
+      // can start and produce logs. Prisma client may be missing in some
+      // monorepo/pnpm layouts on serverless bundles.
+      PrismaClient = undefined;
+    }
   }
 }
 import { createServer } from "http";
@@ -129,6 +138,52 @@ try {
   console.log(`STARTUP: DATABASE_URL present=${!!process.env.DATABASE_URL}; prismaFallback=${usingFallback}`);
 } catch (startupLogErr) {
   console.warn('STARTUP: failed to write startup log', String(startupLogErr));
+}
+
+// If PrismaClient wasn't available at import time, attempt a lightweight
+// fallback that uses `pg` directly (so runtime can still talk to the DB).
+// This keeps the signup/login flows working even when the generated Prisma
+// client is not packaged correctly by the deployment bundler.
+if ((typeof PrismaClient === 'undefined' || !PrismaClient) && process.env.DATABASE_URL) {
+  try {
+    // Lazy-load `pg` to avoid adding overhead when not needed.
+    const { Pool } = requireCJS('pg');
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+    prisma = {
+      user: {
+        findUnique: async ({ where }) => {
+          if (!where || !where.email) return null;
+          const res = await pool.query('SELECT * FROM "User" WHERE email = $1 LIMIT 1', [where.email]);
+          return res.rows[0] || null;
+        },
+        create: async ({ data, select }) => {
+          // Minimal insert matching fields used by signup
+          const text = 'INSERT INTO "User" (email, password, name, role, tier, "createdAt", "updatedAt") VALUES ($1,$2,$3,$4,$5,now(),now()) RETURNING id, email, name, role, tier';
+          const values = [data.email, data.password || null, data.name || null, data.role || 'USER', data.tier || 'FREE'];
+          const res = await pool.query(text, values);
+          return res.rows[0];
+        }
+      },
+      auditRecord: {
+        create: async ({ data }) => {
+          // Best-effort: try to insert an audit record, but don't fail if the table
+          // doesn't exist or the schema differs.
+          try {
+            await pool.query('INSERT INTO "AuditRecord" ("userId", action, category, details, metadata, status, lamport, "createdAt", "updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,now(),now())', [data.userId || null, data.action || '', data.category || 'unknown', JSON.stringify(data.details || {}), JSON.stringify(data.metadata || {}), data.status || 'SUCCESS', data.lamport || 0]);
+            return {};
+          } catch (e) {
+            return {};
+          }
+        }
+      },
+      _pgPool: true
+    };
+    console.log('STARTUP: pg fallback initialized for Prisma client absence');
+  } catch (pgErr) {
+    console.warn('STARTUP: pg fallback failed to initialize:', String(pgErr));
+    // Keep existing in-memory fallback (if any) or leave prisma undefined.
+  }
 }
 
 // ==================== PERFORMANCE & SCALABILITY ====================
