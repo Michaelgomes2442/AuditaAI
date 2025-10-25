@@ -1,0 +1,3 @@
+=== https://api.vercel.com/v2/now/invocations/ ===
+Redirecting...
+

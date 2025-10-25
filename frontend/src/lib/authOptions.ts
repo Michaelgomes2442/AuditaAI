@@ -13,14 +13,20 @@ export const authOptions = {
 
         try {
           // Call backend API for authentication
-          let backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+          // Use relative path for Vercel deployments (same origin), fallback to configured URL
+          let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '/';
+          const apiPath = backendUrl === '/' ? '/api/auth/login' : `${backendUrl}/api/auth/login`;
+          
           // If a Vercel protection bypass token is provided in env, append it
           // to the backend URL so server-side calls can bypass deployment protection.
           const bypassToken = process.env.VERCEL_BYPASS_TOKEN || process.env.BYPASS_TOKEN || '';
-          if (bypassToken && !backendUrl.includes('localhost')) {
-            backendUrl = `${backendUrl}${backendUrl.includes('?') ? '&' : '?'}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+          let requestUrl = apiPath;
+          if (bypassToken && !requestUrl.startsWith('/')) {
+            const separator = requestUrl.includes('?') ? '&' : '?';
+            requestUrl = `${requestUrl}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
           }
-          const response = await fetch(`${backendUrl}/api/auth/login`, {
+          
+          const response = await fetch(requestUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

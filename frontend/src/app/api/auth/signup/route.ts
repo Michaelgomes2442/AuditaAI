@@ -12,11 +12,13 @@ export async function POST(req: Request) {
     }
 
     // Call backend API for user registration
-    const backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    // Use relative path for Vercel deployments (same origin), fallback to configured URL
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '/';
+    const apiPath = backendUrl === '/' ? '/api/auth/signup' : `${backendUrl}/api/auth/signup`;
     let response: Response | null = null;
     let data: any = null;
     try {
-      response = await fetch(`${backendUrl}/api/auth/signup`, {
+      response = await fetch(apiPath, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
