@@ -5,6 +5,22 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { createRequire } from 'module';
 
+// Global error handlers to surface uncaught errors in serverless function logs
+process.on('uncaughtException', (err) => {
+  try {
+    console.error('UNCAUGHT_EXCEPTION', err && (err.stack || err.message) || String(err));
+  } catch (e) {
+    // swallow
+  }
+});
+process.on('unhandledRejection', (reason) => {
+  try {
+    console.error('UNHANDLED_REJECTION', reason && (reason.stack || reason.message) || String(reason));
+  } catch (e) {
+    // swallow
+  }
+});
+
 // Robustly load PrismaClient. In some local/workspace/pnpm layouts the
 // generated client may not resolve via the published `@prisma/client` entry
 // point, so try the standard package first and fall back to the generated
