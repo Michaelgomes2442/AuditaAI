@@ -76,6 +76,16 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL === "") {
   prisma = new PrismaClient();
 }
 
+// Startup info (non-sensitive): log whether DATABASE_URL is present and whether
+// we're using the in-memory fallback. This helps confirm runtime environment
+// variables are available in serverless deployments without logging secrets.
+try {
+  const usingFallback = !!(prisma && prisma._fallback);
+  console.log(`STARTUP: DATABASE_URL present=${!!process.env.DATABASE_URL}; prismaFallback=${usingFallback}`);
+} catch (startupLogErr) {
+  console.warn('STARTUP: failed to write startup log', String(startupLogErr));
+}
+
 // ==================== PERFORMANCE & SCALABILITY ====================
 // Load testing endpoint (for automated performance checks)
 app.post('/load-test', async (req, res) => {
