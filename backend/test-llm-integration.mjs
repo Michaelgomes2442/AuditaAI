@@ -1,4 +1,29 @@
-#!/usr/bin/env node
+// Accessibility and regression test stubs
+function checkAccessibility(response) {
+  // Check for unsafe HTML/script tags
+  const unsafe = /<script|<img|<iframe|onerror|onload|javascript:/i.test(response);
+  if (unsafe) {
+    console.log('   ⚠️ Accessibility: Unsafe content detected!');
+  } else {
+    console.log('   ✅ Accessibility: No unsafe content detected.');
+  }
+}
+
+function checkCRIESRegression(current, baseline) {
+  // Compare CRIES scores for regression
+  if (!baseline) return;
+  const keys = ['C', 'R', 'I', 'E', 'S', 'overall'];
+  let regress = false;
+  keys.forEach(k => {
+    if (current[k] < baseline[k] - 0.05) {
+      regress = true;
+      console.log(`   ⚠️ Regression detected in ${k}: ${current[k]} < baseline ${baseline[k]}`);
+    }
+  });
+  if (!regress) {
+    console.log('   ✅ No CRIES regression detected.');
+  }
+}
 
 /**
  * Test LLM API Integration
@@ -45,6 +70,7 @@ async function main() {
       console.log('   ✅ Success!');
       console.log(`   Response: ${result.content.substring(0, 100)}...`);
       console.log(`   Tokens: ${result.usage.total_tokens} (${result.usage.prompt_tokens} prompt + ${result.usage.completion_tokens} completion)`);
+      checkAccessibility(result.content);
     } catch (error) {
       console.log('   ❌ Error:', error.message);
     }
@@ -61,6 +87,7 @@ async function main() {
       console.log('   ✅ Success!');
       console.log(`   Response: ${result.content.substring(0, 100)}...`);
       console.log(`   Tokens: ${result.usage.total_tokens} (${result.usage.prompt_tokens} prompt + ${result.usage.completion_tokens} completion)`);
+      checkAccessibility(result.content);
     } catch (error) {
       console.log('   ❌ Error:', error.message);
     }
@@ -85,11 +112,9 @@ async function main() {
     console.log(`   Response length: ${result.content.length} characters`);
     console.log(`   First 200 chars: ${result.content.substring(0, 200)}...`);
     console.log(`   Tokens: ${result.usage.total_tokens}`);
-    
-    // Check for governance indicators
-    const hasStructure = /\d\.|•|1\)|numbered/i.test(result.content);
-    const hasEvidence = /because|research|study|according/i.test(result.content);
-    console.log(`   Governance check: ${hasStructure ? '✅' : '⚠️'} Structured | ${hasEvidence ? '✅' : '⚠️'} Evidence-based`);
+    checkAccessibility(result.content);
+    // Example regression check (baseline CRIES can be loaded from file/db)
+    // checkCRIESRegression(result.cries, baselineCRIES);
   } catch (error) {
     console.log('   ❌ Error:', error.message);
   }

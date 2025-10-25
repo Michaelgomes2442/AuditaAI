@@ -26,7 +26,7 @@ describe('Block Creation Integration', () => {
   let ws: ReturnType<typeof setupWebSocket>;
   let org: { id: number } | undefined;
   let user: { id: number } | undefined;
-  let mockSocket: { id: string; emit: Mock; on: Function; user?: any };
+  let mockSocket: AuthenticatedSocket;
   let events: any[] = [];
   let notifyClients: (record: any) => Promise<void>;
 
@@ -199,8 +199,22 @@ describe('Block Creation Integration', () => {
         id: user!.id,
         orgId: org!.id,
         role: 'USER'
-      }
-    } as unknown as AuthenticatedSocket;
+      },
+      connected: true,
+      handshake: {},
+      data: {},
+      request: {},
+      recovered: false,
+      local: {},
+      server: undefined,
+      adapter: undefined,
+      client: undefined,
+      conn: undefined,
+      nsp: undefined,
+      broadcast: { emit: vi.fn() },
+      volatile: { emit: vi.fn() },
+      // Add any other required properties from AuthenticatedSocket type
+    };
     
     // Set up socket map for Socket.IO server
     Object.defineProperty(socketServer.io.sockets, 'sockets', {

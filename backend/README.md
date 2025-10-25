@@ -106,6 +106,13 @@ pnpm build
 pnpm dev
 ```
 
+## Environment & Secrets
+
+- The `DATABASE_URL` for production is stored as an environment variable / secret in Vercel for this project. Do NOT commit production credentials to the repository.
+- For local development you can use `backend/.env` or `backend/.env.example` (the repo includes an example). If you use Vercel, ensure the `DATABASE_URL` secret is configured in your Vercel project settings.
+- Redis is optional; the application will use Postgres advisory locks when `REDIS_URL` is not set. If you later add Redis, set `REDIS_URL` as an env var.
+
+
 ## Architecture Overview
 
 ### MVP Implementation Priorities

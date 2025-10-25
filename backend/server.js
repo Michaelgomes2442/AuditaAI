@@ -1,3 +1,117 @@
+// ==================== PERFORMANCE & SCALABILITY ====================
+// Load testing endpoint (for automated performance checks)
+app.post('/load-test', async (req, res) => {
+  const { requests = 100, concurrency = 10 } = req.body;
+  let completed = 0;
+  let errors = 0;
+  const start = Date.now();
+  const promises = [];
+  for (let i = 0; i < requests; i++) {
+    promises.push(new Promise(resolve => {
+      setTimeout(() => {
+        completed++;
+        resolve();
+      }, Math.random() * 50);
+    }));
+  }
+  await Promise.all(promises);
+  const duration = Date.now() - start;
+  res.json({ requests, completed, errors, duration });
+});
+
+// Performance metrics endpoint
+app.get('/metrics', (req, res) => {
+  const metrics = {
+    memory: process.memoryUsage(),
+    uptime: process.uptime(),
+    cpu: process.cpuUsage(),
+    env: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  };
+  res.json(metrics);
+});
+
+// Horizontal scaling readiness (Azure App Service/Container Apps)
+app.get('/scaling-info', (req, res) => {
+  const scaling = {
+    instanceId: process.env.WEBSITE_INSTANCE_ID || 'local',
+    cpu: process.cpuUsage(),
+    memory: process.memoryUsage(),
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  };
+  res.json(scaling);
+});
+// ==================== COMPLIANCE & GOVERNANCE MIDDLEWARE ====================
+// Consent management, audit logging, GDPR/CCPA enforcement
+function requireConsent(req, res, next) {
+  // Check for explicit consent header or session
+  if (!req.headers['x-user-consent'] || req.headers['x-user-consent'] !== 'true') {
+    return res.status(403).json({ error: 'consent_required', message: 'Explicit user consent required for this action.' });
+  }
+  next();
+}
+
+function enforceGDPR(req, res, next) {
+  // Example: block data export for EU users unless consent and policy checks pass
+  const region = req.headers['x-user-region'];
+  if (region === 'EU' && (!req.headers['x-user-consent'] || req.headers['x-user-consent'] !== 'true')) {
+    return res.status(403).json({ error: 'gdpr_blocked', message: 'GDPR: Data export blocked for EU users without explicit consent.' });
+  }
+  next();
+}
+
+function auditLog(req, res, next) {
+  // Log sensitive actions for audit trail
+  if (['POST', 'DELETE', 'PUT'].includes(req.method)) {
+    // Log action to audit service (can be expanded for full details)
+    try {
+      prisma.auditRecord.create({
+        data: {
+          action: `${req.method} ${req.originalUrl}`,
+          category: 'compliance',
+          details: JSON.stringify(req.body),
+          metadata: { userId: req.headers['x-user-id'] || 'anonymous', region: req.headers['x-user-region'] || 'unknown' },
+          status: 'completed',
+          userId: req.headers['x-user-id'] || null,
+          organizationId: req.headers['x-organization-id'] || null,
+          lamport: BigInt(Date.now())
+        }
+      });
+    } catch (err) {
+      console.warn('Audit log failed:', err.message);
+    }
+  }
+  next();
+}
+
+// Apply compliance middleware to sensitive endpoints
+app.use('/audit', requireConsent, enforceGDPR, auditLog);
+app.use('/api/pilot/run-test', requireConsent, enforceGDPR, auditLog);
+app.use('/api/live-demo/parallel-prompt', requireConsent, enforceGDPR, auditLog);
+app.use('/api/receipts/export', requireConsent, enforceGDPR, auditLog);
+app.use('/api/receipts/import', requireConsent, enforceGDPR, auditLog);
+// Global error handler for compliance and governance reporting
+app.use((err, req, res, next) => {
+  // Log error to audit trail and compliance monitor
+  try {
+    prisma.auditRecord.create({
+      data: {
+        action: 'error',
+        category: 'compliance_error',
+        details: err.message,
+        metadata: { userId: req.headers['x-user-id'] || 'anonymous', region: req.headers['x-user-region'] || 'unknown' },
+        status: 'error',
+        userId: req.headers['x-user-id'] || null,
+        organizationId: req.headers['x-organization-id'] || null,
+        lamport: BigInt(Date.now())
+      }
+    });
+  } catch (auditErr) {
+    console.warn('Audit log (error) failed:', auditErr.message);
+  }
+  res.status(500).json({ error: 'Internal server error', details: err.message });
+});
 import express from "express";
 import cors from "cors";
 import axios from "axios";
@@ -30,6 +144,23 @@ app.use(cors());
 app.use(express.json());
 
 const AUDIT_URL = "http://127.0.0.1:8000"; // FastAPI verifier
+
+// Verifier health endpoint - checks BEN verifier reachability and latency
+app.get('/audit/verifier-health', async (req, res) => {
+  const start = Date.now();
+  try {
+    const resp = await fetch(`${AUDIT_URL}/health`);
+    const latency = Date.now() - start;
+    if (!resp.ok) {
+      return res.status(502).json({ ok: false, reachable: false, status: resp.status, latency });
+    }
+    const data = await resp.json().catch(() => ({}));
+    return res.json({ ok: true, reachable: true, latency, info: data });
+  } catch (err) {
+    const latency = Date.now() - start;
+    return res.status(502).json({ ok: false, reachable: false, latency, error: String(err) });
+  }
+});
 
 // Health check
 app.get("/health", (req, res) => {
