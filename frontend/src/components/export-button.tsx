@@ -61,6 +61,7 @@ export function ExportButton({ filters }: ExportButtonProps) {
       size="sm"
       onClick={handleExport}
       disabled={isExporting}
+      data-testid="export-button"
     >
       {isExporting ? (
         "Exporting..."

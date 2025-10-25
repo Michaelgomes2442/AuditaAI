@@ -49,7 +49,7 @@ export function LogFilters({
               onFiltersChange({ ...filters, userId: value })
             }
           >
-            <SelectTrigger>
+            <SelectTrigger data-testid="user-filter">
               <SelectValue placeholder="Filter by user" />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +76,7 @@ export function LogFilters({
               onFiltersChange({ ...filters, eventType: value })
             }
           >
-            <SelectTrigger>
+            <SelectTrigger data-testid="event-type-filter">
               <SelectValue placeholder="Filter by event type" />
             </SelectTrigger>
             <SelectContent>
@@ -96,7 +96,7 @@ export function LogFilters({
           <div className="flex items-center gap-2 mb-3">
             <span className="text-sm text-muted-foreground">Date Range</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2" data-testid="date-range-filter">
             <DatePicker
               date={filters.startDate}
               onChange={(date) => onFiltersChange({ ...filters, startDate: date })}

@@ -41,7 +41,7 @@ export default function SignUpPage() {
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, confirmPassword }),
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -49,9 +49,8 @@ export default function SignUpPage() {
 
       if (data.ok) {
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/signin');
-        }, 2000);
+        // Redirect immediately on success
+        router.push('/signin');
       } else {
         setError(data.error || 'Failed to create account. Please try again.');
       }
@@ -112,7 +111,7 @@ export default function SignUpPage() {
               )}
 
               {success && (
-                <Alert className="bg-green-50 text-green-900 border-green-200 py-2">
+                <Alert className="bg-green-50 text-green-900 border-green-200 py-2" data-testid="success-message">
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertDescription className="text-sm">
                     Account created successfully! Redirecting to sign in...

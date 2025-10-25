@@ -116,16 +116,17 @@ import express from "express";
 import cors from "cors";
 import axios from "axios";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { createServer } from "http";
 import { setupWebSocket } from "./dist/websocket-loader.cjs";
 import { bootModelWithRosetta } from "./rosetta-boot.js";
 import { computeCRIES, generateAnalysisReceipt } from "./src/track-a-analyzer.js";
-import { 
+import {
   callLLM,
   callOllama,
   callOllamaWithRosetta,
-  callGPT4WithRosetta, 
+  callGPT4WithRosetta,
   callClaudeWithRosetta,
   getRosettaGovernanceContext,
   checkAPIAvailability,
@@ -2893,6 +2894,243 @@ app.post('/api/rosetta/sessions/clear', (req, res) => {
 });
 
 // ==================== END ROSETTA OS STATE ENDPOINTS ====================
+
+// ==================== AUTHENTICATION ENDPOINTS ====================
+
+// Login endpoint for NextAuth
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        role: true,
+        tier: true,
+        status: true
+      }
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    if (user.status !== 'ACTIVE') {
+      return res.status(401).json({ error: 'Account is not active' });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Return user data (without password)
+    res.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      tier: user.tier
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Signup endpoint for user registration
+app.post('/api/auth/signup', async (req, res) => {
+  try {
+    const { email, password, name, confirmPassword } = req.body;
+
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Email, password, and name are required' });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match' });
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        role: 'USER',
+        tier: 'FREE',
+        status: 'ACTIVE'
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        tier: true
+      }
+    });
+
+    res.status(201).json({
+      message: 'User created successfully',
+      user
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ==================== END AUTHENTICATION ENDPOINTS ====================
+
+// ==================== AUDIT LOGS ENDPOINTS ====================
+
+// Get all users for filtering
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: String(id),
+        name: true,
+        email: true
+      },
+      where: {
+        status: 'ACTIVE'
+      },
+      orderBy: {
+        name: 'asc'
+      }
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    res.status(500).json({ error: 'Failed to fetch users', detail: error.message });
+  }
+});
+
+// Get event types for filtering
+app.get('/api/logs/event-types', async (req, res) => {
+  try {
+    // Get distinct event types from audit records
+    const eventTypes = await prisma.auditRecord.findMany({
+      select: {
+        category: true
+      },
+      distinct: ['category']
+    });
+
+    const types = eventTypes.map(et => et.category).filter(Boolean);
+    res.json(types);
+  } catch (error) {
+    console.error('Failed to fetch event types:', error);
+    res.status(500).json({ error: 'Failed to fetch event types', detail: error.message });
+  }
+});
+
+// Get audit logs with filtering and pagination
+app.get('/api/logs', async (req, res) => {
+  try {
+    const {
+      userId,
+      eventType,
+      startDate,
+      endDate,
+      page = 1,
+      limit = 50
+    } = req.query;
+
+    const where = {};
+
+    if (userId) {
+      where.userId = parseInt(userId);
+    }
+
+    if (eventType) {
+      where.category = eventType;
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) {
+        where.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.createdAt.lte = new Date(endDate);
+      }
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [logs, total] = await Promise.all([
+      prisma.auditRecord.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: parseInt(limit)
+      }),
+      prisma.auditRecord.count({ where })
+    ]);
+
+    // Transform to match frontend expectations
+    const transformedLogs = logs.map(log => ({
+      id: log.id.toString(),
+      userId: log.userId?.toString(),
+      eventType: log.category,
+      timestamp: log.createdAt.toISOString(),
+      details: log.details || log.action,
+      user: log.user ? {
+        id: log.user.id.toString(),
+        name: log.user.name || log.user.email
+      } : null
+    }));
+
+    res.json({
+      logs: transformedLogs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('Failed to fetch logs:', error);
+    res.status(500).json({ error: 'Failed to fetch logs', detail: error.message });
+  }
+});
+
+// ==================== END AUDIT LOGS ENDPOINTS ====================
 
 // ==================== UNIFIED REAL DATA ENDPOINT ====================
 // Single source of truth for ALL real conversation data

@@ -49,13 +49,12 @@ export default function UserProfileCorner() {
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      <div
-        className="relative"
-        onMouseEnter={() => setShowDropdown(true)}
-        onMouseLeave={() => setShowDropdown(false)}
-      >
+      <div className="relative">
         {/* Profile Badge */}
-        <div className={`
+        <div
+          data-testid="user-menu-trigger"
+          onClick={() => setShowDropdown(!showDropdown)}
+          className={`
           flex items-center gap-2 px-3 py-2 rounded-lg
           bg-gradient-to-r ${tierStyles.bg}
           border ${tierStyles.border}
@@ -91,6 +90,15 @@ export default function UserProfileCorner() {
         {showDropdown && (
           <div className="absolute top-full right-0 mt-2 w-48 rounded-lg bg-slate-800/95 border border-white/10 shadow-2xl backdrop-blur-sm overflow-hidden">
             <div className="p-2 space-y-1">
+              <Link href="/settings">
+                <div data-testid="settings-link" className="px-3 py-2 rounded-md hover:bg-white/5 transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2 text-sm font-mono text-slate-300 hover:text-white">
+                    <User className="h-4 w-4" />
+                    <span>Settings</span>
+                  </div>
+                </div>
+              </Link>
+              
               <Link href="/profile">
                 <div className="px-3 py-2 rounded-md hover:bg-white/5 transition-colors cursor-pointer">
                   <div className="flex items-center gap-2 text-sm font-mono text-slate-300 hover:text-white">
@@ -109,16 +117,21 @@ export default function UserProfileCorner() {
                 </div>
               </Link>
 
-              {isFree && (
-                <Link href="/profile">
-                  <div className="px-3 py-2 rounded-md hover:bg-cyan-500/10 transition-colors cursor-pointer border-t border-white/5 mt-1 pt-2">
-                    <div className="flex items-center gap-2 text-sm font-mono text-cyan-400 hover:text-cyan-300">
-                      <Crown className="h-4 w-4" />
-                      <span>Upgrade Plan</span>
-                    </div>
+              <div className="border-t border-white/5 mt-1 pt-2">
+                <button
+                  data-testid="logout-button"
+                  onClick={() => {
+                    // Add logout logic here
+                    window.location.href = '/api/auth/signout';
+                  }}
+                  className="w-full px-3 py-2 rounded-md hover:bg-red-500/10 transition-colors cursor-pointer text-left"
+                >
+                  <div className="flex items-center gap-2 text-sm font-mono text-red-400 hover:text-red-300">
+                    <User className="h-4 w-4" />
+                    <span>Logout</span>
                   </div>
-                </Link>
-              )}
+                </button>
+              </div>
             </div>
           </div>
         )}

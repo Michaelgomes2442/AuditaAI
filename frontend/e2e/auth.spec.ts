@@ -10,8 +10,10 @@ const generateTestPassword = () => `testPass${Date.now()}!`;
 
 async function signup(page: Page, email: string, password: string) {
   await page.goto('/signup');
+  await page.fill('input[type="text"]', 'Test User'); // name field
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
+  await page.fill('input[id="confirmPassword"]', password); // confirm password
   await page.click('button[type="submit"]');
 }
 
@@ -49,11 +51,19 @@ test.describe('Authentication Flow', () => {
 
   test('should allow new user registration', async ({ page }) => {
     await signup(page, testEmail, testPassword);
-    // Accept redirect to signin after signup
-    await expect(page).toHaveURL(/signin(\?callbackUrl=.*)?|dashboard/);
-    // Accept either dashboard or signin page for user email check
-    if ((await page.url()).includes('dashboard')) {
-      await expect(page.locator('[data-testid="user-email"]')).toContainText(testEmail);
+    // Check that we either get success or see what error occurs
+    try {
+      await expect(page.locator('[data-testid="success-message"]')).toBeVisible({ timeout: 2000 });
+    } catch (e) {
+      // If no success, check for error message to understand the issue
+      const errorVisible = await page.locator('[data-testid="error-message"], .alert, .text-red-500').isVisible();
+      if (errorVisible) {
+        const errorText = await page.locator('[data-testid="error-message"], .alert, .text-red-500').textContent();
+        console.log('Signup failed with error:', errorText);
+        throw new Error(`Signup failed: ${errorText}`);
+      } else {
+        throw new Error('Signup neither succeeded nor showed error message');
+      }
     }
   });
 

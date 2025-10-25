@@ -1,6 +1,4 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "../lib/prismadb";
-import bcrypt from "bcryptjs";
 
 export const authOptions = {
   providers: [
@@ -12,29 +10,38 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-        const user = await prisma.user.findUnique({ 
-          where: { email: credentials.email },
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            password: true,
-            role: true,
-            tier: true,
-            status: true
+
+        try {
+          // Call backend API for authentication
+          const backendUrl = process.env.BACKEND_INTERNAL_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+          const response = await fetch(`${backendUrl}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          if (!response.ok) {
+            return null;
           }
-        });
-        if (!user) return null;
-        if (user.status !== 'ACTIVE') return null;
-        const valid = await bcrypt.compare(credentials.password, user.password);
-        if (!valid) return null;
-        return { 
-          id: String(user.id), 
-          email: user.email, 
-          name: user.name || '',
-          role: user.role,
-          tier: user.tier
-        };
+
+          const user = await response.json();
+
+          return {
+            id: String(user.id),
+            email: user.email,
+            name: user.name || '',
+            role: user.role || 'USER',
+            tier: user.tier || 'FREE'
+          };
+        } catch (error) {
+          console.error('Authentication error:', error);
+          return null;
+        }
       },
     }),
   ],
@@ -42,7 +49,7 @@ export const authOptions = {
     signIn: '/signin',
     error: '/signin',
   },
-  session: { 
+  session: {
     strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days by default
   },

@@ -34,12 +34,15 @@ export async function clearSession(page: Page) {
 export async function createTestUser(page: Page, email?: string, password?: string) {
   const user = {
     email: email || `test-${Date.now()}@example.com`,
-    password: password || `testPass${Date.now()}!`
+    password: password || `testPass${Date.now()}!`,
+    name: `Test User ${Date.now()}`
   };
 
   await page.goto(routes.signup);
+  await page.fill('input[type="text"]', user.name); // Name field
   await page.fill(selectors.email, user.email);
   await page.fill(selectors.password, user.password);
+  await page.fill('input[id="confirmPassword"]', user.password); // Confirm password
   await page.click(selectors.submitButton);
 
   return user;

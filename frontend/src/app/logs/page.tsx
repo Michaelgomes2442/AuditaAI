@@ -106,7 +106,7 @@ export default function LogsPage() {
             ) : (
               <>
                 {logs.map((log) => (
-                  <div key={log.id} className="flex items-start gap-4 p-4 rounded-lg bg-slate-800/30 border border-white/5 hover:border-cyan-500/30 transition-all group">
+                  <div key={log.id} data-testid="log-entry" className="flex items-start gap-4 p-4 rounded-lg bg-slate-800/30 border border-white/5 hover:border-cyan-500/30 transition-all group">
                     <div className="p-2 rounded bg-cyan-500/10 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
                       <Clock className="h-5 w-5 text-cyan-400" />
                     </div>

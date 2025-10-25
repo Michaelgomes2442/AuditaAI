@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function LogSkeleton() {
   return (
-    <div className="space-y-4">
+    <div data-testid="log-skeleton" className="space-y-4">
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="flex items-start gap-4 text-sm">
           <div className="min-w-[150px]">

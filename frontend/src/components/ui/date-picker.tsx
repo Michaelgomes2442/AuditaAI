@@ -25,6 +25,7 @@ export function DatePicker({ date, onChange, placeholder = "Pick a date" }: Date
             "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
+          data-testid="date-picker-trigger"
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>{placeholder}</span>}
