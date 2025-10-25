@@ -3147,7 +3147,23 @@ app.post('/api/auth/login', async (req, res) => {
       tier: user.tier
     });
   } catch (error) {
-    console.error('Login error:', error);
+    // Log full stack for diagnostics. In production this may be noisy; the
+    // presence of `DEBUG_LOGIN` env var will also surface a truncated stack
+    // in the HTTP response to help automated tests capture the error quickly.
+    try {
+      console.error('Login error:', error && (error.stack || error.message) || String(error));
+    } catch (logErr) {
+      // swallow logging errors
+      console.error('Login error (secondary):', String(logErr));
+    }
+
+    const debugEnabled = String(process.env.DEBUG_LOGIN || '').toLowerCase() === 'true';
+    if (debugEnabled) {
+      // Return a limited debug payload so test runner can capture the stack.
+      const stack = (error && (error.stack || error.message)) || String(error);
+      return res.status(500).json({ error: 'Internal server error', debug: { message: error && error.message, stack: stack.slice(0, 4000) } });
+    }
+
     res.status(500).json({ error: 'Internal server error' });
   }
 });
