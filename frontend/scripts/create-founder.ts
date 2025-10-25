@@ -77,7 +77,8 @@ async function createFounderAccount() {
     console.log('🎉 You can now sign in with:');
     console.log(`   Email:    ${founderData.email}`);
     console.log(`   Password: ${founderData.password}`);
-    console.log('\n🔗 Sign in at: http://localhost:3004/signin\n');
+  const FRONTEND_BASE = process.env.FRONTEND_BASE || process.env.BASE || 'http://localhost:3004';
+  console.log(`\n🔗 Sign in at: ${FRONTEND_BASE.replace(/\/$/, '')}/signin\n`);
 
   } catch (error) {
     console.error('❌ Error creating founder account:', error);

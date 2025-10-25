@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 interface CRIESMetrics {
   completeness: number;
   reliability: number;
@@ -80,12 +82,12 @@ export default function LiveDemoPage() {
   // Load models and comparison data
   const loadData = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/live-demo/models');
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/models`);
       const data = await response.json();
       setModels(data.models || []);
       
       // Load comparison if available
-      const compResponse = await fetch('http://localhost:3001/api/live-demo/comparison');
+  const compResponse = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/comparison`);
       const compData = await compResponse.json();
       setComparison(compData);
     } catch (error) {
@@ -101,7 +103,7 @@ export default function LiveDemoPage() {
       const interval = setInterval(() => {
         loadData();
         // Update tracking history
-        fetch('http://localhost:3001/api/live-demo/tracking-history')
+        fetch(`${BACKEND_URL ?? ''}/api/live-demo/tracking-history`)
           .then(res => res.json())
           .then(data => setTrackingHistory(data.history || []));
       }, 2000); // Update every 2 seconds
@@ -112,7 +114,7 @@ export default function LiveDemoPage() {
 
   const handleImportModel = async (modelData: any) => {
     try {
-      const response = await fetch('http://localhost:3001/api/live-demo/import-model', {
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/import-model`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(modelData)
@@ -130,7 +132,7 @@ export default function LiveDemoPage() {
 
   const handleBootWithRosetta = async (modelId: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/live-demo/boot-rosetta', {
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/boot-rosetta`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ modelId })
@@ -147,7 +149,7 @@ export default function LiveDemoPage() {
 
   const handleCompareModels = async (standardId: string, rosettaId: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/live-demo/compare', {
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/compare`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ standardId, rosettaId })
@@ -165,7 +167,7 @@ export default function LiveDemoPage() {
     setIsTracking(newState);
     
     try {
-      await fetch('http://localhost:3001/api/live-demo/tracking', {
+      await fetch(`${BACKEND_URL ?? ''}/api/live-demo/tracking`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: newState })

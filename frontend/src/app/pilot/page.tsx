@@ -49,6 +49,7 @@ interface UserProfile {
 }
 
 export default function PilotPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const { data: session } = useSession();
   
@@ -179,9 +180,9 @@ export default function PilotPage() {
     setLoading(true);
     try {
       const [bootRes, registryRes, stateRes] = await Promise.all([
-        fetch('http://localhost:3001/api/rosetta/boot').catch(() => ({ ok: false })),
-        fetch('http://localhost:3001/api/rosetta/registry').catch(() => ({ ok: false })),
-        fetch('http://localhost:3001/api/rosetta/state').catch(() => ({ ok: false }))
+        fetch(`${BACKEND_URL ?? ''}/api/rosetta/boot`).catch(() => ({ ok: false })),
+        fetch(`${BACKEND_URL ?? ''}/api/rosetta/registry`).catch(() => ({ ok: false })),
+        fetch(`${BACKEND_URL ?? ''}/api/rosetta/state`).catch(() => ({ ok: false }))
       ]);
 
       if (bootRes.ok && typeof (bootRes as any).json === 'function') {
@@ -314,9 +315,16 @@ export default function PilotPage() {
 
       // If server suggests a client-side check, only attempt it when running locally.
       if (data.clientSideCheck) {
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
           try {
-            const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+            // When running on a developer machine prefer the local Ollama instance.
+            // In deployed environments we avoid calling developer localhost from the browser
+            // and instead rely on a server-side proxy or same-origin API routes.
+            const localOrProxyUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+              ? 'http://localhost:11434/api/tags'
+              : (data.serverProxy ? data.serverProxy : `${BACKEND_URL ?? ''}/api/pilot/ollama-tags`);
+
+            const ollamaResponse = await fetch(localOrProxyUrl);
             if (ollamaResponse.ok) {
               const ollamaData = await ollamaResponse.json();
               const models = ollamaData.models || [];
@@ -440,7 +448,7 @@ export default function PilotPage() {
       setLoading(true);
       console.log('🚀 Initiating Rosetta boot sequence...');
 
-      const res = await fetch('http://localhost:3001/api/rosetta/boot', {
+      const res = await fetch(`${BACKEND_URL ?? ''}/api/rosetta/boot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -606,7 +614,7 @@ export default function PilotPage() {
       
       // Run two tests in parallel: one with governance OFF, one with governance ON
       const [baseRes, governedRes] = await Promise.all([
-        fetch('http://localhost:3001/api/pilot/run-test', {
+        fetch(`${BACKEND_URL ?? ''}/api/pilot/run-test`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -621,7 +629,7 @@ export default function PilotPage() {
             apiKeys: Object.keys(apiKeys).length > 0 ? apiKeys : undefined
           })
         }),
-        fetch('http://localhost:3001/api/pilot/run-test', {
+        fetch(`${BACKEND_URL ?? ''}/api/pilot/run-test`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1520,7 +1528,7 @@ export default function PilotPage() {
                           (async () => {
                             setRunning(true);
                             try {
-                              const res = await fetch('http://localhost:3001/api/pilot/run-test', { 
+                              const res = await fetch(`${BACKEND_URL ?? ''}/api/pilot/run-test`, { 
                                 method: 'POST', 
                                 headers: { 
                                   'Content-Type': 'application/json',

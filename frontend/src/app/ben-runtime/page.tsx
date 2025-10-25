@@ -81,6 +81,7 @@ interface VerificationResult {
 }
 
 export default function BENRuntimeDashboard() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [events, setEvents] = useState<BenEvent[]>([]);
   const [chainNodes, setChainNodes] = useState<ChainNode[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<BenEvent | null>(null);
@@ -134,8 +135,8 @@ export default function BENRuntimeDashboard() {
       if (isPaused) return;
 
       try {
-        const response = await fetch('http://localhost:3001/api/receipts/registry');
-        const data = await response.json();
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/registry`);
+  const data = await response.json();
 
         if (!data.receipts || data.receipts.length === 0) {
           console.log('No real receipts yet. Run parallel prompts to generate BEN events.');

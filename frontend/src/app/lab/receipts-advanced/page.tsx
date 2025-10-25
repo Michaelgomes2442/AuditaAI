@@ -26,6 +26,7 @@ interface AdvancedReceipt {
 }
 
 export default function AdvancedReceiptsPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [selectedCategory, setSelectedCategory] = useState<string>("audit");
   const [advancedReceipts, setAdvancedReceipts] = useState<AdvancedReceipt[]>([]);
   const [receiptCategories, setReceiptCategories] = useState<any[]>([]);
@@ -38,8 +39,8 @@ export default function AdvancedReceiptsPage() {
       try {
         setLoading(true);
         
-        // Fetch conversation receipts
-        const conversationResponse = await fetch('http://localhost:3001/api/receipts/conversations');
+  // Fetch conversation receipts (use configured backend URL or same-origin proxy)
+  const conversationResponse = await fetch(`${BACKEND_URL ?? ''}/api/receipts/conversations`);
         if (!conversationResponse.ok) throw new Error('Failed to fetch conversation receipts');
         const conversationData = await conversationResponse.json();
         

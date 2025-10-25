@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+// Require an explicit backend URL in environment. If not provided we'll connect to
+// the same origin (no implicit localhost fallback so deployed apps don't try
+// to reach developer-only services).
+const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 type AuditUpdate = {
   type: 'RECORD_CREATED' | 'BLOCK_CREATED';
@@ -36,8 +39,14 @@ export function useSocket(orgId?: string) {
   const [lastVerification, setLastVerification] = useState<VerificationResult | null>(null);
 
   useEffect(() => {
-    // Initialize socket connection
-    socket.current = io(SOCKET_URL);
+    // Initialize socket connection. Prefer an explicit backend URL. If it's not
+    // provided, connect to the same origin (so Vercel-hosted frontend won't
+    // attempt to reach a developer localhost by default).
+    if (SOCKET_URL) {
+      socket.current = io(SOCKET_URL);
+    } else {
+      socket.current = io();
+    }
 
     // Set up event listeners
     if (socket.current) {

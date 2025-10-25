@@ -1,0 +1,76 @@
+name: Frontend CI - build & optional E2E
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Install & Build (frontend)
+    runs-on: ubuntu-latest
+    outputs:
+      build-artifact: ${{ steps.build.outputs.build-artifact }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (frontend)
+        working-directory: frontend
+        run: pnpm exec tsc --noEmit
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BACKEND_INTERNAL_URL: ${{ secrets.BACKEND_INTERNAL_URL }}
+        run: pnpm run build
+
+  e2e:
+    name: Playwright E2E (conditional)
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ secrets.BACKEND_INTERNAL_URL != '' && secrets.E2E_RUN_INTEGRATION == '1' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BACKEND_INTERNAL_URL: ${{ secrets.BACKEND_INTERNAL_URL }}
+        run: pnpm run build
+
+      - name: Start frontend (background)
+        working-directory: frontend
+        run: pnpm run start &
+
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:3000 || sleep 2
+
+      - name: Run Playwright tests
+        working-directory: frontend
+        env:
+          BACKEND_INTERNAL_URL: ${{ secrets.BACKEND_INTERNAL_URL }}
+          E2E_RUN_INTEGRATION: '1'
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: pnpm exec playwright test --config=./playwright.config.ts

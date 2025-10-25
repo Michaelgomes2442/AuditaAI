@@ -93,6 +93,7 @@ interface ActivityHeatmapCell {
 }
 
 export default function LiveTrackingDashboard() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   // Global system summary
   const [activeModels, setActiveModels] = useState(3);
   const [totalReceiptsToday, setTotalReceiptsToday] = useState(247);
@@ -139,7 +140,7 @@ export default function LiveTrackingDashboard() {
   useEffect(() => {
     const fetchRealData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/conversations/aggregate');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/conversations/aggregate`);
         const data = await response.json();
 
         if (!data.conversations || data.conversations.length === 0) {
@@ -228,7 +229,7 @@ export default function LiveTrackingDashboard() {
 
     const interval = setInterval(async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/conversations/aggregate');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/conversations/aggregate`);
         const data = await response.json();
 
         if (!data.conversations || data.conversations.length === 0) {

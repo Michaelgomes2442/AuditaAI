@@ -47,6 +47,7 @@ interface WitnessDivergence {
 type WitnessReceipt = WitnessClaim | WitnessConsensus | WitnessDivergence;
 
 export default function WitnessPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [userProfile, setUserProfile] = useState<{ tier?: string; role?: string } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
@@ -81,14 +82,14 @@ export default function WitnessPage() {
         
         // Fetch cross-model comparison data filtered by conversationId
         const comparisonUrl = selectedConversation === 'aggregate'
-          ? 'http://localhost:3001/api/live-demo/comparison'
-          : `http://localhost:3001/api/live-demo/comparison?conversationId=${selectedConversation}`;
+          ? `${BACKEND_URL ?? ''}/api/live-demo/comparison`
+          : `${BACKEND_URL ?? ''}/api/live-demo/comparison?conversationId=${selectedConversation}`;
         const comparisonResponse = await fetch(comparisonUrl);
         if (!comparisonResponse.ok) throw new Error('Failed to fetch comparison data');
         const comparisonData = await comparisonResponse.json();
         
         // Fetch model status
-        const modelsResponse = await fetch('http://localhost:3001/api/live-demo/models');
+  const modelsResponse = await fetch(`${BACKEND_URL ?? ''}/api/live-demo/models`);
         const modelsData = modelsResponse.ok ? await modelsResponse.json() : [];
         
         // Transform to engine stats with REAL data only
@@ -110,8 +111,8 @@ export default function WitnessPage() {
         
         // Fetch tracking history for witness claims filtered by conversationId
         const trackingUrl = selectedConversation === 'aggregate'
-          ? 'http://localhost:3001/api/live-demo/tracking-history'
-          : `http://localhost:3001/api/live-demo/tracking-history?conversationId=${selectedConversation}`;
+          ? `${BACKEND_URL ?? ''}/api/live-demo/tracking-history`
+          : `${BACKEND_URL ?? ''}/api/live-demo/tracking-history?conversationId=${selectedConversation}`;
         const trackingResponse = await fetch(trackingUrl);
         const trackingData = trackingResponse.ok ? await trackingResponse.json() : [];
         

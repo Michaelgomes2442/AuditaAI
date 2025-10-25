@@ -14,7 +14,8 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 (or set your FRONTEND_BASE/BASE env) with your browser to see the result in development.
+When deploying to Vercel, the site will be available at your Vercel project's URL. See `frontend/DEPLOYMENT.md` (planned) for Vercel + Neon env var guidance.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

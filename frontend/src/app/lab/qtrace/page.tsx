@@ -55,6 +55,7 @@ interface WitnessQuorum {
 }
 
 export default function QTracePage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [selectedConversation, setSelectedConversation] = useState<string>("aggregate");
   const [selectedStream, setSelectedStream] = useState<string>("stream_001");
   const [receipts, setReceipts] = useState<QTraceReceipt[]>([]);
@@ -70,8 +71,8 @@ export default function QTracePage() {
         
         // Fetch REAL conversation data filtered by conversationId (no fake data!)
         const url = selectedConversation === 'aggregate'
-          ? 'http://localhost:3001/api/conversations/aggregate'
-          : `http://localhost:3001/api/conversations/aggregate?conversationId=${selectedConversation}`;
+          ? `${BACKEND_URL ?? ''}/api/conversations/aggregate`
+          : `${BACKEND_URL ?? ''}/api/conversations/aggregate?conversationId=${selectedConversation}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch conversation data');
         const data = await response.json();

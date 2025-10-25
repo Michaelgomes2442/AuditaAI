@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { createTestUser, loginAsUser, routes, selectors } from './utils';
+import { createTestUser, loginAsUser, routes, selectors, requiresBackend } from './utils';
+
+test.skip(!requiresBackend(), 'integration backend not available — skipping navigation tests');
 
 test.describe('Navigation and Layout', () => {
   test.beforeEach(async ({ page }) => {

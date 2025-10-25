@@ -60,3 +60,15 @@ export async function logout(page: Page) {
 export async function waitForUrl(page: Page, url: string) {
   await page.waitForURL(url);
 }
+
+// Helper that indicates whether the integration/backend is available for E2E.
+// Set E2E_RUN_INTEGRATION=1 or provide BACKEND_INTERNAL_URL/NEXT_PUBLIC_BACKEND_URL
+// in CI to run the full integration tests. Default: skip integration tests.
+export function requiresBackend(): boolean {
+  return Boolean(
+    process.env.E2E_RUN_INTEGRATION === '1' ||
+      process.env.BACKEND_INTERNAL_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_URL ||
+      process.env.MCP_SERVER_URL
+  );
+}

@@ -27,6 +27,7 @@ interface Band {
 }
 
 export default function BandsPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [selectedBand, setSelectedBand] = useState<number>(0);
   const [bands, setBands] = useState<Band[]>([]);
   const [currentBand, setCurrentBand] = useState<string>("0");
@@ -39,7 +40,7 @@ export default function BandsPage() {
       try {
         setLoading(true);
         
-        const response = await fetch('http://localhost:3001/api/governance/bands');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/governance/bands`);
         if (!response.ok) throw new Error('Failed to fetch bands configuration');
         const data = await response.json();
         

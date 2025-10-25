@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { requiresBackend } from './utils';
+
+test.skip(!requiresBackend(), 'integration backend not available — skipping auth/integration tests');
 import type { Page } from '@playwright/test';
 
 // Test fixtures and utilities

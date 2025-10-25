@@ -105,7 +105,7 @@ function generateTestCompleteEmail(data: any) {
             </div>
             ` : ''}
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lab" class="button">View Results</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/lab" class="button">View Results</a>
           </div>
           <div class="footer">
             <p>AuditaAI - Verifiable AI Testing Platform</p>
@@ -162,7 +162,7 @@ function generateBatchCompleteEmail(data: any) {
               </div>
             </div>
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/batch-test" class="button">View Full Results</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/batch-test" class="button">View Full Results</a>
           </div>
           <div class="footer">
             <p>AuditaAI - Verifiable AI Testing Platform</p>
@@ -217,7 +217,7 @@ function generateScoreAlertEmail(data: any) {
             </div>
             ` : ''}
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lab/analytics" class="button">Investigate Issue</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/lab/analytics" class="button">Investigate Issue</a>
           </div>
           <div class="footer">
             <p>AuditaAI - Verifiable AI Testing Platform</p>
@@ -266,7 +266,7 @@ function generateWitnessFailureEmail(data: any) {
               <strong>Failure Reason:</strong> ${data.reason || 'Insufficient responses'}
             </div>
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lab/witness" class="button">Review Witnesses</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/lab/witness" class="button">Review Witnesses</a>
           </div>
           <div class="footer">
             <p>AuditaAI - Verifiable AI Testing Platform</p>
@@ -339,7 +339,7 @@ function generateScheduledReportEmail(data: any) {
             </div>
             ` : ''}
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lab/analytics" class="button">View Full Report</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/lab/analytics" class="button">View Full Report</a>
           </div>
           <div class="footer">
             <p>AuditaAI - Verifiable AI Testing Platform</p>

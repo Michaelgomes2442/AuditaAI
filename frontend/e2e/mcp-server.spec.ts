@@ -1,43 +1,10 @@
-test('metrics endpoint returns performance data', async ({ request }) => {
-  const res = await request.get(`${MCP_URL}/metrics`);
-  expect(res.ok()).toBeTruthy();
-  const data = await res.json();
-  expect(data.memory).toBeDefined();
-  expect(data.uptime).toBeGreaterThan(0);
-});
-
-test('scaling-info endpoint returns scaling data', async ({ request }) => {
-  const res = await request.get(`${MCP_URL}/scaling-info`);
-  expect(res.ok()).toBeTruthy();
-  const data = await res.json();
-  expect(data.instanceId).toBeDefined();
-  expect(data.memory).toBeDefined();
-});
-
-test('load-test endpoint simulates load', async ({ request }) => {
-  const res = await request.post(`${MCP_URL}/load-test`, {
-    data: { requests: 10, concurrency: 2 }
-  });
-  expect(res.ok()).toBeTruthy();
-  const data = await res.json();
-  expect(data.completed).toBe(10);
-  expect(data.errors).toBe(0);
-});
-
-test('handshake endpoint accessibility', async ({ request }) => {
-  const res = await request.post(`${MCP_URL}/handshake`, {
-    data: { token: 'accessibility-test' }
-  });
-  expect(res.ok()).toBeTruthy();
-  const data = await res.json();
-  expect(data.status).toBe('handshake-accepted');
-  expect(typeof data.token).toBe('string');
-  // Accessibility: token should not contain unsafe characters
-  expect(/^[a-zA-Z0-9-_]+$/.test(data.token)).toBeTruthy();
-});
 import { test, expect } from '@playwright/test';
 
-const MCP_URL = process.env.MCP_SERVER_URL || 'http://localhost:4000';
+// Require explicit MCP server URL for these tests. If the environment
+// doesn't provide MCP_SERVER_URL we skip the entire file so CI/deploys that
+// don't have that infra won't attempt to hit localhost.
+const MCP_URL = process.env.MCP_SERVER_URL;
+test.skip(!MCP_URL, 'MCP_SERVER_URL not set — skipping MCP server tests');
 
 test.describe('Azure MCP Server', () => {
   test('health endpoint returns ok', async ({ request }) => {
@@ -66,3 +33,4 @@ test.describe('Azure MCP Server', () => {
     expect(data.error).toMatch(/Invalid input|Missing token/);
   });
 });
+

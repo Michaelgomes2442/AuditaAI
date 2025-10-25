@@ -15,6 +15,7 @@ interface Receipt {
 }
 
 export default function ReceiptsPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [registry, setRegistry] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +28,7 @@ export default function ReceiptsPage() {
   const fetchReceipts = async () => {
     try {
       // Fetch registry from backend
-      const response = await fetch('http://localhost:3001/api/receipts/registry');
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/registry`);
       if (response.ok) {
         const data = await response.json();
         setRegistry(data);
@@ -58,7 +59,7 @@ export default function ReceiptsPage() {
 
   const verifyReceipt = async (path: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/receipts/verify', {
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path })

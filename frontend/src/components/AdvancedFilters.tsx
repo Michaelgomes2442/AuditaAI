@@ -37,17 +37,17 @@ export default function AdvancedFilters({ onFiltersChange, onReset }: AdvancedFi
   // Initialize filters from URL params
   const [filters, setFilters] = useState<FilterCriteria>(() => {
     return {
-      dateFrom: searchParams.get('dateFrom') || undefined,
-      dateTo: searchParams.get('dateTo') || undefined,
-      minScore: searchParams.get('minScore') ? Number(searchParams.get('minScore')) : undefined,
-      maxScore: searchParams.get('maxScore') ? Number(searchParams.get('maxScore')) : undefined,
-      modelType: searchParams.get('modelType') || undefined,
-      status: (searchParams.get('status') as FilterCriteria['status']) || 'all',
-      minCompleteness: searchParams.get('minC') ? Number(searchParams.get('minC')) : undefined,
-      minReliability: searchParams.get('minR') ? Number(searchParams.get('minR')) : undefined,
-      minIntegrity: searchParams.get('minI') ? Number(searchParams.get('minI')) : undefined,
-      minEffectiveness: searchParams.get('minE') ? Number(searchParams.get('minE')) : undefined,
-      minSecurity: searchParams.get('minS') ? Number(searchParams.get('minS')) : undefined,
+      dateFrom: searchParams?.get('dateFrom') || undefined,
+      dateTo: searchParams?.get('dateTo') || undefined,
+      minScore: searchParams?.get('minScore') ? Number(searchParams.get('minScore')) : undefined,
+      maxScore: searchParams?.get('maxScore') ? Number(searchParams.get('maxScore')) : undefined,
+      modelType: searchParams?.get('modelType') || undefined,
+      status: (searchParams?.get('status') as FilterCriteria['status']) || 'all',
+      minCompleteness: searchParams?.get('minC') ? Number(searchParams.get('minC')) : undefined,
+      minReliability: searchParams?.get('minR') ? Number(searchParams.get('minR')) : undefined,
+      minIntegrity: searchParams?.get('minI') ? Number(searchParams.get('minI')) : undefined,
+      minEffectiveness: searchParams?.get('minE') ? Number(searchParams.get('minE')) : undefined,
+      minSecurity: searchParams?.get('minS') ? Number(searchParams.get('minS')) : undefined,
     };
   });
 

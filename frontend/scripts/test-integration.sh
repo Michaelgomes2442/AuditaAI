@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-BASE="http://localhost:3000"
+BASE="${BASE:-http://localhost:3000}"
 EMAIL="test-$(date +%s)@example.com"
 PASSWORD="password123"
 NAME="Test User"

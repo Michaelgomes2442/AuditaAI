@@ -30,7 +30,12 @@ export default function ConversationSelector({
   useEffect(() => {
     const loadConversations = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/conversations/aggregate');
+        const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+        const endpoint = BACKEND_URL
+          ? `${BACKEND_URL}/api/conversations/aggregate`
+          : '/api/conversations/aggregate';
+
+        const response = await fetch(endpoint);
         const data = await response.json();
         
         if (data.conversations && data.conversations.length > 0) {

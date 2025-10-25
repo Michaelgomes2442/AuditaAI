@@ -52,6 +52,7 @@ interface Conversation {
 }
 
 export default function MathCanonPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [tritrackState, setTritrackState] = useState<TriTrackState | null>(null);
   const [loading, setLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -60,7 +61,7 @@ export default function MathCanonPage() {
 
   const loadConversations = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/conversations/aggregate');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/conversations/aggregate`);
       const data = await response.json();
       if (data.conversations && data.conversations.length > 0) {
         const convList = data.conversations.map((c: any) => ({
@@ -82,8 +83,8 @@ export default function MathCanonPage() {
   const loadTritrackState = async () => {
     try {
       const url = selectedConversation === 'aggregate' 
-        ? 'http://localhost:3001/api/math-canon/tritrack-state'
-        : `http://localhost:3001/api/math-canon/tritrack-state?conversationId=${selectedConversation}`;
+        ? `${BACKEND_URL ?? ''}/api/math-canon/tritrack-state`
+        : `${BACKEND_URL ?? ''}/api/math-canon/tritrack-state?conversationId=${selectedConversation}`;
       const response = await fetch(url);
       const data = await response.json();
       setTritrackState(data);

@@ -51,6 +51,7 @@ interface DashboardMetrics {
 }
 
 export default function DashboardPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const { data: session } = useSession();
   const [isConnected, setIsConnected] = useState(false);
   const [metrics, setMetrics] = useState<DashboardMetrics>({
@@ -68,12 +69,14 @@ export default function DashboardPage() {
 
   // Socket.IO connection for real-time updates
   useEffect(() => {
-    const socket: Socket = io('http://localhost:3001', {
+    const options = {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5
-    });
+    };
+
+    const socket: Socket = BACKEND_URL ? io(BACKEND_URL, options) : io(options);
 
     socket.on('connect', () => {
       console.log('[Dashboard] Socket.IO connected:', socket.id);

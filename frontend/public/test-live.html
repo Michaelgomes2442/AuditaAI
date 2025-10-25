@@ -41,11 +41,11 @@
       log('🔍 Testing live endpoint...');
       
       try {
-        log('Request URL: http://localhost:3001/api/pilot/run-test');
+  log('Request URL: /api/pilot/run-test (same-origin proxy)');
         log('Headers: x-user-id: 22, x-user-tier: PAID');
         log('Body: {"mode":"live","prompt":"What is 2+2?","models":["llama3.2:3b"],"useGovernance":true}');
         
-        const res = await fetch('http://localhost:3001/api/pilot/run-test', {
+  const res = await fetch('/api/pilot/run-test', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -88,12 +88,12 @@
       
       try {
         const [baseRes, governedRes] = await Promise.all([
-          fetch('http://localhost:3001/api/pilot/run-test', {
+          fetch('/api/pilot/run-test', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-user-tier': 'PAID', 'x-user-id': '22' },
             body: JSON.stringify({ mode: 'live', prompt: 'What is 2+2?', models: ['llama3.2:3b'], useGovernance: false })
           }),
-          fetch('http://localhost:3001/api/pilot/run-test', {
+          fetch('/api/pilot/run-test', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-user-tier': 'PAID', 'x-user-id': '22' },
             body: JSON.stringify({ mode: 'live', prompt: 'What is 2+2?', models: ['llama3.2:3b'], useGovernance: true })

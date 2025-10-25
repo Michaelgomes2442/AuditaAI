@@ -34,6 +34,7 @@ interface ReplicaReceipt {
 }
 
 export default function MeshPage() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [selectedPeer, setSelectedPeer] = useState<string>("peer_001");
   const [meshPeers, setMeshPeers] = useState<MeshPeer[]>([]);
   const [meshStatus, setMeshStatus] = useState<string>("standalone");
@@ -46,7 +47,7 @@ export default function MeshPage() {
       try {
         setLoading(true);
         
-        const response = await fetch('http://localhost:3001/api/mesh/peers');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/mesh/peers`);
         if (!response.ok) throw new Error('Failed to fetch mesh peers');
         const data = await response.json();
         

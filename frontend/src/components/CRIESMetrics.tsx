@@ -34,11 +34,14 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
 
   useEffect(() => {
     // Connect to WebSocket server
-    const socketInstance = io('http://localhost:3001', {
+    const options = {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
-    });
+    };
+
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const socketInstance = BACKEND_URL ? io(BACKEND_URL, options) : io(options);
 
     socketInstance.on('connect', () => {
       console.log('✅ CRIES WebSocket connected');

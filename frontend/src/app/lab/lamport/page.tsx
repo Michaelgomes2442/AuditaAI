@@ -24,6 +24,7 @@ interface LamportBlock {
 export default function LamportPage() {
   const [chain, setChain] = useState<LamportBlock[]>([]);
   const [loading, setLoading] = useState(true);
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [chainValid, setChainValid] = useState(true);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function LamportPage() {
 
   const fetchLamportChain = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/receipts/registry');
+        const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/registry`);
       if (response.ok) {
         const data = await response.json();
         

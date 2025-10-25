@@ -71,6 +71,7 @@ interface BandPromotion {
 }
 
 export default function CRIESMetricsDashboard() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [currentMetrics, setCurrentMetrics] = useState<CRIESMetrics>({
     coherence: 0.71,
     rigor: 0.68,
@@ -108,7 +109,7 @@ export default function CRIESMetricsDashboard() {
   useEffect(() => {
     const fetchRealMetrics = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/conversations/aggregate');
+  const response = await fetch(`${BACKEND_URL ?? ''}/api/conversations/aggregate`);
         const data = await response.json();
 
         if (!data.aggregateCRIES || data.totalConversations === 0) {

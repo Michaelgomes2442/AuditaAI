@@ -128,7 +128,7 @@ export default function APIPage() {
               <div className="text-slate-400 mb-2">Base URL</div>
               <div className="text-cyan-400">https://api.auditaai.com/v1</div>
               <div className="text-slate-400 mt-3 mb-2">Development</div>
-              <div className="text-cyan-400">http://localhost:3001</div>
+              <div className="text-cyan-400">{process.env.NEXT_PUBLIC_BACKEND_URL ?? 'Not configured (set NEXT_PUBLIC_BACKEND_URL)'}</div>
             </div>
           </div>
         </section>

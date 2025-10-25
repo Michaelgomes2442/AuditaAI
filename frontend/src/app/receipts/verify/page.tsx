@@ -22,6 +22,7 @@ interface VerificationResult {
 
 export default function ReceiptVerificationPage() {
   const router = useRouter();
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [cryptoKey, setCryptoKey] = useState('');
   const [receiptHash, setReceiptHash] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -39,7 +40,7 @@ export default function ReceiptVerificationPage() {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/receipts/verify-key', {
+      const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/verify-key`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

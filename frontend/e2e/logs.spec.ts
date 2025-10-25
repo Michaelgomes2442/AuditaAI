@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { createTestUser, loginAsUser, routes } from './utils';
+import { createTestUser, loginAsUser, routes, requiresBackend } from './utils';
+
+// Skip these integration tests if the backend isn't available in the environment.
+test.skip(!requiresBackend(), 'integration backend not available — skipping logs tests');
 
 test.describe('Audit Logs', () => {
   test.beforeEach(async ({ page }) => {
