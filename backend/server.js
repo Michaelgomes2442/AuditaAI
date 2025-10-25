@@ -143,7 +143,18 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL === "") {
     _fallback: true
   };
 } else {
-  prisma = new PrismaClient();
+  try {
+    // Some deployment bundlers or packaging steps can produce unexpected
+    // shapes for the imported Prisma client (for example an object instead
+    // of the class). Protect against that by constructing inside a try/catch
+    // and falling back to the pg-based runtime fallback below when it fails.
+    prisma = new PrismaClient();
+  } catch (e) {
+    console.error('PrismaClient construction failed, falling back to pg/in-memory:', e && (e.stack || e.message) || String(e));
+    // Mark PrismaClient as unavailable so the later pg fallback will run.
+    PrismaClient = undefined;
+    prisma = undefined;
+  }
 }
 
 // Startup info (non-sensitive): log whether DATABASE_URL is present and whether
