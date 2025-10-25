@@ -7,12 +7,7 @@
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
   "framework": "nextjs",
-  "functions": {
-    "api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  },
+  
   "headers": [
     {
       "source": "/api/(.*)",
