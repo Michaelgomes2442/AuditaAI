@@ -8,11 +8,16 @@ const __dirname = dirname(__filename);
 const nextConfig = {
   typedRoutes: true,
   outputFileTracingRoot: join(__dirname, '../'),
-  eslint: {
-    ignoreDuringBuilds: true, // We'll handle ESLint separately
-  },
   typescript: {
     ignoreBuildErrors: false, // Keep type checking during build
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3001/api/:path*',
+      },
+    ];
   },
 };
 

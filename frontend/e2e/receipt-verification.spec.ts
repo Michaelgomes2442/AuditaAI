@@ -217,16 +217,12 @@ test.describe('Δ-Receipt Verification', () => {
   });
 
   test('receipt pagination works for large datasets', async ({ request }) => {
-    // Create many receipts
-    for (let i = 0; i < 50; i++) {
-      await request.post(`${API_BASE}/analyze`, {
-        data: {
-          prompt: `Pagination test ${i}`,
-          model_output: `Output ${i}`
-        },
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    // Create many receipts quickly via test seeding endpoint (bypasses analyze rate limits)
+    const seedResponse = await request.post(`${API_BASE}/receipts/seed`, {
+      data: { count: 50, promptPrefix: 'Pagination test', responsePrefix: 'Output' },
+      headers: { 'Content-Type': 'application/json' }
+    });
+    expect(seedResponse.ok()).toBeTruthy();
 
     // Test pagination
     const page1Response = await request.get(`${API_BASE}/receipts?page=1&limit=10`);
@@ -248,7 +244,7 @@ test.describe('Δ-Receipt Verification', () => {
     // Should have pagination metadata
     expect(page1Data).toHaveProperty('pagination');
     expect(page1Data.pagination).toHaveProperty('page', 1);
-    expect(page1Data.pagination).toHaveProperty('total_pages');
+    expect(page1Data.pagination).toHaveProperty('pages');
   });
 
 });

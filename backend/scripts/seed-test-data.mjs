@@ -62,12 +62,14 @@ async function seedTestData() {
     ];
 
     for (let i = 0; i < testRecords.length; i++) {
-      await prisma.auditRecord.create({
-        data: {
-          ...testRecords[i],
-          lamport: 1000 + i // Simple incrementing counter for testing
-        }
-      });
+      const rec = testRecords[i];
+      const detailsJson = JSON.stringify(rec.details || {});
+      const metadataJson = JSON.stringify(rec.metadata || {});
+      // Safely escape single quotes for raw string construction
+      const esc = (s) => String(s).replace(/'/g, "''");
+      const sql = `INSERT INTO "AuditRecord" ("userId", action, category, details, metadata, status, lamport, "createdAt", "updatedAt") VALUES (${rec.userId}, '${esc(rec.action)}', '${esc(rec.category)}'::"AuditCategory", '${esc(detailsJson)}'::jsonb, '${esc(metadataJson)}'::jsonb, '${esc(rec.status)}'::"AuditStatus", ${1000 + i}, now(), now())`;
+      // Use unsafe raw execution because we need explicit enum casts in SQL.
+      await prisma.$executeRawUnsafe(sql);
     }
 
     console.log(`✅ Seeded ${testRecords.length} test audit records`);

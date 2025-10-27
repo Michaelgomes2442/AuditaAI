@@ -1,10 +1,5 @@
-
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -13,122 +8,113 @@ datasource db {
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  email         String        @unique
-  password      String
-  name          String?
-  role          Role         @default(USER)
-  tier          UserTier     @default(FREE)
-  permissions   Permission[]  @default([])
-  organization  Organization? @relation(fields: [orgId], references: [id])
-  orgId         Int?
-  status        UserStatus   @default(ACTIVE)
-  lastLoginAt   DateTime?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-
-  // Security features
-  twoFactorEnabled    Boolean   @default(false)
+  id                  Int                     @id @default(autoincrement())
+  email               String                  @unique
+  password            String
+  name                String?
+  role                Role                    @default(USER)
+  tier                UserTier                @default(FREE)
+  permissions         Permission[]            @default([])
+  orgId               Int?
+  status              UserStatus              @default(ACTIVE)
+  lastLoginAt         DateTime?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  twoFactorEnabled    Boolean                 @default(false)
   twoFactorSecret     String?
-  backupCodes         String[]  @default([])
-  failedLoginAttempts Int       @default(0)
+  backupCodes         String[]                @default([])
+  failedLoginAttempts Int                     @default(0)
   lockedUntil         DateTime?
   passwordChangedAt   DateTime?
-
-  // SSO features
-  ssoProvider         String?   // 'saml', 'azure_ad', 'google', 'okta'
-  ssoId               String?   @unique // External SSO user ID
-  ssoMetadata         Json?     // Additional SSO metadata
-
-  // BEN Runtime features
-  currentPersona      BENPersona @default(USER)
-  personaLocked       Boolean    @default(false)
-  lamportCounter      Int        @default(0)
+  ssoProvider         String?
+  ssoId               String?                 @unique
+  ssoMetadata         Json?
+  currentPersona      BENPersona              @default(USER)
+  personaLocked       Boolean                 @default(false)
+  lamportCounter      Int                     @default(0)
   lastReceiptId       Int?
-
-  // Relations
-  sessions      Session[]
-  audits        AuditRecord[]
-  teams         TeamMember[]
-  notifications NotificationPreference?
-  budgets       Budget[]
+  audits              AuditRecord[]
+  budgets             Budget[]
+  feedbacks           Feedback[]
+  notifications       NotificationPreference?
   regressionBaselines RegressionBaseline[]
-  feedbacks     Feedback[]
-  benReceipts   BENReceipt[]
-  benSessions   BENSession[]
-  zscans        ZScanVerification[]
+  sessions            Session[]
+  teams               TeamMember[]
+  organization        Organization?           @relation(fields: [orgId], references: [id])
+  benReceipts         BENReceipt[]
+  benSessions         BENSession[]
+  zscans              ZScanVerification[]
 }
 
 model Organization {
-  id          Int       @id @default(autoincrement())
-  name        String
-  plan        PlanType  @default(TRIAL)
-  status      OrgStatus @default(ACTIVE)
-  users       User[]
-  teams       Team[]
-  ssoConfigs  SSOConfiguration[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         Int                @id @default(autoincrement())
+  name       String
+  plan       PlanType           @default(TRIAL)
+  status     OrgStatus          @default(ACTIVE)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  ssoConfigs SSOConfiguration[]
+  teams      Team[]
+  users      User[]
 }
 
 model Team {
-  id            Int         @id @default(autoincrement())
-  name          String
-  organization  Organization @relation(fields: [orgId], references: [id])
-  orgId         Int
-  members       TeamMember[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id           Int          @id @default(autoincrement())
+  name         String
+  orgId        Int
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  organization Organization @relation(fields: [orgId], references: [id])
+  members      TeamMember[]
 }
 
 model TeamMember {
   id        Int      @id @default(autoincrement())
-  team      Team     @relation(fields: [teamId], references: [id])
   teamId    Int
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
   role      TeamRole @default(MEMBER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  team      Team     @relation(fields: [teamId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
   @@unique([teamId, userId])
 }
 
 model AuditRecord {
-  id           Int          @id @default(autoincrement())
-  userId       Int
-  action       String
-  category     AuditCategory
-  details      Json?
-  metadata     Json?
-  status       AuditStatus @default(SUCCESS)
-  lamport      Int
-  hashPointer  String?     // For blockchain verification
-  organizationId Int?      // Organization that owns this record
-  blockHash    String?     // Hash of the block this record belongs to
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  user         User        @relation(fields: [userId], references: [id])
+  id             Int           @id @default(autoincrement())
+  userId         Int
+  action         String
+  category       AuditCategory
+  details        Json?
+  metadata       Json?
+  status         AuditStatus   @default(SUCCESS)
+  lamport        Int
+  hashPointer    String?
+  organizationId Int?
+  blockHash      String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  user           User          @relation(fields: [userId], references: [id])
 
   @@index([category, createdAt])
   @@index([userId, createdAt])
 }
 
 model Block {
-  id            Int      @id @default(autoincrement())
-  hash          String   @unique
-  previousHash  String
+  id             Int      @id @default(autoincrement())
+  hash           String   @unique
+  previousHash   String
   organizationId Int?
-  lamportClock  Int
-  metricsData   Json
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  lamportClock   Int
+  metricsData    Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([organizationId, createdAt])
   @@index([lamportClock])
 }
 
-// Additional models needed for relations
 model Session {
   id         Int      @id @default(autoincrement())
   userId     Int
@@ -143,8 +129,8 @@ model Session {
 model Budget {
   id        Int      @id @default(autoincrement())
   userId    Int
-  limit     Float    // Monthly budget limit in USD
-  period    String   @default("monthly") // monthly, weekly, yearly
+  limit     Float
+  period    String   @default("monthly")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
@@ -153,70 +139,50 @@ model Budget {
 }
 
 model RegressionBaseline {
-  id                 Int      @id @default(autoincrement())
-  userId             Int
-  modelName          String
-  modelVersion       String?  // e.g., "gpt-4-0125-preview"
-  testType           String   // e.g., "general", "coding", "reasoning"
-
-  // Baseline metrics
-  avgResponseTime    Float
-  avgCost            Float
-  avgQualityScore    Float
-  avgAccuracy        Float
-  successRate        Float
-
-  // Threshold for alerts (percentage degradation)
-  alertThreshold Float @default(10.0) // Alert if performance drops by 10%
-
-  // Metadata
-  sampleSize Int // Number of tests used to establish baseline
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  modelName       String
+  modelVersion    String?
+  testType        String
+  avgResponseTime Float
+  avgCost         Float
+  avgQualityScore Float
+  avgAccuracy     Float
+  successRate     Float
+  alertThreshold  Float    @default(10.0)
+  sampleSize      Int
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, modelName, modelVersion, testType])
   @@index([userId, modelName, isActive])
 }
 
 model Feedback {
-  id       Int              @id @default(autoincrement())
-  userId   Int
-  type     FeedbackType
-  category FeedbackCategory
-  priority FeedbackPriority @default(MEDIUM)
-  subject  String
-  message  String           @db.Text
-
-  // Context information
-  url       String? // Page where feedback was submitted
-  userAgent String?
-
-  // Status tracking
-  status     FeedbackStatus @default(OPEN)
-  assignedTo Int? // Admin user ID
-
-  // Response
-  response    String?   @db.Text
-  respondedAt DateTime?
-  respondedBy Int?
-
-  // Sentiment analysis
-  sentiment      String? // 'positive', 'neutral', 'negative'
-  sentimentScore Float? // 0-100
-
-  // Voting/rating
-  upvotes  Int     @default(0)
-  isPublic Boolean @default(false) // Show in public roadmap
-
-  // Timestamps
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  resolvedAt DateTime?
-
-  user User @relation(fields: [userId], references: [id])
+  id             Int              @id @default(autoincrement())
+  userId         Int
+  type           FeedbackType
+  category       FeedbackCategory
+  priority       FeedbackPriority @default(MEDIUM)
+  subject        String
+  message        String
+  url            String?
+  userAgent      String?
+  status         FeedbackStatus   @default(OPEN)
+  assignedTo     Int?
+  response       String?
+  respondedAt    DateTime?
+  respondedBy    Int?
+  sentiment      String?
+  sentimentScore Float?
+  upvotes        Int              @default(0)
+  isPublic       Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  resolvedAt     DateTime?
+  user           User             @relation(fields: [userId], references: [id])
 
   @@index([userId, createdAt])
   @@index([type, status])
@@ -225,35 +191,35 @@ model Feedback {
   @@index([assignedTo, status])
 }
 
+model LamportCounter {
+  id            Int      @id @default(1)
+  currentValue  Int      @default(0)
+  lastUpdated   DateTime @default(now())
+  lastReceiptId Int?
+  metadata      Json?
+
+  @@map("lamport_counter")
+}
+
 model BENReceipt {
-  id            Int         @id @default(autoincrement())
-  receiptType   ReceiptType
-  lamportClock  Int
-  realTimestamp DateTime    @default(now())
-  userId        Int?
-  user          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Receipt content
-  persona BENPersona @default(USER)
-  track   TrackType?
-  payload Json // Receipt-specific data
-
-  // Canonical projection
-  digest         String // SHA-256 hash of content
-  previousDigest String? // Link to previous receipt
-  baselineDigest String? // Anchor to baseline
-
-  // Witness attestation
-  witnessModel     String? // ${MODEL_NAME} or ${FP_GPT5}
-  witnessSignature String? // Model fingerprint/signature
-
-  // Metadata
-  metadata  Json?
-  createdAt DateTime @default(now())
-
-  // Relations
-  handoffsFrom TriTrackHandoff[] @relation("FromReceipt")
-  handoffsTo   TriTrackHandoff[] @relation("ToReceipt")
+  id               Int               @id @default(autoincrement())
+  receiptType      ReceiptType
+  lamportClock     Int
+  realTimestamp    DateTime          @default(now())
+  userId           Int?
+  persona          BENPersona        @default(USER)
+  track            TrackType?
+  payload          Json
+  digest           String
+  previousDigest   String?
+  baselineDigest   String?
+  witnessModel     String?
+  witnessSignature String?
+  metadata         Json?
+  createdAt        DateTime          @default(now())
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  handoffsFrom     TriTrackHandoff[] @relation("FromReceipt")
+  handoffsTo       TriTrackHandoff[] @relation("ToReceipt")
 
   @@index([lamportClock])
   @@index([receiptType, lamportClock])
@@ -268,26 +234,19 @@ model BENReceipt {
 }
 
 model BENSession {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  persona  BENPersona
-  priority Int // ARCHITECT=99, GOVERNOR=90, ANALYST=80, VERIFIER=70, USER=0
-  locked   Boolean    @default(false)
-
-  // Session lifecycle
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-  duration  Int? // seconds
-
-  // Lamport tracking
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  persona      BENPersona
+  priority     Int
+  locked       Boolean    @default(false)
+  startedAt    DateTime   @default(now())
+  endedAt      DateTime?
+  duration     Int?
   startLamport Int
   endLamport   Int?
-
-  // Session metadata
-  switchReason String? @db.Text
+  switchReason String?
   metadata     Json?
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, startedAt])
   @@index([persona, startedAt])
@@ -295,32 +254,22 @@ model BENSession {
 }
 
 model TriTrackHandoff {
-  id Int @id @default(autoincrement())
-
-  // Handoff tracks
-  fromTrack TrackType
-  toTrack   TrackType
-  status    HandoffStatus @default(INITIATED)
-
-  // Receipt linking
+  id            Int           @id @default(autoincrement())
+  fromTrack     TrackType
+  toTrack       TrackType
+  status        HandoffStatus @default(INITIATED)
   fromReceiptId Int
-  fromReceipt   BENReceipt  @relation("FromReceipt", fields: [fromReceiptId], references: [id], onDelete: Cascade)
   toReceiptId   Int?
-  toReceipt     BENReceipt? @relation("ToReceipt", fields: [toReceiptId], references: [id], onDelete: Cascade)
-
-  // Timing (≤60s latency constraint)
-  initiatedAt   DateTime  @default(now())
+  initiatedAt   DateTime      @default(now())
   completedAt   DateTime?
-  latencyMs     Int? // milliseconds
-  exceededLimit Boolean   @default(false)
-
-  // Handoff data
-  payload      Json
-  result       Json?
-  errorMessage String? @db.Text
-
-  // Metadata
-  metadata Json?
+  latencyMs     Int?
+  exceededLimit Boolean       @default(false)
+  payload       Json
+  result        Json?
+  errorMessage  String?
+  metadata      Json?
+  fromReceipt   BENReceipt    @relation("FromReceipt", fields: [fromReceiptId], references: [id], onDelete: Cascade)
+  toReceipt     BENReceipt?   @relation("ToReceipt", fields: [toReceiptId], references: [id], onDelete: Cascade)
 
   @@index([fromTrack, toTrack, initiatedAt])
   @@index([status, initiatedAt])
@@ -328,21 +277,16 @@ model TriTrackHandoff {
 }
 
 model ZScanVerification {
-  id     Int   @id @default(autoincrement())
-  userId Int?
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Scan results
-  totalRules Int // Total rules checked
-  passed     Int // Number of rules that passed
-  warnings   Int // Number of warnings
-  critical   Int // Number of critical issues
-
-  // Detailed results
-  results Json // Array of ZScanResult objects
-  config  Json // ZScanConfig used for this scan
-
-  createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  totalRules Int
+  passed     Int
+  warnings   Int
+  critical   Int
+  results    Json
+  config     Json
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
@@ -350,79 +294,63 @@ model ZScanVerification {
 }
 
 model SSOConfiguration {
-  id           Int          @id @default(autoincrement())
-  organization Organization @relation(fields: [orgId], references: [id])
-  orgId        Int
-  provider     SSOProvider
-  enabled      Boolean      @default(false)
-
-  // SAML Configuration
-  samlEntryPoint  String? // IdP SSO URL
-  samlIssuer      String? // IdP Issuer/Entity ID
-  samlCert        String? @db.Text // IdP Certificate
-  samlCallbackUrl String? // SP Callback URL
-  samlLogoutUrl   String? // IdP Logout URL
-
-  // OAuth 2.0 Configuration
+  id                Int          @id @default(autoincrement())
+  orgId             Int
+  provider          SSOProvider
+  enabled           Boolean      @default(false)
+  samlEntryPoint    String?
+  samlIssuer        String?
+  samlCert          String?
+  samlCallbackUrl   String?
+  samlLogoutUrl     String?
   oauthClientId     String?
   oauthClientSecret String?
   oauthAuthUrl      String?
   oauthTokenUrl     String?
   oauthUserInfoUrl  String?
-  oauthScopes       String[] @default([])
-
-  // Common Settings
-  domainRestriction String[] @default([]) // Email domain whitelist
-  jitProvisioning   Boolean  @default(true) // Just-In-Time user creation
-  defaultRole       Role     @default(USER)
-  defaultTier       UserTier @default(FREE)
-
-  // Metadata
-  metadata   Json? // Additional provider-specific data
-  createdBy  Int
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  lastUsedAt DateTime?
+  oauthScopes       String[]     @default([])
+  domainRestriction String[]     @default([])
+  jitProvisioning   Boolean      @default(true)
+  defaultRole       Role         @default(USER)
+  defaultTier       UserTier     @default(FREE)
+  metadata          Json?
+  createdBy         Int
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  lastUsedAt        DateTime?
+  organization      Organization @relation(fields: [orgId], references: [id])
 
   @@unique([orgId, provider])
   @@index([provider, enabled])
 }
 
 model NotificationPreference {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique
-
-  // Email notifications
-  emailEnabled          Boolean @default(true)
-  testComplete          Boolean @default(true)
-  batchComplete         Boolean @default(true)
-  scheduledTestComplete Boolean @default(true)
-
-  // Performance alerts
-  alertsEnabled       Boolean @default(true)
-  lowScoreThreshold   Float   @default(70)
-  highScoreThreshold  Float   @default(90)
-  scoreDropAlert      Boolean @default(true)
-  witnessFailureAlert Boolean @default(true)
-
-  // Scheduled reports
-  dailyReport   Boolean @default(false)
-  weeklyReport  Boolean @default(true)
-  monthlyReport Boolean @default(false)
-  reportTime    String  @default("09:00") // HH:mm format
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                    Int      @id @default(autoincrement())
+  userId                Int      @unique
+  emailEnabled          Boolean  @default(true)
+  testComplete          Boolean  @default(true)
+  batchComplete         Boolean  @default(true)
+  scheduledTestComplete Boolean  @default(true)
+  alertsEnabled         Boolean  @default(true)
+  lowScoreThreshold     Float    @default(70)
+  highScoreThreshold    Float    @default(90)
+  scoreDropAlert        Boolean  @default(true)
+  witnessFailureAlert   Boolean  @default(true)
+  dailyReport           Boolean  @default(false)
+  weeklyReport          Boolean  @default(true)
+  monthlyReport         Boolean  @default(false)
+  reportTime            String   @default("09:00")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id])
 }
 
-// Enums
 enum Role {
   USER
   ADMIN
-  ARCHITECT // Can modify system configuration
-  AUDITOR // Can view and verify audit logs
-  WITNESS // External verifier
+  ARCHITECT
+  AUDITOR
+  WITNESS
 }
 
 enum Permission {
@@ -450,9 +378,9 @@ enum UserStatus {
 }
 
 enum UserTier {
-  FREE // Demo access only, predefined prompts
-  PAID // Full access, model uploads
-  ARCHITECT // System configuration access
+  FREE
+  PAID
+  ARCHITECT
 }
 
 enum OrgStatus {
@@ -470,12 +398,12 @@ enum PlanType {
 }
 
 enum AuditCategory {
-  AUTH           // Authentication events
-  ACCESS         // Access control changes
-  DATA           // Data modifications
-  CONFIG         // Configuration changes
-  VERIFICATION   // Verification events
-  SYSTEM         // System events
+  AUTH
+  ACCESS
+  DATA
+  CONFIG
+  VERIFICATION
+  SYSTEM
 }
 
 enum AuditStatus {
@@ -494,14 +422,14 @@ enum FeedbackType {
 }
 
 enum FeedbackCategory {
-  UI_UX           // User interface/experience issues
-  PERFORMANCE     // Speed, loading, responsiveness
-  ACCURACY        // Model accuracy, result quality
-  DOCUMENTATION   // Docs, guides, examples
-  API             // API functionality, integration
-  BILLING         // Pricing, payments, invoices
-  SECURITY        // Security concerns
-  GENERAL         // General feedback
+  UI_UX
+  PERFORMANCE
+  ACCURACY
+  DOCUMENTATION
+  API
+  BILLING
+  SECURITY
+  GENERAL
 }
 
 enum FeedbackPriority {
@@ -527,35 +455,33 @@ enum SSOProvider {
   GENERIC_OAUTH
 }
 
-// BEN Runtime Enums
 enum BENPersona {
-  USER          // Default user persona (priority 0)
-  VERIFIER      // Verification role (priority 70)
-  ANALYST       // Analysis role (priority 80)
-  GOVERNOR      // Governance role (priority 90)
-  ARCHITECT     // Architecture role (priority 99)
+  USER
+  VERIFIER
+  ANALYST
+  GOVERNOR
+  ARCHITECT
 }
 
 enum ReceiptType {
-  BOOT_CONFIRM  // Δ-BOOTCONFIRM: Initialization receipt
-  ANALYSIS      // Δ-ANALYSIS: BEN computation results
-  DIRECTIVE     // Δ-DIRECTIVE: Governance commands
-  RESULT        // Δ-RESULT: Execution outcomes
-  APPEND        // Δ-APPEND: State mutations
-  SYNC_POINT    // Δ-SYNCPOINT: Coordination markers
+  BOOT_CONFIRM
+  ANALYSIS
+  DIRECTIVE
+  RESULT
+  APPEND
+  SYNC_POINT
 }
 
 enum TrackType {
-  BEN_CORE      // Track-A: BEN Core (Analyst role, enforces Π/τ)
-  AUDITAAI      // Track-B: AuditaAI (Governor/Verifier, applies policies)
-  HUMAN         // Track-C: Human (Executor, receives directives)
+  BEN_CORE
+  AUDITAAI
+  HUMAN
 }
 
 enum HandoffStatus {
-  INITIATED     // Handoff started
-  IN_TRANSIT    // Moving between tracks
-  COMPLETED     // Handoff successful
-  FAILED        // Handoff failed
-  TIMEOUT       // Exceeded 60s latency limit
+  INITIATED
+  IN_TRANSIT
+  COMPLETED
+  FAILED
+  TIMEOUT
 }
-

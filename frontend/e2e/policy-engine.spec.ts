@@ -215,11 +215,11 @@ test.describe('Policy Engine', () => {
     expect(response.status()).toBe(403);
 
     // Check that violation was logged
-    const logsResponse = await request.get(`${API_BASE}/logs?filter=policy_violation`);
+    const logsResponse = await request.get(`${API_BASE}/logs?governance_decision=rejected`);
     expect(logsResponse.ok()).toBeTruthy();
 
-    const logs = await logsResponse.json();
-    const violationLog = logs.find((log: any) => log.event === 'policy_violation');
+    const logsData = await logsResponse.json();
+    const violationLog = logsData.logs.find((log: any) => log.event === 'policy_violation');
 
     expect(violationLog).toBeTruthy();
     expect(violationLog).toHaveProperty('rule_type', 'block');

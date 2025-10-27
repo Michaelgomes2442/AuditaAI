@@ -132,9 +132,11 @@ test.describe('AuditaAI Core Governance Runtime', () => {
     const response = await request.get(`${API_BASE}/receipts`);
     expect(response.ok()).toBeTruthy();
 
-    const receipts = await response.json();
-    expect(Array.isArray(receipts)).toBeTruthy();
+    const data = await response.json();
+    expect(data).toHaveProperty('receipts');
+    expect(Array.isArray(data.receipts)).toBeTruthy();
 
+    const receipts = data.receipts;
     if (receipts.length > 0) {
       const receipt = receipts[0];
       expect(receipt).toHaveProperty('id');

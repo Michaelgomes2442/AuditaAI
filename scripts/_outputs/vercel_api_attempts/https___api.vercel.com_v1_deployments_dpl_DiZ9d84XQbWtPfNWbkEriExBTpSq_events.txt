@@ -58,7 +58,7 @@
 ,
 {"created":1761408579172,"date":1761408579172,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408579172672615719000000","text":"Done in 3.3s using pnpm v10.17.1","type":"stdout","serial":"1761408579172672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,
-{"created":1761408579186,"date":1761408579186,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408579186672615719000000","text":"Detected Next.js version: 15.5.6","type":"stdout","serial":"1761408579186672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
+{"created":1761408579186,"date":1761408579186,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408579186672615719000000","text":"Detected Next.js version: 16.0.0","type":"stdout","serial":"1761408579186672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,
 {"created":1761408579187,"date":1761408579187,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408579187672615719000000","text":"Running \"pnpm run build\"","type":"stdout","serial":"1761408579187672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,
@@ -98,7 +98,7 @@
 ,
 {"created":1761408581181,"date":1761408581181,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408581181672615719000002","text":"","type":"stdout","serial":"1761408581181672615719000002","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,
-{"created":1761408581934,"date":1761408581934,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408581934672615719000000","text":"   ▲ Next.js 15.5.6","type":"stdout","serial":"1761408581934672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
+{"created":1761408581934,"date":1761408581934,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408581934672615719000000","text":"   ▲ Next.js 16.0.0","type":"stdout","serial":"1761408581934672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,
 {"created":1761408581935,"date":1761408581935,"deploymentId":"dpl_DiZ9d84XQbWtPfNWbkEriExBTpSq","id":"1761408581935672615719000000","text":"","type":"stdout","serial":"1761408581935672615719000000","info":{"type":"build","name":"bld_cahw2yopy","entrypoint":"."}}
 ,

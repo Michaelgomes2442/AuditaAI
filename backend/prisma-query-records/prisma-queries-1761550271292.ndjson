@@ -1,0 +1,2 @@
+{"ts":1761550317544,"query":"SELECT 1","params":"[]","duration":236}
+{"ts":1761550317675,"query":"SELECT \"public\".\"ben_receipts\".\"id\", \"public\".\"ben_receipts\".\"lamportClock\", \"public\".\"ben_receipts\".\"digest\", \"public\".\"ben_receipts\".\"receiptType\"::text, \"public\".\"ben_receipts\".\"realTimestamp\" FROM \"public\".\"ben_receipts\" WHERE 1=1 ORDER BY \"public\".\"ben_receipts\".\"lamportClock\" DESC LIMIT $1 OFFSET $2 /* traceparent='00-f01363efea4dec79f9f471c7862a432b-214daadc26fad9ff-01' */","params":"[1,0]","duration":130}

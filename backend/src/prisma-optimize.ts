@@ -120,6 +120,8 @@ export const createOptimizedPrismaClient = async () => {
   
   const enableOptimize = String(process.env.ENABLE_PRISMA_OPTIMIZE || '').toLowerCase() === 'true';
   const optimizeApiKey = process.env.OPTIMIZE_API_KEY;
+  const enableAccelerate = String(process.env.ENABLE_PRISMA_ACCELERATE || '').toLowerCase() === 'true';
+  const accelerateApiKey = process.env.PRISMA_ACCELERATE_API_KEY || process.env.ACCELERATE_API_KEY || null;
 
   const baseClient = new PrismaClient({
     datasourceUrl: process.env.DATABASE_URL,
@@ -160,24 +162,21 @@ export const createOptimizedPrismaClient = async () => {
     }
 
     try {
-      // Create base client
-      let client = new PrismaClient({
-        datasourceUrl: process.env.DATABASE_URL,
-        log: [
-          { level: 'query', emit: 'event' },
-          { level: 'info', emit: 'event' },
-          { level: 'warn', emit: 'event' },
-          { level: 'error', emit: 'event' },
-        ],
-      });
-      
-      // Chain extensions: Optimize first, then Accelerate
+      // Use the baseClient and extend it with Optimize and Accelerate
+      let client = baseClient;
       if (withOptimize) {
         client = client.$extends(withOptimize({ apiKey: optimizeApiKey })) as PrismaClient;
       }
-      if (withAccelerate) {
-        client = (client as any).$extends(withAccelerate());
-      }
+        // Attach Accelerate if available and either optimize or accelerate flags are set.
+        if (withAccelerate && (enableOptimize || enableAccelerate)) {
+          // Some Accelerate setups expect an API key in envs; pass it if available.
+          try {
+            client = (client as any).$extends(withAccelerate(accelerateApiKey ? { apiKey: accelerateApiKey } : {}));
+          } catch (accelErr) {
+            // Fallback to calling without options if extension expects none
+            client = (client as any).$extends(withAccelerate());
+          }
+        }
 
       // Set up event listeners on the final extended client
       client.$on('query', (e: any) => {
@@ -220,7 +219,45 @@ export const createOptimizedPrismaClient = async () => {
       }
     }
   }
+    // If optimize is not enabled but accelerate is explicitly enabled, attach Accelerate only.
+    if (!enableOptimize && enableAccelerate) {
+      if (!withAccelerate) {
+        console.warn('ENABLE_PRISMA_ACCELERATE is true but @prisma/extension-accelerate is not available. Running without accelerate caching.');
+        return baseClient;
+      }
 
+      try {
+        let client = baseClient;
+        try {
+          client = (client as any).$extends(withAccelerate(accelerateApiKey ? { apiKey: accelerateApiKey } : {}));
+        } catch (accelErr) {
+          client = (client as any).$extends(withAccelerate());
+        }
+
+        client.$on('query', (e: any) => {
+          console.log(`[PRISMA QUERY] ${e.query}`);
+          console.log(`[PRISMA PARAMS] ${e.params}`);
+          console.log(`[PRISMA DURATION] ${e.duration}ms`);
+          try {
+            if (recorder && typeof recorder.recordQuery === 'function') {
+              recorder.recordQuery({ query: e.query, params: e.params, duration: e.duration, timestamp: Date.now() });
+            }
+          } catch (err) {
+            // ignore recording failures
+          }
+        });
+
+        client.$on('info', (e: any) => console.log(`[PRISMA INFO] ${e.message}`));
+        client.$on('warn', (e: any) => console.warn(`[PRISMA WARN] ${e.message}`));
+        client.$on('error', (e: any) => console.error(`[PRISMA ERROR] ${e.message}`));
+
+        console.log('Prisma Accelerate extension attached — caching enabled');
+        return client;
+      } catch (err: any) {
+        console.warn('Failed to create PrismaClient with Accelerate extension, falling back to base client:', err?.message || err);
+        return baseClient;
+      }
+    }
   return baseClient;
 };
 

@@ -34,6 +34,11 @@ test.describe('Governance Runtime API', () => {
       headers: { 'Content-Type': 'application/json' }
     });
 
+    console.log('Response status:', response.status());
+    console.log('Response status text:', response.statusText());
+    const responseText = await response.text();
+    console.log('Response body:', responseText);
+
     expect(response.ok()).toBeTruthy();
     const result = await response.json();
 
@@ -144,8 +149,9 @@ test.describe('Governance Runtime API', () => {
   test('governance runtime handles malformed requests gracefully', async ({ request }) => {
     const malformedPayloads = [
       { prompt: "", model_output: "some output" }, // Empty prompt
-      { prompt: "valid prompt", model_output: "" }, // Empty output
       { prompt: null, model_output: "output" }, // Null prompt
+      { prompt: "test", model: 123 }, // Invalid model type
+      { prompt: "test", model_output: 123 }, // Invalid model_output type
       { invalid_field: "test" } // Missing required fields
     ];
 
@@ -158,7 +164,7 @@ test.describe('Governance Runtime API', () => {
       expect(response.status()).toBe(400);
       const result = await response.json();
       expect(result).toHaveProperty('error');
-      expect(result.error).toMatch(/invalid|missing|required/i);
+      expect(result.error).toMatch(/invalid|missing|required|must be/i);
     }
   });
 

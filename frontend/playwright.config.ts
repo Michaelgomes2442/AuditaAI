@@ -6,7 +6,10 @@ export default defineConfig({
   fullyParallel: true, // Changed back to true for parallel execution
   forbidOnly: !!process.env.CI,
   workers: 6, // Changed back to 6 for parallel execution
-  reporter: 'html',
+  reporter: [
+    ['../terminal-reporter.js'], // Custom terminal reporter
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
   retries: 0, // Changed to 0 to avoid retries that hide the real issue
 
   // Global setup for Prisma Optimize
