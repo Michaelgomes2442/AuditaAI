@@ -37,14 +37,14 @@
 
 ## 🔑 Configuration Checklist — What You Need to Provide
 
-### 1. Neon PostgreSQL (Database)
+### 1. Prisma PostgreSQL (Database)
 **Status:** ✅ **COMPLETE** — Already configured
 
-- Connection string provided: `postgresql://neondb_owner:npg_...@ep-curly-cell-adugikkr-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require`
+- Connection string provided: `postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_akl0dJE2gxNBiZqFNZb-g@db.prisma.io:5432/postgres?sslmode=require`
 - 7 migrations deployed successfully
 - Test user (Tristan) created with PAID tier
 
-**Action Required:** None — Neon is production-ready
+**Action Required:** None — Prisma is production-ready
 
 ---
 
@@ -64,7 +64,7 @@ Add the following variables for **Production**, **Preview**, and **Development**
 
 | Variable Name | Description | Where to Get It |
 |---------------|-------------|-----------------|
-| `DATABASE_URL` | Neon PostgreSQL connection string | ✅ You already have this:<br/>`postgresql://neondb_owner:npg_L5wcVZMnA1xP@ep-curly-cell-adugikkr-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require` |
+| `DATABASE_URL` | Prisma PostgreSQL connection string | ✅ You already have this:<br/>`postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_akl0dJE2gxNBiZqFNZb-g@db.prisma.io:5432/postgres?sslmode=require` |
 | `NEXTAUTH_SECRET` | NextAuth.js encryption secret | **Generate with:** `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Full URL of your deployed app | Example: `https://auditaai.vercel.app` |
 | `STRIPE_SECRET_KEY` | Stripe secret API key | See **Stripe Configuration** below |

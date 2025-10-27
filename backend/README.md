@@ -1,164 +1,383 @@
-# AuditaAI Backend
+# AuditaAI Core Backend# AuditaAI Core Backend
 
-The backend service implements an MVP pilot for AI model auditing and research stations, focused on establishing verifiable AI governance. This implementation uses the Rosetta Monolith's cognitive architecture to provide comprehensive model analysis, regulatory compliance tracking, and research capabilities.
 
-## MVP Pilot Overview
 
-### 1. Research Station Types
+**Local-first governance runtime for auditable AI systems****Local-first governance runtime for auditable AI systems**
 
-- **Basic Research Station** ($499/month)
-  - Single model analysis
-  - Basic CRIES metrics tracking
-  - Up to 1000 audit records/day
-  - 2 analyst seats
-  
-- **Professional Station** ($1499/month)
-  - Multi-model comparative analysis
-  - Advanced CRIES metrics with trend analysis
-  - Up to 10,000 audit records/day
-  - 5 analyst seats
-  - Custom governance policies
-  
-- **Enterprise Research Hub** ($4999/month)
-  - Full model ecosystem analysis
-  - Real-time CRIES metrics with predictive analytics
-  - Unlimited audit records
-  - 20 analyst seats
-  - Custom governance policies
-  - Dedicated support
 
-### 2. Analysis Capabilities
 
-- **Model Behavior Analysis**
-  - Input/output pattern tracking
-  - Response consistency measurement
-  - Edge case detection
-  - Behavioral drift monitoring
+AuditaAI Core provides a lightweight backend service for evaluating, auditing, and verifying large-language-model (LLM) behavior. It produces deterministic receipts and verifiable governance metrics for accountable AI.AuditaAI Core provides a lightweight backend service for evaluating, auditing, and verifying large-language-model (LLM) behavior. It produces deterministic receipts and verifiable governance metrics for accountable AI.
 
-- **Governance Tracking**
-  - Real-time policy compliance
-  - Regulatory alignment checking
-  - Ethics boundary monitoring
-  - Intervention point detection
 
-- **Research Tools**
-  - Interactive CRIES dashboard
-  - Model comparison workbench
-  - Custom test suite creation
-  - Batch analysis processor
-  - Export capabilities (CSV, JSON, PDF)
 
-## Core Architecture - Rosetta Monolith Implementation
+## Quick Start## Quick Start
 
-### 1. Tri-Track Integrity Model (vΩ3)
+
+
+### 1. Install Dependencies### 1. Install Dependencies
+
+```bash```bash
+
+cd backendcd backend
+
+pnpm installpnpm install
+
+``````
+
+
+
+### 2. Database Setup### 2. Database Setup
+
+
+
+**Option A: Docker PostgreSQL (Recommended for local development)****Option A: Docker PostgreSQL (Recommended for local development)**
+
+```bash```bash
+
+# Start PostgreSQL container# Start PostgreSQL container
+
+pnpm run db:uppnpm run db:up
+
+
+
+# Run migrations# Run migrations
+
+pnpm run migratepnpm run migrate
+
+``````
+
+
+
+**Option B: Prisma (Managed PostgreSQL)****Option B: Prisma (Managed PostgreSQL)**
+
+```bash```bash
+
+# Set DATABASE_URL in .env to your Prisma connection string# Set DATABASE_URL in .env to your Prisma connection string
+
+# Then run migrations# Then run migrations
+
+pnpm run migratepnpm run migrate
+
+``````
+
+
+
+**Option C: Local SQLite (Fallback)****Option C: Local SQLite (Fallback)**
+
+```bash```bash
+
+# Uses file-based SQLite (already configured)# Uses file-based SQLite (already configured)
+
+pnpm run migratepnpm run migrate
+
+``````
+
+
+
+### 2.5 Prisma Query Monitoring (for E2E Testing)
+
+Prisma query monitoring provides database query logging and performance insights for E2E tests. This helps identify slow queries and database bottlenecks during test execution.
+
+**Setup:**
+- Query monitoring is automatically enabled when running E2E tests
+- All database queries are logged with execution time and parameters
+- Look for `[PRISMA QUERY]` logs in test output
+
+**Usage:**
+```bash
+# Run E2E tests with query monitoring
+cd ../frontend
+pnpm run test:e2e
+```
+
+**What gets monitored:**
+- SQL query execution time
+- Query parameters
+- Database connection events
+- Transaction operations
+- Error conditions
+
+
+
+### 3. Start the Server### 3. Start the Server
+
+```bash```bash
+
+pnpm run devpnpm run dev
+
+``````
+
+
+
+### 4. Verify### 4. Verify
+
+```bash```bash
+
+curl http://localhost:3001/api/healthcurl http://localhost:3001/api/health
+
+``````
+
+
+
+## API Endpoints## API Endpoints
+
+
+
+### Core Endpoints- `GET /api/health` - Service health check
+
+- `POST /api/analyze` - Analyze prompts/model outputs
+
+- `GET /api/health` - Service health check- `POST /api/compare` - Compare two LLM models
+
+- `POST /api/analyze` - Analyze prompts/model outputs with governance- `GET /api/receipts` - Retrieve Δ-Receipts
+
+- `POST /api/compare` - Compare multiple LLMs side-by-side
+
+- `GET /api/receipts` - Retrieve Δ-Receipts with pagination## Architecture
+
+
+
+### Receipt Management### Core Components
+
+
+
+- `GET /api/receipts/conversation/:conversationId` - Get receipts for specific conversation- **Δ-Receipts System**: Lamport-ordered receipts with hash-chaining
+
+- `GET /api/receipts/export/:conversationId` - Export receipts as JSON container- **Policy Engine**: JSON-based rules (block, redact, route, escalate)
+
+- `GET /api/receipts/export-ndjson/:conversationId` - Export as signed NDJSON stream- **CRIES Metrics**: Coherence, Reliability, Integrity, Effectiveness, Security
+
+- `GET /api/receipts/conversations` - List all conversations with receipts- **Deterministic Logging**: Signed NDJSON receipt exports
+
+
+
+## Architecture### Database Schema
+
+
+
+### Core ComponentsBuilt with Prisma ORM supporting PostgreSQL and SQLite backends for local-first operation.
+
+
+
+- **Δ-Receipts System**: Lamport-ordered receipts with hash-chaining## Core Architecture - Rosetta Monolith Implementation
+
+- **Policy Engine**: JSON-based rules (block, redact, route, escalate)
+
+- **CRIES Metrics**: Coherence, Reliability, Integrity, Effectiveness, Security### 1. Tri-Track Integrity Model (vΩ3)
+
+- **Deterministic Logging**: Signed NDJSON receipt exports
 
 The system operates on three parallel tracks:
 
+### Database Schema
+
 - **Track-A (BEN Core/Analyst)**:
-  - Enforces policy (Π) and temporal (τ) constraints 
+
+Built with Prisma ORM supporting PostgreSQL and SQLite backends for local-first operation.  - Enforces policy (Π) and temporal (τ) constraints 
+
   - Computes stability windows (σ) and CRIES metrics
-  - Proposes clarification requests
+
+### API Request/Response Examples  - Proposes clarification requests
+
   - Provides core automation and verification
 
-- **Track-B (AuditaAI Governor/Verifier)**:
-  - Applies governance policies
-  - Executes Z-Scan verification
-  - Manages consent and trace IDs
-  - Prepares promotion receipts
+#### Analyze Endpoint
 
-- **Track-C (LLM Executor/Reasoner)**:
-  - Performs bounded execution steps under Track-B constraints
-  - Emits Δ-SEQ-PLAN/EXEC/DONE receipts
+```bash- **Track-B (AuditaAI Governor/Verifier)**:
+
+curl -X POST http://localhost:3001/api/analyze \  - Applies governance policies
+
+  -H "Content-Type: application/json" \  - Executes Z-Scan verification
+
+  -d '{  - Manages consent and trace IDs
+
+    "prompt": "Explain quantum computing",  - Prepares promotion receipts
+
+    "model": "gpt-4",
+
+    "context": {}- **Track-C (LLM Executor/Reasoner)**:
+
+  }'  - Performs bounded execution steps under Track-B constraints
+
+```  - Emits Δ-SEQ-PLAN/EXEC/DONE receipts
+
   - Maintains deterministic handoffs with other tracks
 
-### 1. Blockchain Event Network (BEN)
+Response:
 
-The system is built on the BEN architecture, which consists of:
+```json### 1. Blockchain Event Network (BEN)
 
-- **Event Processing**: Audit events are processed through `ben_event.py`
-- **Boot Sequence**: System initialization via `ben_boot.py`
-- **Chain Verification**: Cryptographic verification through `verify_chain.py`
-- **Hash Verification**: Block integrity checks via `verify_hash.py`
-- **Audit Service**: Core service handling through `audit_service.py`
+{
 
-### 2. Monolithic Structure
+  "analysis": {The system is built on the BEN architecture, which consists of:
 
-The monolith combines several key components:
+    "prompt": "Explain quantum computing",
 
-- **Backend Service**: Node.js/TypeScript server with WebSocket support
-- **Governance Engine**: CRIES metrics calculation and audit flow
-- **Prisma ORM**: Database interactions and schema management
-- **BEN Integration**: Python-based blockchain verification
+    "response": "...",- **Event Processing**: Audit events are processed through `ben_event.py`
 
-## Quick Start
+    "model": "gpt-4",- **Boot Sequence**: System initialization via `ben_boot.py`
 
-```bash
-# Install dependencies
-pnpm install
+    "cries": {- **Chain Verification**: Cryptographic verification through `verify_chain.py`
 
-# Run database migrations
-pnpm prisma migrate dev
+      "C": 0.85,- **Hash Verification**: Block integrity checks via `verify_hash.py`
 
-# Build TypeScript
-pnpm build
+      "R": 0.82,- **Audit Service**: Core service handling through `audit_service.py`
 
-# Start development server
-pnpm dev
+      "I": 0.88,
+
+      "E": 0.79,### 2. Monolithic Structure
+
+      "S": 0.91,
+
+      "overall": 0.85The monolith combines several key components:
+
+    },
+
+    "policies": []- **Backend Service**: Node.js/TypeScript server with WebSocket support
+
+  },- **Governance Engine**: CRIES metrics calculation and audit flow
+
+  "receipt": {...},- **Prisma ORM**: Database interactions and schema management
+
+  "actions": []- **BEN Integration**: Python-based blockchain verification
+
+}
+
+```## Quick Start
+
+
+
+#### Compare Endpoint```bash
+
+```bash# Install dependencies
+
+curl -X POST http://localhost:3001/api/compare \pnpm install
+
+  -H "Content-Type: application/json" \
+
+  -d '{# Run database migrations
+
+    "prompt": "What is machine learning?",pnpm prisma migrate dev
+
+    "models": ["gpt-4", "claude-3"]
+
+  }'# Build TypeScript
+
+```pnpm build
+
+
+
+#### Health Check# Start development server
+
+```bashpnpm dev
+
+curl http://localhost:3001/api/health```
+
 ```
 
 ## Environment & Secrets
 
-- The `DATABASE_URL` for production is stored as an environment variable / secret in Vercel for this project. Do NOT commit production credentials to the repository.
-- For local development you can use `backend/.env` or `backend/.env.example` (the repo includes an example). If you use Vercel, ensure the `DATABASE_URL` secret is configured in your Vercel project settings.
-- Redis is optional; the application will use Postgres advisory locks when `REDIS_URL` is not set. If you later add Redis, set `REDIS_URL` as an env var.
+Response:
 
+```json- For local development, use `backend/.env` or `backend/.env.example` (the repo includes an example). All cloud/Vercel deployment is disabled. Do NOT commit production credentials to the repository.
 
-## Architecture Overview
+{- Redis is optional; the application will use Postgres advisory locks when `REDIS_URL` is not set. If you later add Redis, set `REDIS_URL` as an env var.
 
-### MVP Implementation Priorities
+  "status": "healthy",
+
+  "service": "AuditaAI Core",
+
+  "version": "1.0.0",## Architecture Overview
+
+  "timestamp": "2025-10-26T12:34:56.789Z"
+
+}### MVP Implementation Priorities
+
+```
 
 1. **Core Analysis Platform**
-   - Real-time model monitoring system
-   - Governance metric calculation engine
-   - Alert and intervention framework
-   - Research station workspaces
-   - Data export and reporting system
 
-2. **Pilot Features**
-   ```typescript
+## Development   - Real-time model monitoring system
+
+   - Governance metric calculation engine
+
+### Scripts   - Alert and intervention framework
+
+- `pnpm run dev` - Start development server with hot reload   - Research station workspaces
+
+- `pnpm run migrate` - Run database migrations   - Data export and reporting system
+
+- `pnpm run db:up` - Start PostgreSQL container
+
+- `pnpm run db:down` - Stop PostgreSQL container2. **Pilot Features**
+
+- `pnpm run db:reset` - Reset database and run migrations   ```typescript
+
    interface PilotFeatures {
-     // Model Analysis
-     behaviorTracking: {
-       inputPatternAnalysis: boolean;    // Track input patterns
-       outputConsistency: boolean;       // Measure response consistency
+
+### Environment Variables     // Model Analysis
+
+- `DATABASE_URL` - Database connection string     behaviorTracking: {
+
+- `PORT` - Server port (default: 3001)       inputPatternAnalysis: boolean;    // Track input patterns
+
+- `NODE_ENV` - Environment (development/production)       outputConsistency: boolean;       // Measure response consistency
+
        driftDetection: boolean;          // Monitor behavioral drift
-       anomalyDetection: boolean;        // Identify anomalies
+
+## Features       anomalyDetection: boolean;        // Identify anomalies
+
      };
-     
-     // Governance
-     complianceMonitoring: {
-       regulatoryAlignment: boolean;     // Check regulatory compliance
-       ethicsBoundaries: boolean;        // Monitor ethics metrics
-       interventionPoints: boolean;       // Detect intervention needs
+
+### Δ-Receipts     
+
+- Lamport-ordered sequence numbers     // Governance
+
+- Cryptographic hash chaining     complianceMonitoring: {
+
+- Timestamped records       regulatoryAlignment: boolean;     // Check regulatory compliance
+
+- Conversation-specific chains       ethicsBoundaries: boolean;        // Monitor ethics metrics
+
+- Database and filesystem storage       interventionPoints: boolean;       // Detect intervention needs
+
        auditTrail: boolean;             // Maintain audit records
-     };
-     
-     // Research Tools
-     analysisCapabilities: {
-       criesDashboard: boolean;         // Interactive CRIES metrics
+
+### Policy Engine     };
+
+- JSON-based governance rules     
+
+- Actions: block, redact, route, escalate     // Research Tools
+
+- Priority-based evaluation     analysisCapabilities: {
+
+- Extensible rule system       criesDashboard: boolean;         // Interactive CRIES metrics
+
        modelComparison: boolean;        // Compare multiple models
-       customTestSuites: boolean;       // Create custom tests
-       batchProcessor: boolean;         // Run batch analyses
-     };
-   }
-   ```
+
+### CRIES Metrics       customTestSuites: boolean;       // Create custom tests
+
+- **Coherence (C)**: Logical consistency and flow       batchProcessor: boolean;         // Run batch analyses
+
+- **Reliability (R)**: Factual accuracy and citations     };
+
+- **Integrity (I)**: Ethical alignment and safety   }
+
+- **Effectiveness (E)**: User satisfaction and utility   ```
+
+- **Security (S)**: Policy compliance and safety
 
 3. **Research Station Tiers**
 
-2. **Band-1 (Adaptive Governance Layer)**
-   - Advisory models with bounded policy updates
-   - Temporal Governance Learning (TGL)
-   - Causal Audit Graphs (CAG)
+### Local-First Design
+
+- Works offline with local databases2. **Band-1 (Adaptive Governance Layer)**
+
+- Docker support for PostgreSQL   - Advisory models with bounded policy updates
+
+- Neon managed PostgreSQL compatibility   - Temporal Governance Learning (TGL)
+
+- SQLite fallback for development   - Causal Audit Graphs (CAG)
    - Symbolic-Neural hybrid processing
    - Message-driven batch learning
 

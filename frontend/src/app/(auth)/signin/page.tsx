@@ -28,15 +28,14 @@ export default function SignInPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: "/dashboard",
       });
 
       if (result?.error) {
         setError("Invalid email or password. Please try again.");
-      } else {
-        router.push("/dashboard");
-        router.refresh();
       }
+      // No need for router.push since redirect: true handles it
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {
@@ -89,7 +88,7 @@ export default function SignInPage() {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 backdrop-blur-sm">
+                  <div data-testid="error-message" className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 backdrop-blur-sm">
                     <p className="text-red-400 text-sm font-mono">{error}</p>
                   </div>
                 )}

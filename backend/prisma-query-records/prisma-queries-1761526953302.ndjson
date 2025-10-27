@@ -1,0 +1,2 @@
+{"ts":1761526954743,"query":"SELECT COUNT(*) AS \"_count$_all\" FROM (SELECT \"public\".\"User\".\"id\" FROM \"public\".\"User\" WHERE 1=1 OFFSET $1) AS \"sub\"","params":"[0]","duration":220}
+{"ts":1761526954968,"query":"SELECT \"public\".\"User\".\"id\", \"public\".\"User\".\"email\", \"public\".\"User\".\"createdAt\" FROM \"public\".\"User\" WHERE 1=1 ORDER BY \"public\".\"User\".\"createdAt\" DESC LIMIT $1 OFFSET $2","params":"[5,0]","duration":217}

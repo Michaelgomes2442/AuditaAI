@@ -17,7 +17,7 @@ async function createFounderAccount() {
     const founderData = {
       email: 'founder@auditaai.com',
       password: 'Toby60022006!!!',
-      name: 'Michael Tobin Gomes (Founder)',
+      name: 'michaelgomes',
       role: 'ARCHITECT', // Highest role - can modify system configuration
       permissions: [
         'READ_LOGS',

@@ -211,10 +211,8 @@ describe('Block Creation Integration', () => {
       client: undefined,
       conn: undefined,
       nsp: undefined,
-      broadcast: { emit: vi.fn() },
-      volatile: { emit: vi.fn() },
       // Add any other required properties from AuthenticatedSocket type
-    };
+    } as any;
     
     // Set up socket map for Socket.IO server
     Object.defineProperty(socketServer.io.sockets, 'sockets', {
@@ -243,7 +241,7 @@ describe('Block Creation Integration', () => {
     const events: any[] = [];
 
     // Set up WebSocket events listener
-    mockSocket.emit.mockImplementation((event: string, data: any) => {
+    (mockSocket.emit as Mock).mockImplementation((event: string, data: any) => {
       console.log(`Socket event received: ${event}`, data);
       events.push({ event, data });
     });

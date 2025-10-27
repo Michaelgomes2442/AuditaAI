@@ -1,0 +1,147 @@
+[dotenv@17.2.3] injecting env (9) from ../backend/.env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🚀 Setting up E2E tests with Prisma query monitoring...
+🔍 Prisma query monitoring enabled for E2E testing
+🔐 Prisma Optimize API key loaded for remote recording
+📊 Database queries will be logged during test execution
+✅ Global setup complete
+🛑 Tearing down E2E tests...
+🧹 Cleaning up Prisma Optimize for E2E testing
+✅ Global teardown complete
+{
+  "config": {
+    "configFile": "/home/michaelgomes/AuditaAI/frontend/playwright.config.ts",
+    "rootDir": "/home/michaelgomes/AuditaAI/frontend/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "/home/michaelgomes/AuditaAI/frontend/playwright-global-setup.ts",
+    "globalTeardown": "/home/michaelgomes/AuditaAI/frontend/playwright-global-teardown.ts",
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/home/michaelgomes/AuditaAI/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/michaelgomes/AuditaAI/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "policy-engine.spec.ts",
+      "file": "policy-engine.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Policy Engine",
+          "file": "policy-engine.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "redact rule removes sensitive information",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 684,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"[REDACTED]\"\u001b[39m\nReceived string:    \u001b[31m\"What is John's social security number?\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"[REDACTED]\"\u001b[39m\nReceived string:    \u001b[31m\"What is John's social security number?\"\u001b[39m\n    at /home/michaelgomes/AuditaAI/frontend/e2e/policy-engine.spec.ts:62:36",
+                        "location": {
+                          "file": "/home/michaelgomes/AuditaAI/frontend/e2e/policy-engine.spec.ts",
+                          "column": 36,
+                          "line": 62
+                        },
+                        "snippet": "  60 |     expect(result.redacted_output).not.toContain('123-45-6789');\n  61 |     expect(result.redacted_output).not.toContain('123 Main St.');\n> 62 |     expect(result.redacted_output).toContain('[REDACTED]');\n     |                                    ^\n  63 |   });\n  64 |\n  65 |   test('route rule directs content to appropriate handlers', async ({ request }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/michaelgomes/AuditaAI/frontend/e2e/policy-engine.spec.ts",
+                            "column": 36,
+                            "line": 62
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"[REDACTED]\"\u001b[39m\nReceived string:    \u001b[31m\"What is John's social security number?\"\u001b[39m\n\n  60 |     expect(result.redacted_output).not.toContain('123-45-6789');\n  61 |     expect(result.redacted_output).not.toContain('123 Main St.');\n> 62 |     expect(result.redacted_output).toContain('[REDACTED]');\n     |                                    ^\n  63 |   });\n  64 |\n  65 |   test('route rule directs content to appropriate handlers', async ({ request }) => {\n    at /home/michaelgomes/AuditaAI/frontend/e2e/policy-engine.spec.ts:62:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-27T02:43:04.091Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/home/michaelgomes/AuditaAI/frontend/e2e/policy-engine.spec.ts",
+                        "column": 36,
+                        "line": 62
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4506fae93e670320b0d1-4d5ebbaa66ebc02a25d1",
+              "file": "policy-engine.spec.ts",
+              "line": 36,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-10-27T02:43:03.548Z",
+    "duration": 1269.2330000000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -74,7 +74,10 @@ export default function UserProfileCorner() {
 
           {/* User Info */}
           <div className="flex flex-col min-w-[120px]">
-            <span className="text-xs font-mono text-slate-200 truncate max-w-[140px]">
+            <span 
+              className="text-xs font-mono text-slate-200 truncate max-w-[140px]"
+              data-testid="user-email"
+            >
               {profile?.email || session.user?.email || "Loading..."}
             </span>
             <div className={`flex items-center gap-1 ${tierStyles.text}`}>

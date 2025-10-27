@@ -1,12 +1,36 @@
 import { PrismaClient } from "../generated/prisma";
+// import { withOptimize } from "@prisma/extension-optimize";
 
 declare global {
   // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
-export const prisma = global.prisma ?? new PrismaClient();
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+let prisma: PrismaClient;
+
+try {
+  prisma = global.prisma ?? new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
+  // .$extends(
+  //   withOptimize({ apiKey: process.env.OPTIMIZE_API_KEY })
+  // );
+  if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+} catch (error) {
+  console.warn('Failed to initialize Prisma client:', error);
+  // Create a mock client that throws meaningful errors
+  prisma = new Proxy({} as PrismaClient, {
+    get(target, prop) {
+      return new Proxy({}, {
+        get() {
+          throw new Error(`Database connection not available. Please check your DATABASE_URL configuration.`);
+        }
+      });
+    }
+  });
+}
+
+export { prisma };
 
 // simple audit helper
 export async function recordAudit(userId: number, action: string, details?: string) {

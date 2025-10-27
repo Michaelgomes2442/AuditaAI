@@ -1,37 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AuditaAI Frontend (Optional)
+
+**Optional dashboard interface for AuditaAI Core**
+
+> **Note**: This frontend is **optional** and not part of the core AuditaAI Core runtime. AuditaAI Core is a backend-only governance runtime that can be used independently or integrated with any frontend/dashboard of your choice.
+
+This is a [Next.js](https://nextjs.org) project that provides a dashboard interface for interacting with AuditaAI Core. It demonstrates how to consume the AuditaAI Core API endpoints.
+
+## Integration with AuditaAI Core
+
+This frontend can connect to a running AuditaAI Core instance via the REST API:
+
+- `POST /api/analyze` - Analyze prompts with governance
+- `POST /api/compare` - Compare multiple LLMs
+- `GET /api/receipts` - View Δ-Receipts
+- `GET /api/health` - Health checks
 
 ## Getting Started
 
-First, run the development server:
+First, ensure AuditaAI Core is running:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd ../backend
+pnpm install
+pnpm run migrate
+pnpm run dev
 ```
 
-Open http://localhost:3000 (or set your FRONTEND_BASE/BASE env) with your browser to see the result in development.
-When deploying to Vercel, the site will be available at your Vercel project's URL. See `frontend/DEPLOYMENT.md` (planned) for Vercel + Neon env var guidance.
+Then run the frontend:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000 to see the dashboard.
 
-## Learn More
+## Architecture Note
 
-To learn more about Next.js, take a look at the following resources:
+This frontend is designed to demonstrate AuditaAI Core integration but is not required for the core functionality. You can:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Use AuditaAI Core as a standalone backend service
+2. Build your own frontend/dashboard
+3. Integrate with existing enterprise systems
+4. Use the API directly from any programming language
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Core vs Frontend
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **AuditaAI Core** (required): Backend governance runtime with API
+- **This Frontend** (optional): Example dashboard interface

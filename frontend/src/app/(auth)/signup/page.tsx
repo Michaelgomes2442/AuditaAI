@@ -39,17 +39,15 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/auth/signup', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+      const res = await fetch(`${backendUrl}/api/auth/signup`, {
         method: 'POST',
         body: JSON.stringify({ email, password, name, confirmPassword }),
         headers: { 'Content-Type': 'application/json' }
       });
-
       const data = await res.json();
-
-      if (data.ok) {
+      if (res.ok && data.user) {
         setSuccess(true);
-        // Redirect immediately on success
         router.push('/signin');
       } else {
         setError(data.error || 'Failed to create account. Please try again.');
@@ -105,7 +103,7 @@ export default function SignUpPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <Alert variant="destructive" className="py-2">
+                <Alert variant="destructive" className="py-2" data-testid="error-message">
                   <AlertDescription className="text-sm">{error}</AlertDescription>
                 </Alert>
               )}

@@ -198,7 +198,7 @@ if (!userTier || userTier === 'FREE') {
 ### Environment Variables Required
 ```bash
 # Backend
-DATABASE_URL=postgresql://...
+DATABASE_URL=postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_akl0dJE2gxNBiZqFNZb-g@db.prisma.io:5432/postgres?sslmode=require
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=...
 

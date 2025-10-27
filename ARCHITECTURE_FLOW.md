@@ -299,19 +299,19 @@ USER REQUEST → Middleware (frontend/src/middleware.ts)
 ```
 LOCAL DEVELOPMENT (.env files)
 ├── frontend/.env
-│   ├── DATABASE_URL=postgresql://neondb_owner:npg_...
+│   ├── DATABASE_URL=postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_akl0dJE2gxNBiZqFNZb-g@db.prisma.io:5432/postgres?sslmode=require
 │   ├── NEXTAUTH_SECRET=wX9kF3mN2pQ7vZ4tY6uR...
 │   ├── STRIPE_SECRET_KEY=sk_test_...
 │   └── STRIPE_WEBHOOK_SECRET=whsec_...
 │
 └── backend/.env
-    └── DATABASE_URL=postgresql://neondb_owner:npg_...
+    └── DATABASE_URL=postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_akl0dJE2gxNBiZqFNZb-g@db.prisma.io:5432/postgres?sslmode=require
 
                      ↓
               DEPLOYED ON VERCEL
 
 PRODUCTION (Vercel Environment Variables)
-├── DATABASE_URL (from Neon)
+├── DATABASE_URL (from Prisma)
 ├── NEXTAUTH_SECRET (from openssl rand)
 ├── NEXTAUTH_URL (auto: https://auditaai.vercel.app)
 ├── STRIPE_SECRET_KEY (from Stripe Dashboard)

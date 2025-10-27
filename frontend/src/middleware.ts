@@ -60,12 +60,15 @@ const adminRoutes = [
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  console.log(`[MIDDLEWARE] Processing request: ${pathname}`);
+
   // Skip middleware for API routes, static files, etc.
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
     pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/)
   ) {
+    console.log(`[MIDDLEWARE] Skipping static file: ${pathname}`);
     return NextResponse.next();
   }
 
@@ -113,12 +116,15 @@ export default async function middleware(request: NextRequest) {
     });
   }
 
-  // Get auth token (check both production and development cookie names)
-  const token = request.cookies.get('next-auth.session-token') ||
-                request.cookies.get('__Secure-next-auth.session-token');
+  // Check for authentication by looking for NextAuth session cookies
+  const hasSession = request.cookies.has('next-auth.session-token') ||
+                     request.cookies.has('__Secure-next-auth.session-token');
+
+  console.log(`[MIDDLEWARE] Path: ${pathname}, hasSession: ${hasSession}, cookies:`, request.cookies.getAll().map(c => c.name));
 
   // Redirect authenticated users from signin/signup to home
-  if ((pathname === '/signin' || pathname === '/signup') && token) {
+  if ((pathname === '/signin' || pathname === '/signup') && hasSession) {
+    console.log(`[MIDDLEWARE] Redirecting authenticated user from ${pathname} to home`);
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -137,19 +143,23 @@ export default async function middleware(request: NextRequest) {
   // Check if route requires authentication
   const requiresAuth = protectedRoutes.some(route => pathname.startsWith(route));
 
+  console.log(`[MIDDLEWARE] Path: ${pathname}, requiresAuth: ${requiresAuth}`);
+
   if (requiresAuth) {
-    if (!token) {
-      // Redirect to signin if no token is present
+    if (!hasSession) {
+      console.log(`[MIDDLEWARE] No session found, redirecting ${pathname} to signin`);
+      // Redirect to signin if no session is present
       const signInUrl = new URL('/signin', request.url);
       signInUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(signInUrl);
     }
+    console.log(`[MIDDLEWARE] Session found, allowing access to ${pathname}`);
   }
 
   // For admin routes, verify admin role
   if (adminRoutes.some(route => pathname.startsWith(route))) {
-    if (!token) {
-      // No token, redirect to signin
+    if (!hasSession) {
+      // No session, redirect to signin
       const signInUrl = new URL('/signin', request.url);
       signInUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(signInUrl);
@@ -158,7 +168,7 @@ export default async function middleware(request: NextRequest) {
     try {
       const response = await fetch(`${request.nextUrl.origin}/api/auth/check-admin`, {
         headers: {
-          Cookie: `next-auth.session-token=${token.value}`,
+          Cookie: request.headers.get('cookie') || '',
         },
       });
 
