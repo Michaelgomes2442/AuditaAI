@@ -42,6 +42,7 @@ export interface EmittedReceipt {
 /**
  * Compute SHA-256 digest of receipt content
  * Canonical projection: deterministic hash discipline
+ * Matches backend receipt-service.js hash calculation
  */
 export function computeReceiptDigest(
   receiptType: ReceiptType,
@@ -49,23 +50,38 @@ export function computeReceiptDigest(
   payload: Record<string, any>,
   previousDigest: string | null
 ): string {
-  // Canonical JSON serialization (sorted keys)
-  const canonical = JSON.stringify(
-    {
-      type: receiptType,
-      lamport: lamportClock,
-      payload,
-      previous: previousDigest,
-    },
-    Object.keys({
-      type: receiptType,
-      lamport: lamportClock,
-      payload,
-      previous: previousDigest,
-    }).sort()
-  );
+  // Helper function to recursively sort object keys for consistent hashing
+  function sortObjectKeys(obj: any): any {
+    if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+      return obj;
+    }
 
-  return crypto.createHash('sha256').update(canonical).digest('hex');
+    const sorted: any = {};
+    Object.keys(obj).sort().forEach(key => {
+      sorted[key] = sortObjectKeys(obj[key]);
+    });
+    return sorted;
+  }
+
+  // Create the receipt data object matching backend structure
+  const receiptData = {
+    ...payload,
+    previous_hash: previousDigest, // Use previous_hash to match backend
+  };
+
+  // Calculate hash excluding self_hash, signature, and lamport fields (matches backend)
+  const sortedReceiptData = Object.keys(receiptData).sort().reduce((result, key) => {
+    if (key !== 'self_hash' && key !== 'signature' && key !== 'lamport') {
+      result[key] = (receiptData as any)[key];
+    }
+    return result;
+  }, {} as Record<string, any>);
+
+  const deeplySortedReceiptData = sortObjectKeys(sortedReceiptData);
+
+  return crypto.createHash('sha256')
+    .update(JSON.stringify(deeplySortedReceiptData))
+    .digest('hex');
 }
 
 /**

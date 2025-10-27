@@ -13,6 +13,12 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      // Exclude NextAuth routes from proxy - they should be handled by Next.js
+      {
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
+      },
+      // Proxy all other API routes to backend
       {
         source: '/api/:path*',
         destination: 'http://localhost:3001/api/:path*',

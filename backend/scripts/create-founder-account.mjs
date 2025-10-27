@@ -99,7 +99,7 @@ async function createFounderAccount() {
     console.log('🎉 You can now sign in with:');
     console.log(`   Email:    ${founderData.email}`);
     console.log(`   Password: ${founderData.password}`);
-    console.log('\n🔗 Sign in at: http://localhost:3004/signin\n');
+    console.log('\n🔗 Sign in at: http://localhost:3000/signin\n');
 
   } catch (error) {
     console.error('❌ Error creating founder account:', error);

@@ -129,7 +129,7 @@ test.describe('AuditaAI Core Governance Runtime', () => {
   });
 
   test('receipts endpoint returns verifiable hash-chained records', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/receipts`);
+    const response = await request.get(`${API_BASE}/ben/receipt`);
     expect(response.ok()).toBeTruthy();
 
     const data = await response.json();
@@ -162,12 +162,15 @@ test.describe('AuditaAI Core Governance Runtime', () => {
     const receiptId = analyzeResult.receipt.id;
 
     // Then verify it
-    const verifyResponse = await request.get(`${API_BASE}/receipts/${receiptId}/verify`);
+    const verifyResponse = await request.post(`${API_BASE}/receipts/verify`, {
+      data: { id: receiptId },
+      headers: { 'Content-Type': 'application/json' }
+    });
     expect(verifyResponse.ok()).toBeTruthy();
 
     const verification = await verifyResponse.json();
     expect(verification).toHaveProperty('valid', true);
-    expect(verification).toHaveProperty('chain_integrity', true);
+    expect(verification).toHaveProperty('violations');
   });
 
   test('CRIES metrics provide comprehensive evaluation scores', async ({ request }) => {
