@@ -173,10 +173,10 @@ export const createOptimizedPrismaClient = async () => {
       
       // Chain extensions: Optimize first, then Accelerate
       if (withOptimize) {
-        client = client.$extends(withOptimize({ apiKey: optimizeApiKey }));
+        client = client.$extends(withOptimize({ apiKey: optimizeApiKey })) as PrismaClient;
       }
       if (withAccelerate) {
-        client = client.$extends(withAccelerate());
+        client = (client as any).$extends(withAccelerate());
       }
 
       // Set up event listeners on the final extended client
@@ -193,9 +193,9 @@ export const createOptimizedPrismaClient = async () => {
         }
       });
 
-      client.$on('info', (e: any) => console.log(`[PRISMA INFO] ${e.message}`));
-      client.$on('warn', (e: any) => console.warn(`[PRISMA WARN] ${e.message}`));
-      client.$on('error', (e: any) => console.error(`[PRISMA ERROR] ${e.message}`));
+      (client as any).$on('info', (e: any) => console.log(`[PRISMA INFO] ${e.message}`));
+      (client as any).$on('warn', (e: any) => console.warn(`[PRISMA WARN] ${e.message}`));
+      (client as any).$on('error', (e: any) => console.error(`[PRISMA ERROR] ${e.message}`));
 
       console.log('Prisma Optimize and Accelerate extensions attached — recording and caching enabled');
       return client;
@@ -206,10 +206,10 @@ export const createOptimizedPrismaClient = async () => {
       try {
         let extended = baseClient;
         if (withOptimize) {
-          extended = extended.$extends(withOptimize({ apiKey: optimizeApiKey }));
+          extended = (extended.$extends(withOptimize({ apiKey: optimizeApiKey })) as PrismaClient);
         }
         if (withAccelerate) {
-          extended = extended.$extends(withAccelerate());
+          extended = (extended.$extends(withAccelerate()) as PrismaClient);
         }
         console.log('Prisma Optimize and Accelerate extensions attached via fallback — recording and caching enabled');
         return extended;

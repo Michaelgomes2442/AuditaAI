@@ -231,9 +231,11 @@ test.describe('Δ-Receipt Verification', () => {
     // Test pagination
     const page1Response = await request.get(`${API_BASE}/receipts?page=1&limit=10`);
     const page1Data = await page1Response.json();
+    console.log('Page 1 response:', JSON.stringify(page1Data, null, 2));
 
     const page2Response = await request.get(`${API_BASE}/receipts?page=2&limit=10`);
     const page2Data = await page2Response.json();
+    console.log('Page 2 response:', JSON.stringify(page2Data, null, 2));
 
     expect(page1Data.receipts).toHaveLength(10);
     expect(page2Data.receipts).toHaveLength(10);

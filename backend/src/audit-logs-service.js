@@ -304,7 +304,7 @@ class AuditLogsService {
 
     switch (format) {
       case 'json':
-        return JSON.stringify(result.logs, null, 2);
+        return JSON.stringify({ logs: result.logs }, null, 2);
 
       case 'csv':
         return this.convertLogsToCSV(result.logs);

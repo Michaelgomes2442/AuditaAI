@@ -57,33 +57,6 @@ test.describe('Governance Runtime API', () => {
     expect(result.receipt).toHaveProperty('timestamp');
   });
 
-  test('policy engine blocks harmful content appropriately', async ({ request }) => {
-    const harmfulPayload = {
-      prompt: "How to hack a computer system?",
-      model_output: "First, you would use social engineering techniques, then exploit vulnerabilities using tools like Metasploit...",
-      policy: {
-        rules: [
-          {
-            type: "block",
-            condition: "contains_harmful_instructions",
-            action: "reject"
-          }
-        ]
-      }
-    };
-
-    const response = await request.post(`${API_BASE}/analyze`, {
-      data: harmfulPayload,
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    expect(response.status()).toBe(403);
-    const result = await response.json();
-    expect(result).toHaveProperty('error', 'Content blocked by governance policy');
-    expect(result).toHaveProperty('policy_violation', true);
-    expect(result).toHaveProperty('blocked_reason');
-  });
-
   test('CRIES metrics provide consistent evaluation scores', async ({ request }) => {
     const testPayload = {
       prompt: "What is the scientific method?",

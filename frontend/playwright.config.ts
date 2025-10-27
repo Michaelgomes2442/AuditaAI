@@ -33,18 +33,18 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // webServer: [
-  //   {
-  //     command: 'cd ../backend && pnpm start',
-  //     port: 3001,
-  //     timeout: 120 * 1000,
-  //     reuseExistingServer: !process.env.CI,
-  //   },
-  //   {
-  //     command: 'pnpm dev',
-  //     port: 3000,
-  //     timeout: 120 * 1000,
-  //     reuseExistingServer: !process.env.CI,
-  //   },
-  // ],
+  webServer: [
+    {
+      command: 'cd ../backend && pnpm start',
+      port: 3001,
+      timeout: 120 * 1000,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'pnpm dev',
+      port: 3000,
+      timeout: 120 * 1000,
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

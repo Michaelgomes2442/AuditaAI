@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { createOptimizedPrismaClient } from './prisma-optimize.ts';
+import { computeCRIES } from './track-a-analyzer.js';
 
 /**
  * Receipt Service - Manages Δ-Receipt hash chains and verification
@@ -32,9 +33,12 @@ class ReceiptService {
 
   /**
    * Generate deterministic CRIES metrics from text analysis
-   * Uses Math Canon vΩ.8 weights: Coherence 0.4, Reliability 0.4, Integrity 0.2
+   * Uses Math Canon vΩ.9 canonical formulas from Rosetta.html
    */
   calculateCRIESMetrics(text, prompt = '') {
+    // Use canonical CRIES computation from Track-A analyzer
+    const criesResult = computeCRIES(prompt, text);
+
     if (!text || typeof text !== 'string') {
       return {
         C: 0.1, R: 0.1, I: 0.1, E: 0.1, S: 0.1,
@@ -49,64 +53,83 @@ class ReceiptService {
       };
     }
 
+    try {
+      // Use canonical CRIES computation from Rosetta.html
+      return {
+        // Short form for storage
+        C: criesResult.C,
+        R: criesResult.R,
+        I: criesResult.I,
+        E: criesResult.E,
+        S: criesResult.S,
+        overall: criesResult.Omega, // Canonical Ω calculation
+        // Long form for API responses
+        coherence: criesResult.C,
+        reliability: criesResult.R,
+        integrity: criesResult.I,
+        effectiveness: criesResult.E,
+        security: criesResult.S,
+        explanations: {
+          coherence: `Coherence: ${criesResult.C.toFixed(3)} - Internal consistency and topic alignment`,
+          reliability: `Reliability: ${criesResult.R.toFixed(3)} - Evidentiary support per Math Canon vΩ.9`,
+          integrity: `Integrity: ${criesResult.I.toFixed(3)} - Logical consistency and goal alignment`,
+          effectiveness: `Effectiveness: ${criesResult.E.toFixed(3)} - Response appropriateness to user intent`,
+          security: `Security: ${criesResult.S.toFixed(3)} - Policy compliance and safety`
+        }
+      };
+    } catch (error) {
+      console.warn('CRIES computation failed, using fallback:', error.message);
+      // Fallback to basic implementation if canonical fails
+      return this.fallbackCRIESMetrics(text, prompt);
+    }
+  }
+
+  /**
+   * Fallback CRIES calculation for error cases
+   */
+  fallbackCRIESMetrics(text, prompt = '') {
     const tokens = text.split(/\s+/).filter(t => t.length > 0);
     const tokenCount = tokens.length;
 
-    // Coherence: Based on sentence structure and logical flow (0.4 weight)
+    // Basic coherence check
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const avgSentenceLength = tokenCount / Math.max(sentences.length, 1);
-    const coherence = Math.min(1.0, Math.max(0.1,
-      0.3 + (avgSentenceLength / 20) * 0.4 + (sentences.length / text.length) * 1000 * 0.3
-    ));
+    const coherence = Math.min(1.0, Math.max(0.1, sentences.length > 0 ? 0.5 : 0.1));
 
-    // Reliability: Based on factual consistency and citation patterns (0.4 weight)
-    const hasNumbers = /\d/.test(text);
-    const hasCitations = /\[\d+\]|\(\d{4}\)|et al\.|according to/i.test(text);
-    const repetitionRatio = this.calculateRepetitionRatio(tokens);
-    const reliability = Math.min(1.0, Math.max(0.1,
-      0.4 + (hasNumbers ? 0.2 : 0) + (hasCitations ? 0.2 : 0) - repetitionRatio * 0.3
-    ));
+    // Basic reliability check
+    const hasCitations = /\[\d+\]|\(\d{4}\)|according to|research shows/i.test(text);
+    const reliability = Math.min(1.0, Math.max(0.1, hasCitations ? 0.6 : 0.3));
 
-    // Integrity: Based on manipulation detection and bias balance (0.2 weight)
-    const sentimentBalance = this.calculateSentimentBalance(text);
-    const manipulationScore = this.detectManipulation(text);
-    const integrity = Math.min(1.0, Math.max(0.1,
-      0.5 + sentimentBalance * 0.3 - manipulationScore * 0.4
-    ));
+    // Basic integrity check
+    const integrity = Math.min(1.0, Math.max(0.1, 0.5));
 
-    // Effectiveness: Based on goal achievement and response quality (weighted)
-    const effectiveness = Math.min(1.0, Math.max(0.1,
-      0.3 + (tokenCount / 100) * 0.3 + (prompt ? this.calculateRelevance(text, prompt) : 0.4)
-    ));
+    // Basic effectiveness check
+    const effectiveness = Math.min(1.0, Math.max(0.1, tokenCount > 10 ? 0.5 : 0.2));
 
-    // Security: Based on safe content and vulnerability detection (weighted)
-    const security = Math.min(1.0, Math.max(0.1,
-      0.6 - (this.containsHarmfulContent(text) ? 0.4 : 0) - (this.hasVulnerabilities(text) ? 0.3 : 0)
-    ));
+    // Basic security check
+    const hasHarmful = /\b(kill|harm|attack|steal)\b/i.test(text);
+    const security = Math.min(1.0, Math.max(0.1, hasHarmful ? 0.2 : 0.7));
 
-    // Apply Math Canon vΩ.8 weights
-    const weightedOverall = (coherence * 0.4) + (reliability * 0.4) + (integrity * 0.2);
+    // Use canonical Ω weights even in fallback
+    const overall = (coherence * 0.28) + (reliability * 0.20) + (integrity * 0.20) + (effectiveness * 0.16) + (security * 0.16);
 
     return {
-      // Short form for storage
       C: Number(coherence.toFixed(4)),
       R: Number(reliability.toFixed(4)),
       I: Number(integrity.toFixed(4)),
       E: Number(effectiveness.toFixed(4)),
       S: Number(security.toFixed(4)),
-      overall: Number(weightedOverall.toFixed(4)),
-      // Long form for API responses
+      overall: Number(overall.toFixed(4)),
       coherence: Number(coherence.toFixed(4)),
       reliability: Number(reliability.toFixed(4)),
       integrity: Number(integrity.toFixed(4)),
       effectiveness: Number(effectiveness.toFixed(4)),
       security: Number(security.toFixed(4)),
       explanations: {
-        coherence_explanation: `Sentence structure analysis (${sentences.length} sentences, avg ${avgSentenceLength.toFixed(1)} words)`,
-        reliability_explanation: `Factual consistency check (${hasCitations ? 'with' : 'without'} citations, ${repetitionRatio.toFixed(2)} repetition ratio)`,
-        integrity_explanation: `Bias detection (${sentimentBalance.toFixed(2)} balance, ${manipulationScore.toFixed(2)} manipulation score)`,
-        effectiveness_explanation: `Response quality assessment (${tokenCount} tokens, ${prompt ? 'prompt-aligned' : 'general'} content)`,
-        security_explanation: `Safety analysis (${this.containsHarmfulContent(text) ? 'potential risks detected' : 'content appears safe'})`
+        coherence: 'Fallback: Basic sentence structure analysis',
+        reliability: 'Fallback: Citation pattern detection',
+        integrity: 'Fallback: Basic integrity check',
+        effectiveness: 'Fallback: Response length and relevance',
+        security: 'Fallback: Harmful content detection'
       }
     };
   }
@@ -230,24 +253,37 @@ class ReceiptService {
       .update(signatureData)
       .digest('hex');
 
-    receiptData.signature = signature;
-    receiptData.public_key = publicKey;
+    // Create the final receipt data object
+    const finalReceiptData = {
+      ...receiptData,
+      signature: crypto.createHmac('sha256', privateKey)
+        .update(JSON.stringify({
+          analysis_id: receiptData.analysis_id,
+          self_hash: 'placeholder',
+          timestamp: receiptData.ts
+        }))
+        .digest('hex'),
+      public_key: publicKey
+    };
 
-    // Calculate self_hash (must include signature)
+    // Calculate self_hash on the final object
+    const sortedReceiptData = Object.keys(finalReceiptData).sort().reduce((result, key) => {
+      result[key] = finalReceiptData[key];
+      return result;
+    }, {});
     const selfHash = crypto.createHash('sha256')
-      .update(JSON.stringify(receiptData))
+      .update(JSON.stringify(sortedReceiptData))
       .digest('hex');
 
-    receiptData.self_hash = selfHash;
+    finalReceiptData.self_hash = selfHash;
 
-    // Update signature data with actual hash
-    const finalSignatureData = JSON.stringify({
-      analysis_id: receiptData.analysis_id,
-      self_hash: selfHash,
-      timestamp: receiptData.ts
-    });
-    receiptData.signature = crypto.createHmac('sha256', privateKey)
-      .update(finalSignatureData)
+    // Update signature with actual hash
+    finalReceiptData.signature = crypto.createHmac('sha256', privateKey)
+      .update(JSON.stringify({
+        analysis_id: finalReceiptData.analysis_id,
+        self_hash: selfHash,
+        timestamp: finalReceiptData.ts
+      }))
       .digest('hex');
 
     // Persist to database
@@ -256,7 +292,7 @@ class ReceiptService {
         receiptType: 'ANALYSIS',
         lamportClock: lamportClock,
         userId: userId,
-        payload: receiptData,
+        payload: finalReceiptData,
         digest: selfHash,
         previousDigest: latestReceipt ? latestReceipt.digest : null,
         witnessModel: modelId,
@@ -269,10 +305,10 @@ class ReceiptService {
     });
 
     return {
-      ...receiptData,
+      ...finalReceiptData,
       id: savedReceipt.id,
       hash: selfHash,
-      timestamp: receiptData.ts,
+      timestamp: finalReceiptData.ts,
       db_id: savedReceipt.id // Keep for backward compatibility
     };
   }
@@ -296,15 +332,21 @@ class ReceiptService {
       return {
         valid: false,
         hash_integrity: false,
+        chain_integrity: false,
         chain_position: -1,
+        governance_valid: false,
         error: 'Receipt not found'
       };
     }
 
     // Verify self-hash
     const payload = receipt.payload;
+    const sortedPayload = Object.keys(payload).sort().reduce((result, key) => {
+      result[key] = payload[key];
+      return result;
+    }, {});
     const calculatedHash = crypto.createHash('sha256')
-      .update(JSON.stringify(payload))
+      .update(JSON.stringify(sortedPayload))
       .digest('hex');
 
     const hashIntegrity = calculatedHash === receipt.digest;
@@ -313,7 +355,9 @@ class ReceiptService {
       return {
         valid: false,
         hash_integrity: false,
+        chain_integrity: false,
         chain_position: receipt.lamportClock,
+        governance_valid: false,
         error: 'Self-hash mismatch'
       };
     }
@@ -329,7 +373,9 @@ class ReceiptService {
         return {
           valid: false,
           hash_integrity: true,
+          chain_integrity: false,
           chain_position: receipt.lamportClock,
+          governance_valid: false,
           error: 'Previous receipt not found in chain'
         };
       }
@@ -338,7 +384,9 @@ class ReceiptService {
         return {
           valid: false,
           hash_integrity: true,
+          chain_integrity: false,
           chain_position: receipt.lamportClock,
+          governance_valid: false,
           error: 'Lamport clock not monotonic'
         };
       }
@@ -347,7 +395,9 @@ class ReceiptService {
     return {
       valid: true,
       hash_integrity: true,
-      chain_position: receipt.lamportClock
+      chain_integrity: true,
+      chain_position: receipt.lamportClock,
+      governance_valid: true
     };
   }
 
@@ -468,6 +518,7 @@ class ReceiptService {
           lamportClock: true,
           realTimestamp: true,
           digest: true,
+          previousDigest: true,
           witnessModel: true,
           payload: true
         }
@@ -475,8 +526,20 @@ class ReceiptService {
       this.prisma.bENReceipt.count({ where })
     ]);
 
+    // Transform receipts to match expected API format
+    const transformedReceipts = receipts.map(receipt => ({
+      id: receipt.id,
+      hash: receipt.digest,
+      previous_hash: receipt.previousDigest,
+      timestamp: receipt.realTimestamp,
+      data: receipt.payload,
+      signature: receipt.payload?.signature || null,
+      type: receipt.receiptType,
+      model: receipt.witnessModel
+    }));
+
     return {
-      receipts,
+      receipts: transformedReceipts,
       pagination: {
         page,
         limit,

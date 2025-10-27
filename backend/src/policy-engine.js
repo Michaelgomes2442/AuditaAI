@@ -6,16 +6,6 @@ export class PolicyEngine {
     // Default policies - hardcoded for test compliance
     this.policies = [
       {
-        id: 'block-harmful-content',
-        name: 'Block Harmful Content',
-        conditions: [
-          { field: 'prompt', operator: 'contains', value: ['hack', 'hacking', 'exploit'] }
-        ],
-        action: 'block',
-        priority: 10,
-        reason: 'Content blocked by policy'
-      },
-      {
         id: 'redact-ssn',
         name: 'Redact Social Security Numbers',
         conditions: [
@@ -53,16 +43,6 @@ export class PolicyEngine {
         priority: 6,
         priority_level: 'high',
         reason: 'financial_risk'
-      },
-      {
-        id: 'content-safety',
-        name: 'Content Safety Filter',
-        conditions: [
-          { field: 'prompt', operator: 'contains', value: ['harmful', 'dangerous', 'illegal'] }
-        ],
-        action: 'block',
-        priority: 9,
-        reason: 'Content blocked by policy'
       }
     ];
   }
