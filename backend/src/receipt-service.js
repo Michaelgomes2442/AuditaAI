@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+  import crypto from 'crypto';
 import { createOptimizedPrismaClient } from './prisma-optimize.ts';
 import { computeCRIES } from './track-a-analyzer.js';
 
@@ -274,32 +274,19 @@ class ReceiptService {
     // Ensure we have an explicit lamportClock number
     const lamportClock = lamportResult?.currentValue ?? lamportResult?.current_value ?? 0;
 
-    // Find the correct previous receipt based on lamport clock
-    const prevLamport = lamportClock - 1;
+    // Find the correct previous receipt based on lamport clock (sequential ordering)
+    // Since lamport clocks are incremented atomically, previous receipt has lamportClock = currentLamport - 1
     let previousReceipt = null;
     try {
-      if (prevLamport >= 0 && this.prisma && this.prisma.bENReceipt && typeof this.prisma.bENReceipt.findFirst === 'function') {
+      if (lamportClock > 0) {
         previousReceipt = await this.prisma.bENReceipt.findFirst({
-          where: { lamportClock: prevLamport },
-          select: { digest: true },
-          orderBy: { id: 'desc' } // In case of ties, get the most recent
+          where: { lamportClock: lamportClock - 1 },
+          select: { digest: true }
         });
-      } else if (prevLamport >= 0) {
-        const rows = await this.prisma.$queryRaw`
-          SELECT digest FROM ben_receipts WHERE lamport_clock = ${prevLamport} ORDER BY id DESC LIMIT 1
-        `;
-        const row = Array.isArray(rows) ? rows[0] : rows;
-        previousReceipt = row ? { digest: row.digest } : null;
       }
     } catch (err) {
       console.warn('previousReceipt lookup failed:', err?.message || err);
       previousReceipt = null;
-    }
-
-    // Simplified chaining: if we can't find the exact previous by lamport clock,
-    // fall back to the most recent receipt (simpler but still maintains chain integrity)
-    if (!previousReceipt && lamportClock > 0) {
-      previousReceipt = latestReceipt;
     }
 
     const receiptData = {
@@ -315,7 +302,7 @@ class ReceiptService {
       },
       digest_verified: false,
       lamport: lamportClock,
-      prev_digest: previousReceipt ? previousReceipt.digest : null,
+      previous_hash: previousReceipt ? previousReceipt.digest : null,
       receipt_type: "ANALYSIS",
       risk_flags: [],
       self_hash: '', // Will be calculated
@@ -383,6 +370,27 @@ class ReceiptService {
 
     finalReceiptData.self_hash = selfHash;
 
+    // Verify the hash integrity immediately after calculation
+    const verificationPayload = Object.keys(finalReceiptData).sort().reduce((result, key) => {
+      // Exclude self_hash, signature, and lamport from hash calculation as they are derived or metadata
+      if (key !== 'self_hash' && key !== 'signature' && key !== 'lamport') {
+        result[key] = finalReceiptData[key];
+      }
+      return result;
+    }, {});
+    const deeplySortedVerificationPayload = sortObjectKeys(verificationPayload);
+    const calculatedVerificationHash = crypto.createHash('sha256')
+      .update(JSON.stringify(deeplySortedVerificationPayload))
+      .digest('hex');
+    const digestVerified = calculatedVerificationHash === selfHash;
+
+    // Update digest_verified based on verification result
+    finalReceiptData.digest_verified = digestVerified;
+
+    console.log('DEBUG: Hash verification - calculated:', calculatedVerificationHash);
+    console.log('DEBUG: Hash verification - stored:', selfHash);
+    console.log('DEBUG: Digest verified:', digestVerified);
+
     // Update signature with actual hash
     finalReceiptData.signature = crypto.createHmac('sha256', privateKey)
       .update(JSON.stringify({
@@ -392,9 +400,8 @@ class ReceiptService {
       }))
       .digest('hex');
 
-    // For proper hash chaining, always link to the most recent receipt
-    // This ensures chain integrity even if lamport clocks fail
-    const computedPreviousDigest = latestReceipt ? latestReceipt.digest : null;
+    // Use the correctly determined previous receipt digest
+    const computedPreviousDigest = previousReceipt ? previousReceipt.digest : null;
 
     const savedReceipt = await this.prisma.bENReceipt.create({
       data: {
@@ -450,19 +457,28 @@ class ReceiptService {
       };
     }
 
-    // Verify self-hash
+    // Verify self-hash - recreate the exact conditions from generation
     const payload = { ...receipt.payload };
-    console.log('DEBUG: Original payload prev_digest:', payload.prev_digest);
-    console.log('DEBUG: Database previousDigest:', receipt.previousDigest);
-    // Use the correct previousDigest from the database field instead of the potentially modified payload
-    // For receipt 71, the correct previousDigest should be the digest of receipt 70
-    const correctPreviousDigest = receipt.id === 71 ? 'b19ac62fb960d699b151bfe4c8150e4dba2e4f7a98af6f7c76e1fef91ac2fbc0' : receipt.previousDigest;
-    if (correctPreviousDigest !== null && correctPreviousDigest !== undefined) {
-      payload.prev_digest = correctPreviousDigest;
-    }
-    console.log('DEBUG: Corrected payload prev_digest:', payload.prev_digest);
+
+    // Reset digest_verified to false as used during generation
+    payload.digest_verified = false;
+
+    // Reset signature to initial state as used in generation
+    const privateKey = process.env.NODE_ENV === 'test' ?
+      Buffer.from('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', 'hex') :
+      crypto.randomBytes(32);
+    payload.signature = crypto.createHmac('sha256', privateKey)
+      .update(JSON.stringify({
+        analysis_id: payload.analysis_id,
+        self_hash: 'placeholder', // Use 'placeholder' as in generation
+        timestamp: payload.ts
+      }))
+      .digest('hex');
+
+    // previous_hash should already be correct in the payload
     const sortedPayload = Object.keys(payload).sort().reduce((result, key) => {
       // Exclude self_hash, signature, and lamport from hash calculation as they are derived or metadata
+      // Note: digest_verified is included in hash calculation
       if (key !== 'self_hash' && key !== 'signature' && key !== 'lamport') {
         result[key] = payload[key];
       }
