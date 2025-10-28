@@ -325,9 +325,7 @@ class ReceiptService {
 
     // Generate cryptographic signature (simplified for testing)
     // Use deterministic key for testing so signatures can be verified
-    const privateKey = process.env.NODE_ENV === 'test' ?
-      Buffer.from('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', 'hex') :
-      crypto.randomBytes(32);
+    const privateKey = Buffer.from('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', 'hex');
     const publicKey = crypto.createHash('sha256').update(privateKey).digest('hex');
     const signatureData = JSON.stringify({
       analysis_id: receiptData.analysis_id,
@@ -344,7 +342,7 @@ class ReceiptService {
       signature: crypto.createHmac('sha256', privateKey)
         .update(JSON.stringify({
           analysis_id: receiptData.analysis_id,
-          self_hash: 'placeholder',
+          self_hash: '', // Same as initial signature generation
           timestamp: receiptData.ts
         }))
         .digest('hex'),

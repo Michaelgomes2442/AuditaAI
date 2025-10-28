@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // AuditaAI Governance Audit Logs API Tests
 // Tests the audit log and receipt export functionality

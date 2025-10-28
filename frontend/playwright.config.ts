@@ -3,9 +3,9 @@ import { setupPrismaOptimize, teardownPrismaOptimize } from './e2e/prisma-optimi
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true, // Changed back to true for parallel execution
+  fullyParallel: false, // Changed to false for sequential execution to avoid test interference
   forbidOnly: !!process.env.CI,
-  workers: 6, // Changed back to 6 for parallel execution
+  workers: 1, // Changed to 1 for sequential execution
   reporter: [
     ['../terminal-reporter.js'], // Custom terminal reporter
     ['html', { outputFolder: 'playwright-report', open: 'never' }],

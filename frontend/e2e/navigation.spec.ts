@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // AuditaAI Governance Dashboard API Tests
 // Tests the governance dashboard and metrics overview functionality

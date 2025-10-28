@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // AuditaAI Governance Runtime API Tests
 // Tests the core governance functionality via REST API

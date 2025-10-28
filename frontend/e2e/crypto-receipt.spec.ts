@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 import crypto from 'crypto';
 
 /**
@@ -6,12 +6,12 @@ import crypto from 'crypto';
  * Focused testing for Δ-Receipt cryptographic integrity and hash chaining
  */
 
-// Helper function to recursively sort object keys for consistent hashing
+// Helper to calculate receipt hash (mimics server logic)
 function sortObjectKeys(obj: any): any {
   if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
     return obj;
   }
-  
+
   const sorted: any = {};
   Object.keys(obj).sort().forEach(key => {
     sorted[key] = sortObjectKeys(obj[key]);
@@ -19,12 +19,12 @@ function sortObjectKeys(obj: any): any {
   return sorted;
 }
 
-// Helper to calculate receipt hash (mimics receipt-service logic)
+// Helper to calculate receipt hash (mimics server logic)
 function calculateReceiptHash(payload: any): string {
   const forHash: any = {};
   Object.keys(payload).sort().forEach(key => {
-    // Exclude derived fields from hash calculation
-    if (key !== 'self_hash' && key !== 'signature' && key !== 'lamport' && key !== 'digest_verified') {
+    // Exclude derived fields from hash calculation (same as server)
+    if (key !== 'self_hash' && key !== 'signature' && key !== 'lamport') {
       forHash[key] = payload[key];
     }
   });
@@ -36,7 +36,7 @@ function calculateReceiptHash(payload: any): string {
 }
 
 test.describe.serial('Δ-Receipt Cryptographic Integrity', () => {
-  test.skip('receipt hash calculation consistency', async ({ request }) => {
+  test('receipt hash calculation consistency', async ({ request }) => {
     // Generate a single receipt
     const analyzeResponse = await request.post('/api/analyze', {
       data: {
@@ -54,34 +54,27 @@ test.describe.serial('Δ-Receipt Cryptographic Integrity', () => {
 
     // Verify the receipt has required fields
     expect(receipt.hash).toBeDefined();
+    expect(receipt.id).toBeDefined();
 
-    // Calculate hash independently using the payload from the API response
-    // The API returns a simplified receipt object, so we need to construct the full payload
-    const fullPayload = {
-      analysis_id: `ANALYSIS-${receipt.metadata?.model || 'test-model'}-L${Date.now()}-${Date.now()}`,
-      conversation_id: 'default',
-      cries: analyzeData.cries_metrics || analyzeData.analysis?.cries || {},
-      digest_verified: false,
-      lamport: 1, // placeholder
-      metadata: receipt.metadata || {},
-      model: receipt.metadata?.model || 'test-model',
-      previous_hash: receipt.previous_hash,
-      prompt: 'Test prompt for hash verification', // from test
-      receipt_type: "ANALYSIS",
-      response: 'Analysis of: "Test prompt for hash verification..." - Response would be generated here.', // mock response
-      risk_flags: [],
-      self_hash: '', // Will be calculated
-      sigma_window: { σ: 0.5, "σ*": 0.15 },
-      trace_id: `TRACE-${Date.now()}`,
-      tri_actor_role: "Track-A/Analyst",
-      ts: receipt.timestamp,
-      signature: '', // placeholder
-      public_key: '' // placeholder
-    };
+    // Get the full receipt from the database
+    const fullReceiptResponse = await request.get(`/api/receipts/${receipt.id}`);
+    expect(fullReceiptResponse.ok()).toBeTruthy();
 
-    const calculatedHash = calculateReceiptHash(fullPayload);
+    const fullReceipt = await fullReceiptResponse.json();
+    expect(fullReceipt.payload).toBeDefined();
+
+    console.log('Full receipt payload keys:', Object.keys(fullReceipt.payload));
+    console.log('Full receipt payload:', JSON.stringify(fullReceipt.payload, null, 2));
+
+    // For hash calculation, use the payload as it was during generation (digest_verified = false)
+    const payloadForHash = { ...fullReceipt.payload };
+    payloadForHash.digest_verified = false; // This was false during hash generation
+
+    // Calculate hash from the payload
+    const calculatedHash = calculateReceiptHash(payloadForHash);
     console.log('Calculated hash:', calculatedHash);
-    console.log('Receipt hash:', receipt.hash);
+    console.log('Receipt hash from API:', receipt.hash);
+    console.log('Receipt digest from DB:', fullReceipt.digest);
 
     // This should match
     expect(calculatedHash).toBe(receipt.hash);

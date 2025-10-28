@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // CRIES Metrics Tests
 // Tests Coherence, Reliability, Integrity, Effectiveness, Security evaluation

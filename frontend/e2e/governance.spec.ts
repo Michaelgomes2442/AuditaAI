@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // AuditaAI Core Governance Runtime Tests
 // Tests the local governance runtime for AI systems
@@ -129,7 +129,7 @@ test.describe('AuditaAI Core Governance Runtime', () => {
   });
 
   test('receipts endpoint returns verifiable hash-chained records', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/ben/receipt`);
+    const response = await request.get(`${API_BASE}/receipts`);
     expect(response.ok()).toBeTruthy();
 
     const data = await response.json();

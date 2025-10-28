@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './base';
 
 // Policy Engine Tests
 // Tests JSON-based rules for content governance
