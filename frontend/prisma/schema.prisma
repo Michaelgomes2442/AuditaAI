@@ -11,10 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // Inlined for debug: use the same DATABASE_URL present in backend/.env to
-  // test whether the Optimize extension requires the URL to be present in the
-  // generated client schema rather than readable from process.env at attach.
-  url      = "postgres://602197f00e8365db70a65c273a252d29dd8416ebc9aa13b39a924676dded4798:sk_ko_froDrCyfZeaW4up1_w@db.prisma.io:5432/postgres?sslmode=require"
+  url      = env("DATABASE_URL")
 }
  
 model User {

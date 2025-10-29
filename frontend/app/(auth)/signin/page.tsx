@@ -28,14 +28,15 @@ export default function SignInPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: "/dashboard",
+        redirect: false,
+        callbackUrl: "/",
       });
 
       if (result?.error) {
         setError("Invalid email or password. Please try again.");
+      } else {
+        router.push("/");
       }
-      // No need for router.push since redirect: true handles it
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {

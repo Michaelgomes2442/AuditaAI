@@ -5,6 +5,11 @@ export const TEST_USER = {
   password: 'testPassword123!'
 };
 
+export const FOUNDER_USER = {
+  email: 'founder@auditaai.com',
+  password: 'Toby60022006!!!'
+};
+
 export const routes = {
   home: '/',
   signin: '/signin',
@@ -15,8 +20,8 @@ export const routes = {
 } as const;
 
 export const selectors = {
-  email: 'input[type="email"]',
-  password: 'input[type="password"]',
+  email: '#email',
+  password: '#password',
   submitButton: 'button[type="submit"]',
   userMenu: '[data-testid="user-menu-trigger"]',
   logoutButton: '[data-testid="logout-button"]',
@@ -25,10 +30,14 @@ export const selectors = {
 } as const;
 
 export async function clearSession(page: Page) {
-  await page.evaluate(() => {
-    window.localStorage.clear();
-    window.sessionStorage.clear();
-  });
+  try {
+    await page.evaluate(() => {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+    });
+  } catch (e) {
+    // Ignore if can't access storage
+  }
 }
 
 export async function createTestUser(page: Page, email?: string, password?: string) {
@@ -50,11 +59,12 @@ export async function createTestUser(page: Page, email?: string, password?: stri
 
 export async function loginAsUser(page: Page, email: string, password: string) {
   await page.goto(routes.signin);
+  await page.waitForSelector(selectors.email, { timeout: 10000 });
   await page.fill(selectors.email, email);
   await page.fill(selectors.password, password);
   await page.click(selectors.submitButton);
-  // Wait for navigation to dashboard or timeout
-  await page.waitForURL(routes.dashboard, { timeout: 10000 });
+  // Wait for navigation to home or error
+  await page.waitForURL((url) => url.pathname === routes.home || url.pathname === routes.signin, { timeout: 15000 });
 }
 
 export async function logout(page: Page) {

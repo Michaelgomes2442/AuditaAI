@@ -23,9 +23,10 @@ export default defineConfig({
     // Defaults to the deployed production URL when not set.
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
+    headless: false, // Enable headed mode for debugging frontend issues
     // `slowMo` belongs under `launchOptions` per Playwright types.
     launchOptions: {
-      slowMo: 0, // Removed slowMo for headless
+      slowMo: 0, // Removed slowMo for headed mode
     },
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -35,19 +36,24 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-  ],
-  webServer: [
     {
-      command: 'cd ../backend && pnpm start',
-      port: 3001,
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: 'pnpm dev',
-      port: 3000,
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
   ],
+  // Web servers are started manually, not by Playwright
+  // webServer: [
+  //   {
+  //     command: 'cd ../backend && pnpm start',
+  //     port: 3001,
+  //     timeout: 120 * 1000,
+  //     reuseExistingServer: true,
+  //   },
+  //   {
+  //     command: 'pnpm dev',
+  //     port: 3000,
+  //     timeout: 120 * 1000,
+  //     reuseExistingServer: true,
+  //   },
+  // ],
 });

@@ -1,49 +1,36 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import { prisma } from '@/lib/prismadb';
+import bcrypt from 'bcryptjs';
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('Authorize called with:', credentials?.email);
         if (!credentials?.email || !credentials?.password) return null;
 
-        try {
-          // Call backend API for authentication
-          // Use configured backend URL only. Vercel/cloud bypass logic removed for local-only setup.
-          let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
-          const apiPath = `${backendUrl}/api/auth/login`;
-          const response = await fetch(apiPath, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          });
+        // Look up user in database
+        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+        console.log('User found:', !!user, user?.email);
+        if (!user || !user.password) return null;
 
-          if (!response.ok) {
-            return null;
-          }
+        const valid = await bcrypt.compare(credentials.password, user.password as string);
+        console.log('Password valid:', valid);
+        if (!valid) return null;
 
-          const user = await response.json();
-
-          return {
-            id: String(user.id),
-            email: user.email,
-            name: user.name || '',
-            role: user.role || 'USER',
-            tier: user.tier || 'FREE'
-          };
-        } catch (error) {
-          console.error('Authentication error:', error);
-          return null;
-        }
+        // Return the user object required by NextAuth (omit sensitive fields)
+        return {
+          id: String(user.id),
+          email: user.email,
+          name: user.name ?? user.email,
+          role: user.role ?? 'USER',
+          tier: user.tier ?? 'FREE',
+        } as any;
       },
     }),
   ],
@@ -53,14 +40,14 @@ export const authOptions = {
   },
   session: {
     strategy: 'jwt' as const,
-    maxAge: 30 * 24 * 60 * 60, // 30 days by default
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
-        token.id = String((user as any).id);
-        token.role = (user as any).role ?? 'USER';
-        token.tier = (user as any).tier ?? 'FREE';
+        token.id = String(user.id);
+        token.role = user.role ?? 'USER';
+        token.tier = user.tier ?? 'FREE';
       }
       return token;
     },
@@ -71,4 +58,5 @@ export const authOptions = {
       return session;
     },
   },
+  skipCSRFCheck: true,
 };

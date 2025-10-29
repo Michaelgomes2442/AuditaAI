@@ -13,11 +13,14 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      // Exclude NextAuth routes from proxy - they should be handled by Next.js
+      // Ensure frontend NextAuth routes are handled locally first
+      // (avoid proxying /api/auth/* to the backend which causes 404 on NextAuth callbacks)
       {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
+      // Proxy backend-only auth endpoints under /backend-api/auth/* if needed
+      // (keep generic proxy for other API routes below)
       // Proxy all other API routes to backend
       {
         source: '/api/:path*',

@@ -39,11 +39,8 @@ async function createFounderAccount() {
     });
 
     if (existing) {
-      console.log('⚠️  Founder account already exists. Deleting old account...');
-      await prisma.user.delete({
-        where: { email: founderData.email }
-      });
-      console.log('✅ Old account deleted.\n');
+      console.log('⚠️  Founder account already exists. Skipping creation...');
+      return;
     }
 
     // Hash the password
