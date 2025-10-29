@@ -1,5 +1,5 @@
 import { test, expect } from './base';
-import { loginAsUser, logout, clearSession, routes, selectors, FOUNDER_USER } from './utils';
+import { loginAsUser, logout, clearSession, routes, selectors, pilotSelectors, FOUNDER_USER } from './utils';
 
 // AuditaAI Frontend UI Tests
 // Tests the user interface and user flows with headed browsers
@@ -106,12 +106,18 @@ test.describe('Frontend UI - Navigation', () => {
   });
 
   test('pilot page loads correctly', async ({ page }) => {
-    await page.goto('/pilot');
+    await page.goto(routes.pilot);
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveURL('/pilot');
+    await expect(page).toHaveURL(routes.pilot);
 
-    // Check for pilot content
-    await expect(page.locator('body')).toContainText(/pilot|demo|test/i);
+    // Check for pilot dashboard key elements introduced in the rehaul
+    await expect(page.locator(pilotSelectors.criesTitle)).toBeVisible();
+    await expect(page.locator(pilotSelectors.modelComparison)).toBeVisible();
+    await expect(page.locator(pilotSelectors.receiptTimeline)).toBeVisible();
+    await expect(page.locator(pilotSelectors.auditLogs)).toBeVisible();
+
+    // Run Audit CTA should be present (actual run requires authenticated session)
+    await expect(page.locator(pilotSelectors.runAuditButton)).toBeVisible();
   });
 });
 

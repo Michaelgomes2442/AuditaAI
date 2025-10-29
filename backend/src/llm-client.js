@@ -121,13 +121,13 @@ export async function callGPT4(prompt, options = {}) {
   const client = options.apiKey ? new OpenAI({ apiKey: options.apiKey }) : openai;
 
   console.log(`🤖 Calling GPT-4...`);
-  console.log(`   Model: ${options.model || 'gpt-4-turbo-preview'}`);
+  console.log(`   Model: ${options.model || 'gpt-4o'}`);
   console.log(`   Prompt length: ${prompt.length} chars`);
   console.log(`   API Key: ${apiKey ? 'Provided ✓' : 'Not provided'}`);
 
   try {
     const completion = await client.chat.completions.create({
-      model: options.model || 'gpt-4-turbo-preview',
+      model: options.model || 'gpt-4o',
       messages: [
         {
           role: 'user',
@@ -223,10 +223,11 @@ export async function callClaude(prompt, options = {}) {
  * For OPERATOR: managed governance (transparent)
  */
 export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) {
-  const model = options.model || 'gpt-4';
+  const model = options.model || 'gpt-4o';
   const modelKey = `openai:${model}`;
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000; // Default 60 second timeout for OpenAI
+  const apiKey = options.apiKey;
   
   console.log(`🚀 Calling ${model} with Rosetta Governance...`);
   console.log(`   Timeout: ${timeoutMs}ms`);

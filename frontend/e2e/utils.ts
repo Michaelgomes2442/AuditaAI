@@ -15,6 +15,7 @@ export const routes = {
   signin: '/signin',
   signup: '/signup',
   dashboard: '/dashboard',
+  pilot: '/pilot',
   logs: '/logs',
   settings: '/settings'
 } as const;
@@ -27,6 +28,16 @@ export const selectors = {
   logoutButton: '[data-testid="logout-button"]',
   userEmail: '[data-testid="user-email"]',
   errorMessage: '[data-testid="error-message"]'
+} as const;
+
+// Helpful pilot page selectors (text-based to be resilient across styling changes)
+// Use Playwright's text/has-text selectors when querying these in tests.
+export const pilotSelectors = {
+  runAuditButton: 'button:has-text("Run Audit")',
+  criesTitle: 'text=Live CRIES Metrics',
+  modelComparison: 'text=Model Comparison',
+  receiptTimeline: 'text=Receipt Chain Timeline',
+  auditLogs: 'text=Audit Logs'
 } as const;
 
 export async function clearSession(page: Page) {

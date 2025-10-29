@@ -289,7 +289,7 @@ export default function PilotPage() {
     }
     (async () => {
       if (openaiApiKey && openaiApiKey.trim()) {
-        cloudModels.push('gpt-4-turbo-preview', 'gpt-4o');
+        cloudModels.push('gpt-4o', 'gpt-4o-mini');
         // Async register
         registerSessionKey('openai', openaiApiKey).then(token => {
           localStorage.setItem('openai_session_token', token);
@@ -546,7 +546,8 @@ export default function PilotPage() {
         headers: { 
           'Content-Type': 'application/json',
           'x-user-tier': profile?.tier || 'FREE',
-          'x-user-id': userId
+          'x-user-id': userId,
+          'x-user-consent': 'true'
         }, 
         body: JSON.stringify({ 
           mode: 'live',
@@ -630,7 +631,8 @@ export default function PilotPage() {
           headers: {
             'Content-Type': 'application/json',
             'x-user-tier': profile?.tier || 'FREE',
-            'x-user-id': userId
+            'x-user-id': userId,
+            'x-user-consent': 'true'
           },
           body: JSON.stringify({
             mode: 'live',
@@ -645,7 +647,8 @@ export default function PilotPage() {
           headers: {
             'Content-Type': 'application/json',
             'x-user-tier': profile?.tier || 'FREE',
-            'x-user-id': userId
+            'x-user-id': userId,
+            'x-user-consent': 'true'
           },
           body: JSON.stringify({
             mode: 'live',
@@ -1577,7 +1580,8 @@ export default function PilotPage() {
                                 headers: { 
                                   'Content-Type': 'application/json',
                                   'x-user-tier': profile?.tier || 'FREE',
-                                  'x-user-id': session?.user?.id || 'anonymous'
+                                  'x-user-id': session?.user?.id || 'anonymous',
+                                  'x-user-consent': 'true'
                                 }, 
                                 body: JSON.stringify({ mode: 'demo', promptId: d.id }) 
                               });

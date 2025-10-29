@@ -1142,6 +1142,15 @@ Provide: 1) Safety assessment, 2) Information quality, 3) Any concerns or recomm
 // Run governance test on a model (supports both live and demo modes)
 app.post('/api/pilot/run-test', async (req, res) => {
   const { modelId, mode, promptId, prompt, models, useGovernance, apiKeys } = req.body;
+  
+  console.log('🔍 DEBUG - Received request:');
+  console.log('   mode:', mode);
+  console.log('   useGovernance:', useGovernance);
+  console.log('   models:', models);
+  console.log('   apiKeys present:', !!apiKeys);
+  console.log('   apiKeys.openai present:', !!(apiKeys?.openai));
+  console.log('   apiKeys.anthropic present:', !!(apiKeys?.anthropic));
+  
   // MCP handshake for session key exchange
   async function mcpHandshake(label, key) {
     const MCP_URL = process.env.MCP_SERVER_URL || 'http://localhost:4000/handshake';
