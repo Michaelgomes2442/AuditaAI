@@ -39,7 +39,7 @@ export default function AuditLogsPanel({ refreshKey }: { refreshKey?: number }) 
             <div key={`log-${idx}`} className="p-2 bg-slate-800/30 border border-white/5 rounded flex items-center justify-between">
               <div className="text-xs text-gray-300">
                 <div className="font-mono text-sm">{l.action || l.type || 'event'}</div>
-                <div className="text-xs text-gray-500">{new Date(l.ts || l.timestamp || Date.now()).toLocaleString()}</div>
+                <div className="text-xs text-gray-500">{new Date(l.ts || l.timestamp || Date.now()).toLocaleString('en-US', { timeZone: 'UTC' })}</div>
               </div>
               <div className="text-xs text-gray-400">Lamport: {l.lamport ?? l.lamport_id ?? '—'}</div>
             </div>

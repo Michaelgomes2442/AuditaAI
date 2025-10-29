@@ -288,15 +288,19 @@ export default function PilotPage() {
       return data.token || '';
     }
     (async () => {
-      if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
-        const token = await registerSessionKey('openai', openaiApiKey);
-        localStorage.setItem('openai_session_token', token);
+      if (openaiApiKey && openaiApiKey.trim()) {
         cloudModels.push('gpt-4-turbo-preview', 'gpt-4o');
+        // Async register
+        registerSessionKey('openai', openaiApiKey).then(token => {
+          localStorage.setItem('openai_session_token', token);
+        }).catch(() => {});
       }
-      if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) {
-        const token = await registerSessionKey('anthropic', anthropicApiKey);
-        localStorage.setItem('anthropic_session_token', token);
+      if (anthropicApiKey && anthropicApiKey.trim()) {
         cloudModels.push('claude-3-5-sonnet-20241022', 'claude-3-opus-20240229');
+        // Async register
+        registerSessionKey('anthropic', anthropicApiKey).then(token => {
+          localStorage.setItem('anthropic_session_token', token);
+        }).catch(() => {});
       }
       setAvailableCloudModels(cloudModels);
       console.log('🔑 Detected cloud models from API keys:', cloudModels);
@@ -2016,7 +2020,7 @@ export default function PilotPage() {
                             <Clock className="w-3 h-3 text-slate-500" />
                             <div>
                               <p className="text-xs font-mono text-white">{r.type}</p>
-                              <p className="text-[10px] font-mono text-slate-500">{new Date(r.timestamp).toLocaleTimeString()}</p>
+                              <p className="text-[10px] font-mono text-slate-500">{new Date(r.timestamp).toLocaleTimeString('en-US', { timeZone: 'UTC' })}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
