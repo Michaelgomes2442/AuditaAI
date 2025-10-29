@@ -24,7 +24,7 @@ const nextConfig = {
       // Proxy all other API routes to backend
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3001/api/:path*',
+        destination: 'http://172.30.204.221:3001/api/:path*',
       },
     ];
   },
