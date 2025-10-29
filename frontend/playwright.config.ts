@@ -23,7 +23,7 @@ export default defineConfig({
     // Defaults to the deployed production URL when not set.
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
-    headless: false, // Enable headed mode for debugging frontend issues
+    headless: true, // Enable headless mode to avoid browser extension issues
     // `slowMo` belongs under `launchOptions` per Playwright types.
     launchOptions: {
       slowMo: 0, // Removed slowMo for headed mode

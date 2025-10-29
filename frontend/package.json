@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0",
+  "dev:monitor": "bash ./scripts/monitor-dev.sh",
     "dev:webpack": "TURBOPACK=false next dev",
     "build": "prisma generate && next build",
     "start": "next start",
