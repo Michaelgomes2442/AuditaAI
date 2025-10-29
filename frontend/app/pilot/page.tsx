@@ -9,6 +9,10 @@ import UpgradeBanner from '@/components/UpgradeBanner';
 import UpgradeModal from '@/components/UpgradeModal';
 import { useUser } from '@/contexts/UserContext';
 import CRIESMetrics from '@/components/CRIESMetrics';
+import ModelComparisonPanel from '@/components/ModelComparisonPanel';
+import ReceiptTimeline from '@/components/ReceiptTimeline';
+import AuditLogsPanel from '@/components/AuditLogsPanel';
+import { fetchParallelPrompt } from '@/lib/dashboard';
 // TODO: OnboardingTour disabled - react-joyride incompatible with React 19
 // import OnboardingTour from '@/components/OnboardingTour';
 
@@ -75,6 +79,8 @@ export default function PilotPage() {
   const [showOllamaSetup, setShowOllamaSetup] = useState(false);
   const [userPlatform, setUserPlatform] = useState<'windows' | 'mac' | 'linux'>('linux');
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [lastAudit, setLastAudit] = useState<number>(0);
+  const [auditRunning, setAuditRunning] = useState(false);
   
   // API Key Management
   const [openaiApiKey, setOpenaiApiKey] = useState('');
@@ -674,6 +680,39 @@ export default function PilotPage() {
       setRunning(false);
     }
   };
+
+    const runAudit = async () => {
+      if (isFree) {
+        alert('Upgrade required — Run Audit is for paid users.');
+        return;
+      }
+
+      try {
+        setAuditRunning(true);
+        // Fire parallel prompt endpoint which coordinates model runs and receipts
+        const body = {
+          prompt: liveTestPrompt || 'Pilot audit run',
+          models: selectedModels,
+          useGovernance
+        };
+
+        const data = await fetchParallelPrompt(body);
+        // If backend returns results, try to wire into UI
+        if (data) {
+          if (data.results) setLiveTestResult(data);
+          if (data.comparison) setComparisonResult(data.comparison);
+        }
+
+        // Refresh Rosetta state and receipts
+        await fetchRosettaData();
+        setLastAudit((s) => s + 1);
+      } catch (err) {
+        console.error('runAudit error', err);
+        alert('Run Audit failed: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setAuditRunning(false);
+      }
+    };
 
   const toggleModel = (modelId: string) => {
     setSelectedModels(prev => 
@@ -1695,7 +1734,7 @@ export default function PilotPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                         {availableModels.map(model => (
                           <button
-                            key={model}
+                            key={`ollama-${model}`}
                             onClick={() => toggleModel(model)}
                             className={`px-3 py-2 rounded border font-mono text-xs transition-all ${
                               selectedModels.includes(model)
@@ -1717,7 +1756,7 @@ export default function PilotPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                         {availableCloudModels.map(model => (
                           <button
-                            key={model}
+                            key={`cloud-${model}`}
                             onClick={() => toggleModel(model)}
                             className={`px-3 py-2 rounded border font-mono text-xs transition-all ${
                               selectedModels.includes(model)
@@ -1809,12 +1848,44 @@ export default function PilotPage() {
             </div>
           )}
 
-          {/* Live CRIES Metrics Dashboard */}
-          {!isFree && (
-            <div className="mt-6">
-              <CRIESMetrics showComparison={true} title="Real-Time CRIES Analytics" />
+          {/* Run Audit CTA + New Dashboard Grid */}
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-white font-mono">Pilot Audit & Governance</h3>
+              <p className="text-sm text-slate-400 font-mono">Real-time CRIES, model comparison, and Lamport receipt chain</p>
             </div>
-          )}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={runAudit}
+                disabled={auditRunning}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-emerald-300 font-mono font-semibold disabled:opacity-50"
+              >
+                {auditRunning ? '⏳ Running Audit...' : '▶ Run Audit'}
+              </button>
+              <button onClick={() => { setLastAudit((s) => s + 1); fetchRosettaData(); }} className="px-3 py-2 rounded border border-white/10 text-slate-300 font-mono">Refresh</button>
+            </div>
+          </div>
+
+          {/* Dashboard Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div className="lg:col-span-1 space-y-4">
+              {/* CRIES Metrics */}
+              {!isFree && (
+                <CRIESMetrics showComparison={true} title="Live CRIES Metrics" />
+              )}
+
+              {/* Model Comparison */}
+              <ModelComparisonPanel comparisonResult={comparisonResult} liveTestResult={liveTestResult} />
+            </div>
+
+            <div className="lg:col-span-2 space-y-4">
+              {/* Receipt Timeline */}
+              <ReceiptTimeline refreshKey={lastAudit} />
+
+              {/* Audit Logs - collapsible in smaller screens */}
+              <AuditLogsPanel refreshKey={lastAudit} />
+            </div>
+          </div>
 
           <div 
             className="bg-slate-800/30 border border-white/5 rounded-lg p-6 hover:border-cyan-500/30 transition-all"
@@ -1939,7 +2010,7 @@ export default function PilotPage() {
                     <p className="text-xs text-slate-500 font-mono mb-2">RECENT RECEIPTS</p>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
                       {registry.receipts.slice(0, 5).map((r, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 bg-slate-900/50 rounded border border-white/5">
+                        <div key={`receipt-${idx}`} className="flex items-center justify-between p-2 bg-slate-900/50 rounded border border-white/5">
                           <div className="flex items-center gap-2">
                             <Clock className="w-3 h-3 text-slate-500" />
                             <div>
