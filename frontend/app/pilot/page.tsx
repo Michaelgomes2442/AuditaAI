@@ -410,6 +410,7 @@ export default function PilotPage() {
     const savedAnthropic = localStorage.getItem('anthropic_api_key');
     if (savedOpenAI) setOpenaiApiKey(savedOpenAI);
     if (savedAnthropic) setAnthropicApiKey(savedAnthropic);
+    if (savedOpenAI || savedAnthropic) setShowApiKeys(true);
 
     // Profile is now managed by UserProvider, just fetch Rosetta data
     fetchRosettaData();

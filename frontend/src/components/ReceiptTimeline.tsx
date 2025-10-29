@@ -38,8 +38,8 @@ export default function ReceiptTimeline({ refreshKey }: { refreshKey?: number })
       {!loading && receipts.length > 0 && (
         <div className="overflow-x-auto py-2">
           <div className="flex gap-6 items-center px-2">
-            {receipts.map((r) => (
-              <button key={`receipt-${r.lamport}`} onClick={() => setSelected(r)} className="min-w-[140px] p-3 bg-slate-800/30 border border-white/5 rounded-lg text-left hover:scale-105 transition-transform">
+            {receipts.map((r, idx) => (
+              <button key={`receipt-${r.lamport}-${idx}`} onClick={() => setSelected(r)} className="min-w-[140px] p-3 bg-slate-800/30 border border-white/5 rounded-lg text-left hover:scale-105 transition-transform">
                 <div className="text-xs text-gray-400">#{r.lamport}</div>
                 <div className="text-sm font-mono text-white truncate">{r.type || r.receipt_type || 'receipt'}</div>
                 <div className="text-xs text-gray-500 mt-1">{new Date(r.timestamp || r.ts || Date.now()).toLocaleString()}</div>
