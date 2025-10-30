@@ -1396,6 +1396,15 @@ app.post('/api/pilot/run-test', async (req, res) => {
       return res.status(400).json({ error: 'missing_api_keys', missing: missingKeys });
     }
 
+    // Prioritize cloud models over Ollama (Ollama is least called)
+    models.sort((a, b) => {
+      const aIsCloud = a.startsWith('gpt-') || a.startsWith('claude-');
+      const bIsCloud = b.startsWith('gpt-') || b.startsWith('claude-');
+      if (aIsCloud && !bIsCloud) return -1;
+      if (!aIsCloud && bIsCloud) return 1;
+      return 0;
+    });
+
     // Run prompt through each selected model
     for (const modelId of models) {
       console.log(`📞 Calling ${modelId}...`);
@@ -1455,7 +1464,8 @@ app.post('/api/pilot/run-test', async (req, res) => {
         response,
         cries,
         usage: modelResponse.usage || null,
-        provider: modelResponse.provider || 'unknown'
+        provider: modelResponse.provider || 'unknown',
+        governance: modelResponse.governance || null
       });
     }
 

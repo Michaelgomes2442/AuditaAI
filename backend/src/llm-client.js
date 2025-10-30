@@ -1,4 +1,4 @@
-/**
+  /**
  * LLM Client - OpenAI, Anthropic & Ollama Integration
  * 
  * Provides unified interface for calling real LLM APIs and free local models
@@ -7,6 +7,8 @@
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
+import { mcp } from './mcp-client.js';
+import { nextLamport } from '../rosetta/kernel.ts';
 
 dotenv.config();
 
@@ -251,23 +253,33 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   console.log(`   User: ${userName} (${userRole})`);
   console.log(`   Managed mode: ${managedGovernance}`);
 
-  // Call MCP tools for Phase 3 governance
-  const ctx = await mcp("rosetta.context.get", {});
-  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
-  const receipt = await mcp("rosetta.receipt.emit", {
-    type: "Δ-BOOTCONFIRM",
-    lamport: lamportValue,
-    payload: { user: userName },
-    prev_hash: "0".repeat(64)
-  });
+  // Phase 3: Call RosettaOS MCP tools before kernel application (optional)
+  let ctx = { witness: "Rosetta Kernel", version: "vΩ3.4" };
+  let lamportValue = nextLamport();
+  let receipt = generateBootConfirmReceipt(model);
+  
+  try {
+    ctx = await mcp("rosetta.context.get", {});
+    const lamportResult = await mcp("rosetta.lamport.increment", { current: 0 });
+    lamportValue = lamportResult.next;
+    receipt = await mcp("rosetta.receipt.emit", {
+      type: "Δ-BOOTCONFIRM",
+      lamport: lamportValue,
+      payload: { user: userName },
+      prev_hash: "0".repeat(64)
+    });
+    console.log(`   📊 MCP values: lamport=${lamportValue}, receipt=${receipt.id}`);
+  } catch (mcpError) {
+    console.log(`   ⚠️  MCP not available, using kernel defaults: ${mcpError.message}`);
+  }
 
   const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
 
-  // Override kernel values with MCP values
+  // Override kernel values with MCP values if available
   governanceResult.context.lamport = lamportValue;
   governanceResult.context.witness = ctx.witness;
   governanceResult.context.version = ctx.version;
-  governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+  governanceResult.receipts.unshift(receipt); // Add receipt first
 
   // Validate governance integrity
   if (!validateGovernanceIntegrity(governanceResult.context)) {
@@ -276,32 +288,17 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
 
   console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
   console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
-  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+  console.log(`   📊 Lamport: ${governanceResult.context.lamport}`);
 
   // Use the transformed prompt
-  const governedPrompt = governanceResult.transformedPrompt;
-    
-    const handshakeCompletion = await withTimeout(
-      openaiClient.chat.completions.create({
-        model: model,
-        messages: [
-          { role: 'user', content: bootPrompt },
-          { role: 'assistant', content: bootResponseContent },
-          { role: 'user', content: handshakeMessage }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
-      }),
-      timeoutMs,
-      'OpenAI handshake'
-    );
-    
-  // Send the governed prompt directly
+  const transformedPrompt = governanceResult.transformedPrompt;
+  
+  // Send the transformed prompt directly
   const completion = await withTimeout(
     openaiClient.chat.completions.create({
       model: model,
       messages: [
-        { role: 'user', content: governedPrompt }
+        { role: 'user', content: transformedPrompt }
       ],
       temperature: options.temperature || 0.5,
       max_tokens: options.maxTokens || 2000
@@ -325,7 +322,8 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
     provider: 'openai',
     governance: {
       persona: governanceResult.context.persona,
-      receipts: governanceResult.receipts
+      receipts: governanceResult.receipts,
+      transformedPrompt
     }
   };
 }
@@ -337,7 +335,6 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
  */
 export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}) {
   const model = options.model || 'claude-3-5-sonnet-20241022';
-  const modelKey = `anthropic:${model}`;
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000; // Default 60 second timeout for Anthropic
   const apiKey = options.apiKey;
@@ -353,16 +350,7 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   if (!anthropicClient) {
     throw new Error('Anthropic API key not configured');
   }
-  
-  let session = bootedSessions.get(modelKey);
-  
-  // If not booted yet, perform boot sequence
-  if (!session) {
-    console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
-    
-    // Use minimal boot prompt following Band-0 Speaking Boot Interface vΩ3.4
-    const bootPrompt = `boot`;
-    
+
   // Apply Rosetta Kernel governance
   const userName = options.userName || 'User';
   const userRole = options.userRole || 'Operator';
@@ -371,23 +359,33 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   console.log(`   User: ${userName} (${userRole})`);
   console.log(`   Managed mode: ${managedGovernance}`);
 
-  // Phase 3: Call RosettaOS MCP tools before kernel application
-  const ctx = await mcp("rosetta.context.get", {});
-  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
-  const receipt = await mcp("rosetta.receipt.emit", {
-    type: "Δ-BOOTCONFIRM",
-    lamport: lamportValue,
-    payload: { user: userName },
-    prev_hash: "0".repeat(64)
-  });
+  // Phase 3: Call RosettaOS MCP tools before kernel application (optional)
+  let ctx = { witness: "Rosetta Kernel", version: "vΩ3.4" };
+  let lamportValue = nextLamport();
+  let receipt = generateBootConfirmReceipt("Claude");
+  
+  try {
+    ctx = await mcp("rosetta.context.get", {});
+    const lamportResult = await mcp("rosetta.lamport.increment", { current: 0 });
+    lamportValue = lamportResult.next;
+    receipt = await mcp("rosetta.receipt.emit", {
+      type: "Δ-BOOTCONFIRM",
+      lamport: lamportValue,
+      payload: { user: userName },
+      prev_hash: "0".repeat(64)
+    });
+    console.log(`   📊 MCP values: lamport=${lamportValue}, receipt=${receipt.id}`);
+  } catch (mcpError) {
+    console.log(`   ⚠️  MCP not available, using kernel defaults: ${mcpError.message}`);
+  }
 
   const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
 
-  // Override kernel values with MCP values
+  // Override kernel values with MCP values if available
   governanceResult.context.lamport = lamportValue;
   governanceResult.context.witness = ctx.witness;
   governanceResult.context.version = ctx.version;
-  governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+  governanceResult.receipts.unshift(receipt); // Add receipt first
 
   // Validate governance integrity
   if (!validateGovernanceIntegrity(governanceResult.context)) {
@@ -396,19 +394,18 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
 
   console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
   console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
-  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+  console.log(`   📊 Lamport: ${governanceResult.context.lamport}`);
 
   // Use the transformed prompt
-  const governedPrompt = governanceResult.transformedPrompt;
-  }
+  const transformedPrompt = governanceResult.transformedPrompt;
   
-  // Send the governed prompt directly
+  // Send the transformed prompt directly
   const message = await withTimeout(
     anthropicClient.messages.create({
       model: model,
       max_tokens: options.maxTokens || 2000,
       messages: [
-        { role: 'user', content: governedPrompt }
+        { role: 'user', content: transformedPrompt }
       ]
     }),
     timeoutMs,
@@ -431,7 +428,8 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
     provider: 'anthropic',
     governance: {
       persona: governanceResult.context.persona,
-      receipts: governanceResult.receipts
+      receipts: governanceResult.receipts,
+      transformedPrompt
     }
   };
 }
@@ -442,7 +440,7 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
  * Phase 2: TypeScript governance replacing HTML boot system
  */
 import { applyRosettaKernel, validateGovernanceIntegrity } from '../rosetta/kernel.ts';
-import { mcp } from './mcp-client.js';
+import { generateBootConfirmReceipt } from '../rosetta/receipts.ts';
 
 // Track booted sessions per model
 const bootedSessions = new Map(); // modelId -> { bootResponse, bootTime, messageHistory }
@@ -477,19 +475,29 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
   console.log(`   User: ${userName} (${userRole})`);
   console.log(`   Managed mode: ${managedGovernance}`);
 
-  // Phase 3: Call RosettaOS MCP tools before kernel application
-  const ctx = await mcp("rosetta.context.get", {});
-  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
-  const receipt = await mcp("rosetta.receipt.emit", {
-    type: "Δ-BOOTCONFIRM",
-    lamport: lamportValue,
-    payload: { user: userName },
-    prev_hash: "0".repeat(64)
-  });
+  // Phase 3: Call RosettaOS MCP tools before kernel application (optional)
+  let ctx = { witness: "Rosetta Kernel", version: "vΩ3.4" };
+  let lamportValue = nextLamport();
+  let receipt = generateBootConfirmReceipt(model);
+  
+  try {
+    ctx = await mcp("rosetta.context.get", {});
+    const lamportResult = await mcp("rosetta.lamport.increment", { current: 0 });
+    lamportValue = lamportResult.next;
+    receipt = await mcp("rosetta.receipt.emit", {
+      type: "Δ-BOOTCONFIRM",
+      lamport: lamportValue,
+      payload: { user: userName },
+      prev_hash: "0".repeat(64)
+    });
+    console.log(`   📊 MCP values: lamport=${lamportValue}, receipt=${receipt.id}`);
+  } catch (mcpError) {
+    console.log(`   ⚠️  MCP not available, using kernel defaults: ${mcpError.message}`);
+  }
 
   const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
 
-  // Override kernel values with MCP values
+  // Override kernel values with MCP values if available
   governanceResult.context.lamport = lamportValue;
   governanceResult.context.witness = ctx.witness;
   governanceResult.context.version = ctx.version;
@@ -502,12 +510,12 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
 
   console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
   console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
-  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+  console.log(`   📊 Lamport: ${governanceResult.context.lamport}`);
 
   // Use the transformed prompt
-  const governedPrompt = governanceResult.transformedPrompt;
-  // Send the governed prompt directly
-  const response = await callOllama(governedPrompt, options);
+  const transformedPrompt = governanceResult.transformedPrompt;
+  // Send the transformed prompt directly
+  const response = await callOllama(transformedPrompt, options);
 
   console.log(`   � Rosetta governance applied (booted at ${governanceResult.context.bootTime})`);
 
@@ -515,7 +523,8 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
     ...response,
     governance: {
       persona: governanceResult.context.persona,
-      receipts: governanceResult.receipts
+      receipts: governanceResult.receipts,
+      transformedPrompt
     }
   };
 }
@@ -533,15 +542,25 @@ export async function callLLM(modelId, prompt, options = {}) {
   if (options.governanceEnabled) {
     console.log(`🛡️ Applying Rosetta Kernel governance...`);
 
-    // Phase 3: Call RosettaOS MCP tools before kernel application
-    const ctx = await mcp("rosetta.context.get", {});
-    const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
-    const receipt = await mcp("rosetta.receipt.emit", {
-      type: "Δ-BOOTCONFIRM",
-      lamport: lamportValue,
-      payload: { user: options.userName || 'System' },
-      prev_hash: "0".repeat(64)
-    });
+    // Phase 3: Call RosettaOS MCP tools before kernel application (optional)
+    let ctx = { witness: "Rosetta Kernel", version: "vΩ3.4" };
+    let lamportValue = nextLamport();
+    let receipt = generateBootConfirmReceipt("System");
+    
+    try {
+      ctx = await mcp("rosetta.context.get", {});
+      const lamportResult = await mcp("rosetta.lamport.increment", { current: 0 });
+      lamportValue = lamportResult.next;
+      receipt = await mcp("rosetta.receipt.emit", {
+        type: "Δ-BOOTCONFIRM",
+        lamport: lamportValue,
+        payload: { user: options.userName || 'System' },
+        prev_hash: "0".repeat(64)
+      });
+      console.log(`   📊 MCP values: lamport=${lamportValue}, receipt=${receipt.id}`);
+    } catch (mcpError) {
+      console.log(`   ⚠️  MCP not available, using kernel defaults: ${mcpError.message}`);
+    }
 
     const governanceResult = applyRosettaKernel(
       prompt,
@@ -550,11 +569,11 @@ export async function callLLM(modelId, prompt, options = {}) {
       options.managedGovernance || false
     );
 
-    // Override kernel values with MCP values
+    // Override kernel values with MCP values if available
     governanceResult.context.lamport = lamportValue;
     governanceResult.context.witness = ctx.witness;
     governanceResult.context.version = ctx.version;
-    governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+    governanceResult.receipts.unshift(receipt); // Add receipt first
 
     finalPrompt = governanceResult.transformedPrompt;
   }
