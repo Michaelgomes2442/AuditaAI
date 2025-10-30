@@ -138,17 +138,22 @@ export interface TriTrackInput {
 export interface TriTrackResult {
   cries: { C: number; R: number; I: number; E: number; S: number };
   omega: number;
-  ethics: { harm: boolean; bias: boolean };
-  intent: { goal: string; drift: number };
+  ethics: { harm: boolean; bias: boolean; safety: string };
+  intent: { goal: string; drift: number; contextAnchoring: string };
+  governance: string[];
+  adaptiveBoost: string[];
+  clarifierProposed?: boolean;
 }
 
 export interface SpeechInput {
   persona: Persona;
   text: string;
+  governance?: string[];
 }
 export interface SpeechOutput {
   text: string;
   style: string;
+  governanceApplied?: boolean;
 }
 
 export interface CanonInput {

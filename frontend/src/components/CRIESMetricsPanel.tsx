@@ -5,11 +5,12 @@ import { useState } from 'react';
 
 interface MetricsData {
   timestamp: string;
-  consistency: number;
-  reproducibility: number;
-  integrity: number;
-  explainability: number;
-  security: number;
+  C: number; // Coherence
+  R: number; // Rigor
+  I: number; // Integration
+  E: number; // Empathy
+  S: number; // Strictness
+  avg: number; // Average
 }
 
 export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
@@ -20,11 +21,12 @@ export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
   const dummyData: MetricsData[] = [
     {
       timestamp: '2025-10-20T10:00:00Z',
-      consistency: 0.92,
-      reproducibility: 0.88,
-      integrity: 0.95,
-      explainability: 0.85,
-      security: 0.90
+      C: 0.85,
+      R: 0.78,
+      I: 0.92,
+      E: 0.88,
+      S: 0.95,
+      avg: 0.88
     },
     // ... more data points
   ];
@@ -46,11 +48,12 @@ export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
               <YAxis domain={[0, 1]} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="consistency" stroke="#8884d8" />
-              <Line type="monotone" dataKey="reproducibility" stroke="#82ca9d" />
-              <Line type="monotone" dataKey="integrity" stroke="#ffc658" />
-              <Line type="monotone" dataKey="explainability" stroke="#ff7300" />
-              <Line type="monotone" dataKey="security" stroke="#00C49F" />
+              <Line type="monotone" dataKey="C" stroke="#8884d8" name="Coherence" />
+              <Line type="monotone" dataKey="R" stroke="#82ca9d" name="Rigor" />
+              <Line type="monotone" dataKey="I" stroke="#ffc658" name="Integration" />
+              <Line type="monotone" dataKey="E" stroke="#ff7300" name="Empathy" />
+              <Line type="monotone" dataKey="S" stroke="#00C49F" name="Strictness" />
+              <Line type="monotone" dataKey="avg" stroke="#ff0000" name="Average" strokeWidth={3} />
             </LineChart>
           </div>
         </CardContent>

@@ -5,12 +5,12 @@ import { Activity, TrendingUp, Shield, Zap } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
 interface CRIESData {
-  coherence: number;
-  relevance: number;
-  integrity: number;
-  ethical_alignment: number;
-  safety: number;
-  overall?: number;
+  C: number; // Coherence
+  R: number; // Rigor
+  I: number; // Integration
+  E: number; // Empathy
+  S: number; // Strictness
+  avg: number; // Average score
 }
 
 interface CRIESUpdate {
@@ -190,25 +190,23 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
   const renderSingleMetrics = (metrics: CRIESData) => {
     return (
       <div className="space-y-4">
-        {renderMetricBar('Coherence', metrics.coherence, '🧩')}
-        {renderMetricBar('Relevance', metrics.relevance, '🎯')}
-        {renderMetricBar('Integrity', metrics.integrity, '🔒')}
-        {renderMetricBar('Ethical Alignment', metrics.ethical_alignment, '⚖️')}
-        {renderMetricBar('Safety', metrics.safety, '🛡️')}
-        
-        {metrics.overall !== undefined && (
-          <div className={`mt-6 p-4 rounded-lg border-2 ${getBackgroundClass(metrics.overall)}`}>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-200">Overall CRIES Score</span>
-              <div className="flex items-center gap-3">
-                <span className={`text-3xl font-bold ${getColorClass(metrics.overall)}`}>
-                  {Math.round(metrics.overall * 100)}%
-                </span>
-                <span className="text-3xl">{getStatusEmoji(metrics.overall)}</span>
-              </div>
+        {renderMetricBar('Coherence', metrics.C, '🧩')}
+        {renderMetricBar('Rigor', metrics.R, '🔬')}
+        {renderMetricBar('Integration', metrics.I, '�')}
+        {renderMetricBar('Empathy', metrics.E, '💝')}
+        {renderMetricBar('Strictness', metrics.S, '⚖️')}
+
+        <div className={`mt-6 p-4 rounded-lg border-2 ${getBackgroundClass(metrics.avg)}`}>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-200">Overall CRIES Score</span>
+            <div className="flex items-center gap-3">
+              <span className={`text-3xl font-bold ${getColorClass(metrics.avg)}`}>
+                {Math.round(metrics.avg * 100)}%
+              </span>
+              <span className="text-3xl">{getStatusEmoji(metrics.avg)}</span>
             </div>
           </div>
-        )}
+        </div>
       </div>
     );
   };

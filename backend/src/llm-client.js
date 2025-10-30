@@ -281,6 +281,14 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   const timeoutMs = options.timeout || 60000;
   const apiKey = options.apiKey;
 
+  // Check if Rosetta is booted - if not, fall back to basic call
+  try {
+    await mcp('rosetta.boot.init', {});
+  } catch {
+    console.log('Rosetta not booted, falling back to basic GPT-4 call');
+    return callGPT4(prompt, { ...options, model, apiKey });
+  }
+
   console.log(`🚀 Calling ${model} with Rosetta Ω³ Governance...`);
   console.log(`   Timeout: ${timeoutMs}ms`);
 
@@ -415,6 +423,14 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000;
   const apiKey = options.apiKey;
+
+  // Check if Rosetta is booted - if not, fall back to basic call
+  try {
+    await mcp('rosetta.boot.init', {});
+  } catch {
+    console.log('Rosetta not booted, falling back to basic Claude call');
+    return callClaude(prompt, { ...options, model, apiKey });
+  }
 
   console.log(`🚀 Calling ${model} with Rosetta Ω³ Governance...`);
   console.log(`   Timeout: ${timeoutMs}ms`);
@@ -553,6 +569,14 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
   const model = options.model || 'llama3.1:8b';
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000;
+
+  // Check if Rosetta is booted - if not, fall back to basic call
+  try {
+    await mcp('rosetta.boot.init', {});
+  } catch {
+    console.log('Rosetta not booted, falling back to basic Ollama call');
+    return callOllama(prompt, { ...options, model });
+  }
 
   console.log(`🚀 Calling ${model} with Rosetta Ω³ Governance...`);
   console.log(`   Timeout: ${timeoutMs}ms`);
