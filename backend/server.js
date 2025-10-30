@@ -9,6 +9,7 @@ import { createRequire } from 'module';
 // Load environment variables from .env file
 dotenv.config();
 
+import { mcp } from './src/mcp-client.js';
 import { createOptimizedPrismaClient } from './src/prisma-optimize.ts';
 
 // Robustly load PrismaClient. In some local/workspace/pnpm layouts the
@@ -153,15 +154,15 @@ let prisma;
 let receiptService, auditLogsService, dashboardService;
 
 receiptService = {
-  calculateCRIESMetrics: (response, prompt) => {
-    if (typeof computeCRIES === 'function') {
-      try {
-        return computeCRIES(response, prompt);
-      } catch (e) {
-        console.warn('computeCRIES failed, using fallback:', e.message);
-      }
+  calculateCRIESMetrics: async (response, prompt) => {
+    try {
+      // Use MCP CRIES tool for deterministic scoring
+      const criesResult = await mcp('rosetta.cries.score', { text: response || prompt });
+      return criesResult;
+    } catch (e) {
+      console.warn('MCP CRIES failed, using fallback:', e.message);
+      return { C: 0.5, R: 0.5, I: 0.5, E: 0.5, S: 0.5, avg: 0.5 };
     }
-    return { C: 0.5, R: 0.5, I: 0.5, E: 0.5, S: 0.5, overall: 0.5 };
   },
   generateAnalysisReceipt: async () => ({ id: 'fallback', digest: 'fallback', receipt_type: 'Δ-ANALYSIS' }),
   getReceipts: async (page = 1, limit = 50, type) => ({ receipts: [], pagination: { total: 0, limit, offset: 0 } }),

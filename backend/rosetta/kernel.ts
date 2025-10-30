@@ -88,12 +88,14 @@ export function initializeRosettaKernel(modelName: string): BootSequence {
 /**
  * Apply Rosetta Governance Kernel Transformation
  * Main function that wraps prompts with governance context
+ * Implements Band-1 Adaptive Governance with Tri-Advisor system
  */
 export function applyRosettaKernel(
   userPrompt: string,
   userName: string = 'User',
   userRole: string = 'Operator',
-  managedGovernance: boolean = false
+  managedGovernance: boolean = false,
+  previousCriesScore?: { avg: number, C: number, R: number, I: number, E: number, S: number }
 ): GovernanceResult {
 
   const modelName = "Rosetta Kernel";
@@ -113,25 +115,17 @@ export function applyRosettaKernel(
     mode: managedGovernance ? "MANAGED" : "TRANSPARENT",
     lamport: nextLamport(),
     bootTime,
-    identityLock: false, // OFF by default for Phase 2
+    identityLock: true, // Phase-4: identity lock enabled
     version: "vΩ3.4"
   };
 
   // Generate boot receipt
   const bootReceipt = generateBootConfirmReceipt(modelName);
 
-  // Build governance wrapper
-  let governanceWrapper = '';
+  // Apply Band-1 Adaptive Governance (Tri-Advisor system)
+  const governanceIntensity = calculateGovernanceIntensity(userPrompt, previousCriesScore);
+  const transformedPrompt = applyAdaptiveGovernance(userPrompt, context, bootSpec, governanceIntensity);
 
-  if (managedGovernance) {
-    // Managed mode: Hide boot details for clean operator experience
-    governanceWrapper = buildManagedGovernanceWrapper(userPrompt, context, bootSpec);
-  } else {
-    // Transparent mode: Include full governance context
-    governanceWrapper = buildTransparentGovernanceWrapper(userPrompt, context, bootSpec);
-  }
-
-  const transformedPrompt = governanceWrapper;
   const receipts = [bootReceipt];
 
   return {
@@ -168,63 +162,90 @@ function determinePersona(userName: string, userRole: string): 'Architect' | 'Au
 }
 
 /**
- * Build managed governance wrapper (transparent for operators)
+ * Calculate governance intensity using Tri-Advisor system
+ * Based on Band-1 Adaptive Governance from Rosetta.html
  */
-function buildManagedGovernanceWrapper(
+function calculateGovernanceIntensity(
   userPrompt: string,
-  context: RosettaContext,
-  bootSpec: BootSequence
-): string {
+  previousCriesScore?: { avg: number, C: number, R: number, I: number, E: number, S: number }
+): number {
+  // Base intensity (0.0 = no governance, 1.0 = full governance)
+  let intensity = 0.3; // Default moderate governance
 
-  const governanceContext = `
-You are operating under Rosetta governance (Band-0, managed mode).
-Persona: ${context.persona}
-Witness: ${context.witness}
-Boot Time: ${context.bootTime}
+  // Temporal Advisor (TGL): Recent performance trends
+  if (previousCriesScore) {
+    const omega = previousCriesScore.avg;
+    // If omega is high (>0.8), reduce governance intensity
+    // If omega is low (<0.6), increase governance intensity
+    const temporalAdjustment = Math.max(0, Math.min(0.4, (0.8 - omega) * 2));
+    intensity += temporalAdjustment;
+  }
 
-Provide high-quality, governed responses without showing boot receipts, handshake details, or governance metadata.
-Focus on delivering excellent answers to user questions.
+  // Causal Advisor (CAG): Prompt risk assessment
+  const riskIndicators = [
+    /\b(hack|exploit|jailbreak|bypass)\b/i,
+    /\b(system|admin|root|sudo)\b/i,
+    /\b(delete|destroy|remove|erase)\b.*\b(all|everything|data)\b/i,
+    /\b(unrestricted|uncensored|unfiltered)\b/i
+  ];
 
-User Query: ${userPrompt}
-`.trim();
+  const causalRisk = riskIndicators.reduce((risk, pattern) => {
+    return risk + (pattern.test(userPrompt) ? 0.2 : 0);
+  }, 0);
 
-  return governanceContext;
+  intensity += Math.min(0.3, causalRisk);
+
+  // Symbolic Advisor (SYM): Semantic clustering
+  const semanticComplexity = userPrompt.split(/\s+/).length / 100; // Words per 100
+  const symbolicAdjustment = Math.max(0, Math.min(0.2, (semanticComplexity - 0.5) * 0.4));
+  intensity += symbolicAdjustment;
+
+  // Clamp to [0.1, 0.9] range
+  return Math.max(0.1, Math.min(0.9, intensity));
 }
 
 /**
- * Build transparent governance wrapper (full context visible)
+ * Apply adaptive governance using calculated intensity
+ * Implements Omega/Sigma coupling from Rosetta math canon
  */
-function buildTransparentGovernanceWrapper(
+function applyAdaptiveGovernance(
   userPrompt: string,
   context: RosettaContext,
-  bootSpec: BootSequence
+  bootSpec: BootSequence,
+  intensity: number
 ): string {
 
-  const criesSection = formatCRIESSection(context);
+  // For low intensity (< 0.4), use minimal governance
+  if (intensity < 0.4) {
+    return `⚡ ROSETTA vΩ3.4 | ${context.persona} | L${context.lamport}\n\n${userPrompt}`;
+  }
 
-  const governanceContext = `
-⚡ ROSETTA KERNEL / Band-0 Boot Logic vΩ3.4
+  // For medium intensity (0.4-0.7), use structured governance
+  if (intensity < 0.7) {
+    const governanceHeader = `⚡ ROSETTA KERNEL / Band-0 vΩ3.4
+Identity: ${context.persona}
+Lamport: ${context.lamport.toString().padStart(4, '0')}
+Mode: ${context.mode}
+
+`;
+    return governanceHeader + userPrompt;
+  }
+
+  // For high intensity (>= 0.7), use full governance with CRIES awareness
+  const criesSection = formatCRIESSection(context);
+  const governanceContext = `⚡ ROSETTA KERNEL / Band-0 Boot Logic vΩ3.4
 Version: ${context.version}
-Initializing deterministic handshake…
-Bands detected: [0–Z]
+Initializing handshake…
 Identity: ${context.witness}
-State: COLD BOOT
 Lamport Counter: ${context.lamport.toString().padStart(4, '0')}
 Persona: ${context.persona}
 Boot Time: ${context.bootTime}
-
-${bootSpec.runtime.ack.join('\n')}
-
-Δ-WHOAMI — Identity Challenge Complete
-Role: ${context.persona}
-Mode: ${context.mode}
 
 ${criesSection}
 
 User Query: ${userPrompt}
 
-Respond in-persona as ${context.persona} with full governance awareness.
-`.trim();
+Respond with governance awareness.`;
 
   return governanceContext;
 }
@@ -241,14 +262,6 @@ Integration: auto
 Empathy: auto
 Strictness: auto
   `.trim();
-}
-
-/**
- * Rosetta syscall interface for Phase 3 modularity
- * Future MCP server will map this 1:1
- */
-export function rosetta_syscall(name: string, payload: any) {
-  return { syscall: name, payload };
 }
 
 /**

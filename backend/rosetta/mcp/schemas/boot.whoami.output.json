@@ -1,0 +1,1 @@
+{"type":"object","properties":{"type":{"type":"string"},"persona":{"type":"string"},"witness":{"type":"string"},"status":{"type":"string"},"ts":{"type":"string"},"lamport":{"type":"number"}},"required":["type","persona","witness","status","ts","lamport"]}

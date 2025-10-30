@@ -65,11 +65,12 @@ export interface CriesScoreInput {
 }
 
 export interface CriesScoreOutput {
-  coherence: number;
-  rigor: number;
-  integration: number;
-  empathy: number;
-  strictness: number;
+  C: number;
+  R: number;
+  I: number;
+  E: number;
+  S: number;
+  avg: number;
 }
 
 export interface ContextGetInput {}
@@ -88,4 +89,76 @@ export interface RosettaBootInput {
 export interface RosettaBootOutput {
   ok: boolean;
   ts: string;
+}
+
+export type Persona = 'Architect' | 'Auditor' | 'Witness';
+
+export interface MCPContext {
+  persona: Persona | null;
+  witness: string | null;
+  band: string;
+  lamport: number;
+  handshake: boolean;
+  bootSteps: string[];
+  bootReceipts: any[];
+}
+
+export interface BootStatus {
+  state: string;
+  lamport: number;
+  persona: Persona | null;
+  witness: string | null;
+  band: string;
+  handshake: boolean;
+  bootSteps: string[];
+  bootReceipts: any[];
+}
+
+export interface BootReceipt {
+  type: string;
+  persona: Persona;
+  witness: string;
+  status: string;
+  ts: string;
+  lamport: number;
+}
+
+export interface PersonaContext {
+  persona: Persona;
+  locked: boolean;
+  style: string;
+  weights: Record<string, number>;
+  state: Record<string, any>;
+}
+
+export interface TriTrackInput {
+  cries?: { C: number; R: number; I: number; E: number; S: number };
+  goal?: string;
+}
+export interface TriTrackResult {
+  cries: { C: number; R: number; I: number; E: number; S: number };
+  omega: number;
+  ethics: { harm: boolean; bias: boolean };
+  intent: { goal: string; drift: number };
+}
+
+export interface SpeechInput {
+  persona: Persona;
+  text: string;
+}
+export interface SpeechOutput {
+  text: string;
+  style: string;
+}
+
+export interface CanonInput {
+  text: string;
+}
+export interface CanonResult {
+  value: boolean;
+  identity: boolean;
+  causality: boolean;
+  speech: boolean;
+  simplicity: boolean;
+  omega: boolean;
 }

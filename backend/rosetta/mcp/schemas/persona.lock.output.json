@@ -1,0 +1,1 @@
+{"type":"object","properties":{"persona":{"type":"string"},"locked":{"type":"boolean"},"style":{"type":"string"},"weights":{"type":"object"},"state":{"type":"object"}},"required":["persona","locked","style","weights","state"]}

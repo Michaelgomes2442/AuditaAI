@@ -3,21 +3,47 @@
  * Phase 2: Structured receipt generation
  */
 
+export interface Receipt {
+  type: string;
+  lamport: number;
+  ts: string;
+  witness: string;
+  band: string;
+  hash: string;
+  prev_hash: string;
+  payload?: any;
+}
+
 /**
  * Generate Δ-BOOTCONFIRM receipt
  * From Rosetta.html canonical template
  */
-export function generateBootConfirmReceipt(modelName: string, lamportClock = 2) {
+export function generateBootConfirmReceipt(witness: string, lamport?: number): Receipt {
+  const lamportValue = lamport ?? 2;
   return {
-    receipt_type: "Δ-BOOTCONFIRM",
-    status: "BOOTED",
-    lamport: lamportClock,
-    trace_id: `TRI-UP-VER-${Date.now()}`,
+    type: "Δ-BOOTCONFIRM",
+    lamport: lamportValue,
     ts: new Date().toISOString(),
-    witness: modelName,
+    witness,
     band: "B0",
-    notes: "Monolith booted with persona lock and emitted acknowledgments."
+    hash: '0'.repeat(64), // Placeholder hash
+    prev_hash: '0'.repeat(64), // Root of chain
+    payload: { status: "BOOTED" }
   };
+}
+
+/**
+ * Persist receipt to local storage (best-effort)
+ */
+export async function persistReceipt(receipt: Receipt): Promise<void> {
+  try {
+    // For now, just log - in production this would write to database/filesystem
+    console.log('🧾 Persisting receipt:', receipt.type, receipt.lamport, receipt.witness);
+    // TODO: Implement actual persistence (database, filesystem, etc.)
+  } catch (error) {
+    console.warn('⚠️ Failed to persist receipt:', error instanceof Error ? error.message : String(error));
+    // Don't throw - persistence failures shouldn't break the flow
+  }
 }
 
 /**

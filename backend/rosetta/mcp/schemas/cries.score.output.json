@@ -2,32 +2,37 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "coherence": {
+    "C": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
     },
-    "rigor": {
+    "R": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
     },
-    "integration": {
+    "I": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
     },
-    "empathy": {
+    "E": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
     },
-    "strictness": {
+    "S": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "avg": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
     }
   },
-  "required": ["coherence", "rigor", "integration", "empathy", "strictness"],
+  "required": ["C", "R", "I", "E", "S", "avg"],
   "additionalProperties": false
 }

@@ -13,6 +13,7 @@ import { receiptEmit } from './tools/receipts.js';
 import { hashVerify } from './tools/hashing.js';
 import { criesScore } from './tools/cries.js';
 import { contextGet } from './tools/context.js';
+import { RosettaMCPKernel } from './kernel/index.js';
 import { ToolRequest, ToolResponse } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -73,6 +74,16 @@ const tools: { [key: string]: Function } = {
   'rosetta.cries.score': criesScore,
   'rosetta.context.get': contextGet
 };
+
+// Register new MCP kernel tools
+Object.assign(tools, {
+  'rosetta.boot.init': RosettaMCPKernel.boot.bootSequenceInit,
+  'rosetta.boot.whoami': RosettaMCPKernel.boot.handleWhoAmI,
+  'rosetta.persona.lock': RosettaMCPKernel.persona.personaLock,
+  'rosetta.triTrack.analyze': RosettaMCPKernel.triTrack.triTrackAnalyze,
+  'rosetta.speechcraft.apply': RosettaMCPKernel.speechcraft.applySpeechcraft,
+  'rosetta.canons.crossCheck': RosettaMCPKernel.canons.crossCheckCanons
+});
 
 export async function handleToolCall(request: ToolRequest): Promise<ToolResponse> {
   const { tool, input } = request;
