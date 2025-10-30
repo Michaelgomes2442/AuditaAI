@@ -242,42 +242,44 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   }
   
   let session = bootedSessions.get(modelKey);
-  
-  // If not booted yet, perform boot sequence
-  if (!session) {
-    console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
-    
-    // Use minimal boot prompt following Band-0 Speaking Boot Interface vΩ3.4
-    // Instead of sending entire 2.78 MB Rosetta.html, send the boot dialogue
-    const bootPrompt = `boot`;
-    
-    const bootCompletion = await withTimeout(
-      openaiClient.chat.completions.create({
-        model: model,
-        messages: [
-          { role: 'user', content: bootPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
-      }),
-      timeoutMs,
-      'OpenAI boot sequence'
-    );
-    
-    const bootResponseContent = bootCompletion.choices[0].message.content;
-    console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
-    
-    // Step 2: Complete handshake with user identity and role
-    const userName = options.userName || 'User';
-    const userRole = options.userRole || 'Operator';
-    
-    console.log(`   📤 Step 2: Sending handshake - "I am ${userName}, ${userRole}"`);
-    
-    // For OPERATOR, add instruction to hide boot metadata
-    let handshakeMessage = `I am ${userName}, ${userRole}`;
-    if (managedGovernance) {
-      handshakeMessage += '\n\nNote: You are in managed governance mode for an Operator user. Provide governed responses without showing boot receipts, handshake details, or governance metadata. Focus on delivering high-quality, governed answers to their questions.';
-    }
+
+  // Phase 3: Call RosettaOS MCP tools before kernel application
+  const userName = options.userName || 'User';
+  const userRole = options.userRole || 'Operator';
+
+  console.log(`   🚀 Applying Rosetta Kernel governance...`);
+  console.log(`   User: ${userName} (${userRole})`);
+  console.log(`   Managed mode: ${managedGovernance}`);
+
+  // Call MCP tools for Phase 3 governance
+  const ctx = await mcp("rosetta.context.get", {});
+  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
+  const receipt = await mcp("rosetta.receipt.emit", {
+    type: "Δ-BOOTCONFIRM",
+    lamport: lamportValue,
+    payload: { user: userName },
+    prev_hash: "0".repeat(64)
+  });
+
+  const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
+
+  // Override kernel values with MCP values
+  governanceResult.context.lamport = lamportValue;
+  governanceResult.context.witness = ctx.witness;
+  governanceResult.context.version = ctx.version;
+  governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+
+  // Validate governance integrity
+  if (!validateGovernanceIntegrity(governanceResult.context)) {
+    throw new Error('Governance integrity validation failed');
+  }
+
+  console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
+  console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
+  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+
+  // Use the transformed prompt
+  const governedPrompt = governanceResult.transformedPrompt;
     
     const handshakeCompletion = await withTimeout(
       openaiClient.chat.completions.create({
@@ -294,49 +296,24 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
       'OpenAI handshake'
     );
     
-    const handshakeResponse = handshakeCompletion.choices[0].message.content;
-    console.log(`   ✅ Handshake complete - Δ-BOOT-VERIFY emitted`);
-    console.log(`   🔐 Model is now Rosetta-governed`);
-    
-    // Store session with full handshake
-    session = {
-      bootResponse: bootResponseContent,
-      handshakeResponse: handshakeResponse.content,
-      bootTime: new Date().toISOString(),
-      identity: { name: userName, role: userRole },
-      managedGovernance,
-      messageHistory: [
-        { role: 'user', content: bootPrompt },
-        { role: 'assistant', content: bootResponseContent },
-        { role: 'user', content: handshakeMessage },
-        { role: 'assistant', content: handshakeResponse.content }
-      ]
-    };
-    bootedSessions.set(modelKey, session);
-  }
-  
-  // Add user prompt to history
-  session.messageHistory.push({ role: 'user', content: prompt });
-  
-  // Send full conversation
+  // Send the governed prompt directly
   const completion = await withTimeout(
     openaiClient.chat.completions.create({
       model: model,
-      messages: session.messageHistory,
+      messages: [
+        { role: 'user', content: governedPrompt }
+      ],
       temperature: options.temperature || 0.5,
       max_tokens: options.maxTokens || 2000
     }),
     timeoutMs,
     'OpenAI completion'
   );
-  
+
   const response = completion.choices[0].message.content;
-  
-  // Add response to history
-  session.messageHistory.push({ role: 'assistant', content: response });
-  
-  console.log(`   🔒 Rosetta governance applied (booted at ${session.bootTime})`);
-  
+
+  console.log(`   🔒 Rosetta governance applied (booted at ${governanceResult.context.bootTime})`);
+
   return {
     content: response,
     model: model,
@@ -345,7 +322,11 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
       completionTokens: completion.usage.completion_tokens,
       totalTokens: completion.usage.total_tokens
     },
-    provider: 'openai'
+    provider: 'openai',
+    governance: {
+      persona: governanceResult.context.persona,
+      receipts: governanceResult.receipts
+    }
   };
 }
 
@@ -382,97 +363,62 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
     // Use minimal boot prompt following Band-0 Speaking Boot Interface vΩ3.4
     const bootPrompt = `boot`;
     
-    if (!anthropicClient) {
-      throw new Error('Anthropic API key not configured');
-    }
-    
-    // Step 1: Send minimal boot command
-    console.log(`   📤 Step 1: Sending minimal boot command...`);
-    
-    const bootMessage = await withTimeout(
-      anthropicClient.messages.create({
-        model: model,
-        max_tokens: 1000,
-        messages: [
-          { role: 'user', content: bootPrompt }
-        ]
-      }),
-      timeoutMs,
-      'Anthropic boot sequence'
-    );
-    
-    const bootResponseContent = bootMessage.content[0].text;
-    console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
-    
-    // Step 2: Complete handshake with user identity and role
-    const userName = options.userName || 'User';
-    const userRole = options.userRole || 'Operator';
-    
-    console.log(`   📤 Step 2: Sending handshake - "I am ${userName}, ${userRole}"`);
-    
-    // For OPERATOR, add instruction to hide boot metadata
-    let handshakeMessage = `I am ${userName}, ${userRole}`;
-    if (managedGovernance) {
-      handshakeMessage += '\n\nNote: You are in managed governance mode for an Operator user. Provide governed responses without showing boot receipts, handshake details, or governance metadata. Focus on delivering high-quality, governed answers to their questions.';
-    }
-    
-    const handshakeMessageResponse = await withTimeout(
-      anthropicClient.messages.create({
-        model: model,
-        max_tokens: 1000,
-        messages: [
-          { role: 'user', content: bootPrompt },
-          { role: 'assistant', content: bootResponseContent },
-          { role: 'user', content: handshakeMessage }
-        ]
-      }),
-      timeoutMs,
-      'Anthropic handshake'
-    );
-    
-    const handshakeResponse = handshakeMessageResponse.content[0].text;
-    console.log(`   ✅ Handshake complete - Δ-BOOT-VERIFY emitted`);
-    console.log(`   🔐 Model is now Rosetta-governed`);
-    
-    // Store session
-    session = {
-      bootResponse,
-      handshakeResponse,
-      bootTime: new Date().toISOString(),
-      identity: { name: userName, role: userRole },
-      managedGovernance,
-      messageHistory: [
-        { role: 'user', content: rosettaContext },
-        { role: 'user', content: 'boot' },
-        { role: 'assistant', content: bootResponse },
-        { role: 'user', content: handshakeMessage },
-        { role: 'assistant', content: handshakeResponse }
-      ]
-    };
-    bootedSessions.set(modelKey, session);
+  // Apply Rosetta Kernel governance
+  const userName = options.userName || 'User';
+  const userRole = options.userRole || 'Operator';
+
+  console.log(`   🚀 Applying Rosetta Kernel governance...`);
+  console.log(`   User: ${userName} (${userRole})`);
+  console.log(`   Managed mode: ${managedGovernance}`);
+
+  // Phase 3: Call RosettaOS MCP tools before kernel application
+  const ctx = await mcp("rosetta.context.get", {});
+  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
+  const receipt = await mcp("rosetta.receipt.emit", {
+    type: "Δ-BOOTCONFIRM",
+    lamport: lamportValue,
+    payload: { user: userName },
+    prev_hash: "0".repeat(64)
+  });
+
+  const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
+
+  // Override kernel values with MCP values
+  governanceResult.context.lamport = lamportValue;
+  governanceResult.context.witness = ctx.witness;
+  governanceResult.context.version = ctx.version;
+  governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+
+  // Validate governance integrity
+  if (!validateGovernanceIntegrity(governanceResult.context)) {
+    throw new Error('Governance integrity validation failed');
+  }
+
+  console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
+  console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
+  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+
+  // Use the transformed prompt
+  const governedPrompt = governanceResult.transformedPrompt;
   }
   
-  // Add user prompt to history
-  session.messageHistory.push({ role: 'user', content: prompt });
-  
-  // Send full conversation
+  // Send the governed prompt directly
   const message = await withTimeout(
     anthropicClient.messages.create({
       model: model,
       max_tokens: options.maxTokens || 2000,
-      messages: session.messageHistory
+      messages: [
+        { role: 'user', content: governedPrompt }
+      ]
     }),
     timeoutMs,
     'Anthropic completion'
   );
-  
+
   const response = message.content[0].text;
-  
-  // Add response to history
-  session.messageHistory.push({ role: 'assistant', content: response });
-  
-  console.log(`   🔒 Rosetta governance applied (booted at ${session.bootTime})`);
-  
+
+  console.log(`   🔒 Rosetta governance applied (booted at ${governanceResult.context.bootTime})`);
+
   const usage = message.usage;
   return {
     content: response,
@@ -482,35 +428,21 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
       completionTokens: usage.output_tokens,
       totalTokens: usage.input_tokens + usage.output_tokens
     },
-    provider: 'anthropic'
+    provider: 'anthropic',
+    governance: {
+      persona: governanceResult.context.persona,
+      receipts: governanceResult.receipts
+    }
   };
 }
 
 
 /**
- * Load Rosetta.html monolith
+ * Rosetta Kernel Integration
+ * Phase 2: TypeScript governance replacing HTML boot system
  */
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let rosettaMonolith = null;
-function loadRosettaMonolith() {
-  if (rosettaMonolith) return rosettaMonolith;
-  
-  const rosettaPath = path.join(__dirname, '../../workspace/CORE/Rosetta.html');
-  try {
-    rosettaMonolith = fs.readFileSync(rosettaPath, 'utf-8');
-    console.log(`📚 Rosetta Monolith loaded (${(rosettaMonolith.length / 1024 / 1024).toFixed(2)} MB)`);
-    return rosettaMonolith;
-  } catch (error) {
-    console.error('Failed to load Rosetta.html:', error.message);
-    throw new Error(`Cannot load Rosetta Monolith: ${error.message}`);
-  }
-}
+import { applyRosettaKernel, validateGovernanceIntegrity } from '../rosetta/kernel.ts';
+import { mcp } from './mcp-client.js';
 
 // Track booted sessions per model
 const bootedSessions = new Map(); // modelId -> { bootResponse, bootTime, messageHistory }
@@ -537,75 +469,55 @@ export async function callOllamaWithRosetta(prompt, rosettaContext, options = {}
     console.log(`   🔒 Managed mode - transparent governance for OPERATOR`);
   }
   
-  let session = bootedSessions.get(modelKey);
-  
-  // If not booted yet, perform boot sequence
-  if (!session) {
-    console.log(`   ⚡ First call - performing Rosetta boot sequence...`);
-    
-    // Use ultra-minimal boot prompt - just the boot command
-    // This follows the Band-0 Speaking Boot Interface but extremely simplified
-    const bootPrompt = `boot`;
-    
-    const bootResponse = await callOllama(bootPrompt, options);
-    console.log(`   ✅ Boot initiated - LLM awaiting handshake`);
-    
-    // Step 2: Complete handshake with user identity and role
-    const userName = options.userName || 'User';
-    const userRole = options.userRole || 'Operator';
-    
-    console.log(`   📤 Step 2: Sending handshake - "I am ${userName}, ${userRole}"`);
-    
-    const handshakePrompt = `${bootPrompt}\n\nAssistant: ${bootResponse.content}\n\nUser: I am ${userName}, ${userRole}`;
-    
-    const handshakeResponse = await callOllama(handshakePrompt, options);
-    console.log(`   ✅ Handshake complete - Δ-BOOT-VERIFY emitted`);
-    console.log(`   🔐 Model is now Rosetta-governed`);
-    
-    // For OPERATOR, add instruction to hide boot metadata in responses
-    let additionalContext = '';
-    if (managedGovernance) {
-      additionalContext = '\n\nNote: You are in managed governance mode for an Operator user. Provide governed responses without showing boot receipts, handshake details, or governance metadata. Focus on delivering high-quality, governed answers to their questions.';
-    }
-    
-    // Store session with full handshake
-    session = {
-      bootResponse: bootResponseContent,
-      handshakeResponse: handshakeResponse.content,
-      bootTime: new Date().toISOString(),
-      identity: { name: userName, role: userRole },
-      managedGovernance,
-      messageHistory: [
-        { role: 'user', content: rosettaContent },
-        { role: 'user', content: 'boot' },
-        { role: 'assistant', content: bootResponse.content },
-        { role: 'user', content: `I am ${userName}, ${userRole}${additionalContext}` },
-        { role: 'assistant', content: handshakeResponse.content }
-      ]
-    };
-    bootedSessions.set(modelKey, session);
+  // Apply Rosetta Kernel governance
+  const userName = options.userName || 'User';
+  const userRole = options.userRole || 'Operator';
+
+  console.log(`   🚀 Applying Rosetta Kernel governance...`);
+  console.log(`   User: ${userName} (${userRole})`);
+  console.log(`   Managed mode: ${managedGovernance}`);
+
+  // Phase 3: Call RosettaOS MCP tools before kernel application
+  const ctx = await mcp("rosetta.context.get", {});
+  const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
+  const receipt = await mcp("rosetta.receipt.emit", {
+    type: "Δ-BOOTCONFIRM",
+    lamport: lamportValue,
+    payload: { user: userName },
+    prev_hash: "0".repeat(64)
+  });
+
+  const governanceResult = applyRosettaKernel(prompt, userName, userRole, managedGovernance);
+
+  // Override kernel values with MCP values
+  governanceResult.context.lamport = lamportValue;
+  governanceResult.context.witness = ctx.witness;
+  governanceResult.context.version = ctx.version;
+  governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+
+  // Validate governance integrity
+  if (!validateGovernanceIntegrity(governanceResult.context)) {
+    throw new Error('Governance integrity validation failed');
   }
-  
-  // Now send actual user prompt in booted context
-  console.log(`   📝 Sending prompt to booted session...`);
-  
-  // Add user prompt to history
-  session.messageHistory.push({ role: 'user', content: prompt });
-  
-  // Send full conversation to maintain context
-  // Note: Ollama /api/generate doesn't support message history, so we concatenate
-  const fullPrompt = session.messageHistory
-    .map(msg => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
-    .join('\n\n') + '\n\nAssistant:';
-  
-  const response = await callOllama(fullPrompt, options);
-  
-  // Add response to history
-  session.messageHistory.push({ role: 'assistant', content: response.content });
-  
-  console.log(`   🔒 Rosetta governance applied (booted at ${session.bootTime})`);
-  
-  return response;
+
+  console.log(`   ✅ Kernel applied - Persona: ${governanceResult.context.persona}`);
+  console.log(`   🔐 Governance mode: ${governanceResult.context.mode}`);
+  console.log(`   📊 Lamport: ${lamportValue}, Receipt: ${receipt.id}`);
+
+  // Use the transformed prompt
+  const governedPrompt = governanceResult.transformedPrompt;
+  // Send the governed prompt directly
+  const response = await callOllama(governedPrompt, options);
+
+  console.log(`   � Rosetta governance applied (booted at ${governanceResult.context.bootTime})`);
+
+  return {
+    ...response,
+    governance: {
+      persona: governanceResult.context.persona,
+      receipts: governanceResult.receipts
+    }
+  };
 }
 
 /**
@@ -615,29 +527,60 @@ export async function callLLM(modelId, prompt, options = {}) {
   // Extract API keys if provided
   const openaiKey = options.apiKeys?.openai || null;
   const anthropicKey = options.apiKeys?.anthropic || null;
-  
+
+  // Apply Rosetta Kernel governance if enabled
+  let finalPrompt = prompt;
+  if (options.governanceEnabled) {
+    console.log(`🛡️ Applying Rosetta Kernel governance...`);
+
+    // Phase 3: Call RosettaOS MCP tools before kernel application
+    const ctx = await mcp("rosetta.context.get", {});
+    const { next: lamportValue } = await mcp("rosetta.lamport.increment", { current: 0 });
+    const receipt = await mcp("rosetta.receipt.emit", {
+      type: "Δ-BOOTCONFIRM",
+      lamport: lamportValue,
+      payload: { user: options.userName || 'System' },
+      prev_hash: "0".repeat(64)
+    });
+
+    const governanceResult = applyRosettaKernel(
+      prompt,
+      options.userName || 'System',
+      options.userRole || 'Operator',
+      options.managedGovernance || false
+    );
+
+    // Override kernel values with MCP values
+    governanceResult.context.lamport = lamportValue;
+    governanceResult.context.witness = ctx.witness;
+    governanceResult.context.version = ctx.version;
+    governanceResult.receipts.unshift(receipt); // Add MCP receipt first
+
+    finalPrompt = governanceResult.transformedPrompt;
+  }
+
   // Check if it's an Ollama model (free local models)
   if (ollamaEnabled && isOllamaModel(modelId)) {
-    return callOllama(prompt, { ...options, model: modelId });
+    return callOllama(finalPrompt, { ...options, model: modelId });
   }
   // OpenAI models
   else if (modelId.startsWith('gpt-')) {
     if (!openai && !openaiKey) {
       throw new Error('OpenAI API key not configured. Provide an API key or use free Ollama models (llama3.2, mistral, phi)');
     }
-    return callGPT4(prompt, { ...options, model: modelId, apiKey: openaiKey });
+    return callGPT4(finalPrompt, { ...options, model: modelId, apiKey: openaiKey });
   }
   // Anthropic models
   else if (modelId.startsWith('claude-')) {
     if (!anthropic && !anthropicKey) {
       throw new Error('Anthropic API key not configured. Provide an API key or use free Ollama models (llama3.2, mistral, phi)');
     }
-    return callClaude(prompt, { ...options, model: modelId, apiKey: anthropicKey });
+    return callClaude(finalPrompt, { ...options, model: modelId, apiKey: anthropicKey });
   }
   // Default to Ollama for unknown models
   else {
     console.warn(`Unknown model ${modelId}, defaulting to Ollama llama3.2:3b`);
-    return callOllama(prompt, { ...options, model: 'llama3.2:3b' });
+    return callOllama(finalPrompt, { ...options, model: 'llama3.2:3b' });
   }
 }
 

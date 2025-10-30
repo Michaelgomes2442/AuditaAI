@@ -2234,27 +2234,17 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
       if (isRosetta) {
         // Apply Rosetta governance context
         console.log(`🛡️ Calling ${modelId} with Rosetta governance...`);
-        
-        if (modelId.toLowerCase().includes('gpt') || modelId.toLowerCase().includes('openai')) {
-          const result = await callGPT4WithRosetta(prompt, getRosettaGovernanceContext(), {
-            model: modelId,
-            apiKey: apiKeys?.openai
-          });
-          response = result.content;
-          usage = result.usage;
-        } else if (modelId.toLowerCase().includes('claude') || modelId.toLowerCase().includes('anthropic')) {
-          const result = await callClaudeWithRosetta(prompt, getRosettaGovernanceContext(), {
-            model: modelId,
-            apiKey: apiKeys?.anthropic
-          });
-          response = result.content;
-          usage = result.usage;
-        } else {
-          // Generic LLM call (e.g., Ollama)
-          const result = await callLLM(modelId, `${getRosettaGovernanceContext()}\n\n${prompt}`, { apiKeys });
-          response = result.content;
-          usage = result.usage;
-        }
+
+        const result = await callLLM(modelId, prompt, {
+          ...options,
+          apiKeys,
+          governanceEnabled: true,
+          userName: 'System',
+          userRole: 'Operator',
+          managedGovernance: false
+        });
+        response = result.content;
+        usage = result.usage;
       } else {
         // Standard LLM call without governance
         console.log(`📡 Calling ${modelId} (standard mode)...`);

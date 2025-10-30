@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^vΩ\\d+\\.\\d+$"
+    },
+    "band": {
+      "type": "string",
+      "pattern": "^\\d+$"
+    },
+    "witness": {
+      "type": "string"
+    },
+    "identityLock": {
+      "type": "boolean"
+    }
+  },
+  "required": ["version", "band", "witness", "identityLock"],
+  "additionalProperties": false
+}

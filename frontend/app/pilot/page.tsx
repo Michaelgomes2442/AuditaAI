@@ -296,7 +296,7 @@ export default function PilotPage() {
         }).catch(() => {});
       }
       if (anthropicApiKey && anthropicApiKey.trim()) {
-        cloudModels.push('claude-3-5-sonnet-20241022', 'claude-3-opus-20240229');
+        cloudModels.push('claude-3-5-haiku-20241022', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229');
         // Async register
         registerSessionKey('anthropic', anthropicApiKey).then(token => {
           localStorage.setItem('anthropic_session_token', token);
@@ -304,7 +304,11 @@ export default function PilotPage() {
       }
       setAvailableCloudModels(cloudModels);
       console.log('🔑 Detected cloud models from API keys:', cloudModels);
-      // Auto-select first cloud model if available
+      
+      // Filter selectedModels to only include available models
+      setSelectedModels(prev => prev.filter(model => cloudModels.includes(model)));
+      
+      // Auto-select first cloud model if no models are selected
       if (!isFree && cloudModels.length > 0 && selectedModels.length === 0) {
         setSelectedModels([cloudModels[0]]);
       }
@@ -536,6 +540,12 @@ export default function PilotPage() {
       if (selectedModels.some(m => m.startsWith('gpt-')) && !(apiKeys.openai)) {
         setShowApiKeys(true);
         alert('OpenAI API key required for GPT models. Please add it in the API Keys panel.');
+        setRunning(false);
+        return;
+      }
+      if (selectedModels.some(m => m.startsWith('claude-')) && !(apiKeys.anthropic)) {
+        setShowApiKeys(true);
+        alert('Anthropic API key required for Claude models. Please add it in the API Keys panel.');
         setRunning(false);
         return;
       }
@@ -1669,7 +1679,7 @@ export default function PilotPage() {
                           className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded text-white font-mono text-xs focus:outline-none focus:border-cyan-500/50"
                         />
                         {openaiApiKey && openaiApiKey.startsWith('sk-') && (
-                          <p className="text-xs text-green-400 font-mono mt-1">✓ Enables: GPT-4 Turbo, GPT-4o</p>
+                          <p className="text-xs text-green-400 font-mono mt-1">✓ Enables: GPT-4o, GPT-4o Mini</p>
                         )}
                       </div>
 
@@ -1684,7 +1694,7 @@ export default function PilotPage() {
                           className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded text-white font-mono text-xs focus:outline-none focus:border-cyan-500/50"
                         />
                         {anthropicApiKey && anthropicApiKey.startsWith('sk-ant-') && (
-                          <p className="text-xs text-green-400 font-mono mt-1">✓ Enables: Claude 3.5 Sonnet, Claude 3 Opus</p>
+                          <p className="text-xs text-green-400 font-mono mt-1">✓ Enables: Claude 3.5 Haiku, Claude 3.5 Sonnet, Claude 3 Opus</p>
                         )}
                       </div>
 

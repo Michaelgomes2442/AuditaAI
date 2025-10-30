@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "coherence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "rigor": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "integration": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "empathy": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "strictness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": ["coherence", "rigor", "integration", "empathy", "strictness"],
+  "additionalProperties": false
+}
