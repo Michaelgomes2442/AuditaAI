@@ -116,7 +116,7 @@ try {
 }
 
 try {
-  const llm = requireCJS('./src/llm-client.js');
+  const llm = await import('./src/llm-client.js');
   if (llm) {
     callLLM = llm.callLLM || callLLM;
     callOllama = llm.callOllama || callOllama;
@@ -2246,7 +2246,6 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
         console.log(`🛡️ Calling ${modelId} with Rosetta governance...`);
 
         const result = await callLLM(modelId, prompt, {
-          ...options,
           apiKeys,
           governanceEnabled: true,
           userName: 'System',
