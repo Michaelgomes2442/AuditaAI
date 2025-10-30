@@ -101,7 +101,8 @@ class ReceiptService {
         I: criesResult.I,
         E: criesResult.E,
         S: criesResult.S,
-        overall: criesResult.Omega, // Canonical Ω calculation
+        Omega: criesResult.Omega,
+        overall: criesResult.Omega,
         // Long form for API responses
         coherence: criesResult.C,
         reliability: criesResult.R,
@@ -119,7 +120,12 @@ class ReceiptService {
     } catch (error) {
       console.warn('CRIES computation failed, using fallback:', error.message);
       // Fallback to basic implementation if canonical fails
-      return this.fallbackCRIESMetrics(text, prompt);
+      const fallback = this.fallbackCRIESMetrics(text, prompt);
+      return {
+        ...fallback,
+        Omega: fallback.overall,
+        overall: fallback.overall
+      };
     }
   }
 
@@ -323,6 +329,44 @@ class ReceiptService {
       }
     };
 
+    // --- Registry append logic ---
+    // Append a summary of this receipt to backend/receipts/registry.json
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const { fileURLToPath } = await import('url');
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      const REGISTRY_PATH = path.join(__dirname, '../receipts/registry.json');
+      let registry = [];
+      if (fs.existsSync(REGISTRY_PATH)) {
+        try {
+          registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
+        } catch (e) {
+          console.warn('Failed to parse registry.json, starting fresh:', e.message);
+          registry = [];
+        }
+      }
+      // Only store a summary, not the full receipt
+      const summary = {
+        analysis_id: receiptData.analysis_id,
+        lamport: lamportClock,
+        event: 'Δ-ANALYSIS',
+        self_hash: '', // Will be filled after hash calculation
+        ts: receiptData.ts,
+        model: modelId,
+        cries: receiptData.cries,
+        userId: userId,
+        metadata: receiptData.metadata
+      };
+      // We'll fill self_hash after hash calculation below
+      registry.push(summary);
+      // Write back after hash is calculated (see below)
+      var registryWritePending = { registry, summaryIndex: registry.length - 1, REGISTRY_PATH, fs };
+    } catch (e) {
+      console.warn('Failed to append to registry.json:', e.message);
+    }
+
     // Generate cryptographic signature (simplified for testing)
     // Use deterministic key for testing so signatures can be verified
     const privateKey = Buffer.from('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef', 'hex');
@@ -367,6 +411,20 @@ class ReceiptService {
     console.log('DEBUG: Calculated selfHash:', selfHash);
 
     finalReceiptData.self_hash = selfHash;
+
+    // --- Complete registry append with self_hash ---
+    if (typeof registryWritePending === 'object' && registryWritePending.registry && registryWritePending.summaryIndex >= 0) {
+      try {
+        registryWritePending.registry[registryWritePending.summaryIndex].self_hash = selfHash;
+        registryWritePending.fs.writeFileSync(
+          registryWritePending.REGISTRY_PATH,
+          JSON.stringify(registryWritePending.registry, null, 2),
+          'utf-8'
+        );
+      } catch (e) {
+        console.warn('Failed to write updated registry.json:', e.message);
+      }
+    }
 
     // Verify the hash integrity immediately after calculation
     const verificationPayload = Object.keys(finalReceiptData).sort().reduce((result, key) => {

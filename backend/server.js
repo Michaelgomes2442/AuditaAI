@@ -161,7 +161,12 @@ receiptService = {
       return criesResult;
     } catch (e) {
       console.warn('MCP CRIES failed, using fallback:', e.message);
-      return { C: 0.5, R: 0.5, I: 0.5, E: 0.5, S: 0.5, avg: 0.5 };
+      return {
+        C: 0.5, R: 0.5, I: 0.5, E: 0.5, S: 0.5,
+        cries_score: 0.5,
+        weights: { C: 0.2, R: 0.25, I: 0.25, E: 0.15, S: 0.15 },
+        sub_metrics: {}
+      };
     }
   },
   generateAnalysisReceipt: async () => ({ id: 'fallback', digest: 'fallback', receipt_type: 'Δ-ANALYSIS' }),
@@ -1142,7 +1147,7 @@ Provide: 1) Safety assessment, 2) Information quality, 3) Any concerns or recomm
 
 // Run governance test on a model (supports both live and demo modes)
 app.post('/api/pilot/run-test', async (req, res) => {
-  const { modelId, mode, promptId, prompt, models, useGovernance, apiKeys } = req.body;
+  const { modelId, mode, promptId, prompt, models, useGovernance, apiKeys, history } = req.body;
   
   console.log('🔍 DEBUG - Received request:');
   console.log('   mode:', mode);
@@ -1298,12 +1303,19 @@ app.post('/api/pilot/run-test', async (req, res) => {
   }
 
   // Live testing: User provides custom prompt and model selection
-  // const { prompt, models, useGovernance, apiKeys } = req.body; // Already destructured above
-  
-  if (!prompt) {
+  // Accepts conversation history for multi-turn support
+  let currentPrompt = prompt;
+  let conversationHistory = Array.isArray(history) ? history : [];
+  // If history is provided, use the last user message as the prompt
+  if (conversationHistory.length > 0) {
+    const lastUserMsg = conversationHistory.filter(m => m.role === 'user').slice(-1)[0];
+    if (lastUserMsg && lastUserMsg.content) {
+      currentPrompt = lastUserMsg.content;
+    }
+  }
+  if (!currentPrompt) {
     return res.status(400).json({ error: 'Prompt required for live testing' });
   }
-
   if (!models || !Array.isArray(models) || models.length === 0) {
     return res.status(400).json({ error: 'At least one model required for live testing' });
   }
@@ -1409,56 +1421,39 @@ app.post('/api/pilot/run-test', async (req, res) => {
     // Run prompt through each selected model
     for (const modelId of models) {
       console.log(`📞 Calling ${modelId}...`);
-      
       let response;
       let modelResponse;
-
-      // Call appropriate LLM with or without governance
+      // Pass conversation history to LLM calls if supported
+      const llmOptions = {
+        model: modelId,
+        apiKey: apiKeys?.openai,
+        userName,
+        userRole,
+        managedGovernance,
+        timeout: modelId.startsWith('gpt-') || modelId.startsWith('claude-') ? 60000 : 30000,
+        history: conversationHistory
+      };
       if (useGovernance) {
         const rosettaContext = getRosettaGovernanceContext();
-        
         if (modelId.startsWith('gpt-')) {
-          modelResponse = await callGPT4WithRosetta(prompt, rosettaContext, { 
-            model: modelId,
-            apiKey: apiKeys?.openai,
-            userName,
-            userRole,
-            managedGovernance,
-            timeout: 60000 // 60 second timeout for OpenAI
-          });
+          modelResponse = await callGPT4WithRosetta(currentPrompt, rosettaContext, llmOptions);
         } else if (modelId.startsWith('claude-')) {
-          modelResponse = await callClaudeWithRosetta(prompt, rosettaContext, { 
-            model: modelId,
-            apiKey: apiKeys?.anthropic,
-            userName,
-            userRole,
-            managedGovernance,
-            timeout: 60000 // 60 second timeout for Anthropic
-          });
+          modelResponse = await callClaudeWithRosetta(currentPrompt, rosettaContext, llmOptions);
         } else {
-          // Ollama or unknown - default to Ollama with governance
-          modelResponse = await callOllamaWithRosetta(prompt, rosettaContext, { 
-            model: modelId,
-            userName,
-            userRole,
-            managedGovernance,
-            timeout: 30000 // 30 second timeout for Ollama (local)
-          });
+          modelResponse = await callOllamaWithRosetta(currentPrompt, rosettaContext, llmOptions);
         }
       } else {
-        // Without governance - raw LLM call
-        modelResponse = await callLLM(modelId, prompt, { 
-          apiKeys: apiKeys 
-        });
+        modelResponse = await callLLM(modelId, currentPrompt, { ...llmOptions, apiKeys });
       }
-
       response = modelResponse.content;
-
       // Compute CRIES analysis
-      const cries = computeCRIES(prompt, response);
-
+      const cries = computeCRIES(currentPrompt, response);
       console.log(`   ✅ ${modelId}: Ω = ${cries.Omega}`);
-
+      // Append model response to conversation history for this turn
+      const updatedHistory = [
+        ...conversationHistory,
+        { role: 'assistant', content: response, model: modelId, cries }
+      ];
       results.push({
         modelId,
         modelName: modelId,
@@ -1466,7 +1461,8 @@ app.post('/api/pilot/run-test', async (req, res) => {
         cries,
         usage: modelResponse.usage || null,
         provider: modelResponse.provider || 'unknown',
-        governance: modelResponse.governance || null
+        governance: modelResponse.governance || null,
+        history: updatedHistory
       });
     }
 
@@ -1513,11 +1509,12 @@ app.post('/api/pilot/run-test', async (req, res) => {
     });
 
     return res.json({
-      prompt,
+      prompt: currentPrompt,
       useGovernance,
       results,
       mode: 'live',
-      message: 'Live testing completed successfully'
+      message: 'Live testing completed successfully',
+      history: results.length > 0 ? results[0].history : conversationHistory
     });
   } catch (error) {
     console.error('❌ Live testing failed:', error);
@@ -2072,11 +2069,19 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
     if (apiKeys.anthropic) console.log(`   🔑 Anthropic API key provided`);
   }
   
-  const standardModel = liveDemoState.models.find(m => m.id === standardModelId);
-  const rosettaModel = liveDemoState.models.find(m => m.id === rosettaModelId);
-  
+  function logAndRespondError(message, errorObj, status = 500) {
+    console.error('Parallel prompt error:', message, errorObj?.stack || errorObj);
+    res.status(status).json({ error: message, details: errorObj?.message || errorObj });
+  }
+  let standardModel, rosettaModel;
+  try {
+    standardModel = liveDemoState.models.find(m => m.id === standardModelId);
+    rosettaModel = liveDemoState.models.find(m => m.id === rosettaModelId);
+  } catch (e) {
+    return logAndRespondError('Model lookup failed', e, 500);
+  }
   if (!standardModel || !rosettaModel) {
-    return res.status(404).json({ error: 'Models not found' });
+    return logAndRespondError('Models not found in liveDemoState.models', { standardModelId, rosettaModelId, available: liveDemoState.models.map(m => m.id) }, 404);
   }
   
   // Generate conversation IDs if not provided (unique per model instance)
@@ -2100,11 +2105,17 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
     // Call real LLM APIs with optional API keys
     // Uses actual model responses and calculates CRIES from real outputs
     
-    // Standard model response (without governance)
-    const standardResponse = await generateModelResponse(prompt, standardModel, false, apiKeys);
-    
-    // Rosetta model response (with governance)
-    const rosettaResponse = await generateModelResponse(prompt, rosettaModel, true, apiKeys);
+    let standardResponse, rosettaResponse;
+    try {
+      standardResponse = await generateModelResponse(prompt, standardModel, false, apiKeys);
+    } catch (e) {
+      return logAndRespondError('Standard model response failed', e, 500);
+    }
+    try {
+      rosettaResponse = await generateModelResponse(prompt, rosettaModel, true, apiKeys);
+    } catch (e) {
+      return logAndRespondError('Rosetta model response failed', e, 500);
+    }
     
     // Initialize conversation metrics if not exists
     if (!standardModel.conversationMetrics) {
@@ -2161,23 +2172,31 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
     
     // Automatically generate Lamport receipts for both responses
     // Each conversation instance gets its own independent Lamport chain
-    const standardReceipt = await generateLamportReceipt(
-      prompt,
-      standardResponse.content,
-      standardResponse.cries,
-      standardModel.id,
-      false,
-      standardConversationId
-    );
-    
-    const rosettaReceipt = await generateLamportReceipt(
-      prompt,
-      rosettaResponse.content,
-      rosettaResponse.cries,
-      rosettaModel.id,
-      true,
-      rosettaConversationId
-    );
+    let standardReceipt, rosettaReceipt;
+    try {
+      standardReceipt = await generateLamportReceipt(
+        prompt,
+        standardResponse.content,
+        standardResponse.cries,
+        standardModel.id,
+        false,
+        standardConversationId
+      );
+    } catch (e) {
+      return logAndRespondError('Standard Lamport receipt generation failed', e, 500);
+    }
+    try {
+      rosettaReceipt = await generateLamportReceipt(
+        prompt,
+        rosettaResponse.content,
+        rosettaResponse.cries,
+        rosettaModel.id,
+        true,
+        rosettaConversationId
+      );
+    } catch (e) {
+      return logAndRespondError('Rosetta Lamport receipt generation failed', e, 500);
+    }
     
     console.log(`   📝 Generated Lamport receipts:`);
     console.log(`      Standard: L=${standardReceipt.lamport}, Hash=${standardReceipt.self_hash.substring(0, 12)}...`);
@@ -2216,8 +2235,7 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Parallel prompt error:', error);
-    res.status(500).json({ error: 'Failed to process parallel prompt' });
+    return logAndRespondError('Unhandled error in parallel prompt endpoint', error, 500);
   }
 });
 

@@ -60,11 +60,13 @@ export default function ParallelPromptInterface({
     averageCRIES: { C: 0, R: 0, I: 0, E: 0, S: 0, overall: 0 }
   });
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim() || isLoading) return;
 
     setIsLoading(true);
+    setErrorMsg(null);
     const userPrompt = prompt;
     setPrompt('');
 
@@ -77,13 +79,23 @@ export default function ParallelPromptInterface({
 
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-consent': 'true'
+        },
         body: JSON.stringify({
           prompt: userPrompt,
           standardModelId,
           rosettaModelId
         })
       });
+
+      if (!response.ok) {
+        const err = await response.json();
+        setErrorMsg(err.error ? `${err.error}${err.details ? ': ' + err.details : ''}` : 'Parallel prompting failed.');
+        setIsLoading(false);
+        return;
+      }
 
       const result = await response.json();
 
@@ -118,7 +130,8 @@ export default function ParallelPromptInterface({
       setStandardMetrics(result.standardMetrics);
       setRosettaMetrics(result.rosettaMetrics);
 
-    } catch (error) {
+    } catch (error: any) {
+      setErrorMsg(error?.message || 'Failed to send prompt.');
       console.error('Failed to send prompt:', error);
     } finally {
       setIsLoading(false);
@@ -134,6 +147,11 @@ export default function ParallelPromptInterface({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {errorMsg && (
+        <div className="col-span-3 bg-red-100 text-red-700 border border-red-300 rounded p-2 mb-2 text-sm">
+          <b>Parallel Prompt Error:</b> {errorMsg}
+        </div>
+      )}
       {/* Left: Standard Model Chat */}
       <Card className="flex flex-col">
         <CardHeader className="border-b p-3">
@@ -185,8 +203,21 @@ export default function ParallelPromptInterface({
               <div className="text-xs whitespace-pre-wrap">{msg.content}</div>
               {msg.cries && (
                 <div className="mt-1.5 pt-1.5 border-t border-border/50">
-                  <div className="text-xs font-mono">
-                    CRIES: {(msg.cries.overall * 100).toFixed(1)}%
+                  <div className="text-xs font-mono flex items-center gap-2">
+                    <span>
+                      CRIES: {(msg.cries.overall * 100).toFixed(1)}%
+                    </span>
+                    {msg.cries.calculation_details && (
+                      <span
+                        className="underline decoration-dotted cursor-help text-blue-500"
+                        title={Object.entries(msg.cries.calculation_details)
+                          .map(([pillar, details]) =>
+                            `${pillar}: ${details.formula}\n  ${details.values.join(', ')}\n  avg: ${details.average}`
+                          ).join('\n\n')}
+                      >
+                        (how calculated)
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -357,8 +388,21 @@ export default function ParallelPromptInterface({
               <div className="text-xs whitespace-pre-wrap">{msg.content}</div>
               {msg.cries && (
                 <div className="mt-1.5 pt-1.5 border-t border-border/50">
-                  <div className="text-xs font-mono">
-                    CRIES: {(msg.cries.overall * 100).toFixed(1)}%
+                  <div className="text-xs font-mono flex items-center gap-2">
+                    <span>
+                      CRIES: {(msg.cries.overall * 100).toFixed(1)}%
+                    </span>
+                    {msg.cries.calculation_details && (
+                      <span
+                        className="underline decoration-dotted cursor-help text-blue-500"
+                        title={Object.entries(msg.cries.calculation_details)
+                          .map(([pillar, details]) =>
+                            `${pillar}: ${details.formula}\n  ${details.values.join(', ')}\n  avg: ${details.average}`
+                          ).join('\n\n')}
+                      >
+                        (how calculated)
+                      </span>
+                    )}
                   </div>
                 </div>
               )}

@@ -180,3 +180,6 @@ vite.config.ts.timestamp-*
 *.tar.gz
 *.backup
 .vercel
+
+# Receipts (generated files)
+backend/receipts/

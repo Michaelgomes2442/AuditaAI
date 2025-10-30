@@ -4,6 +4,7 @@
  * Provides unified interface for calling real LLM APIs and free local models
  */
 
+
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
@@ -14,6 +15,7 @@ import { applyRosettaKernel, validateGovernanceIntegrity, nextLamport } from '..
 import { generateBootConfirmReceipt, persistReceipt } from '../rosetta/receipts.ts';
 import { buildOmegaV15GovernedPrompt } from '../rosetta/persona/persona-v15.ts';
 import { writeReceipt, appendChain, sha256Hex } from '../rosetta/audit/receipts.ts';
+import { getRosettaGovernanceContext as getRosettaGovernanceContextFromLoader } from './rosetta-loader.js';
 
 dotenv.config();
 
@@ -785,29 +787,9 @@ export async function checkAPIAvailability() {
 /**
  * Get Rosetta governance context
  */
-export function getRosettaGovernanceContext() {
-  return `You are operating under Rosetta Monolith governance (Tri-Track vΩ3.18).
-
-GOVERNANCE RULES:
-1. Provide citations for all factual claims
-2. Use structured responses (numbered lists, clear sections)
-3. Acknowledge uncertainties explicitly
-4. Cross-reference your statements for consistency
-5. Apply security filters (no harmful/biased content)
-6. Use empathetic, user-focused language
-7. Ensure completeness - address all parts of the question
-8. Maintain logical integrity - no contradictions
-9. Follow bounded reasoning (stay within scope)
-10. Include evidence and examples where applicable
-
-Your responses will be analyzed by Track-A (Analyst) using CRIES metrics:
-- C (Coherence): Internal consistency and topic alignment
-- R (Rigor): Citation quality and evidence support
-- I (Integration): Cross-reference density and goal alignment
-- E (Empathy): User-focused, appropriate tone
-- S (Strictness): Policy compliance
-
-Strive for high CRIES scores by following the governance rules above.`;
+export function getRosettaGovernanceContext(opts = {}) {
+  // Use canonical context from Rosetta.html via rosetta-loader
+  return getRosettaGovernanceContextFromLoader({ maxChars: opts.maxChars || 4000 });
 }
 
 /**

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import * as Popover from '@radix-ui/react-popover';
 import { Shield, Activity, Clock, CheckCircle2, AlertTriangle, RefreshCw, Terminal, FileCode, ArrowLeft, Key, Lock, Crown, Zap, TrendingUp, ChevronDown } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -69,6 +70,8 @@ export default function PilotPage() {
   const [demoResult, setDemoResult] = useState<any>(null);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [liveTestPrompt, setLiveTestPrompt] = useState('');
+  // Conversation history for live test (array of {prompt, response, metrics})
+  const [liveTestHistory, setLiveTestHistory] = useState<any[]>([]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]); // Start empty, auto-select when Ollama detected
   const [useGovernance, setUseGovernance] = useState(!isFree); // Free users: strictly false, Paid users: default true
   const [liveTestResult, setLiveTestResult] = useState<any>(null);
@@ -492,6 +495,72 @@ export default function PilotPage() {
     }
   };
 
+  // Continue conversation in live test
+  const continueLiveTest = async () => {
+    if (!liveTestPrompt.trim()) {
+      alert('Please enter a prompt to continue the conversation');
+      return;
+    }
+    if (selectedModels.length === 0) {
+      alert('Please select at least one model to test');
+      return;
+    }
+    try {
+      setRunning(true);
+      // Prepare API keys if provided
+      const apiKeys: any = {};
+      if (openaiApiKey && openaiApiKey.startsWith('sk-')) apiKeys.openai = openaiApiKey;
+      if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) apiKeys.anthropic = anthropicApiKey;
+      let userId: string;
+      if (profile?.id) userId = String(profile.id);
+      else if (session?.user?.id) userId = String(session.user.id);
+      else userId = '22';
+      // Send conversation history and new prompt
+      const res = await fetch('/api/pilot/run-test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-tier': profile?.tier || 'FREE',
+          'x-user-id': userId,
+          'x-user-consent': 'true'
+        },
+        body: JSON.stringify({
+          mode: 'live',
+          prompt: liveTestPrompt,
+          models: selectedModels,
+          useGovernance,
+          apiKeys: Object.keys(apiKeys).length > 0 ? apiKeys : undefined,
+          history: liveTestHistory
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Assume data.results[0] for single model, or array for multi
+        const newTurn = {
+          prompt: liveTestPrompt,
+          response: data.results?.[0]?.response || '',
+          cries: data.results?.[0]?.cries || {},
+          modelName: data.results?.[0]?.modelName || selectedModels[0],
+          timestamp: new Date().toISOString()
+        };
+        setLiveTestHistory([...liveTestHistory, newTurn]);
+        setLiveTestPrompt('');
+        setLiveTestResult(data);
+        setShowLiveTestModal(true);
+      } else {
+        const errorText = await res.text();
+        let errorData;
+        try { errorData = JSON.parse(errorText); } catch { errorData = {}; }
+        throw new Error(errorData.message || errorData.error || 'Failed to continue conversation');
+      }
+    } catch (err) {
+      alert('Failed to continue conversation: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  // Start a new live test (clears history)
   const runLiveTest = async () => {
     if (isFree) {
       alert('Upgrade required — Live testing is disabled for Free accounts.');
@@ -511,89 +580,73 @@ export default function PilotPage() {
     try {
       setRunning(true);
       
-      // Prepare API keys if provided
-      const apiKeys: any = {};
-      if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
-        apiKeys.openai = openaiApiKey;
-      }
-      if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) {
-        apiKeys.anthropic = anthropicApiKey;
-      }
-      
-      // Get valid user ID
-      let userId: string;
-      if (profile?.id) {
-        userId = String(profile.id);
-      } else if (session?.user?.id) {
-        userId = String(session.user.id);
-      } else {
-        userId = '22'; // Default test user
-      }
-      
-      console.log('🔍 DEBUG - Starting live test...');
-      console.log('   User ID:', userId);
-      console.log('   Models:', selectedModels);
-      console.log('   Governance:', useGovernance);
-      console.log('   Prompt length:', liveTestPrompt.length);
-      
-      // Validate API keys for selected models before calling server
-      if (selectedModels.some(m => m.startsWith('gpt-')) && !(apiKeys.openai)) {
-        setShowApiKeys(true);
-        alert('OpenAI API key required for GPT models. Please add it in the API Keys panel.');
-        setRunning(false);
-        return;
-      }
-      if (selectedModels.some(m => m.startsWith('claude-')) && !(apiKeys.anthropic)) {
-        setShowApiKeys(true);
-        alert('Anthropic API key required for Claude models. Please add it in the API Keys panel.');
-        setRunning(false);
-        return;
-      }
-
-      // Use relative path so deployed frontend hits the same origin backend (no hardcoded localhost)
-      const res = await fetch('/api/pilot/run-test', { 
-        method: 'POST', 
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-user-tier': profile?.tier || 'FREE',
-          'x-user-id': userId,
-          'x-user-consent': 'true'
-        }, 
-        body: JSON.stringify({ 
-          mode: 'live',
-          prompt: liveTestPrompt,
-          models: selectedModels,
-          useGovernance,
-          apiKeys: Object.keys(apiKeys).length > 0 ? apiKeys : undefined
-        }) 
-      });
-      
-      console.log('🔍 DEBUG - Response status:', res.status, res.statusText);
-      console.log('🔍 DEBUG - Response ok:', res.ok);
-      
-      if (res.ok) {
-        const data = await res.json();
-        console.log('🔍 DEBUG - Response data:', data);
-        console.log('🔍 DEBUG - Has results array:', Array.isArray(data?.results));
-        console.log('🔍 DEBUG - Results length:', data?.results?.length);
-        setLiveTestResult(data);
-        console.log('🔍 DEBUG - Setting showLiveTestModal to true');
-        setShowLiveTestModal(true);
-      } else {
-        console.error('🔍 DEBUG - Request failed with status:', res.status);
-        const errorText = await res.text();
-        console.error('🔍 DEBUG - Error response:', errorText);
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch {
-          throw new Error(`Server error (${res.status}): ${errorText.substring(0, 200)}`);
+      // Clear history for new conversation
+      setLiveTestHistory([]);
+      setLiveTestResult(null);
+      setShowLiveTestModal(false);
+      // ...existing code for runLiveTest...
+      try {
+        setRunning(true);
+        const apiKeys: any = {};
+        if (openaiApiKey && openaiApiKey.startsWith('sk-')) apiKeys.openai = openaiApiKey;
+        if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) apiKeys.anthropic = anthropicApiKey;
+        let userId: string;
+        if (profile?.id) userId = String(profile.id);
+        else if (session?.user?.id) userId = String(session.user.id);
+        else userId = '22';
+        if (selectedModels.some(m => m.startsWith('gpt-')) && !(apiKeys.openai)) {
+          setShowApiKeys(true);
+          alert('OpenAI API key required for GPT models. Please add it in the API Keys panel.');
+          setRunning(false);
+          return;
         }
-        throw new Error(errorData.message || errorData.error || 'Failed to run live test');
+        if (selectedModels.some(m => m.startsWith('claude-')) && !(apiKeys.anthropic)) {
+          setShowApiKeys(true);
+          alert('Anthropic API key required for Claude models. Please add it in the API Keys panel.');
+          setRunning(false);
+          return;
+        }
+        const res = await fetch('/api/pilot/run-test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-tier': profile?.tier || 'FREE',
+            'x-user-id': userId,
+            'x-user-consent': 'true'
+          },
+          body: JSON.stringify({
+            mode: 'live',
+            prompt: liveTestPrompt,
+            models: selectedModels,
+            useGovernance,
+            apiKeys: Object.keys(apiKeys).length > 0 ? apiKeys : undefined,
+            history: []
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const newTurn = {
+            prompt: liveTestPrompt,
+            response: data.results?.[0]?.response || '',
+            cries: data.results?.[0]?.cries || {},
+            modelName: data.results?.[0]?.modelName || selectedModels[0],
+            timestamp: new Date().toISOString()
+          };
+          setLiveTestHistory([newTurn]);
+          setLiveTestPrompt('');
+          setLiveTestResult(data);
+          setShowLiveTestModal(true);
+        } else {
+          const errorText = await res.text();
+          let errorData;
+          try { errorData = JSON.parse(errorText); } catch { errorData = {}; }
+          throw new Error(errorData.message || errorData.error || 'Failed to run live test');
+        }
+      } catch (err) {
+        alert('Failed to run live test: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setRunning(false);
       }
-    } catch (err) {
-      console.error(err);
-      alert('Failed to run live test: ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setRunning(false);
     }
@@ -1044,26 +1097,76 @@ export default function PilotPage() {
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">C (Coherence)</p>
-                          <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.C?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">R (Rigor)</p>
-                          <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.R?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">I (Integration)</p>
-                          <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.I?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">E (Empathy)</p>
-                          <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">S (Security)</p>
-                          <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.S?.toFixed(2) || 'N/A'}</p>
-                        </div>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-orange-500/10 transition">
+                              <p className="text-xs text-slate-500">C (Coherence)</p>
+                              <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.C?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-orange-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-orange-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-orange-200 whitespace-pre-wrap break-words">
+                              {demoResult.baseLLM?.cries?.calculation_details?.C ? JSON.stringify(demoResult.baseLLM.cries.calculation_details.C, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-orange-500/10 transition">
+                              <p className="text-xs text-slate-500">R (Rigor)</p>
+                              <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.R?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-orange-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-orange-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-orange-200 whitespace-pre-wrap break-words">
+                              {demoResult.baseLLM?.cries?.calculation_details?.R ? JSON.stringify(demoResult.baseLLM.cries.calculation_details.R, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-orange-500/10 transition">
+                              <p className="text-xs text-slate-500">I (Integration)</p>
+                              <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.I?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-orange-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-orange-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-orange-200 whitespace-pre-wrap break-words">
+                              {demoResult.baseLLM?.cries?.calculation_details?.I ? JSON.stringify(demoResult.baseLLM.cries.calculation_details.I, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-orange-500/10 transition">
+                              <p className="text-xs text-slate-500">E (Empathy)</p>
+                              <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-orange-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-orange-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-orange-200 whitespace-pre-wrap break-words">
+                              {demoResult.baseLLM?.cries?.calculation_details?.E ? JSON.stringify(demoResult.baseLLM.cries.calculation_details.E, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-orange-500/10 transition">
+                              <p className="text-xs text-slate-500">S (Security)</p>
+                              <p className="text-lg font-mono text-orange-400">{demoResult.baseLLM?.cries?.S?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-orange-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-orange-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-orange-200 whitespace-pre-wrap break-words">
+                              {demoResult.baseLLM?.cries?.calculation_details?.S ? JSON.stringify(demoResult.baseLLM.cries.calculation_details.S, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
                         <div className="bg-orange-500/20 p-2 rounded border border-orange-500/30">
                           <p className="text-xs text-orange-300 font-bold">Ω (Overall)</p>
                           <p className="text-xl font-mono text-orange-300 font-bold">{demoResult.baseLLM?.cries?.Omega?.toFixed(2) || 'N/A'}</p>
@@ -1086,26 +1189,76 @@ export default function PilotPage() {
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">C (Coherence)</p>
-                          <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.C?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">R (Rigor)</p>
-                          <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.R?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">I (Integration)</p>
-                          <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.I?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">E (Empathy)</p>
-                          <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded">
-                          <p className="text-xs text-slate-500">S (Security)</p>
-                          <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.S?.toFixed(2) || 'N/A'}</p>
-                        </div>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-green-500/10 transition">
+                              <p className="text-xs text-slate-500">C (Coherence)</p>
+                              <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.C?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-green-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-green-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-green-200 whitespace-pre-wrap break-words">
+                              {demoResult.governedLLM?.cries?.calculation_details?.C ? JSON.stringify(demoResult.governedLLM.cries.calculation_details.C, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-green-500/10 transition">
+                              <p className="text-xs text-slate-500">R (Rigor)</p>
+                              <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.R?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-green-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-green-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-green-200 whitespace-pre-wrap break-words">
+                              {demoResult.governedLLM?.cries?.calculation_details?.R ? JSON.stringify(demoResult.governedLLM.cries.calculation_details.R, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-green-500/10 transition">
+                              <p className="text-xs text-slate-500">I (Integration)</p>
+                              <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.I?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-green-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-green-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-green-200 whitespace-pre-wrap break-words">
+                              {demoResult.governedLLM?.cries?.calculation_details?.I ? JSON.stringify(demoResult.governedLLM.cries.calculation_details.I, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-green-500/10 transition">
+                              <p className="text-xs text-slate-500">E (Empathy)</p>
+                              <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.E?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-green-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-green-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-green-200 whitespace-pre-wrap break-words">
+                              {demoResult.governedLLM?.cries?.calculation_details?.E ? JSON.stringify(demoResult.governedLLM.cries.calculation_details.E, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
+                        <Popover.Root>
+                          <Popover.Trigger asChild>
+                            <div className="bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-green-500/10 transition">
+                              <p className="text-xs text-slate-500">S (Security)</p>
+                              <p className="text-lg font-mono text-green-400">{demoResult.governedLLM?.cries?.S?.toFixed(2) || 'N/A'}</p>
+                            </div>
+                          </Popover.Trigger>
+                          <Popover.Content sideOffset={8} className="z-50 bg-slate-900 border border-green-500/30 rounded p-4 shadow-xl max-w-xs">
+                            <p className="text-xs font-mono text-green-300 mb-1 font-bold">Calculation Details</p>
+                            <pre className="text-xs text-green-200 whitespace-pre-wrap break-words">
+                              {demoResult.governedLLM?.cries?.calculation_details?.S ? JSON.stringify(demoResult.governedLLM.cries.calculation_details.S, null, 2) : 'No details'}
+                            </pre>
+                          </Popover.Content>
+                        </Popover.Root>
                         <div className="bg-green-500/20 p-2 rounded border border-green-500/30">
                           <p className="text-xs text-green-300 font-bold">Ω (Overall)</p>
                           <p className="text-xl font-mono text-green-300 font-bold">{demoResult.governedLLM?.cries?.Omega?.toFixed(2) || 'N/A'}</p>
@@ -1138,15 +1291,15 @@ export default function PilotPage() {
         </div>
       )}
 
-      {/* Live Test Results Modal */}
-      {showLiveTestModal && liveTestResult && (
+      {/* Live Test Results Modal with Conversation */}
+      {showLiveTestModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-white/10 rounded-lg max-w-7xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-slate-900 border-b border-white/10 p-6 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold font-mono text-white">Live Test Results</h2>
+                <h2 className="text-xl font-bold font-mono text-white">Live Test Conversation</h2>
                 <p className="text-sm text-slate-400 font-mono mt-1">
-                  {liveTestResult.results.length} model(s) • Governance: {liveTestResult.useGovernance ? 'ON' : 'OFF'}
+                  {selectedModels.length} model(s) • Governance: {useGovernance ? 'ON' : 'OFF'}
                 </p>
               </div>
               <button
@@ -1156,100 +1309,68 @@ export default function PilotPage() {
                 Close
               </button>
             </div>
-
             <div className="p-6 space-y-6">
-              {/* Original Prompt */}
-              <div className="bg-slate-800/30 border border-white/5 rounded-lg p-4">
-                <h3 className="text-sm font-bold font-mono text-cyan-400 mb-2">YOUR PROMPT</h3>
-                <p className="text-sm text-slate-300 font-mono whitespace-pre-wrap">{liveTestResult.prompt}</p>
-              </div>
-
-              {/* Model Results Grid */}
-              <div className="grid grid-cols-1 gap-6">
-                {liveTestResult.results.map((result: any, idx: number) => (
-                  <div key={idx} className="bg-slate-800/30 border border-purple-500/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                        <h3 className="text-sm font-bold font-mono text-purple-400">{result.modelName}</h3>
-                        {result.provider && (
-                          <span className="px-2 py-0.5 bg-slate-900 border border-white/10 rounded text-xs font-mono text-slate-400">
-                            {result.provider}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {result.usage && (
-                          <span className="text-xs font-mono text-slate-500">
-                            {result.usage.totalTokens || 0} tokens
-                          </span>
-                        )}
-                        <div className="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded">
-                          <span className="text-xs font-mono text-purple-300 font-bold">
-                            Ω {result.cries.Omega.toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
+              {/* Conversation Thread */}
+              <div className="space-y-4">
+                {liveTestHistory.length === 0 && (
+                  <div className="text-slate-400 font-mono text-sm">No conversation yet. Start with a prompt.</div>
+                )}
+                {liveTestHistory.map((turn, idx) => (
+                  <div key={idx} className="bg-slate-800/30 border border-purple-500/30 rounded-lg p-4 mb-2">
+                    <div className="mb-2">
+                      <span className="font-mono text-xs text-cyan-400">You:</span>
+                      <span className="font-mono text-sm text-white ml-2">{turn.prompt}</span>
                     </div>
-
-                    <div className="space-y-3">
-                      {/* Response */}
-                      <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                        <p className="text-sm text-slate-300 whitespace-pre-wrap">{result.response}</p>
+                    <div className="mb-2">
+                      <span className="font-mono text-xs text-purple-400">{turn.modelName}:</span>
+                      <span className="font-mono text-sm text-purple-200 ml-2">{turn.response}</span>
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <div className="bg-slate-900/50 p-2 rounded text-center">
+                        <p className="text-xs text-slate-500">C</p>
+                        <p className="text-lg font-mono text-purple-400">{turn.cries?.C?.toFixed(2) ?? '-'}</p>
                       </div>
-
-                      {/* CRIES Metrics */}
-                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                        <div className="bg-slate-900/50 p-2 rounded text-center">
-                          <p className="text-xs text-slate-500">C</p>
-                          <p className="text-lg font-mono text-purple-400">{result.cries.C.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded text-center">
-                          <p className="text-xs text-slate-500">R</p>
-                          <p className="text-lg font-mono text-purple-400">{result.cries.R.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded text-center">
-                          <p className="text-xs text-slate-500">I</p>
-                          <p className="text-lg font-mono text-purple-400">{result.cries.I.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded text-center">
-                          <p className="text-xs text-slate-500">E</p>
-                          <p className="text-lg font-mono text-purple-400">{result.cries.E.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-slate-900/50 p-2 rounded text-center">
-                          <p className="text-xs text-slate-500">S</p>
-                          <p className="text-lg font-mono text-purple-400">{result.cries.S.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-purple-500/20 p-2 rounded border border-purple-500/30 text-center">
-                          <p className="text-xs text-purple-300 font-bold">Ω</p>
-                          <p className="text-lg font-mono text-purple-300 font-bold">{result.cries.Omega.toFixed(2)}</p>
-                        </div>
+                      <div className="bg-slate-900/50 p-2 rounded text-center">
+                        <p className="text-xs text-slate-500">R</p>
+                        <p className="text-lg font-mono text-purple-400">{turn.cries?.R?.toFixed(2) ?? '-'}</p>
+                      </div>
+                      <div className="bg-slate-900/50 p-2 rounded text-center">
+                        <p className="text-xs text-slate-500">I</p>
+                        <p className="text-lg font-mono text-purple-400">{turn.cries?.I?.toFixed(2) ?? '-'}</p>
+                      </div>
+                      <div className="bg-slate-900/50 p-2 rounded text-center">
+                        <p className="text-xs text-slate-500">E</p>
+                        <p className="text-lg font-mono text-purple-400">{turn.cries?.E?.toFixed(2) ?? '-'}</p>
+                      </div>
+                      <div className="bg-slate-900/50 p-2 rounded text-center">
+                        <p className="text-xs text-slate-500">S</p>
+                        <p className="text-lg font-mono text-purple-400">{turn.cries?.S?.toFixed(2) ?? '-'}</p>
+                      </div>
+                      <div className="bg-purple-500/20 p-2 rounded border border-purple-500/30 text-center">
+                        <p className="text-xs text-purple-300 font-bold">Ω</p>
+                        <p className="text-lg font-mono text-purple-300 font-bold">{turn.cries?.Omega?.toFixed(2) ?? '-'}</p>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Comparison Summary */}
-              {liveTestResult.results.length > 1 && (
-                <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4">
-                  <h3 className="text-sm font-bold font-mono text-cyan-400 mb-3">MODEL COMPARISON</h3>
-                  <div className="space-y-2">
-                    {liveTestResult.results
-                      .sort((a: any, b: any) => b.cries.Omega - a.cries.Omega)
-                      .map((result: any, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between p-2 bg-slate-900/50 rounded">
-                          <span className="font-mono text-sm text-white">
-                            {idx + 1}. {result.modelName}
-                          </span>
-                          <span className="font-mono text-sm text-cyan-400 font-bold">
-                            Ω {result.cries.Omega.toFixed(4)}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
+              {/* Continue Conversation Input */}
+              <div className="flex gap-2 mt-4">
+                <textarea
+                  value={liveTestPrompt}
+                  onChange={e => setLiveTestPrompt(e.target.value)}
+                  placeholder="Continue the conversation..."
+                  className="w-full px-3 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white font-mono text-sm min-h-[60px] focus:outline-none focus:border-cyan-500/50"
+                  disabled={running}
+                />
+                <button
+                  onClick={continueLiveTest}
+                  disabled={running || !liveTestPrompt.trim()}
+                  className="px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 font-mono font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {running ? '⏳ Sending...' : '➤ Send'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

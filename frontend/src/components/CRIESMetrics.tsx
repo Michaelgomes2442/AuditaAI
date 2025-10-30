@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
 import { Activity, TrendingUp, Shield, Zap } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
@@ -11,6 +12,14 @@ interface CRIESData {
   E: number; // Empathy
   S: number; // Strictness
   avg: number; // Average score
+  sub_metrics?: {
+    C?: Record<string, number>;
+    R?: Record<string, number>;
+    I?: Record<string, number>;
+    E?: Record<string, number>;
+    S?: Record<string, number>;
+  };
+// End CRIESData interface
 }
 
 interface CRIESUpdate {
@@ -90,18 +99,34 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
     return 'bg-red-500/10 border-red-500/30';
   };
 
-  const renderMetricBar = (label: string, value: number, icon: React.ReactNode) => {
+  const renderMetricBar = (label: string, value: number, icon: React.ReactNode, subMetrics?: Record<string, number>) => {
     const percentage = Math.round(value * 100);
     const colorClass = getColorClass(value);
     const emoji = getStatusEmoji(value);
-    
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400">{icon}</span>
-            <span className="font-medium text-gray-200">{label}</span>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="flex items-center gap-2 cursor-pointer">
+                <span className="text-gray-400">{icon}</span>
+                <span className="font-medium text-gray-200 underline decoration-dotted">{label}</span>
+              </div>
+            </PopoverTrigger>
+            {subMetrics && (
+              <PopoverContent align="start">
+                <div className="text-xs font-mono">
+                  <div className="mb-1 font-bold">{label} Sub-metrics</div>
+                  {Object.entries(subMetrics).map(([k, v]) => (
+                    <div key={k} className="flex justify-between">
+                      <span>{k}</span>
+                      <span>{v.toFixed(4)}</span>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            )}
+          </Popover>
           <div className="flex items-center gap-2">
             <span className={`text-lg ${colorClass} font-bold transition-colors duration-300`}>
               {percentage}%
@@ -190,11 +215,11 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
   const renderSingleMetrics = (metrics: CRIESData) => {
     return (
       <div className="space-y-4">
-        {renderMetricBar('Coherence', metrics.C, '🧩')}
-        {renderMetricBar('Rigor', metrics.R, '🔬')}
-        {renderMetricBar('Integration', metrics.I, '�')}
-        {renderMetricBar('Empathy', metrics.E, '💝')}
-        {renderMetricBar('Strictness', metrics.S, '⚖️')}
+        {renderMetricBar('Coherence', metrics.C, '🧩', metrics.sub_metrics?.C)}
+        {renderMetricBar('Rigor', metrics.R, '🔬', metrics.sub_metrics?.R)}
+        {renderMetricBar('Integration', metrics.I, '🔗', metrics.sub_metrics?.I)}
+        {renderMetricBar('Empathy', metrics.E, '💝', metrics.sub_metrics?.E)}
+        {renderMetricBar('Strictness', metrics.S, '⚖️', metrics.sub_metrics?.S)}
 
         <div className={`mt-6 p-4 rounded-lg border-2 ${getBackgroundClass(metrics.avg)}`}>
           <div className="flex items-center justify-between">

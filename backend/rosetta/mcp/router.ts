@@ -105,7 +105,7 @@ export async function handleToolCall(request: ToolRequest): Promise<ToolResponse
   }
 
   // Execute tool
-  const result = tools[tool](input);
+  const result = await tools[tool](input);
 
   // Validate output
   if (!validator.output(result)) {
