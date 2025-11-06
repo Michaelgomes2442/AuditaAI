@@ -11,6 +11,18 @@ dotenv.config();
 
 import { mcp } from './src/mcp-client.js';
 
+// Import rate limiting middleware
+import { 
+  defaultRateLimiter, 
+  llmRateLimiter, 
+  authRateLimiter, 
+  readOnlyRateLimiter 
+} from './src/middleware/rate-limiter.js';
+
+// Import validation middleware
+import { validateBody, validateQuery } from './src/middleware/validator.js';
+import { apiSchemas } from './src/validation/schemas.js';
+
 // Simple function to create optimized Prisma client (replaces .ts version)
 const createOptimizedPrismaClient = () => {
   try {
@@ -128,7 +140,8 @@ function computeMerkleRoot(leaves) {
 // can still start and surface meaningful runtime logs for debugging.
 let setupWebSocket = () => ({ io: null, notifyClients: async () => {} });
 let bootModelWithRosetta = async () => {};
-let computeCRIES = async () => ({});
+let computeCRIES = async () => ({}); // Will be replaced by v3 or v2 below
+let computeCRIESv3 = null; // CRIES v3 implementation
 let generateAnalysisReceipt = async () => ({});
 let callLLM = async () => { throw new Error('llm client not available'); };
 let callGPT4WithRosetta = async () => { throw new Error('gpt4 rosetta not available'); };
@@ -160,6 +173,55 @@ try {
   }
 } catch (e) {
   console.warn('Optional module ./src/track-a-analyzer.js not available:', e.message);
+}
+
+// Load CRIES v3 (hybrid semantic + heuristic scoring)
+try {
+  const criesV3Module = await import('./src/cries/compute-cries.js');
+  const embeddingModule = await import('./src/cries/embeddings/adapter.js');
+  
+  if (criesV3Module && criesV3Module.computeCRIESv3) {
+    computeCRIESv3 = criesV3Module.computeCRIESv3;
+    
+    // Create embedding adapter (use mock for now, can be switched to real model)
+    const EmbeddingAdapter = embeddingModule.LocalEmbeddingAdapter || embeddingModule.default;
+    const embeddingAdapter = new EmbeddingAdapter('mock');
+    
+    // Replace computeCRIES with v3 wrapper
+    const originalComputeCRIES = computeCRIES;
+    computeCRIES = async (prompt, response, contextOrMode) => {
+      try {
+        // Determine governance mode from context
+        let governanceMode = 'BALANCED';
+        if (typeof contextOrMode === 'string') {
+          governanceMode = contextOrMode.toUpperCase();
+        } else if (contextOrMode && contextOrMode.governanceMode) {
+          governanceMode = contextOrMode.governanceMode;
+        } else if (contextOrMode && contextOrMode.isRosetta) {
+          governanceMode = 'STRICT'; // Rosetta uses strict mode
+        }
+        
+        // Call CRIES v3
+        const result = await computeCRIESv3({
+          prompt: prompt || '',
+          response: response || '',
+          context: contextOrMode || {},
+          governanceMode,
+          embedding: embeddingAdapter
+        });
+        
+        console.log(`✅ CRIES v3 computed: Ω=${result.overall.toFixed(3)} mode=${governanceMode}`);
+        return result;
+      } catch (error) {
+        console.error('❌ CRIES v3 failed, falling back to v2:', error.message);
+        return originalComputeCRIES(prompt, response, contextOrMode);
+      }
+    };
+    
+    console.log('✅ CRIES v3 loaded successfully');
+  }
+} catch (e) {
+  console.warn('Optional CRIES v3 module not available (using v2):', e.message);
 }
 
 try {
@@ -1130,8 +1192,12 @@ function requirePaidTier(req, res, next) {
  * Run a prompt and generate full receipt chain
  * POST /api/pilot/run-prompt
  * Body: { prompt, model, sessionId, runId, governanceEnabled, apiKeys }
+ * Rate limited: 10 requests per minute per user/IP
  */
-app.post('/api/pilot/run-prompt', async (req, res) => {
+app.post('/api/pilot/run-prompt', 
+  llmRateLimiter, 
+  validateBody(apiSchemas.pilot.runPrompt),
+  async (req, res) => {
   const { prompt, model, sessionId, runId, governanceEnabled = true, apiKeys } = req.body;
   
   if (!prompt || !model) {
@@ -1350,8 +1416,12 @@ app.post('/api/pilot/run-prompt', async (req, res) => {
 /**
  * Get receipts for pilot dashboard with filtering
  * GET /api/pilot/receipts?sessionId=xxx&runId=xxx&source=pilot|lab|all
+ * Rate limited: 200 requests per minute
  */
-app.get('/api/pilot/receipts', async (req, res) => {
+app.get('/api/pilot/receipts', 
+  readOnlyRateLimiter,
+  validateQuery(apiSchemas.pilot.getReceipts),
+  async (req, res) => {
   const { sessionId, runId, source = 'pilot', limit = 50 } = req.query;
   
   try {
@@ -1395,6 +1465,58 @@ app.get('/api/pilot/receipts', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Failed to fetch receipts:', error);
+    res.status(500).json({ error: 'fetch_failed', message: error.message });
+  }
+});
+
+/**
+ * Get list of unique sessions from governance receipts
+ * GET /api/pilot/sessions?source=pilot|lab|all
+ * Rate limited: 200 requests per minute
+ */
+app.get('/api/pilot/sessions', 
+  readOnlyRateLimiter,
+  validateQuery(apiSchemas.pilot.getSessions),
+  async (req, res) => {
+  const { source = 'pilot' } = req.query;
+  
+  try {
+    const where = {};
+    if (source !== 'all') where.source = source;
+    
+    // Get distinct session_ids with metadata
+    const sessions = await prisma.governanceReceipt.groupBy({
+      by: ['session_id'],
+      where: {
+        ...where,
+        session_id: { not: null }
+      },
+      _count: {
+        id: true
+      },
+      _min: {
+        timestamp: true
+      },
+      _max: {
+        timestamp: true
+      }
+    });
+    
+    // Format response
+    const formattedSessions = sessions.map(s => ({
+      sessionId: s.session_id,
+      receiptCount: s._count.id,
+      firstReceipt: s._min.timestamp,
+      lastReceipt: s._max.timestamp
+    })).sort((a, b) => b.lastReceipt - a.lastReceipt); // Most recent first
+    
+    res.json({
+      sessions: formattedSessions,
+      count: formattedSessions.length,
+      source
+    });
+  } catch (error) {
+    console.error('❌ Failed to fetch sessions:', error);
     res.status(500).json({ error: 'fetch_failed', message: error.message });
   }
 });
@@ -1762,8 +1884,9 @@ app.get('/api/pilot/export-receipts', async (req, res) => {
  * Deterministic re-run: Execute same prompt with same config and compare
  * POST /api/pilot/rerun
  * Body: { originalRunId, prompt, model, useGovernance }
+ * Rate limited: 10 requests per minute per user/IP
  */
-app.post('/api/pilot/rerun', async (req, res) => {
+app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
   const { originalRunId, prompt, model, useGovernance = false } = req.body;
   
   if (!originalRunId || !prompt || !model) {

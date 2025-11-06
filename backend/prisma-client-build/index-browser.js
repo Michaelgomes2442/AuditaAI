@@ -11,7 +11,7 @@ const {
   Public,
   getRuntime,
   skip
-} = require('./runtime/index-browser.js')
+} = require('@prisma/client/runtime/index-browser.js')
 
 
 const Prisma = {}
@@ -124,28 +124,28 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  name: 'name',
   role: 'role',
-  tier: 'tier',
-  permissions: 'permissions',
-  orgId: 'orgId',
-  status: 'status',
-  lastLoginAt: 'lastLoginAt',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  twoFactorEnabled: 'twoFactorEnabled',
-  twoFactorSecret: 'twoFactorSecret',
+  lastLoginAt: 'lastLoginAt',
+  orgId: 'orgId',
+  permissions: 'permissions',
+  status: 'status',
+  tier: 'tier',
   backupCodes: 'backupCodes',
   failedLoginAttempts: 'failedLoginAttempts',
   lockedUntil: 'lockedUntil',
   passwordChangedAt: 'passwordChangedAt',
-  ssoProvider: 'ssoProvider',
+  twoFactorEnabled: 'twoFactorEnabled',
+  twoFactorSecret: 'twoFactorSecret',
+  currentPersona: 'currentPersona',
+  lamportCounter: 'lamportCounter',
+  lastReceiptId: 'lastReceiptId',
+  personaLocked: 'personaLocked',
   ssoId: 'ssoId',
   ssoMetadata: 'ssoMetadata',
-  currentPersona: 'currentPersona',
-  personaLocked: 'personaLocked',
-  lamportCounter: 'lamportCounter',
-  lastReceiptId: 'lastReceiptId'
+  ssoProvider: 'ssoProvider'
 };
 
 exports.Prisma.OrganizationScalarFieldEnum = {
@@ -178,15 +178,15 @@ exports.Prisma.AuditRecordScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   action: 'action',
+  lamport: 'lamport',
+  createdAt: 'createdAt',
   category: 'category',
-  details: 'details',
+  hashPointer: 'hashPointer',
   metadata: 'metadata',
   status: 'status',
-  lamport: 'lamport',
-  hashPointer: 'hashPointer',
-  organizationId: 'organizationId',
+  details: 'details',
   blockHash: 'blockHash',
-  createdAt: 'createdAt',
+  organizationId: 'organizationId',
   updatedAt: 'updatedAt'
 };
 
@@ -205,10 +205,10 @@ exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   expiresAt: 'expiresAt',
-  userAgent: 'userAgent',
-  ipAddress: 'ipAddress',
   createdAt: 'createdAt',
-  lastUsedAt: 'lastUsedAt'
+  ipAddress: 'ipAddress',
+  lastUsedAt: 'lastUsedAt',
+  userAgent: 'userAgent'
 };
 
 exports.Prisma.BudgetScalarFieldEnum = {
@@ -260,6 +260,14 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   resolvedAt: 'resolvedAt'
+};
+
+exports.Prisma.LamportCounterScalarFieldEnum = {
+  id: 'id',
+  currentValue: 'currentValue',
+  lastUpdated: 'lastUpdated',
+  lastReceiptId: 'lastReceiptId',
+  metadata: 'metadata'
 };
 
 exports.Prisma.BENReceiptScalarFieldEnum = {
@@ -371,6 +379,70 @@ exports.Prisma.NotificationPreferenceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReceiptScalarFieldEnum = {
+  id: 'id',
+  ts: 'ts',
+  path: 'path',
+  event: 'event',
+  lamport: 'lamport',
+  self_hash: 'self_hash',
+  calc_hash: 'calc_hash',
+  verified: 'verified'
+};
+
+exports.Prisma.GovernanceReceiptScalarFieldEnum = {
+  id: 'id',
+  lamport: 'lamport',
+  persona: 'persona',
+  obligationsApplied: 'obligationsApplied',
+  promptHash: 'promptHash',
+  outputHash: 'outputHash',
+  violations: 'violations',
+  timestamp: 'timestamp',
+  version: 'version',
+  userId: 'userId',
+  criesOmega: 'criesOmega',
+  criesCoherence: 'criesCoherence',
+  criesRigor: 'criesRigor',
+  criesIntegrity: 'criesIntegrity',
+  criesEmpathy: 'criesEmpathy',
+  criesStrictness: 'criesStrictness',
+  criesSubMetrics: 'criesSubMetrics',
+  criesEvidence: 'criesEvidence',
+  criesCalculation: 'criesCalculation',
+  criesBaseline: 'criesBaseline',
+  criesDeterminism: 'criesDeterminism',
+  governanceMode: 'governanceMode',
+  prompt: 'prompt',
+  output: 'output',
+  receiptId: 'receiptId',
+  conversationId: 'conversationId',
+  exchangeId: 'exchangeId',
+  traceId: 'traceId',
+  prevDigest: 'prevDigest',
+  currDigest: 'currDigest',
+  model: 'model',
+  tokensIn: 'tokensIn',
+  tokensOut: 'tokensOut',
+  policyFlags: 'policyFlags',
+  merkleSealId: 'merkleSealId',
+  lockBatchId: 'lockBatchId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MerkleSealScalarFieldEnum = {
+  id: 'id',
+  merkleRoot: 'merkleRoot',
+  receiptCount: 'receiptCount',
+  lamportStart: 'lamportStart',
+  lamportEnd: 'lamportEnd',
+  sealedAt: 'sealedAt',
+  sealDigest: 'sealDigest',
+  prevRoot: 'prevRoot',
+  prevSealDigest: 'prevSealDigest'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -408,16 +480,16 @@ exports.Role = exports.$Enums.Role = {
   WITNESS: 'WITNESS'
 };
 
-exports.UserTier = exports.$Enums.UserTier = {
-  FREE: 'FREE',
-  PAID: 'PAID',
-  ARCHITECT: 'ARCHITECT'
-};
-
 exports.UserStatus = exports.$Enums.UserStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
   SUSPENDED: 'SUSPENDED'
+};
+
+exports.UserTier = exports.$Enums.UserTier = {
+  FREE: 'FREE',
+  PAID: 'PAID',
+  ARCHITECT: 'ARCHITECT'
 };
 
 exports.BENPersona = exports.$Enums.BENPersona = {
@@ -552,12 +624,16 @@ exports.Prisma.ModelName = {
   Budget: 'Budget',
   RegressionBaseline: 'RegressionBaseline',
   Feedback: 'Feedback',
+  LamportCounter: 'LamportCounter',
   BENReceipt: 'BENReceipt',
   BENSession: 'BENSession',
   TriTrackHandoff: 'TriTrackHandoff',
   ZScanVerification: 'ZScanVerification',
   SSOConfiguration: 'SSOConfiguration',
-  NotificationPreference: 'NotificationPreference'
+  NotificationPreference: 'NotificationPreference',
+  Receipt: 'Receipt',
+  GovernanceReceipt: 'GovernanceReceipt',
+  MerkleSeal: 'MerkleSeal'
 };
 
 /**

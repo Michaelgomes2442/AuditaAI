@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library.js';
+import * as runtime from '@prisma/client/runtime/library.js';
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -64,6 +64,11 @@ export type RegressionBaseline = $Result.DefaultSelection<Prisma.$RegressionBase
  */
 export type Feedback = $Result.DefaultSelection<Prisma.$FeedbackPayload>
 /**
+ * Model LamportCounter
+ * 
+ */
+export type LamportCounter = $Result.DefaultSelection<Prisma.$LamportCounterPayload>
+/**
  * Model BENReceipt
  * 
  */
@@ -93,6 +98,21 @@ export type SSOConfiguration = $Result.DefaultSelection<Prisma.$SSOConfiguration
  * 
  */
 export type NotificationPreference = $Result.DefaultSelection<Prisma.$NotificationPreferencePayload>
+/**
+ * Model Receipt
+ * 
+ */
+export type Receipt = $Result.DefaultSelection<Prisma.$ReceiptPayload>
+/**
+ * Model GovernanceReceipt
+ * 
+ */
+export type GovernanceReceipt = $Result.DefaultSelection<Prisma.$GovernanceReceiptPayload>
+/**
+ * Model MerkleSeal
+ * 
+ */
+export type MerkleSeal = $Result.DefaultSelection<Prisma.$MerkleSealPayload>
 
 /**
  * Enums
@@ -585,6 +605,16 @@ export class PrismaClient<
   get feedback(): Prisma.FeedbackDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.lamportCounter`: Exposes CRUD operations for the **LamportCounter** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LamportCounters
+    * const lamportCounters = await prisma.lamportCounter.findMany()
+    * ```
+    */
+  get lamportCounter(): Prisma.LamportCounterDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.bENReceipt`: Exposes CRUD operations for the **BENReceipt** model.
     * Example usage:
     * ```ts
@@ -643,6 +673,36 @@ export class PrismaClient<
     * ```
     */
   get notificationPreference(): Prisma.NotificationPreferenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.receipt`: Exposes CRUD operations for the **Receipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Receipts
+    * const receipts = await prisma.receipt.findMany()
+    * ```
+    */
+  get receipt(): Prisma.ReceiptDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.governanceReceipt`: Exposes CRUD operations for the **GovernanceReceipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GovernanceReceipts
+    * const governanceReceipts = await prisma.governanceReceipt.findMany()
+    * ```
+    */
+  get governanceReceipt(): Prisma.GovernanceReceiptDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.merkleSeal`: Exposes CRUD operations for the **MerkleSeal** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MerkleSeals
+    * const merkleSeals = await prisma.merkleSeal.findMany()
+    * ```
+    */
+  get merkleSeal(): Prisma.MerkleSealDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1094,12 +1154,16 @@ export namespace Prisma {
     Budget: 'Budget',
     RegressionBaseline: 'RegressionBaseline',
     Feedback: 'Feedback',
+    LamportCounter: 'LamportCounter',
     BENReceipt: 'BENReceipt',
     BENSession: 'BENSession',
     TriTrackHandoff: 'TriTrackHandoff',
     ZScanVerification: 'ZScanVerification',
     SSOConfiguration: 'SSOConfiguration',
-    NotificationPreference: 'NotificationPreference'
+    NotificationPreference: 'NotificationPreference',
+    Receipt: 'Receipt',
+    GovernanceReceipt: 'GovernanceReceipt',
+    MerkleSeal: 'MerkleSeal'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1118,7 +1182,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "team" | "teamMember" | "auditRecord" | "block" | "session" | "budget" | "regressionBaseline" | "feedback" | "bENReceipt" | "bENSession" | "triTrackHandoff" | "zScanVerification" | "sSOConfiguration" | "notificationPreference"
+      modelProps: "user" | "organization" | "team" | "teamMember" | "auditRecord" | "block" | "session" | "budget" | "regressionBaseline" | "feedback" | "lamportCounter" | "bENReceipt" | "bENSession" | "triTrackHandoff" | "zScanVerification" | "sSOConfiguration" | "notificationPreference" | "receipt" | "governanceReceipt" | "merkleSeal"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1862,6 +1926,80 @@ export namespace Prisma {
           }
         }
       }
+      LamportCounter: {
+        payload: Prisma.$LamportCounterPayload<ExtArgs>
+        fields: Prisma.LamportCounterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LamportCounterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LamportCounterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          findFirst: {
+            args: Prisma.LamportCounterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LamportCounterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          findMany: {
+            args: Prisma.LamportCounterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>[]
+          }
+          create: {
+            args: Prisma.LamportCounterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          createMany: {
+            args: Prisma.LamportCounterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LamportCounterCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>[]
+          }
+          delete: {
+            args: Prisma.LamportCounterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          update: {
+            args: Prisma.LamportCounterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          deleteMany: {
+            args: Prisma.LamportCounterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LamportCounterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LamportCounterUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>[]
+          }
+          upsert: {
+            args: Prisma.LamportCounterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LamportCounterPayload>
+          }
+          aggregate: {
+            args: Prisma.LamportCounterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLamportCounter>
+          }
+          groupBy: {
+            args: Prisma.LamportCounterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LamportCounterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LamportCounterCountArgs<ExtArgs>
+            result: $Utils.Optional<LamportCounterCountAggregateOutputType> | number
+          }
+        }
+      }
       BENReceipt: {
         payload: Prisma.$BENReceiptPayload<ExtArgs>
         fields: Prisma.BENReceiptFieldRefs
@@ -2306,6 +2444,228 @@ export namespace Prisma {
           }
         }
       }
+      Receipt: {
+        payload: Prisma.$ReceiptPayload<ExtArgs>
+        fields: Prisma.ReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.ReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.ReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.ReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.ReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.ReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          update: {
+            args: Prisma.ReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.ReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReceipt>
+          }
+          groupBy: {
+            args: Prisma.ReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<ReceiptCountAggregateOutputType> | number
+          }
+        }
+      }
+      GovernanceReceipt: {
+        payload: Prisma.$GovernanceReceiptPayload<ExtArgs>
+        fields: Prisma.GovernanceReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GovernanceReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GovernanceReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.GovernanceReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GovernanceReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.GovernanceReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.GovernanceReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.GovernanceReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GovernanceReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.GovernanceReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          update: {
+            args: Prisma.GovernanceReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.GovernanceReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GovernanceReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GovernanceReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.GovernanceReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GovernanceReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.GovernanceReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGovernanceReceipt>
+          }
+          groupBy: {
+            args: Prisma.GovernanceReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GovernanceReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GovernanceReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<GovernanceReceiptCountAggregateOutputType> | number
+          }
+        }
+      }
+      MerkleSeal: {
+        payload: Prisma.$MerkleSealPayload<ExtArgs>
+        fields: Prisma.MerkleSealFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MerkleSealFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MerkleSealFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          findFirst: {
+            args: Prisma.MerkleSealFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MerkleSealFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          findMany: {
+            args: Prisma.MerkleSealFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>[]
+          }
+          create: {
+            args: Prisma.MerkleSealCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          createMany: {
+            args: Prisma.MerkleSealCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MerkleSealCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>[]
+          }
+          delete: {
+            args: Prisma.MerkleSealDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          update: {
+            args: Prisma.MerkleSealUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          deleteMany: {
+            args: Prisma.MerkleSealDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MerkleSealUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MerkleSealUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>[]
+          }
+          upsert: {
+            args: Prisma.MerkleSealUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MerkleSealPayload>
+          }
+          aggregate: {
+            args: Prisma.MerkleSealAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMerkleSeal>
+          }
+          groupBy: {
+            args: Prisma.MerkleSealGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MerkleSealGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MerkleSealCountArgs<ExtArgs>
+            result: $Utils.Optional<MerkleSealCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2412,12 +2772,16 @@ export namespace Prisma {
     budget?: BudgetOmit
     regressionBaseline?: RegressionBaselineOmit
     feedback?: FeedbackOmit
+    lamportCounter?: LamportCounterOmit
     bENReceipt?: BENReceiptOmit
     bENSession?: BENSessionOmit
     triTrackHandoff?: TriTrackHandoffOmit
     zScanVerification?: ZScanVerificationOmit
     sSOConfiguration?: SSOConfigurationOmit
     notificationPreference?: NotificationPreferenceOmit
+    receipt?: ReceiptOmit
+    governanceReceipt?: GovernanceReceiptOmit
+    merkleSeal?: MerkleSealOmit
   }
 
   /* Types for Logging */
@@ -2498,24 +2862,24 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    sessions: number
     audits: number
-    teams: number
     budgets: number
-    regressionBaselines: number
     feedbacks: number
+    regressionBaselines: number
+    sessions: number
+    teams: number
     benReceipts: number
     benSessions: number
     zscans: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     audits?: boolean | UserCountOutputTypeCountAuditsArgs
-    teams?: boolean | UserCountOutputTypeCountTeamsArgs
     budgets?: boolean | UserCountOutputTypeCountBudgetsArgs
-    regressionBaselines?: boolean | UserCountOutputTypeCountRegressionBaselinesArgs
     feedbacks?: boolean | UserCountOutputTypeCountFeedbacksArgs
+    regressionBaselines?: boolean | UserCountOutputTypeCountRegressionBaselinesArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    teams?: boolean | UserCountOutputTypeCountTeamsArgs
     benReceipts?: boolean | UserCountOutputTypeCountBenReceiptsArgs
     benSessions?: boolean | UserCountOutputTypeCountBenSessionsArgs
     zscans?: boolean | UserCountOutputTypeCountZscansArgs
@@ -2535,22 +2899,8 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountAuditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditRecordWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamMemberWhereInput
   }
 
   /**
@@ -2563,6 +2913,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeedbackWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountRegressionBaselinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RegressionBaselineWhereInput
   }
@@ -2570,8 +2927,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FeedbackWhereInput
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamMemberWhereInput
   }
 
   /**
@@ -2601,15 +2965,15 @@ export namespace Prisma {
    */
 
   export type OrganizationCountOutputType = {
-    users: number
-    teams: number
     ssoConfigs: number
+    teams: number
+    users: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | OrganizationCountOutputTypeCountUsersArgs
-    teams?: boolean | OrganizationCountOutputTypeCountTeamsArgs
     ssoConfigs?: boolean | OrganizationCountOutputTypeCountSsoConfigsArgs
+    teams?: boolean | OrganizationCountOutputTypeCountTeamsArgs
+    users?: boolean | OrganizationCountOutputTypeCountUsersArgs
   }
 
   // Custom InputTypes
@@ -2626,8 +2990,8 @@ export namespace Prisma {
   /**
    * OrganizationCountOutputType without action
    */
-  export type OrganizationCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type OrganizationCountOutputTypeCountSsoConfigsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SSOConfigurationWhereInput
   }
 
   /**
@@ -2640,8 +3004,8 @@ export namespace Prisma {
   /**
    * OrganizationCountOutputType without action
    */
-  export type OrganizationCountOutputTypeCountSsoConfigsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SSOConfigurationWhereInput
+  export type OrganizationCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -2717,6 +3081,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type MerkleSealCountOutputType
+   */
+
+  export type MerkleSealCountOutputType = {
+    receipts: number
+  }
+
+  export type MerkleSealCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    receipts?: boolean | MerkleSealCountOutputTypeCountReceiptsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MerkleSealCountOutputType without action
+   */
+  export type MerkleSealCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSealCountOutputType
+     */
+    select?: MerkleSealCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MerkleSealCountOutputType without action
+   */
+  export type MerkleSealCountOutputTypeCountReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GovernanceReceiptWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -2752,78 +3147,78 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
-    name: string | null
     role: $Enums.Role | null
-    tier: $Enums.UserTier | null
-    orgId: number | null
-    status: $Enums.UserStatus | null
-    lastLoginAt: Date | null
+    name: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    twoFactorEnabled: boolean | null
-    twoFactorSecret: string | null
+    lastLoginAt: Date | null
+    orgId: number | null
+    status: $Enums.UserStatus | null
+    tier: $Enums.UserTier | null
     failedLoginAttempts: number | null
     lockedUntil: Date | null
     passwordChangedAt: Date | null
-    ssoProvider: string | null
-    ssoId: string | null
+    twoFactorEnabled: boolean | null
+    twoFactorSecret: string | null
     currentPersona: $Enums.BENPersona | null
-    personaLocked: boolean | null
     lamportCounter: number | null
     lastReceiptId: number | null
+    personaLocked: boolean | null
+    ssoId: string | null
+    ssoProvider: string | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: number | null
     email: string | null
     password: string | null
-    name: string | null
     role: $Enums.Role | null
-    tier: $Enums.UserTier | null
-    orgId: number | null
-    status: $Enums.UserStatus | null
-    lastLoginAt: Date | null
+    name: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    twoFactorEnabled: boolean | null
-    twoFactorSecret: string | null
+    lastLoginAt: Date | null
+    orgId: number | null
+    status: $Enums.UserStatus | null
+    tier: $Enums.UserTier | null
     failedLoginAttempts: number | null
     lockedUntil: Date | null
     passwordChangedAt: Date | null
-    ssoProvider: string | null
-    ssoId: string | null
+    twoFactorEnabled: boolean | null
+    twoFactorSecret: string | null
     currentPersona: $Enums.BENPersona | null
-    personaLocked: boolean | null
     lamportCounter: number | null
     lastReceiptId: number | null
+    personaLocked: boolean | null
+    ssoId: string | null
+    ssoProvider: string | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     email: number
     password: number
-    name: number
     role: number
-    tier: number
-    permissions: number
-    orgId: number
-    status: number
-    lastLoginAt: number
+    name: number
     createdAt: number
     updatedAt: number
-    twoFactorEnabled: number
-    twoFactorSecret: number
+    lastLoginAt: number
+    orgId: number
+    permissions: number
+    status: number
+    tier: number
     backupCodes: number
     failedLoginAttempts: number
     lockedUntil: number
     passwordChangedAt: number
-    ssoProvider: number
-    ssoId: number
-    ssoMetadata: number
+    twoFactorEnabled: number
+    twoFactorSecret: number
     currentPersona: number
-    personaLocked: number
     lamportCounter: number
     lastReceiptId: number
+    personaLocked: number
+    ssoId: number
+    ssoMetadata: number
+    ssoProvider: number
     _all: number
   }
 
@@ -2848,78 +3243,78 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
-    name?: true
     role?: true
-    tier?: true
-    orgId?: true
-    status?: true
-    lastLoginAt?: true
+    name?: true
     createdAt?: true
     updatedAt?: true
-    twoFactorEnabled?: true
-    twoFactorSecret?: true
+    lastLoginAt?: true
+    orgId?: true
+    status?: true
+    tier?: true
     failedLoginAttempts?: true
     lockedUntil?: true
     passwordChangedAt?: true
-    ssoProvider?: true
-    ssoId?: true
+    twoFactorEnabled?: true
+    twoFactorSecret?: true
     currentPersona?: true
-    personaLocked?: true
     lamportCounter?: true
     lastReceiptId?: true
+    personaLocked?: true
+    ssoId?: true
+    ssoProvider?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
     password?: true
-    name?: true
     role?: true
-    tier?: true
-    orgId?: true
-    status?: true
-    lastLoginAt?: true
+    name?: true
     createdAt?: true
     updatedAt?: true
-    twoFactorEnabled?: true
-    twoFactorSecret?: true
+    lastLoginAt?: true
+    orgId?: true
+    status?: true
+    tier?: true
     failedLoginAttempts?: true
     lockedUntil?: true
     passwordChangedAt?: true
-    ssoProvider?: true
-    ssoId?: true
+    twoFactorEnabled?: true
+    twoFactorSecret?: true
     currentPersona?: true
-    personaLocked?: true
     lamportCounter?: true
     lastReceiptId?: true
+    personaLocked?: true
+    ssoId?: true
+    ssoProvider?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
     password?: true
-    name?: true
     role?: true
-    tier?: true
-    permissions?: true
-    orgId?: true
-    status?: true
-    lastLoginAt?: true
+    name?: true
     createdAt?: true
     updatedAt?: true
-    twoFactorEnabled?: true
-    twoFactorSecret?: true
+    lastLoginAt?: true
+    orgId?: true
+    permissions?: true
+    status?: true
+    tier?: true
     backupCodes?: true
     failedLoginAttempts?: true
     lockedUntil?: true
     passwordChangedAt?: true
-    ssoProvider?: true
-    ssoId?: true
-    ssoMetadata?: true
+    twoFactorEnabled?: true
+    twoFactorSecret?: true
     currentPersona?: true
-    personaLocked?: true
     lamportCounter?: true
     lastReceiptId?: true
+    personaLocked?: true
+    ssoId?: true
+    ssoMetadata?: true
+    ssoProvider?: true
     _all?: true
   }
 
@@ -3013,28 +3408,28 @@ export namespace Prisma {
     id: number
     email: string
     password: string
-    name: string | null
     role: $Enums.Role
-    tier: $Enums.UserTier
-    permissions: $Enums.Permission[]
-    orgId: number | null
-    status: $Enums.UserStatus
-    lastLoginAt: Date | null
+    name: string | null
     createdAt: Date
     updatedAt: Date
-    twoFactorEnabled: boolean
-    twoFactorSecret: string | null
+    lastLoginAt: Date | null
+    orgId: number | null
+    permissions: $Enums.Permission[]
+    status: $Enums.UserStatus
+    tier: $Enums.UserTier
     backupCodes: string[]
     failedLoginAttempts: number
     lockedUntil: Date | null
     passwordChangedAt: Date | null
-    ssoProvider: string | null
-    ssoId: string | null
-    ssoMetadata: JsonValue | null
+    twoFactorEnabled: boolean
+    twoFactorSecret: string | null
     currentPersona: $Enums.BENPersona
-    personaLocked: boolean
     lamportCounter: number
     lastReceiptId: number | null
+    personaLocked: boolean
+    ssoId: string | null
+    ssoMetadata: JsonValue | null
+    ssoProvider: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -3060,36 +3455,36 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
-    name?: boolean
     role?: boolean
-    tier?: boolean
-    permissions?: boolean
-    orgId?: boolean
-    status?: boolean
-    lastLoginAt?: boolean
+    name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: boolean
+    lastLoginAt?: boolean
+    orgId?: boolean
+    permissions?: boolean
+    status?: boolean
+    tier?: boolean
     backupCodes?: boolean
     failedLoginAttempts?: boolean
     lockedUntil?: boolean
     passwordChangedAt?: boolean
-    ssoProvider?: boolean
-    ssoId?: boolean
-    ssoMetadata?: boolean
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: boolean
     currentPersona?: boolean
-    personaLocked?: boolean
     lamportCounter?: boolean
     lastReceiptId?: boolean
-    organization?: boolean | User$organizationArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    personaLocked?: boolean
+    ssoId?: boolean
+    ssoMetadata?: boolean
+    ssoProvider?: boolean
     audits?: boolean | User$auditsArgs<ExtArgs>
-    teams?: boolean | User$teamsArgs<ExtArgs>
-    notifications?: boolean | User$notificationsArgs<ExtArgs>
     budgets?: boolean | User$budgetsArgs<ExtArgs>
-    regressionBaselines?: boolean | User$regressionBaselinesArgs<ExtArgs>
     feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    regressionBaselines?: boolean | User$regressionBaselinesArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    teams?: boolean | User$teamsArgs<ExtArgs>
+    organization?: boolean | User$organizationArgs<ExtArgs>
     benReceipts?: boolean | User$benReceiptsArgs<ExtArgs>
     benSessions?: boolean | User$benSessionsArgs<ExtArgs>
     zscans?: boolean | User$zscansArgs<ExtArgs>
@@ -3100,28 +3495,28 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
-    name?: boolean
     role?: boolean
-    tier?: boolean
-    permissions?: boolean
-    orgId?: boolean
-    status?: boolean
-    lastLoginAt?: boolean
+    name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: boolean
+    lastLoginAt?: boolean
+    orgId?: boolean
+    permissions?: boolean
+    status?: boolean
+    tier?: boolean
     backupCodes?: boolean
     failedLoginAttempts?: boolean
     lockedUntil?: boolean
     passwordChangedAt?: boolean
-    ssoProvider?: boolean
-    ssoId?: boolean
-    ssoMetadata?: boolean
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: boolean
     currentPersona?: boolean
-    personaLocked?: boolean
     lamportCounter?: boolean
     lastReceiptId?: boolean
+    personaLocked?: boolean
+    ssoId?: boolean
+    ssoMetadata?: boolean
+    ssoProvider?: boolean
     organization?: boolean | User$organizationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3129,28 +3524,28 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
-    name?: boolean
     role?: boolean
-    tier?: boolean
-    permissions?: boolean
-    orgId?: boolean
-    status?: boolean
-    lastLoginAt?: boolean
+    name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: boolean
+    lastLoginAt?: boolean
+    orgId?: boolean
+    permissions?: boolean
+    status?: boolean
+    tier?: boolean
     backupCodes?: boolean
     failedLoginAttempts?: boolean
     lockedUntil?: boolean
     passwordChangedAt?: boolean
-    ssoProvider?: boolean
-    ssoId?: boolean
-    ssoMetadata?: boolean
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: boolean
     currentPersona?: boolean
-    personaLocked?: boolean
     lamportCounter?: boolean
     lastReceiptId?: boolean
+    personaLocked?: boolean
+    ssoId?: boolean
+    ssoMetadata?: boolean
+    ssoProvider?: boolean
     organization?: boolean | User$organizationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3158,40 +3553,40 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
-    name?: boolean
     role?: boolean
-    tier?: boolean
-    permissions?: boolean
-    orgId?: boolean
-    status?: boolean
-    lastLoginAt?: boolean
+    name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: boolean
+    lastLoginAt?: boolean
+    orgId?: boolean
+    permissions?: boolean
+    status?: boolean
+    tier?: boolean
     backupCodes?: boolean
     failedLoginAttempts?: boolean
     lockedUntil?: boolean
     passwordChangedAt?: boolean
-    ssoProvider?: boolean
-    ssoId?: boolean
-    ssoMetadata?: boolean
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: boolean
     currentPersona?: boolean
-    personaLocked?: boolean
     lamportCounter?: boolean
     lastReceiptId?: boolean
+    personaLocked?: boolean
+    ssoId?: boolean
+    ssoMetadata?: boolean
+    ssoProvider?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "tier" | "permissions" | "orgId" | "status" | "lastLoginAt" | "createdAt" | "updatedAt" | "twoFactorEnabled" | "twoFactorSecret" | "backupCodes" | "failedLoginAttempts" | "lockedUntil" | "passwordChangedAt" | "ssoProvider" | "ssoId" | "ssoMetadata" | "currentPersona" | "personaLocked" | "lamportCounter" | "lastReceiptId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "name" | "createdAt" | "updatedAt" | "lastLoginAt" | "orgId" | "permissions" | "status" | "tier" | "backupCodes" | "failedLoginAttempts" | "lockedUntil" | "passwordChangedAt" | "twoFactorEnabled" | "twoFactorSecret" | "currentPersona" | "lamportCounter" | "lastReceiptId" | "personaLocked" | "ssoId" | "ssoMetadata" | "ssoProvider", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    organization?: boolean | User$organizationArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     audits?: boolean | User$auditsArgs<ExtArgs>
-    teams?: boolean | User$teamsArgs<ExtArgs>
-    notifications?: boolean | User$notificationsArgs<ExtArgs>
     budgets?: boolean | User$budgetsArgs<ExtArgs>
-    regressionBaselines?: boolean | User$regressionBaselinesArgs<ExtArgs>
     feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    regressionBaselines?: boolean | User$regressionBaselinesArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    teams?: boolean | User$teamsArgs<ExtArgs>
+    organization?: boolean | User$organizationArgs<ExtArgs>
     benReceipts?: boolean | User$benReceiptsArgs<ExtArgs>
     benSessions?: boolean | User$benSessionsArgs<ExtArgs>
     zscans?: boolean | User$zscansArgs<ExtArgs>
@@ -3207,14 +3602,14 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      organization: Prisma.$OrganizationPayload<ExtArgs> | null
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
       audits: Prisma.$AuditRecordPayload<ExtArgs>[]
-      teams: Prisma.$TeamMemberPayload<ExtArgs>[]
-      notifications: Prisma.$NotificationPreferencePayload<ExtArgs> | null
       budgets: Prisma.$BudgetPayload<ExtArgs>[]
-      regressionBaselines: Prisma.$RegressionBaselinePayload<ExtArgs>[]
       feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPreferencePayload<ExtArgs> | null
+      regressionBaselines: Prisma.$RegressionBaselinePayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      teams: Prisma.$TeamMemberPayload<ExtArgs>[]
+      organization: Prisma.$OrganizationPayload<ExtArgs> | null
       benReceipts: Prisma.$BENReceiptPayload<ExtArgs>[]
       benSessions: Prisma.$BENSessionPayload<ExtArgs>[]
       zscans: Prisma.$ZScanVerificationPayload<ExtArgs>[]
@@ -3223,28 +3618,28 @@ export namespace Prisma {
       id: number
       email: string
       password: string
-      name: string | null
       role: $Enums.Role
-      tier: $Enums.UserTier
-      permissions: $Enums.Permission[]
-      orgId: number | null
-      status: $Enums.UserStatus
-      lastLoginAt: Date | null
+      name: string | null
       createdAt: Date
       updatedAt: Date
-      twoFactorEnabled: boolean
-      twoFactorSecret: string | null
+      lastLoginAt: Date | null
+      orgId: number | null
+      permissions: $Enums.Permission[]
+      status: $Enums.UserStatus
+      tier: $Enums.UserTier
       backupCodes: string[]
       failedLoginAttempts: number
       lockedUntil: Date | null
       passwordChangedAt: Date | null
-      ssoProvider: string | null
-      ssoId: string | null
-      ssoMetadata: Prisma.JsonValue | null
+      twoFactorEnabled: boolean
+      twoFactorSecret: string | null
       currentPersona: $Enums.BENPersona
-      personaLocked: boolean
       lamportCounter: number
       lastReceiptId: number | null
+      personaLocked: boolean
+      ssoId: string | null
+      ssoMetadata: Prisma.JsonValue | null
+      ssoProvider: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3639,14 +4034,14 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    organization<T extends User$organizationArgs<ExtArgs> = {}>(args?: Subset<T, User$organizationArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audits<T extends User$auditsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    teams<T extends User$teamsArgs<ExtArgs> = {}>(args?: Subset<T, User$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     budgets<T extends User$budgetsArgs<ExtArgs> = {}>(args?: Subset<T, User$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    regressionBaselines<T extends User$regressionBaselinesArgs<ExtArgs> = {}>(args?: Subset<T, User$regressionBaselinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegressionBaselinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     feedbacks<T extends User$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, User$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    regressionBaselines<T extends User$regressionBaselinesArgs<ExtArgs> = {}>(args?: Subset<T, User$regressionBaselinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegressionBaselinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    teams<T extends User$teamsArgs<ExtArgs> = {}>(args?: Subset<T, User$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organization<T extends User$organizationArgs<ExtArgs> = {}>(args?: Subset<T, User$organizationArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     benReceipts<T extends User$benReceiptsArgs<ExtArgs> = {}>(args?: Subset<T, User$benReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BENReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     benSessions<T extends User$benSessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$benSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BENSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     zscans<T extends User$zscansArgs<ExtArgs> = {}>(args?: Subset<T, User$zscansArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ZScanVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3682,28 +4077,28 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly name: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
-    readonly tier: FieldRef<"User", 'UserTier'>
-    readonly permissions: FieldRef<"User", 'Permission[]'>
-    readonly orgId: FieldRef<"User", 'Int'>
-    readonly status: FieldRef<"User", 'UserStatus'>
-    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly name: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
-    readonly twoFactorEnabled: FieldRef<"User", 'Boolean'>
-    readonly twoFactorSecret: FieldRef<"User", 'String'>
+    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly orgId: FieldRef<"User", 'Int'>
+    readonly permissions: FieldRef<"User", 'Permission[]'>
+    readonly status: FieldRef<"User", 'UserStatus'>
+    readonly tier: FieldRef<"User", 'UserTier'>
     readonly backupCodes: FieldRef<"User", 'String[]'>
     readonly failedLoginAttempts: FieldRef<"User", 'Int'>
     readonly lockedUntil: FieldRef<"User", 'DateTime'>
     readonly passwordChangedAt: FieldRef<"User", 'DateTime'>
-    readonly ssoProvider: FieldRef<"User", 'String'>
-    readonly ssoId: FieldRef<"User", 'String'>
-    readonly ssoMetadata: FieldRef<"User", 'Json'>
+    readonly twoFactorEnabled: FieldRef<"User", 'Boolean'>
+    readonly twoFactorSecret: FieldRef<"User", 'String'>
     readonly currentPersona: FieldRef<"User", 'BENPersona'>
-    readonly personaLocked: FieldRef<"User", 'Boolean'>
     readonly lamportCounter: FieldRef<"User", 'Int'>
     readonly lastReceiptId: FieldRef<"User", 'Int'>
+    readonly personaLocked: FieldRef<"User", 'Boolean'>
+    readonly ssoId: FieldRef<"User", 'String'>
+    readonly ssoMetadata: FieldRef<"User", 'Json'>
+    readonly ssoProvider: FieldRef<"User", 'String'>
   }
     
 
@@ -4100,49 +4495,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.organization
-   */
-  export type User$organizationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Organization
-     */
-    select?: OrganizationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Organization
-     */
-    omit?: OrganizationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OrganizationInclude<ExtArgs> | null
-    where?: OrganizationWhereInput
-  }
-
-  /**
-   * User.sessions
-   */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
    * User.audits
    */
   export type User$auditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4164,49 +4516,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AuditRecordScalarFieldEnum | AuditRecordScalarFieldEnum[]
-  }
-
-  /**
-   * User.teams
-   */
-  export type User$teamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TeamMember
-     */
-    select?: TeamMemberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TeamMember
-     */
-    omit?: TeamMemberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TeamMemberInclude<ExtArgs> | null
-    where?: TeamMemberWhereInput
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
-    cursor?: TeamMemberWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
-  }
-
-  /**
-   * User.notifications
-   */
-  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the NotificationPreference
-     */
-    select?: NotificationPreferenceSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the NotificationPreference
-     */
-    omit?: NotificationPreferenceOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: NotificationPreferenceInclude<ExtArgs> | null
-    where?: NotificationPreferenceWhereInput
   }
 
   /**
@@ -4234,6 +4543,49 @@ export namespace Prisma {
   }
 
   /**
+   * User.feedbacks
+   */
+  export type User$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    where?: FeedbackWhereInput
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    cursor?: FeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationPreference
+     */
+    omit?: NotificationPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    where?: NotificationPreferenceWhereInput
+  }
+
+  /**
    * User.regressionBaselines
    */
   export type User$regressionBaselinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4258,27 +4610,70 @@ export namespace Prisma {
   }
 
   /**
-   * User.feedbacks
+   * User.sessions
    */
-  export type User$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Feedback
+     * Select specific fields to fetch from the Session
      */
-    select?: FeedbackSelect<ExtArgs> | null
+    select?: SessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Feedback
+     * Omit specific fields from the Session
      */
-    omit?: FeedbackOmit<ExtArgs> | null
+    omit?: SessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: FeedbackInclude<ExtArgs> | null
-    where?: FeedbackWhereInput
-    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
-    cursor?: FeedbackWhereUniqueInput
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.teams
+   */
+  export type User$teamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMember
+     */
+    select?: TeamMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMember
+     */
+    omit?: TeamMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMemberInclude<ExtArgs> | null
+    where?: TeamMemberWhereInput
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    cursor?: TeamMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+  }
+
+  /**
+   * User.organization
+   */
+  export type User$organizationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    where?: OrganizationWhereInput
   }
 
   /**
@@ -4578,9 +4973,9 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    users?: boolean | Organization$usersArgs<ExtArgs>
-    teams?: boolean | Organization$teamsArgs<ExtArgs>
     ssoConfigs?: boolean | Organization$ssoConfigsArgs<ExtArgs>
+    teams?: boolean | Organization$teamsArgs<ExtArgs>
+    users?: boolean | Organization$usersArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -4613,9 +5008,9 @@ export namespace Prisma {
 
   export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "plan" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | Organization$usersArgs<ExtArgs>
-    teams?: boolean | Organization$teamsArgs<ExtArgs>
     ssoConfigs?: boolean | Organization$ssoConfigsArgs<ExtArgs>
+    teams?: boolean | Organization$teamsArgs<ExtArgs>
+    users?: boolean | Organization$usersArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4624,9 +5019,9 @@ export namespace Prisma {
   export type $OrganizationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Organization"
     objects: {
-      users: Prisma.$UserPayload<ExtArgs>[]
-      teams: Prisma.$TeamPayload<ExtArgs>[]
       ssoConfigs: Prisma.$SSOConfigurationPayload<ExtArgs>[]
+      teams: Prisma.$TeamPayload<ExtArgs>[]
+      users: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5029,9 +5424,9 @@ export namespace Prisma {
    */
   export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    users<T extends Organization$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    teams<T extends Organization$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ssoConfigs<T extends Organization$ssoConfigsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$ssoConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SSOConfigurationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    teams<T extends Organization$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends Organization$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5455,27 +5850,27 @@ export namespace Prisma {
   }
 
   /**
-   * Organization.users
+   * Organization.ssoConfigs
    */
-  export type Organization$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Organization$ssoConfigsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the SSOConfiguration
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: SSOConfigurationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the SSOConfiguration
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: SSOConfigurationOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
+    include?: SSOConfigurationInclude<ExtArgs> | null
+    where?: SSOConfigurationWhereInput
+    orderBy?: SSOConfigurationOrderByWithRelationInput | SSOConfigurationOrderByWithRelationInput[]
+    cursor?: SSOConfigurationWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: SSOConfigurationScalarFieldEnum | SSOConfigurationScalarFieldEnum[]
   }
 
   /**
@@ -5503,27 +5898,27 @@ export namespace Prisma {
   }
 
   /**
-   * Organization.ssoConfigs
+   * Organization.users
    */
-  export type Organization$ssoConfigsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Organization$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SSOConfiguration
+     * Select specific fields to fetch from the User
      */
-    select?: SSOConfigurationSelect<ExtArgs> | null
+    select?: UserSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the SSOConfiguration
+     * Omit specific fields from the User
      */
-    omit?: SSOConfigurationOmit<ExtArgs> | null
+    omit?: UserOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SSOConfigurationInclude<ExtArgs> | null
-    where?: SSOConfigurationWhereInput
-    orderBy?: SSOConfigurationOrderByWithRelationInput | SSOConfigurationOrderByWithRelationInput[]
-    cursor?: SSOConfigurationWhereUniqueInput
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SSOConfigurationScalarFieldEnum | SSOConfigurationScalarFieldEnum[]
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -7822,13 +8217,13 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     action: string | null
-    category: $Enums.AuditCategory | null
-    status: $Enums.AuditStatus | null
     lamport: number | null
-    hashPointer: string | null
-    organizationId: number | null
-    blockHash: string | null
     createdAt: Date | null
+    category: $Enums.AuditCategory | null
+    hashPointer: string | null
+    status: $Enums.AuditStatus | null
+    blockHash: string | null
+    organizationId: number | null
     updatedAt: Date | null
   }
 
@@ -7836,13 +8231,13 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     action: string | null
-    category: $Enums.AuditCategory | null
-    status: $Enums.AuditStatus | null
     lamport: number | null
-    hashPointer: string | null
-    organizationId: number | null
-    blockHash: string | null
     createdAt: Date | null
+    category: $Enums.AuditCategory | null
+    hashPointer: string | null
+    status: $Enums.AuditStatus | null
+    blockHash: string | null
+    organizationId: number | null
     updatedAt: Date | null
   }
 
@@ -7850,15 +8245,15 @@ export namespace Prisma {
     id: number
     userId: number
     action: number
+    lamport: number
+    createdAt: number
     category: number
-    details: number
+    hashPointer: number
     metadata: number
     status: number
-    lamport: number
-    hashPointer: number
-    organizationId: number
+    details: number
     blockHash: number
-    createdAt: number
+    organizationId: number
     updatedAt: number
     _all: number
   }
@@ -7882,13 +8277,13 @@ export namespace Prisma {
     id?: true
     userId?: true
     action?: true
-    category?: true
-    status?: true
     lamport?: true
-    hashPointer?: true
-    organizationId?: true
-    blockHash?: true
     createdAt?: true
+    category?: true
+    hashPointer?: true
+    status?: true
+    blockHash?: true
+    organizationId?: true
     updatedAt?: true
   }
 
@@ -7896,13 +8291,13 @@ export namespace Prisma {
     id?: true
     userId?: true
     action?: true
-    category?: true
-    status?: true
     lamport?: true
-    hashPointer?: true
-    organizationId?: true
-    blockHash?: true
     createdAt?: true
+    category?: true
+    hashPointer?: true
+    status?: true
+    blockHash?: true
+    organizationId?: true
     updatedAt?: true
   }
 
@@ -7910,15 +8305,15 @@ export namespace Prisma {
     id?: true
     userId?: true
     action?: true
+    lamport?: true
+    createdAt?: true
     category?: true
-    details?: true
+    hashPointer?: true
     metadata?: true
     status?: true
-    lamport?: true
-    hashPointer?: true
-    organizationId?: true
+    details?: true
     blockHash?: true
-    createdAt?: true
+    organizationId?: true
     updatedAt?: true
     _all?: true
   }
@@ -8013,15 +8408,15 @@ export namespace Prisma {
     id: number
     userId: number
     action: string
+    lamport: number
+    createdAt: Date
     category: $Enums.AuditCategory
-    details: JsonValue | null
+    hashPointer: string | null
     metadata: JsonValue | null
     status: $Enums.AuditStatus
-    lamport: number
-    hashPointer: string | null
-    organizationId: number | null
+    details: JsonValue | null
     blockHash: string | null
-    createdAt: Date
+    organizationId: number | null
     updatedAt: Date
     _count: AuditRecordCountAggregateOutputType | null
     _avg: AuditRecordAvgAggregateOutputType | null
@@ -8048,15 +8443,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     action?: boolean
+    lamport?: boolean
+    createdAt?: boolean
     category?: boolean
-    details?: boolean
+    hashPointer?: boolean
     metadata?: boolean
     status?: boolean
-    lamport?: boolean
-    hashPointer?: boolean
-    organizationId?: boolean
+    details?: boolean
     blockHash?: boolean
-    createdAt?: boolean
+    organizationId?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditRecord"]>
@@ -8065,15 +8460,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     action?: boolean
+    lamport?: boolean
+    createdAt?: boolean
     category?: boolean
-    details?: boolean
+    hashPointer?: boolean
     metadata?: boolean
     status?: boolean
-    lamport?: boolean
-    hashPointer?: boolean
-    organizationId?: boolean
+    details?: boolean
     blockHash?: boolean
-    createdAt?: boolean
+    organizationId?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditRecord"]>
@@ -8082,15 +8477,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     action?: boolean
+    lamport?: boolean
+    createdAt?: boolean
     category?: boolean
-    details?: boolean
+    hashPointer?: boolean
     metadata?: boolean
     status?: boolean
-    lamport?: boolean
-    hashPointer?: boolean
-    organizationId?: boolean
+    details?: boolean
     blockHash?: boolean
-    createdAt?: boolean
+    organizationId?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditRecord"]>
@@ -8099,19 +8494,19 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     action?: boolean
+    lamport?: boolean
+    createdAt?: boolean
     category?: boolean
-    details?: boolean
+    hashPointer?: boolean
     metadata?: boolean
     status?: boolean
-    lamport?: boolean
-    hashPointer?: boolean
-    organizationId?: boolean
+    details?: boolean
     blockHash?: boolean
-    createdAt?: boolean
+    organizationId?: boolean
     updatedAt?: boolean
   }
 
-  export type AuditRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "action" | "category" | "details" | "metadata" | "status" | "lamport" | "hashPointer" | "organizationId" | "blockHash" | "createdAt" | "updatedAt", ExtArgs["result"]["auditRecord"]>
+  export type AuditRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "action" | "lamport" | "createdAt" | "category" | "hashPointer" | "metadata" | "status" | "details" | "blockHash" | "organizationId" | "updatedAt", ExtArgs["result"]["auditRecord"]>
   export type AuditRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -8131,15 +8526,15 @@ export namespace Prisma {
       id: number
       userId: number
       action: string
+      lamport: number
+      createdAt: Date
       category: $Enums.AuditCategory
-      details: Prisma.JsonValue | null
+      hashPointer: string | null
       metadata: Prisma.JsonValue | null
       status: $Enums.AuditStatus
-      lamport: number
-      hashPointer: string | null
-      organizationId: number | null
+      details: Prisma.JsonValue | null
       blockHash: string | null
-      createdAt: Date
+      organizationId: number | null
       updatedAt: Date
     }, ExtArgs["result"]["auditRecord"]>
     composites: {}
@@ -8568,15 +8963,15 @@ export namespace Prisma {
     readonly id: FieldRef<"AuditRecord", 'Int'>
     readonly userId: FieldRef<"AuditRecord", 'Int'>
     readonly action: FieldRef<"AuditRecord", 'String'>
+    readonly lamport: FieldRef<"AuditRecord", 'Int'>
+    readonly createdAt: FieldRef<"AuditRecord", 'DateTime'>
     readonly category: FieldRef<"AuditRecord", 'AuditCategory'>
-    readonly details: FieldRef<"AuditRecord", 'Json'>
+    readonly hashPointer: FieldRef<"AuditRecord", 'String'>
     readonly metadata: FieldRef<"AuditRecord", 'Json'>
     readonly status: FieldRef<"AuditRecord", 'AuditStatus'>
-    readonly lamport: FieldRef<"AuditRecord", 'Int'>
-    readonly hashPointer: FieldRef<"AuditRecord", 'String'>
-    readonly organizationId: FieldRef<"AuditRecord", 'Int'>
+    readonly details: FieldRef<"AuditRecord", 'Json'>
     readonly blockHash: FieldRef<"AuditRecord", 'String'>
-    readonly createdAt: FieldRef<"AuditRecord", 'DateTime'>
+    readonly organizationId: FieldRef<"AuditRecord", 'Int'>
     readonly updatedAt: FieldRef<"AuditRecord", 'DateTime'>
   }
     
@@ -10090,30 +10485,30 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     expiresAt: Date | null
-    userAgent: string | null
-    ipAddress: string | null
     createdAt: Date | null
+    ipAddress: string | null
     lastUsedAt: Date | null
+    userAgent: string | null
   }
 
   export type SessionMaxAggregateOutputType = {
     id: number | null
     userId: number | null
     expiresAt: Date | null
-    userAgent: string | null
-    ipAddress: string | null
     createdAt: Date | null
+    ipAddress: string | null
     lastUsedAt: Date | null
+    userAgent: string | null
   }
 
   export type SessionCountAggregateOutputType = {
     id: number
     userId: number
     expiresAt: number
-    userAgent: number
-    ipAddress: number
     createdAt: number
+    ipAddress: number
     lastUsedAt: number
+    userAgent: number
     _all: number
   }
 
@@ -10132,30 +10527,30 @@ export namespace Prisma {
     id?: true
     userId?: true
     expiresAt?: true
-    userAgent?: true
-    ipAddress?: true
     createdAt?: true
+    ipAddress?: true
     lastUsedAt?: true
+    userAgent?: true
   }
 
   export type SessionMaxAggregateInputType = {
     id?: true
     userId?: true
     expiresAt?: true
-    userAgent?: true
-    ipAddress?: true
     createdAt?: true
+    ipAddress?: true
     lastUsedAt?: true
+    userAgent?: true
   }
 
   export type SessionCountAggregateInputType = {
     id?: true
     userId?: true
     expiresAt?: true
-    userAgent?: true
-    ipAddress?: true
     createdAt?: true
+    ipAddress?: true
     lastUsedAt?: true
+    userAgent?: true
     _all?: true
   }
 
@@ -10249,10 +10644,10 @@ export namespace Prisma {
     id: number
     userId: number
     expiresAt: Date
-    userAgent: string | null
-    ipAddress: string | null
     createdAt: Date
+    ipAddress: string | null
     lastUsedAt: Date
+    userAgent: string | null
     _count: SessionCountAggregateOutputType | null
     _avg: SessionAvgAggregateOutputType | null
     _sum: SessionSumAggregateOutputType | null
@@ -10278,10 +10673,10 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
-    userAgent?: boolean
-    ipAddress?: boolean
     createdAt?: boolean
+    ipAddress?: boolean
     lastUsedAt?: boolean
+    userAgent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -10289,10 +10684,10 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
-    userAgent?: boolean
-    ipAddress?: boolean
     createdAt?: boolean
+    ipAddress?: boolean
     lastUsedAt?: boolean
+    userAgent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -10300,10 +10695,10 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
-    userAgent?: boolean
-    ipAddress?: boolean
     createdAt?: boolean
+    ipAddress?: boolean
     lastUsedAt?: boolean
+    userAgent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -10311,13 +10706,13 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
-    userAgent?: boolean
-    ipAddress?: boolean
     createdAt?: boolean
+    ipAddress?: boolean
     lastUsedAt?: boolean
+    userAgent?: boolean
   }
 
-  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "expiresAt" | "userAgent" | "ipAddress" | "createdAt" | "lastUsedAt", ExtArgs["result"]["session"]>
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "expiresAt" | "createdAt" | "ipAddress" | "lastUsedAt" | "userAgent", ExtArgs["result"]["session"]>
   export type SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -10337,10 +10732,10 @@ export namespace Prisma {
       id: number
       userId: number
       expiresAt: Date
-      userAgent: string | null
-      ipAddress: string | null
       createdAt: Date
+      ipAddress: string | null
       lastUsedAt: Date
+      userAgent: string | null
     }, ExtArgs["result"]["session"]>
     composites: {}
   }
@@ -10768,10 +11163,10 @@ export namespace Prisma {
     readonly id: FieldRef<"Session", 'Int'>
     readonly userId: FieldRef<"Session", 'Int'>
     readonly expiresAt: FieldRef<"Session", 'DateTime'>
-    readonly userAgent: FieldRef<"Session", 'String'>
-    readonly ipAddress: FieldRef<"Session", 'String'>
     readonly createdAt: FieldRef<"Session", 'DateTime'>
+    readonly ipAddress: FieldRef<"Session", 'String'>
     readonly lastUsedAt: FieldRef<"Session", 'DateTime'>
+    readonly userAgent: FieldRef<"Session", 'String'>
   }
     
 
@@ -14870,6 +15265,1039 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FeedbackInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LamportCounter
+   */
+
+  export type AggregateLamportCounter = {
+    _count: LamportCounterCountAggregateOutputType | null
+    _avg: LamportCounterAvgAggregateOutputType | null
+    _sum: LamportCounterSumAggregateOutputType | null
+    _min: LamportCounterMinAggregateOutputType | null
+    _max: LamportCounterMaxAggregateOutputType | null
+  }
+
+  export type LamportCounterAvgAggregateOutputType = {
+    id: number | null
+    currentValue: number | null
+    lastReceiptId: number | null
+  }
+
+  export type LamportCounterSumAggregateOutputType = {
+    id: number | null
+    currentValue: number | null
+    lastReceiptId: number | null
+  }
+
+  export type LamportCounterMinAggregateOutputType = {
+    id: number | null
+    currentValue: number | null
+    lastUpdated: Date | null
+    lastReceiptId: number | null
+  }
+
+  export type LamportCounterMaxAggregateOutputType = {
+    id: number | null
+    currentValue: number | null
+    lastUpdated: Date | null
+    lastReceiptId: number | null
+  }
+
+  export type LamportCounterCountAggregateOutputType = {
+    id: number
+    currentValue: number
+    lastUpdated: number
+    lastReceiptId: number
+    metadata: number
+    _all: number
+  }
+
+
+  export type LamportCounterAvgAggregateInputType = {
+    id?: true
+    currentValue?: true
+    lastReceiptId?: true
+  }
+
+  export type LamportCounterSumAggregateInputType = {
+    id?: true
+    currentValue?: true
+    lastReceiptId?: true
+  }
+
+  export type LamportCounterMinAggregateInputType = {
+    id?: true
+    currentValue?: true
+    lastUpdated?: true
+    lastReceiptId?: true
+  }
+
+  export type LamportCounterMaxAggregateInputType = {
+    id?: true
+    currentValue?: true
+    lastUpdated?: true
+    lastReceiptId?: true
+  }
+
+  export type LamportCounterCountAggregateInputType = {
+    id?: true
+    currentValue?: true
+    lastUpdated?: true
+    lastReceiptId?: true
+    metadata?: true
+    _all?: true
+  }
+
+  export type LamportCounterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LamportCounter to aggregate.
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LamportCounters to fetch.
+     */
+    orderBy?: LamportCounterOrderByWithRelationInput | LamportCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LamportCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LamportCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LamportCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LamportCounters
+    **/
+    _count?: true | LamportCounterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LamportCounterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LamportCounterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LamportCounterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LamportCounterMaxAggregateInputType
+  }
+
+  export type GetLamportCounterAggregateType<T extends LamportCounterAggregateArgs> = {
+        [P in keyof T & keyof AggregateLamportCounter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLamportCounter[P]>
+      : GetScalarType<T[P], AggregateLamportCounter[P]>
+  }
+
+
+
+
+  export type LamportCounterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LamportCounterWhereInput
+    orderBy?: LamportCounterOrderByWithAggregationInput | LamportCounterOrderByWithAggregationInput[]
+    by: LamportCounterScalarFieldEnum[] | LamportCounterScalarFieldEnum
+    having?: LamportCounterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LamportCounterCountAggregateInputType | true
+    _avg?: LamportCounterAvgAggregateInputType
+    _sum?: LamportCounterSumAggregateInputType
+    _min?: LamportCounterMinAggregateInputType
+    _max?: LamportCounterMaxAggregateInputType
+  }
+
+  export type LamportCounterGroupByOutputType = {
+    id: number
+    currentValue: number
+    lastUpdated: Date
+    lastReceiptId: number | null
+    metadata: JsonValue | null
+    _count: LamportCounterCountAggregateOutputType | null
+    _avg: LamportCounterAvgAggregateOutputType | null
+    _sum: LamportCounterSumAggregateOutputType | null
+    _min: LamportCounterMinAggregateOutputType | null
+    _max: LamportCounterMaxAggregateOutputType | null
+  }
+
+  type GetLamportCounterGroupByPayload<T extends LamportCounterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LamportCounterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LamportCounterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LamportCounterGroupByOutputType[P]>
+            : GetScalarType<T[P], LamportCounterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LamportCounterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    currentValue?: boolean
+    lastUpdated?: boolean
+    lastReceiptId?: boolean
+    metadata?: boolean
+  }, ExtArgs["result"]["lamportCounter"]>
+
+  export type LamportCounterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    currentValue?: boolean
+    lastUpdated?: boolean
+    lastReceiptId?: boolean
+    metadata?: boolean
+  }, ExtArgs["result"]["lamportCounter"]>
+
+  export type LamportCounterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    currentValue?: boolean
+    lastUpdated?: boolean
+    lastReceiptId?: boolean
+    metadata?: boolean
+  }, ExtArgs["result"]["lamportCounter"]>
+
+  export type LamportCounterSelectScalar = {
+    id?: boolean
+    currentValue?: boolean
+    lastUpdated?: boolean
+    lastReceiptId?: boolean
+    metadata?: boolean
+  }
+
+  export type LamportCounterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currentValue" | "lastUpdated" | "lastReceiptId" | "metadata", ExtArgs["result"]["lamportCounter"]>
+
+  export type $LamportCounterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LamportCounter"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      currentValue: number
+      lastUpdated: Date
+      lastReceiptId: number | null
+      metadata: Prisma.JsonValue | null
+    }, ExtArgs["result"]["lamportCounter"]>
+    composites: {}
+  }
+
+  type LamportCounterGetPayload<S extends boolean | null | undefined | LamportCounterDefaultArgs> = $Result.GetResult<Prisma.$LamportCounterPayload, S>
+
+  type LamportCounterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LamportCounterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LamportCounterCountAggregateInputType | true
+    }
+
+  export interface LamportCounterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LamportCounter'], meta: { name: 'LamportCounter' } }
+    /**
+     * Find zero or one LamportCounter that matches the filter.
+     * @param {LamportCounterFindUniqueArgs} args - Arguments to find a LamportCounter
+     * @example
+     * // Get one LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LamportCounterFindUniqueArgs>(args: SelectSubset<T, LamportCounterFindUniqueArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LamportCounter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LamportCounterFindUniqueOrThrowArgs} args - Arguments to find a LamportCounter
+     * @example
+     * // Get one LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LamportCounterFindUniqueOrThrowArgs>(args: SelectSubset<T, LamportCounterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LamportCounter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterFindFirstArgs} args - Arguments to find a LamportCounter
+     * @example
+     * // Get one LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LamportCounterFindFirstArgs>(args?: SelectSubset<T, LamportCounterFindFirstArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LamportCounter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterFindFirstOrThrowArgs} args - Arguments to find a LamportCounter
+     * @example
+     * // Get one LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LamportCounterFindFirstOrThrowArgs>(args?: SelectSubset<T, LamportCounterFindFirstOrThrowArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LamportCounters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LamportCounters
+     * const lamportCounters = await prisma.lamportCounter.findMany()
+     * 
+     * // Get first 10 LamportCounters
+     * const lamportCounters = await prisma.lamportCounter.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const lamportCounterWithIdOnly = await prisma.lamportCounter.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LamportCounterFindManyArgs>(args?: SelectSubset<T, LamportCounterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LamportCounter.
+     * @param {LamportCounterCreateArgs} args - Arguments to create a LamportCounter.
+     * @example
+     * // Create one LamportCounter
+     * const LamportCounter = await prisma.lamportCounter.create({
+     *   data: {
+     *     // ... data to create a LamportCounter
+     *   }
+     * })
+     * 
+     */
+    create<T extends LamportCounterCreateArgs>(args: SelectSubset<T, LamportCounterCreateArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LamportCounters.
+     * @param {LamportCounterCreateManyArgs} args - Arguments to create many LamportCounters.
+     * @example
+     * // Create many LamportCounters
+     * const lamportCounter = await prisma.lamportCounter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LamportCounterCreateManyArgs>(args?: SelectSubset<T, LamportCounterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LamportCounters and returns the data saved in the database.
+     * @param {LamportCounterCreateManyAndReturnArgs} args - Arguments to create many LamportCounters.
+     * @example
+     * // Create many LamportCounters
+     * const lamportCounter = await prisma.lamportCounter.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LamportCounters and only return the `id`
+     * const lamportCounterWithIdOnly = await prisma.lamportCounter.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LamportCounterCreateManyAndReturnArgs>(args?: SelectSubset<T, LamportCounterCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LamportCounter.
+     * @param {LamportCounterDeleteArgs} args - Arguments to delete one LamportCounter.
+     * @example
+     * // Delete one LamportCounter
+     * const LamportCounter = await prisma.lamportCounter.delete({
+     *   where: {
+     *     // ... filter to delete one LamportCounter
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LamportCounterDeleteArgs>(args: SelectSubset<T, LamportCounterDeleteArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LamportCounter.
+     * @param {LamportCounterUpdateArgs} args - Arguments to update one LamportCounter.
+     * @example
+     * // Update one LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LamportCounterUpdateArgs>(args: SelectSubset<T, LamportCounterUpdateArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LamportCounters.
+     * @param {LamportCounterDeleteManyArgs} args - Arguments to filter LamportCounters to delete.
+     * @example
+     * // Delete a few LamportCounters
+     * const { count } = await prisma.lamportCounter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LamportCounterDeleteManyArgs>(args?: SelectSubset<T, LamportCounterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LamportCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LamportCounters
+     * const lamportCounter = await prisma.lamportCounter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LamportCounterUpdateManyArgs>(args: SelectSubset<T, LamportCounterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LamportCounters and returns the data updated in the database.
+     * @param {LamportCounterUpdateManyAndReturnArgs} args - Arguments to update many LamportCounters.
+     * @example
+     * // Update many LamportCounters
+     * const lamportCounter = await prisma.lamportCounter.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LamportCounters and only return the `id`
+     * const lamportCounterWithIdOnly = await prisma.lamportCounter.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LamportCounterUpdateManyAndReturnArgs>(args: SelectSubset<T, LamportCounterUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LamportCounter.
+     * @param {LamportCounterUpsertArgs} args - Arguments to update or create a LamportCounter.
+     * @example
+     * // Update or create a LamportCounter
+     * const lamportCounter = await prisma.lamportCounter.upsert({
+     *   create: {
+     *     // ... data to create a LamportCounter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LamportCounter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LamportCounterUpsertArgs>(args: SelectSubset<T, LamportCounterUpsertArgs<ExtArgs>>): Prisma__LamportCounterClient<$Result.GetResult<Prisma.$LamportCounterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LamportCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterCountArgs} args - Arguments to filter LamportCounters to count.
+     * @example
+     * // Count the number of LamportCounters
+     * const count = await prisma.lamportCounter.count({
+     *   where: {
+     *     // ... the filter for the LamportCounters we want to count
+     *   }
+     * })
+    **/
+    count<T extends LamportCounterCountArgs>(
+      args?: Subset<T, LamportCounterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LamportCounterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LamportCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LamportCounterAggregateArgs>(args: Subset<T, LamportCounterAggregateArgs>): Prisma.PrismaPromise<GetLamportCounterAggregateType<T>>
+
+    /**
+     * Group by LamportCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LamportCounterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LamportCounterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LamportCounterGroupByArgs['orderBy'] }
+        : { orderBy?: LamportCounterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LamportCounterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLamportCounterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LamportCounter model
+   */
+  readonly fields: LamportCounterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LamportCounter.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LamportCounterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LamportCounter model
+   */
+  interface LamportCounterFieldRefs {
+    readonly id: FieldRef<"LamportCounter", 'Int'>
+    readonly currentValue: FieldRef<"LamportCounter", 'Int'>
+    readonly lastUpdated: FieldRef<"LamportCounter", 'DateTime'>
+    readonly lastReceiptId: FieldRef<"LamportCounter", 'Int'>
+    readonly metadata: FieldRef<"LamportCounter", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LamportCounter findUnique
+   */
+  export type LamportCounterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which LamportCounter to fetch.
+     */
+    where: LamportCounterWhereUniqueInput
+  }
+
+  /**
+   * LamportCounter findUniqueOrThrow
+   */
+  export type LamportCounterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which LamportCounter to fetch.
+     */
+    where: LamportCounterWhereUniqueInput
+  }
+
+  /**
+   * LamportCounter findFirst
+   */
+  export type LamportCounterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which LamportCounter to fetch.
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LamportCounters to fetch.
+     */
+    orderBy?: LamportCounterOrderByWithRelationInput | LamportCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LamportCounters.
+     */
+    cursor?: LamportCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LamportCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LamportCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LamportCounters.
+     */
+    distinct?: LamportCounterScalarFieldEnum | LamportCounterScalarFieldEnum[]
+  }
+
+  /**
+   * LamportCounter findFirstOrThrow
+   */
+  export type LamportCounterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which LamportCounter to fetch.
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LamportCounters to fetch.
+     */
+    orderBy?: LamportCounterOrderByWithRelationInput | LamportCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LamportCounters.
+     */
+    cursor?: LamportCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LamportCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LamportCounters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LamportCounters.
+     */
+    distinct?: LamportCounterScalarFieldEnum | LamportCounterScalarFieldEnum[]
+  }
+
+  /**
+   * LamportCounter findMany
+   */
+  export type LamportCounterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter, which LamportCounters to fetch.
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LamportCounters to fetch.
+     */
+    orderBy?: LamportCounterOrderByWithRelationInput | LamportCounterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LamportCounters.
+     */
+    cursor?: LamportCounterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LamportCounters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LamportCounters.
+     */
+    skip?: number
+    distinct?: LamportCounterScalarFieldEnum | LamportCounterScalarFieldEnum[]
+  }
+
+  /**
+   * LamportCounter create
+   */
+  export type LamportCounterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * The data needed to create a LamportCounter.
+     */
+    data?: XOR<LamportCounterCreateInput, LamportCounterUncheckedCreateInput>
+  }
+
+  /**
+   * LamportCounter createMany
+   */
+  export type LamportCounterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LamportCounters.
+     */
+    data: LamportCounterCreateManyInput | LamportCounterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LamportCounter createManyAndReturn
+   */
+  export type LamportCounterCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * The data used to create many LamportCounters.
+     */
+    data: LamportCounterCreateManyInput | LamportCounterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LamportCounter update
+   */
+  export type LamportCounterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * The data needed to update a LamportCounter.
+     */
+    data: XOR<LamportCounterUpdateInput, LamportCounterUncheckedUpdateInput>
+    /**
+     * Choose, which LamportCounter to update.
+     */
+    where: LamportCounterWhereUniqueInput
+  }
+
+  /**
+   * LamportCounter updateMany
+   */
+  export type LamportCounterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LamportCounters.
+     */
+    data: XOR<LamportCounterUpdateManyMutationInput, LamportCounterUncheckedUpdateManyInput>
+    /**
+     * Filter which LamportCounters to update
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * Limit how many LamportCounters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LamportCounter updateManyAndReturn
+   */
+  export type LamportCounterUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * The data used to update LamportCounters.
+     */
+    data: XOR<LamportCounterUpdateManyMutationInput, LamportCounterUncheckedUpdateManyInput>
+    /**
+     * Filter which LamportCounters to update
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * Limit how many LamportCounters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LamportCounter upsert
+   */
+  export type LamportCounterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * The filter to search for the LamportCounter to update in case it exists.
+     */
+    where: LamportCounterWhereUniqueInput
+    /**
+     * In case the LamportCounter found by the `where` argument doesn't exist, create a new LamportCounter with this data.
+     */
+    create: XOR<LamportCounterCreateInput, LamportCounterUncheckedCreateInput>
+    /**
+     * In case the LamportCounter was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LamportCounterUpdateInput, LamportCounterUncheckedUpdateInput>
+  }
+
+  /**
+   * LamportCounter delete
+   */
+  export type LamportCounterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
+    /**
+     * Filter which LamportCounter to delete.
+     */
+    where: LamportCounterWhereUniqueInput
+  }
+
+  /**
+   * LamportCounter deleteMany
+   */
+  export type LamportCounterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LamportCounters to delete
+     */
+    where?: LamportCounterWhereInput
+    /**
+     * Limit how many LamportCounters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LamportCounter without action
+   */
+  export type LamportCounterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LamportCounter
+     */
+    select?: LamportCounterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LamportCounter
+     */
+    omit?: LamportCounterOmit<ExtArgs> | null
   }
 
 
@@ -22378,6 +23806,3798 @@ export namespace Prisma {
 
 
   /**
+   * Model Receipt
+   */
+
+  export type AggregateReceipt = {
+    _count: ReceiptCountAggregateOutputType | null
+    _avg: ReceiptAvgAggregateOutputType | null
+    _sum: ReceiptSumAggregateOutputType | null
+    _min: ReceiptMinAggregateOutputType | null
+    _max: ReceiptMaxAggregateOutputType | null
+  }
+
+  export type ReceiptAvgAggregateOutputType = {
+    id: number | null
+    lamport: number | null
+  }
+
+  export type ReceiptSumAggregateOutputType = {
+    id: number | null
+    lamport: number | null
+  }
+
+  export type ReceiptMinAggregateOutputType = {
+    id: number | null
+    ts: string | null
+    path: string | null
+    event: string | null
+    lamport: number | null
+    self_hash: string | null
+    calc_hash: string | null
+    verified: boolean | null
+  }
+
+  export type ReceiptMaxAggregateOutputType = {
+    id: number | null
+    ts: string | null
+    path: string | null
+    event: string | null
+    lamport: number | null
+    self_hash: string | null
+    calc_hash: string | null
+    verified: boolean | null
+  }
+
+  export type ReceiptCountAggregateOutputType = {
+    id: number
+    ts: number
+    path: number
+    event: number
+    lamport: number
+    self_hash: number
+    calc_hash: number
+    verified: number
+    _all: number
+  }
+
+
+  export type ReceiptAvgAggregateInputType = {
+    id?: true
+    lamport?: true
+  }
+
+  export type ReceiptSumAggregateInputType = {
+    id?: true
+    lamport?: true
+  }
+
+  export type ReceiptMinAggregateInputType = {
+    id?: true
+    ts?: true
+    path?: true
+    event?: true
+    lamport?: true
+    self_hash?: true
+    calc_hash?: true
+    verified?: true
+  }
+
+  export type ReceiptMaxAggregateInputType = {
+    id?: true
+    ts?: true
+    path?: true
+    event?: true
+    lamport?: true
+    self_hash?: true
+    calc_hash?: true
+    verified?: true
+  }
+
+  export type ReceiptCountAggregateInputType = {
+    id?: true
+    ts?: true
+    path?: true
+    event?: true
+    lamport?: true
+    self_hash?: true
+    calc_hash?: true
+    verified?: true
+    _all?: true
+  }
+
+  export type ReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Receipt to aggregate.
+     */
+    where?: ReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Receipts to fetch.
+     */
+    orderBy?: ReceiptOrderByWithRelationInput | ReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Receipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Receipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Receipts
+    **/
+    _count?: true | ReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReceiptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReceiptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReceiptMaxAggregateInputType
+  }
+
+  export type GetReceiptAggregateType<T extends ReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregateReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReceipt[P]>
+      : GetScalarType<T[P], AggregateReceipt[P]>
+  }
+
+
+
+
+  export type ReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReceiptWhereInput
+    orderBy?: ReceiptOrderByWithAggregationInput | ReceiptOrderByWithAggregationInput[]
+    by: ReceiptScalarFieldEnum[] | ReceiptScalarFieldEnum
+    having?: ReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReceiptCountAggregateInputType | true
+    _avg?: ReceiptAvgAggregateInputType
+    _sum?: ReceiptSumAggregateInputType
+    _min?: ReceiptMinAggregateInputType
+    _max?: ReceiptMaxAggregateInputType
+  }
+
+  export type ReceiptGroupByOutputType = {
+    id: number
+    ts: string
+    path: string
+    event: string
+    lamport: number
+    self_hash: string
+    calc_hash: string
+    verified: boolean
+    _count: ReceiptCountAggregateOutputType | null
+    _avg: ReceiptAvgAggregateOutputType | null
+    _sum: ReceiptSumAggregateOutputType | null
+    _min: ReceiptMinAggregateOutputType | null
+    _max: ReceiptMaxAggregateOutputType | null
+  }
+
+  type GetReceiptGroupByPayload<T extends ReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], ReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ts?: boolean
+    path?: boolean
+    event?: boolean
+    lamport?: boolean
+    self_hash?: boolean
+    calc_hash?: boolean
+    verified?: boolean
+  }, ExtArgs["result"]["receipt"]>
+
+  export type ReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ts?: boolean
+    path?: boolean
+    event?: boolean
+    lamport?: boolean
+    self_hash?: boolean
+    calc_hash?: boolean
+    verified?: boolean
+  }, ExtArgs["result"]["receipt"]>
+
+  export type ReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ts?: boolean
+    path?: boolean
+    event?: boolean
+    lamport?: boolean
+    self_hash?: boolean
+    calc_hash?: boolean
+    verified?: boolean
+  }, ExtArgs["result"]["receipt"]>
+
+  export type ReceiptSelectScalar = {
+    id?: boolean
+    ts?: boolean
+    path?: boolean
+    event?: boolean
+    lamport?: boolean
+    self_hash?: boolean
+    calc_hash?: boolean
+    verified?: boolean
+  }
+
+  export type ReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ts" | "path" | "event" | "lamport" | "self_hash" | "calc_hash" | "verified", ExtArgs["result"]["receipt"]>
+
+  export type $ReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Receipt"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      ts: string
+      path: string
+      event: string
+      lamport: number
+      self_hash: string
+      calc_hash: string
+      verified: boolean
+    }, ExtArgs["result"]["receipt"]>
+    composites: {}
+  }
+
+  type ReceiptGetPayload<S extends boolean | null | undefined | ReceiptDefaultArgs> = $Result.GetResult<Prisma.$ReceiptPayload, S>
+
+  type ReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReceiptCountAggregateInputType | true
+    }
+
+  export interface ReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Receipt'], meta: { name: 'Receipt' } }
+    /**
+     * Find zero or one Receipt that matches the filter.
+     * @param {ReceiptFindUniqueArgs} args - Arguments to find a Receipt
+     * @example
+     * // Get one Receipt
+     * const receipt = await prisma.receipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReceiptFindUniqueArgs>(args: SelectSubset<T, ReceiptFindUniqueArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Receipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReceiptFindUniqueOrThrowArgs} args - Arguments to find a Receipt
+     * @example
+     * // Get one Receipt
+     * const receipt = await prisma.receipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, ReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Receipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptFindFirstArgs} args - Arguments to find a Receipt
+     * @example
+     * // Get one Receipt
+     * const receipt = await prisma.receipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReceiptFindFirstArgs>(args?: SelectSubset<T, ReceiptFindFirstArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Receipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptFindFirstOrThrowArgs} args - Arguments to find a Receipt
+     * @example
+     * // Get one Receipt
+     * const receipt = await prisma.receipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, ReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Receipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Receipts
+     * const receipts = await prisma.receipt.findMany()
+     * 
+     * // Get first 10 Receipts
+     * const receipts = await prisma.receipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const receiptWithIdOnly = await prisma.receipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReceiptFindManyArgs>(args?: SelectSubset<T, ReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Receipt.
+     * @param {ReceiptCreateArgs} args - Arguments to create a Receipt.
+     * @example
+     * // Create one Receipt
+     * const Receipt = await prisma.receipt.create({
+     *   data: {
+     *     // ... data to create a Receipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReceiptCreateArgs>(args: SelectSubset<T, ReceiptCreateArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Receipts.
+     * @param {ReceiptCreateManyArgs} args - Arguments to create many Receipts.
+     * @example
+     * // Create many Receipts
+     * const receipt = await prisma.receipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReceiptCreateManyArgs>(args?: SelectSubset<T, ReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Receipts and returns the data saved in the database.
+     * @param {ReceiptCreateManyAndReturnArgs} args - Arguments to create many Receipts.
+     * @example
+     * // Create many Receipts
+     * const receipt = await prisma.receipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Receipts and only return the `id`
+     * const receiptWithIdOnly = await prisma.receipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, ReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Receipt.
+     * @param {ReceiptDeleteArgs} args - Arguments to delete one Receipt.
+     * @example
+     * // Delete one Receipt
+     * const Receipt = await prisma.receipt.delete({
+     *   where: {
+     *     // ... filter to delete one Receipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReceiptDeleteArgs>(args: SelectSubset<T, ReceiptDeleteArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Receipt.
+     * @param {ReceiptUpdateArgs} args - Arguments to update one Receipt.
+     * @example
+     * // Update one Receipt
+     * const receipt = await prisma.receipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReceiptUpdateArgs>(args: SelectSubset<T, ReceiptUpdateArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Receipts.
+     * @param {ReceiptDeleteManyArgs} args - Arguments to filter Receipts to delete.
+     * @example
+     * // Delete a few Receipts
+     * const { count } = await prisma.receipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReceiptDeleteManyArgs>(args?: SelectSubset<T, ReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Receipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Receipts
+     * const receipt = await prisma.receipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReceiptUpdateManyArgs>(args: SelectSubset<T, ReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Receipts and returns the data updated in the database.
+     * @param {ReceiptUpdateManyAndReturnArgs} args - Arguments to update many Receipts.
+     * @example
+     * // Update many Receipts
+     * const receipt = await prisma.receipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Receipts and only return the `id`
+     * const receiptWithIdOnly = await prisma.receipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, ReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Receipt.
+     * @param {ReceiptUpsertArgs} args - Arguments to update or create a Receipt.
+     * @example
+     * // Update or create a Receipt
+     * const receipt = await prisma.receipt.upsert({
+     *   create: {
+     *     // ... data to create a Receipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Receipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReceiptUpsertArgs>(args: SelectSubset<T, ReceiptUpsertArgs<ExtArgs>>): Prisma__ReceiptClient<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Receipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptCountArgs} args - Arguments to filter Receipts to count.
+     * @example
+     * // Count the number of Receipts
+     * const count = await prisma.receipt.count({
+     *   where: {
+     *     // ... the filter for the Receipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReceiptCountArgs>(
+      args?: Subset<T, ReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Receipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReceiptAggregateArgs>(args: Subset<T, ReceiptAggregateArgs>): Prisma.PrismaPromise<GetReceiptAggregateType<T>>
+
+    /**
+     * Group by Receipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: ReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Receipt model
+   */
+  readonly fields: ReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Receipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Receipt model
+   */
+  interface ReceiptFieldRefs {
+    readonly id: FieldRef<"Receipt", 'Int'>
+    readonly ts: FieldRef<"Receipt", 'String'>
+    readonly path: FieldRef<"Receipt", 'String'>
+    readonly event: FieldRef<"Receipt", 'String'>
+    readonly lamport: FieldRef<"Receipt", 'Int'>
+    readonly self_hash: FieldRef<"Receipt", 'String'>
+    readonly calc_hash: FieldRef<"Receipt", 'String'>
+    readonly verified: FieldRef<"Receipt", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Receipt findUnique
+   */
+  export type ReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which Receipt to fetch.
+     */
+    where: ReceiptWhereUniqueInput
+  }
+
+  /**
+   * Receipt findUniqueOrThrow
+   */
+  export type ReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which Receipt to fetch.
+     */
+    where: ReceiptWhereUniqueInput
+  }
+
+  /**
+   * Receipt findFirst
+   */
+  export type ReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which Receipt to fetch.
+     */
+    where?: ReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Receipts to fetch.
+     */
+    orderBy?: ReceiptOrderByWithRelationInput | ReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Receipts.
+     */
+    cursor?: ReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Receipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Receipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Receipts.
+     */
+    distinct?: ReceiptScalarFieldEnum | ReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * Receipt findFirstOrThrow
+   */
+  export type ReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which Receipt to fetch.
+     */
+    where?: ReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Receipts to fetch.
+     */
+    orderBy?: ReceiptOrderByWithRelationInput | ReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Receipts.
+     */
+    cursor?: ReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Receipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Receipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Receipts.
+     */
+    distinct?: ReceiptScalarFieldEnum | ReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * Receipt findMany
+   */
+  export type ReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which Receipts to fetch.
+     */
+    where?: ReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Receipts to fetch.
+     */
+    orderBy?: ReceiptOrderByWithRelationInput | ReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Receipts.
+     */
+    cursor?: ReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Receipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Receipts.
+     */
+    skip?: number
+    distinct?: ReceiptScalarFieldEnum | ReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * Receipt create
+   */
+  export type ReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Receipt.
+     */
+    data: XOR<ReceiptCreateInput, ReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * Receipt createMany
+   */
+  export type ReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Receipts.
+     */
+    data: ReceiptCreateManyInput | ReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Receipt createManyAndReturn
+   */
+  export type ReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many Receipts.
+     */
+    data: ReceiptCreateManyInput | ReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Receipt update
+   */
+  export type ReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Receipt.
+     */
+    data: XOR<ReceiptUpdateInput, ReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which Receipt to update.
+     */
+    where: ReceiptWhereUniqueInput
+  }
+
+  /**
+   * Receipt updateMany
+   */
+  export type ReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Receipts.
+     */
+    data: XOR<ReceiptUpdateManyMutationInput, ReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which Receipts to update
+     */
+    where?: ReceiptWhereInput
+    /**
+     * Limit how many Receipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Receipt updateManyAndReturn
+   */
+  export type ReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update Receipts.
+     */
+    data: XOR<ReceiptUpdateManyMutationInput, ReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which Receipts to update
+     */
+    where?: ReceiptWhereInput
+    /**
+     * Limit how many Receipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Receipt upsert
+   */
+  export type ReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Receipt to update in case it exists.
+     */
+    where: ReceiptWhereUniqueInput
+    /**
+     * In case the Receipt found by the `where` argument doesn't exist, create a new Receipt with this data.
+     */
+    create: XOR<ReceiptCreateInput, ReceiptUncheckedCreateInput>
+    /**
+     * In case the Receipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReceiptUpdateInput, ReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * Receipt delete
+   */
+  export type ReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+    /**
+     * Filter which Receipt to delete.
+     */
+    where: ReceiptWhereUniqueInput
+  }
+
+  /**
+   * Receipt deleteMany
+   */
+  export type ReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Receipts to delete
+     */
+    where?: ReceiptWhereInput
+    /**
+     * Limit how many Receipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Receipt without action
+   */
+  export type ReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Receipt
+     */
+    select?: ReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Receipt
+     */
+    omit?: ReceiptOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GovernanceReceipt
+   */
+
+  export type AggregateGovernanceReceipt = {
+    _count: GovernanceReceiptCountAggregateOutputType | null
+    _avg: GovernanceReceiptAvgAggregateOutputType | null
+    _sum: GovernanceReceiptSumAggregateOutputType | null
+    _min: GovernanceReceiptMinAggregateOutputType | null
+    _max: GovernanceReceiptMaxAggregateOutputType | null
+  }
+
+  export type GovernanceReceiptAvgAggregateOutputType = {
+    id: number | null
+    lamport: number | null
+    userId: number | null
+    criesOmega: number | null
+    criesCoherence: number | null
+    criesRigor: number | null
+    criesIntegrity: number | null
+    criesEmpathy: number | null
+    criesStrictness: number | null
+    tokensIn: number | null
+    tokensOut: number | null
+    merkleSealId: number | null
+  }
+
+  export type GovernanceReceiptSumAggregateOutputType = {
+    id: number | null
+    lamport: bigint | null
+    userId: number | null
+    criesOmega: number | null
+    criesCoherence: number | null
+    criesRigor: number | null
+    criesIntegrity: number | null
+    criesEmpathy: number | null
+    criesStrictness: number | null
+    tokensIn: number | null
+    tokensOut: number | null
+    merkleSealId: number | null
+  }
+
+  export type GovernanceReceiptMinAggregateOutputType = {
+    id: number | null
+    lamport: bigint | null
+    persona: string | null
+    promptHash: string | null
+    outputHash: string | null
+    timestamp: Date | null
+    version: string | null
+    userId: number | null
+    criesOmega: number | null
+    criesCoherence: number | null
+    criesRigor: number | null
+    criesIntegrity: number | null
+    criesEmpathy: number | null
+    criesStrictness: number | null
+    governanceMode: string | null
+    prompt: string | null
+    output: string | null
+    receiptId: string | null
+    conversationId: string | null
+    exchangeId: string | null
+    traceId: string | null
+    prevDigest: string | null
+    currDigest: string | null
+    model: string | null
+    tokensIn: number | null
+    tokensOut: number | null
+    merkleSealId: number | null
+    lockBatchId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GovernanceReceiptMaxAggregateOutputType = {
+    id: number | null
+    lamport: bigint | null
+    persona: string | null
+    promptHash: string | null
+    outputHash: string | null
+    timestamp: Date | null
+    version: string | null
+    userId: number | null
+    criesOmega: number | null
+    criesCoherence: number | null
+    criesRigor: number | null
+    criesIntegrity: number | null
+    criesEmpathy: number | null
+    criesStrictness: number | null
+    governanceMode: string | null
+    prompt: string | null
+    output: string | null
+    receiptId: string | null
+    conversationId: string | null
+    exchangeId: string | null
+    traceId: string | null
+    prevDigest: string | null
+    currDigest: string | null
+    model: string | null
+    tokensIn: number | null
+    tokensOut: number | null
+    merkleSealId: number | null
+    lockBatchId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GovernanceReceiptCountAggregateOutputType = {
+    id: number
+    lamport: number
+    persona: number
+    obligationsApplied: number
+    promptHash: number
+    outputHash: number
+    violations: number
+    timestamp: number
+    version: number
+    userId: number
+    criesOmega: number
+    criesCoherence: number
+    criesRigor: number
+    criesIntegrity: number
+    criesEmpathy: number
+    criesStrictness: number
+    criesSubMetrics: number
+    criesEvidence: number
+    criesCalculation: number
+    criesBaseline: number
+    criesDeterminism: number
+    governanceMode: number
+    prompt: number
+    output: number
+    receiptId: number
+    conversationId: number
+    exchangeId: number
+    traceId: number
+    prevDigest: number
+    currDigest: number
+    model: number
+    tokensIn: number
+    tokensOut: number
+    policyFlags: number
+    merkleSealId: number
+    lockBatchId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GovernanceReceiptAvgAggregateInputType = {
+    id?: true
+    lamport?: true
+    userId?: true
+    criesOmega?: true
+    criesCoherence?: true
+    criesRigor?: true
+    criesIntegrity?: true
+    criesEmpathy?: true
+    criesStrictness?: true
+    tokensIn?: true
+    tokensOut?: true
+    merkleSealId?: true
+  }
+
+  export type GovernanceReceiptSumAggregateInputType = {
+    id?: true
+    lamport?: true
+    userId?: true
+    criesOmega?: true
+    criesCoherence?: true
+    criesRigor?: true
+    criesIntegrity?: true
+    criesEmpathy?: true
+    criesStrictness?: true
+    tokensIn?: true
+    tokensOut?: true
+    merkleSealId?: true
+  }
+
+  export type GovernanceReceiptMinAggregateInputType = {
+    id?: true
+    lamport?: true
+    persona?: true
+    promptHash?: true
+    outputHash?: true
+    timestamp?: true
+    version?: true
+    userId?: true
+    criesOmega?: true
+    criesCoherence?: true
+    criesRigor?: true
+    criesIntegrity?: true
+    criesEmpathy?: true
+    criesStrictness?: true
+    governanceMode?: true
+    prompt?: true
+    output?: true
+    receiptId?: true
+    conversationId?: true
+    exchangeId?: true
+    traceId?: true
+    prevDigest?: true
+    currDigest?: true
+    model?: true
+    tokensIn?: true
+    tokensOut?: true
+    merkleSealId?: true
+    lockBatchId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GovernanceReceiptMaxAggregateInputType = {
+    id?: true
+    lamport?: true
+    persona?: true
+    promptHash?: true
+    outputHash?: true
+    timestamp?: true
+    version?: true
+    userId?: true
+    criesOmega?: true
+    criesCoherence?: true
+    criesRigor?: true
+    criesIntegrity?: true
+    criesEmpathy?: true
+    criesStrictness?: true
+    governanceMode?: true
+    prompt?: true
+    output?: true
+    receiptId?: true
+    conversationId?: true
+    exchangeId?: true
+    traceId?: true
+    prevDigest?: true
+    currDigest?: true
+    model?: true
+    tokensIn?: true
+    tokensOut?: true
+    merkleSealId?: true
+    lockBatchId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GovernanceReceiptCountAggregateInputType = {
+    id?: true
+    lamport?: true
+    persona?: true
+    obligationsApplied?: true
+    promptHash?: true
+    outputHash?: true
+    violations?: true
+    timestamp?: true
+    version?: true
+    userId?: true
+    criesOmega?: true
+    criesCoherence?: true
+    criesRigor?: true
+    criesIntegrity?: true
+    criesEmpathy?: true
+    criesStrictness?: true
+    criesSubMetrics?: true
+    criesEvidence?: true
+    criesCalculation?: true
+    criesBaseline?: true
+    criesDeterminism?: true
+    governanceMode?: true
+    prompt?: true
+    output?: true
+    receiptId?: true
+    conversationId?: true
+    exchangeId?: true
+    traceId?: true
+    prevDigest?: true
+    currDigest?: true
+    model?: true
+    tokensIn?: true
+    tokensOut?: true
+    policyFlags?: true
+    merkleSealId?: true
+    lockBatchId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GovernanceReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GovernanceReceipt to aggregate.
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GovernanceReceipts to fetch.
+     */
+    orderBy?: GovernanceReceiptOrderByWithRelationInput | GovernanceReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GovernanceReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GovernanceReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GovernanceReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GovernanceReceipts
+    **/
+    _count?: true | GovernanceReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GovernanceReceiptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GovernanceReceiptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GovernanceReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GovernanceReceiptMaxAggregateInputType
+  }
+
+  export type GetGovernanceReceiptAggregateType<T extends GovernanceReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregateGovernanceReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGovernanceReceipt[P]>
+      : GetScalarType<T[P], AggregateGovernanceReceipt[P]>
+  }
+
+
+
+
+  export type GovernanceReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GovernanceReceiptWhereInput
+    orderBy?: GovernanceReceiptOrderByWithAggregationInput | GovernanceReceiptOrderByWithAggregationInput[]
+    by: GovernanceReceiptScalarFieldEnum[] | GovernanceReceiptScalarFieldEnum
+    having?: GovernanceReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GovernanceReceiptCountAggregateInputType | true
+    _avg?: GovernanceReceiptAvgAggregateInputType
+    _sum?: GovernanceReceiptSumAggregateInputType
+    _min?: GovernanceReceiptMinAggregateInputType
+    _max?: GovernanceReceiptMaxAggregateInputType
+  }
+
+  export type GovernanceReceiptGroupByOutputType = {
+    id: number
+    lamport: bigint
+    persona: string
+    obligationsApplied: string[]
+    promptHash: string
+    outputHash: string
+    violations: string[]
+    timestamp: Date | null
+    version: string
+    userId: number | null
+    criesOmega: number | null
+    criesCoherence: number | null
+    criesRigor: number | null
+    criesIntegrity: number | null
+    criesEmpathy: number | null
+    criesStrictness: number | null
+    criesSubMetrics: JsonValue | null
+    criesEvidence: JsonValue | null
+    criesCalculation: JsonValue | null
+    criesBaseline: JsonValue | null
+    criesDeterminism: JsonValue | null
+    governanceMode: string | null
+    prompt: string
+    output: string
+    receiptId: string | null
+    conversationId: string | null
+    exchangeId: string | null
+    traceId: string | null
+    prevDigest: string | null
+    currDigest: string | null
+    model: string | null
+    tokensIn: number | null
+    tokensOut: number | null
+    policyFlags: string[]
+    merkleSealId: number | null
+    lockBatchId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: GovernanceReceiptCountAggregateOutputType | null
+    _avg: GovernanceReceiptAvgAggregateOutputType | null
+    _sum: GovernanceReceiptSumAggregateOutputType | null
+    _min: GovernanceReceiptMinAggregateOutputType | null
+    _max: GovernanceReceiptMaxAggregateOutputType | null
+  }
+
+  type GetGovernanceReceiptGroupByPayload<T extends GovernanceReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GovernanceReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GovernanceReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GovernanceReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], GovernanceReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GovernanceReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lamport?: boolean
+    persona?: boolean
+    obligationsApplied?: boolean
+    promptHash?: boolean
+    outputHash?: boolean
+    violations?: boolean
+    timestamp?: boolean
+    version?: boolean
+    userId?: boolean
+    criesOmega?: boolean
+    criesCoherence?: boolean
+    criesRigor?: boolean
+    criesIntegrity?: boolean
+    criesEmpathy?: boolean
+    criesStrictness?: boolean
+    criesSubMetrics?: boolean
+    criesEvidence?: boolean
+    criesCalculation?: boolean
+    criesBaseline?: boolean
+    criesDeterminism?: boolean
+    governanceMode?: boolean
+    prompt?: boolean
+    output?: boolean
+    receiptId?: boolean
+    conversationId?: boolean
+    exchangeId?: boolean
+    traceId?: boolean
+    prevDigest?: boolean
+    currDigest?: boolean
+    model?: boolean
+    tokensIn?: boolean
+    tokensOut?: boolean
+    policyFlags?: boolean
+    merkleSealId?: boolean
+    lockBatchId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }, ExtArgs["result"]["governanceReceipt"]>
+
+  export type GovernanceReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lamport?: boolean
+    persona?: boolean
+    obligationsApplied?: boolean
+    promptHash?: boolean
+    outputHash?: boolean
+    violations?: boolean
+    timestamp?: boolean
+    version?: boolean
+    userId?: boolean
+    criesOmega?: boolean
+    criesCoherence?: boolean
+    criesRigor?: boolean
+    criesIntegrity?: boolean
+    criesEmpathy?: boolean
+    criesStrictness?: boolean
+    criesSubMetrics?: boolean
+    criesEvidence?: boolean
+    criesCalculation?: boolean
+    criesBaseline?: boolean
+    criesDeterminism?: boolean
+    governanceMode?: boolean
+    prompt?: boolean
+    output?: boolean
+    receiptId?: boolean
+    conversationId?: boolean
+    exchangeId?: boolean
+    traceId?: boolean
+    prevDigest?: boolean
+    currDigest?: boolean
+    model?: boolean
+    tokensIn?: boolean
+    tokensOut?: boolean
+    policyFlags?: boolean
+    merkleSealId?: boolean
+    lockBatchId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }, ExtArgs["result"]["governanceReceipt"]>
+
+  export type GovernanceReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lamport?: boolean
+    persona?: boolean
+    obligationsApplied?: boolean
+    promptHash?: boolean
+    outputHash?: boolean
+    violations?: boolean
+    timestamp?: boolean
+    version?: boolean
+    userId?: boolean
+    criesOmega?: boolean
+    criesCoherence?: boolean
+    criesRigor?: boolean
+    criesIntegrity?: boolean
+    criesEmpathy?: boolean
+    criesStrictness?: boolean
+    criesSubMetrics?: boolean
+    criesEvidence?: boolean
+    criesCalculation?: boolean
+    criesBaseline?: boolean
+    criesDeterminism?: boolean
+    governanceMode?: boolean
+    prompt?: boolean
+    output?: boolean
+    receiptId?: boolean
+    conversationId?: boolean
+    exchangeId?: boolean
+    traceId?: boolean
+    prevDigest?: boolean
+    currDigest?: boolean
+    model?: boolean
+    tokensIn?: boolean
+    tokensOut?: boolean
+    policyFlags?: boolean
+    merkleSealId?: boolean
+    lockBatchId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }, ExtArgs["result"]["governanceReceipt"]>
+
+  export type GovernanceReceiptSelectScalar = {
+    id?: boolean
+    lamport?: boolean
+    persona?: boolean
+    obligationsApplied?: boolean
+    promptHash?: boolean
+    outputHash?: boolean
+    violations?: boolean
+    timestamp?: boolean
+    version?: boolean
+    userId?: boolean
+    criesOmega?: boolean
+    criesCoherence?: boolean
+    criesRigor?: boolean
+    criesIntegrity?: boolean
+    criesEmpathy?: boolean
+    criesStrictness?: boolean
+    criesSubMetrics?: boolean
+    criesEvidence?: boolean
+    criesCalculation?: boolean
+    criesBaseline?: boolean
+    criesDeterminism?: boolean
+    governanceMode?: boolean
+    prompt?: boolean
+    output?: boolean
+    receiptId?: boolean
+    conversationId?: boolean
+    exchangeId?: boolean
+    traceId?: boolean
+    prevDigest?: boolean
+    currDigest?: boolean
+    model?: boolean
+    tokensIn?: boolean
+    tokensOut?: boolean
+    policyFlags?: boolean
+    merkleSealId?: boolean
+    lockBatchId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GovernanceReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lamport" | "persona" | "obligationsApplied" | "promptHash" | "outputHash" | "violations" | "timestamp" | "version" | "userId" | "criesOmega" | "criesCoherence" | "criesRigor" | "criesIntegrity" | "criesEmpathy" | "criesStrictness" | "criesSubMetrics" | "criesEvidence" | "criesCalculation" | "criesBaseline" | "criesDeterminism" | "governanceMode" | "prompt" | "output" | "receiptId" | "conversationId" | "exchangeId" | "traceId" | "prevDigest" | "currDigest" | "model" | "tokensIn" | "tokensOut" | "policyFlags" | "merkleSealId" | "lockBatchId" | "createdAt" | "updatedAt", ExtArgs["result"]["governanceReceipt"]>
+  export type GovernanceReceiptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }
+  export type GovernanceReceiptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }
+  export type GovernanceReceiptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    merkleSeal?: boolean | GovernanceReceipt$merkleSealArgs<ExtArgs>
+  }
+
+  export type $GovernanceReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GovernanceReceipt"
+    objects: {
+      merkleSeal: Prisma.$MerkleSealPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      lamport: bigint
+      persona: string
+      obligationsApplied: string[]
+      promptHash: string
+      outputHash: string
+      violations: string[]
+      timestamp: Date | null
+      version: string
+      userId: number | null
+      criesOmega: number | null
+      criesCoherence: number | null
+      criesRigor: number | null
+      criesIntegrity: number | null
+      criesEmpathy: number | null
+      criesStrictness: number | null
+      criesSubMetrics: Prisma.JsonValue | null
+      criesEvidence: Prisma.JsonValue | null
+      criesCalculation: Prisma.JsonValue | null
+      criesBaseline: Prisma.JsonValue | null
+      criesDeterminism: Prisma.JsonValue | null
+      governanceMode: string | null
+      prompt: string
+      output: string
+      receiptId: string | null
+      conversationId: string | null
+      exchangeId: string | null
+      traceId: string | null
+      prevDigest: string | null
+      currDigest: string | null
+      model: string | null
+      tokensIn: number | null
+      tokensOut: number | null
+      policyFlags: string[]
+      merkleSealId: number | null
+      lockBatchId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["governanceReceipt"]>
+    composites: {}
+  }
+
+  type GovernanceReceiptGetPayload<S extends boolean | null | undefined | GovernanceReceiptDefaultArgs> = $Result.GetResult<Prisma.$GovernanceReceiptPayload, S>
+
+  type GovernanceReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GovernanceReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GovernanceReceiptCountAggregateInputType | true
+    }
+
+  export interface GovernanceReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GovernanceReceipt'], meta: { name: 'GovernanceReceipt' } }
+    /**
+     * Find zero or one GovernanceReceipt that matches the filter.
+     * @param {GovernanceReceiptFindUniqueArgs} args - Arguments to find a GovernanceReceipt
+     * @example
+     * // Get one GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GovernanceReceiptFindUniqueArgs>(args: SelectSubset<T, GovernanceReceiptFindUniqueArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GovernanceReceipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GovernanceReceiptFindUniqueOrThrowArgs} args - Arguments to find a GovernanceReceipt
+     * @example
+     * // Get one GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GovernanceReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, GovernanceReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GovernanceReceipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptFindFirstArgs} args - Arguments to find a GovernanceReceipt
+     * @example
+     * // Get one GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GovernanceReceiptFindFirstArgs>(args?: SelectSubset<T, GovernanceReceiptFindFirstArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GovernanceReceipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptFindFirstOrThrowArgs} args - Arguments to find a GovernanceReceipt
+     * @example
+     * // Get one GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GovernanceReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, GovernanceReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GovernanceReceipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GovernanceReceipts
+     * const governanceReceipts = await prisma.governanceReceipt.findMany()
+     * 
+     * // Get first 10 GovernanceReceipts
+     * const governanceReceipts = await prisma.governanceReceipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const governanceReceiptWithIdOnly = await prisma.governanceReceipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GovernanceReceiptFindManyArgs>(args?: SelectSubset<T, GovernanceReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GovernanceReceipt.
+     * @param {GovernanceReceiptCreateArgs} args - Arguments to create a GovernanceReceipt.
+     * @example
+     * // Create one GovernanceReceipt
+     * const GovernanceReceipt = await prisma.governanceReceipt.create({
+     *   data: {
+     *     // ... data to create a GovernanceReceipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends GovernanceReceiptCreateArgs>(args: SelectSubset<T, GovernanceReceiptCreateArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GovernanceReceipts.
+     * @param {GovernanceReceiptCreateManyArgs} args - Arguments to create many GovernanceReceipts.
+     * @example
+     * // Create many GovernanceReceipts
+     * const governanceReceipt = await prisma.governanceReceipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GovernanceReceiptCreateManyArgs>(args?: SelectSubset<T, GovernanceReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GovernanceReceipts and returns the data saved in the database.
+     * @param {GovernanceReceiptCreateManyAndReturnArgs} args - Arguments to create many GovernanceReceipts.
+     * @example
+     * // Create many GovernanceReceipts
+     * const governanceReceipt = await prisma.governanceReceipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GovernanceReceipts and only return the `id`
+     * const governanceReceiptWithIdOnly = await prisma.governanceReceipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GovernanceReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, GovernanceReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GovernanceReceipt.
+     * @param {GovernanceReceiptDeleteArgs} args - Arguments to delete one GovernanceReceipt.
+     * @example
+     * // Delete one GovernanceReceipt
+     * const GovernanceReceipt = await prisma.governanceReceipt.delete({
+     *   where: {
+     *     // ... filter to delete one GovernanceReceipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GovernanceReceiptDeleteArgs>(args: SelectSubset<T, GovernanceReceiptDeleteArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GovernanceReceipt.
+     * @param {GovernanceReceiptUpdateArgs} args - Arguments to update one GovernanceReceipt.
+     * @example
+     * // Update one GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GovernanceReceiptUpdateArgs>(args: SelectSubset<T, GovernanceReceiptUpdateArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GovernanceReceipts.
+     * @param {GovernanceReceiptDeleteManyArgs} args - Arguments to filter GovernanceReceipts to delete.
+     * @example
+     * // Delete a few GovernanceReceipts
+     * const { count } = await prisma.governanceReceipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GovernanceReceiptDeleteManyArgs>(args?: SelectSubset<T, GovernanceReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GovernanceReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GovernanceReceipts
+     * const governanceReceipt = await prisma.governanceReceipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GovernanceReceiptUpdateManyArgs>(args: SelectSubset<T, GovernanceReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GovernanceReceipts and returns the data updated in the database.
+     * @param {GovernanceReceiptUpdateManyAndReturnArgs} args - Arguments to update many GovernanceReceipts.
+     * @example
+     * // Update many GovernanceReceipts
+     * const governanceReceipt = await prisma.governanceReceipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GovernanceReceipts and only return the `id`
+     * const governanceReceiptWithIdOnly = await prisma.governanceReceipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GovernanceReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, GovernanceReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GovernanceReceipt.
+     * @param {GovernanceReceiptUpsertArgs} args - Arguments to update or create a GovernanceReceipt.
+     * @example
+     * // Update or create a GovernanceReceipt
+     * const governanceReceipt = await prisma.governanceReceipt.upsert({
+     *   create: {
+     *     // ... data to create a GovernanceReceipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GovernanceReceipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GovernanceReceiptUpsertArgs>(args: SelectSubset<T, GovernanceReceiptUpsertArgs<ExtArgs>>): Prisma__GovernanceReceiptClient<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GovernanceReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptCountArgs} args - Arguments to filter GovernanceReceipts to count.
+     * @example
+     * // Count the number of GovernanceReceipts
+     * const count = await prisma.governanceReceipt.count({
+     *   where: {
+     *     // ... the filter for the GovernanceReceipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends GovernanceReceiptCountArgs>(
+      args?: Subset<T, GovernanceReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GovernanceReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GovernanceReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GovernanceReceiptAggregateArgs>(args: Subset<T, GovernanceReceiptAggregateArgs>): Prisma.PrismaPromise<GetGovernanceReceiptAggregateType<T>>
+
+    /**
+     * Group by GovernanceReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GovernanceReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GovernanceReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GovernanceReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: GovernanceReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GovernanceReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGovernanceReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GovernanceReceipt model
+   */
+  readonly fields: GovernanceReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GovernanceReceipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GovernanceReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    merkleSeal<T extends GovernanceReceipt$merkleSealArgs<ExtArgs> = {}>(args?: Subset<T, GovernanceReceipt$merkleSealArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GovernanceReceipt model
+   */
+  interface GovernanceReceiptFieldRefs {
+    readonly id: FieldRef<"GovernanceReceipt", 'Int'>
+    readonly lamport: FieldRef<"GovernanceReceipt", 'BigInt'>
+    readonly persona: FieldRef<"GovernanceReceipt", 'String'>
+    readonly obligationsApplied: FieldRef<"GovernanceReceipt", 'String[]'>
+    readonly promptHash: FieldRef<"GovernanceReceipt", 'String'>
+    readonly outputHash: FieldRef<"GovernanceReceipt", 'String'>
+    readonly violations: FieldRef<"GovernanceReceipt", 'String[]'>
+    readonly timestamp: FieldRef<"GovernanceReceipt", 'DateTime'>
+    readonly version: FieldRef<"GovernanceReceipt", 'String'>
+    readonly userId: FieldRef<"GovernanceReceipt", 'Int'>
+    readonly criesOmega: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesCoherence: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesRigor: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesIntegrity: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesEmpathy: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesStrictness: FieldRef<"GovernanceReceipt", 'Float'>
+    readonly criesSubMetrics: FieldRef<"GovernanceReceipt", 'Json'>
+    readonly criesEvidence: FieldRef<"GovernanceReceipt", 'Json'>
+    readonly criesCalculation: FieldRef<"GovernanceReceipt", 'Json'>
+    readonly criesBaseline: FieldRef<"GovernanceReceipt", 'Json'>
+    readonly criesDeterminism: FieldRef<"GovernanceReceipt", 'Json'>
+    readonly governanceMode: FieldRef<"GovernanceReceipt", 'String'>
+    readonly prompt: FieldRef<"GovernanceReceipt", 'String'>
+    readonly output: FieldRef<"GovernanceReceipt", 'String'>
+    readonly receiptId: FieldRef<"GovernanceReceipt", 'String'>
+    readonly conversationId: FieldRef<"GovernanceReceipt", 'String'>
+    readonly exchangeId: FieldRef<"GovernanceReceipt", 'String'>
+    readonly traceId: FieldRef<"GovernanceReceipt", 'String'>
+    readonly prevDigest: FieldRef<"GovernanceReceipt", 'String'>
+    readonly currDigest: FieldRef<"GovernanceReceipt", 'String'>
+    readonly model: FieldRef<"GovernanceReceipt", 'String'>
+    readonly tokensIn: FieldRef<"GovernanceReceipt", 'Int'>
+    readonly tokensOut: FieldRef<"GovernanceReceipt", 'Int'>
+    readonly policyFlags: FieldRef<"GovernanceReceipt", 'String[]'>
+    readonly merkleSealId: FieldRef<"GovernanceReceipt", 'Int'>
+    readonly lockBatchId: FieldRef<"GovernanceReceipt", 'String'>
+    readonly createdAt: FieldRef<"GovernanceReceipt", 'DateTime'>
+    readonly updatedAt: FieldRef<"GovernanceReceipt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GovernanceReceipt findUnique
+   */
+  export type GovernanceReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which GovernanceReceipt to fetch.
+     */
+    where: GovernanceReceiptWhereUniqueInput
+  }
+
+  /**
+   * GovernanceReceipt findUniqueOrThrow
+   */
+  export type GovernanceReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which GovernanceReceipt to fetch.
+     */
+    where: GovernanceReceiptWhereUniqueInput
+  }
+
+  /**
+   * GovernanceReceipt findFirst
+   */
+  export type GovernanceReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which GovernanceReceipt to fetch.
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GovernanceReceipts to fetch.
+     */
+    orderBy?: GovernanceReceiptOrderByWithRelationInput | GovernanceReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GovernanceReceipts.
+     */
+    cursor?: GovernanceReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GovernanceReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GovernanceReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GovernanceReceipts.
+     */
+    distinct?: GovernanceReceiptScalarFieldEnum | GovernanceReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * GovernanceReceipt findFirstOrThrow
+   */
+  export type GovernanceReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which GovernanceReceipt to fetch.
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GovernanceReceipts to fetch.
+     */
+    orderBy?: GovernanceReceiptOrderByWithRelationInput | GovernanceReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GovernanceReceipts.
+     */
+    cursor?: GovernanceReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GovernanceReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GovernanceReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GovernanceReceipts.
+     */
+    distinct?: GovernanceReceiptScalarFieldEnum | GovernanceReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * GovernanceReceipt findMany
+   */
+  export type GovernanceReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which GovernanceReceipts to fetch.
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GovernanceReceipts to fetch.
+     */
+    orderBy?: GovernanceReceiptOrderByWithRelationInput | GovernanceReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GovernanceReceipts.
+     */
+    cursor?: GovernanceReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GovernanceReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GovernanceReceipts.
+     */
+    skip?: number
+    distinct?: GovernanceReceiptScalarFieldEnum | GovernanceReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * GovernanceReceipt create
+   */
+  export type GovernanceReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GovernanceReceipt.
+     */
+    data: XOR<GovernanceReceiptCreateInput, GovernanceReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * GovernanceReceipt createMany
+   */
+  export type GovernanceReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GovernanceReceipts.
+     */
+    data: GovernanceReceiptCreateManyInput | GovernanceReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GovernanceReceipt createManyAndReturn
+   */
+  export type GovernanceReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many GovernanceReceipts.
+     */
+    data: GovernanceReceiptCreateManyInput | GovernanceReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GovernanceReceipt update
+   */
+  export type GovernanceReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GovernanceReceipt.
+     */
+    data: XOR<GovernanceReceiptUpdateInput, GovernanceReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which GovernanceReceipt to update.
+     */
+    where: GovernanceReceiptWhereUniqueInput
+  }
+
+  /**
+   * GovernanceReceipt updateMany
+   */
+  export type GovernanceReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GovernanceReceipts.
+     */
+    data: XOR<GovernanceReceiptUpdateManyMutationInput, GovernanceReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which GovernanceReceipts to update
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * Limit how many GovernanceReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GovernanceReceipt updateManyAndReturn
+   */
+  export type GovernanceReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update GovernanceReceipts.
+     */
+    data: XOR<GovernanceReceiptUpdateManyMutationInput, GovernanceReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which GovernanceReceipts to update
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * Limit how many GovernanceReceipts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GovernanceReceipt upsert
+   */
+  export type GovernanceReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GovernanceReceipt to update in case it exists.
+     */
+    where: GovernanceReceiptWhereUniqueInput
+    /**
+     * In case the GovernanceReceipt found by the `where` argument doesn't exist, create a new GovernanceReceipt with this data.
+     */
+    create: XOR<GovernanceReceiptCreateInput, GovernanceReceiptUncheckedCreateInput>
+    /**
+     * In case the GovernanceReceipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GovernanceReceiptUpdateInput, GovernanceReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * GovernanceReceipt delete
+   */
+  export type GovernanceReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    /**
+     * Filter which GovernanceReceipt to delete.
+     */
+    where: GovernanceReceiptWhereUniqueInput
+  }
+
+  /**
+   * GovernanceReceipt deleteMany
+   */
+  export type GovernanceReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GovernanceReceipts to delete
+     */
+    where?: GovernanceReceiptWhereInput
+    /**
+     * Limit how many GovernanceReceipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GovernanceReceipt.merkleSeal
+   */
+  export type GovernanceReceipt$merkleSealArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    where?: MerkleSealWhereInput
+  }
+
+  /**
+   * GovernanceReceipt without action
+   */
+  export type GovernanceReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MerkleSeal
+   */
+
+  export type AggregateMerkleSeal = {
+    _count: MerkleSealCountAggregateOutputType | null
+    _avg: MerkleSealAvgAggregateOutputType | null
+    _sum: MerkleSealSumAggregateOutputType | null
+    _min: MerkleSealMinAggregateOutputType | null
+    _max: MerkleSealMaxAggregateOutputType | null
+  }
+
+  export type MerkleSealAvgAggregateOutputType = {
+    id: number | null
+    receiptCount: number | null
+    lamportStart: number | null
+    lamportEnd: number | null
+  }
+
+  export type MerkleSealSumAggregateOutputType = {
+    id: number | null
+    receiptCount: number | null
+    lamportStart: bigint | null
+    lamportEnd: bigint | null
+  }
+
+  export type MerkleSealMinAggregateOutputType = {
+    id: number | null
+    merkleRoot: string | null
+    receiptCount: number | null
+    lamportStart: bigint | null
+    lamportEnd: bigint | null
+    sealedAt: Date | null
+    sealDigest: string | null
+    prevRoot: string | null
+    prevSealDigest: string | null
+  }
+
+  export type MerkleSealMaxAggregateOutputType = {
+    id: number | null
+    merkleRoot: string | null
+    receiptCount: number | null
+    lamportStart: bigint | null
+    lamportEnd: bigint | null
+    sealedAt: Date | null
+    sealDigest: string | null
+    prevRoot: string | null
+    prevSealDigest: string | null
+  }
+
+  export type MerkleSealCountAggregateOutputType = {
+    id: number
+    merkleRoot: number
+    receiptCount: number
+    lamportStart: number
+    lamportEnd: number
+    sealedAt: number
+    sealDigest: number
+    prevRoot: number
+    prevSealDigest: number
+    _all: number
+  }
+
+
+  export type MerkleSealAvgAggregateInputType = {
+    id?: true
+    receiptCount?: true
+    lamportStart?: true
+    lamportEnd?: true
+  }
+
+  export type MerkleSealSumAggregateInputType = {
+    id?: true
+    receiptCount?: true
+    lamportStart?: true
+    lamportEnd?: true
+  }
+
+  export type MerkleSealMinAggregateInputType = {
+    id?: true
+    merkleRoot?: true
+    receiptCount?: true
+    lamportStart?: true
+    lamportEnd?: true
+    sealedAt?: true
+    sealDigest?: true
+    prevRoot?: true
+    prevSealDigest?: true
+  }
+
+  export type MerkleSealMaxAggregateInputType = {
+    id?: true
+    merkleRoot?: true
+    receiptCount?: true
+    lamportStart?: true
+    lamportEnd?: true
+    sealedAt?: true
+    sealDigest?: true
+    prevRoot?: true
+    prevSealDigest?: true
+  }
+
+  export type MerkleSealCountAggregateInputType = {
+    id?: true
+    merkleRoot?: true
+    receiptCount?: true
+    lamportStart?: true
+    lamportEnd?: true
+    sealedAt?: true
+    sealDigest?: true
+    prevRoot?: true
+    prevSealDigest?: true
+    _all?: true
+  }
+
+  export type MerkleSealAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MerkleSeal to aggregate.
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MerkleSeals to fetch.
+     */
+    orderBy?: MerkleSealOrderByWithRelationInput | MerkleSealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MerkleSealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MerkleSeals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MerkleSeals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MerkleSeals
+    **/
+    _count?: true | MerkleSealCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MerkleSealAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MerkleSealSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MerkleSealMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MerkleSealMaxAggregateInputType
+  }
+
+  export type GetMerkleSealAggregateType<T extends MerkleSealAggregateArgs> = {
+        [P in keyof T & keyof AggregateMerkleSeal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMerkleSeal[P]>
+      : GetScalarType<T[P], AggregateMerkleSeal[P]>
+  }
+
+
+
+
+  export type MerkleSealGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MerkleSealWhereInput
+    orderBy?: MerkleSealOrderByWithAggregationInput | MerkleSealOrderByWithAggregationInput[]
+    by: MerkleSealScalarFieldEnum[] | MerkleSealScalarFieldEnum
+    having?: MerkleSealScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MerkleSealCountAggregateInputType | true
+    _avg?: MerkleSealAvgAggregateInputType
+    _sum?: MerkleSealSumAggregateInputType
+    _min?: MerkleSealMinAggregateInputType
+    _max?: MerkleSealMaxAggregateInputType
+  }
+
+  export type MerkleSealGroupByOutputType = {
+    id: number
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint
+    lamportEnd: bigint
+    sealedAt: Date
+    sealDigest: string | null
+    prevRoot: string | null
+    prevSealDigest: string | null
+    _count: MerkleSealCountAggregateOutputType | null
+    _avg: MerkleSealAvgAggregateOutputType | null
+    _sum: MerkleSealSumAggregateOutputType | null
+    _min: MerkleSealMinAggregateOutputType | null
+    _max: MerkleSealMaxAggregateOutputType | null
+  }
+
+  type GetMerkleSealGroupByPayload<T extends MerkleSealGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MerkleSealGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MerkleSealGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MerkleSealGroupByOutputType[P]>
+            : GetScalarType<T[P], MerkleSealGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MerkleSealSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    merkleRoot?: boolean
+    receiptCount?: boolean
+    lamportStart?: boolean
+    lamportEnd?: boolean
+    sealedAt?: boolean
+    sealDigest?: boolean
+    prevRoot?: boolean
+    prevSealDigest?: boolean
+    receipts?: boolean | MerkleSeal$receiptsArgs<ExtArgs>
+    _count?: boolean | MerkleSealCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["merkleSeal"]>
+
+  export type MerkleSealSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    merkleRoot?: boolean
+    receiptCount?: boolean
+    lamportStart?: boolean
+    lamportEnd?: boolean
+    sealedAt?: boolean
+    sealDigest?: boolean
+    prevRoot?: boolean
+    prevSealDigest?: boolean
+  }, ExtArgs["result"]["merkleSeal"]>
+
+  export type MerkleSealSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    merkleRoot?: boolean
+    receiptCount?: boolean
+    lamportStart?: boolean
+    lamportEnd?: boolean
+    sealedAt?: boolean
+    sealDigest?: boolean
+    prevRoot?: boolean
+    prevSealDigest?: boolean
+  }, ExtArgs["result"]["merkleSeal"]>
+
+  export type MerkleSealSelectScalar = {
+    id?: boolean
+    merkleRoot?: boolean
+    receiptCount?: boolean
+    lamportStart?: boolean
+    lamportEnd?: boolean
+    sealedAt?: boolean
+    sealDigest?: boolean
+    prevRoot?: boolean
+    prevSealDigest?: boolean
+  }
+
+  export type MerkleSealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "merkleRoot" | "receiptCount" | "lamportStart" | "lamportEnd" | "sealedAt" | "sealDigest" | "prevRoot" | "prevSealDigest", ExtArgs["result"]["merkleSeal"]>
+  export type MerkleSealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    receipts?: boolean | MerkleSeal$receiptsArgs<ExtArgs>
+    _count?: boolean | MerkleSealCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type MerkleSealIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type MerkleSealIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $MerkleSealPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MerkleSeal"
+    objects: {
+      receipts: Prisma.$GovernanceReceiptPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      merkleRoot: string
+      receiptCount: number
+      lamportStart: bigint
+      lamportEnd: bigint
+      sealedAt: Date
+      sealDigest: string | null
+      prevRoot: string | null
+      prevSealDigest: string | null
+    }, ExtArgs["result"]["merkleSeal"]>
+    composites: {}
+  }
+
+  type MerkleSealGetPayload<S extends boolean | null | undefined | MerkleSealDefaultArgs> = $Result.GetResult<Prisma.$MerkleSealPayload, S>
+
+  type MerkleSealCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MerkleSealFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MerkleSealCountAggregateInputType | true
+    }
+
+  export interface MerkleSealDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MerkleSeal'], meta: { name: 'MerkleSeal' } }
+    /**
+     * Find zero or one MerkleSeal that matches the filter.
+     * @param {MerkleSealFindUniqueArgs} args - Arguments to find a MerkleSeal
+     * @example
+     * // Get one MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MerkleSealFindUniqueArgs>(args: SelectSubset<T, MerkleSealFindUniqueArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MerkleSeal that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MerkleSealFindUniqueOrThrowArgs} args - Arguments to find a MerkleSeal
+     * @example
+     * // Get one MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MerkleSealFindUniqueOrThrowArgs>(args: SelectSubset<T, MerkleSealFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MerkleSeal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealFindFirstArgs} args - Arguments to find a MerkleSeal
+     * @example
+     * // Get one MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MerkleSealFindFirstArgs>(args?: SelectSubset<T, MerkleSealFindFirstArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MerkleSeal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealFindFirstOrThrowArgs} args - Arguments to find a MerkleSeal
+     * @example
+     * // Get one MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MerkleSealFindFirstOrThrowArgs>(args?: SelectSubset<T, MerkleSealFindFirstOrThrowArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MerkleSeals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MerkleSeals
+     * const merkleSeals = await prisma.merkleSeal.findMany()
+     * 
+     * // Get first 10 MerkleSeals
+     * const merkleSeals = await prisma.merkleSeal.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const merkleSealWithIdOnly = await prisma.merkleSeal.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MerkleSealFindManyArgs>(args?: SelectSubset<T, MerkleSealFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MerkleSeal.
+     * @param {MerkleSealCreateArgs} args - Arguments to create a MerkleSeal.
+     * @example
+     * // Create one MerkleSeal
+     * const MerkleSeal = await prisma.merkleSeal.create({
+     *   data: {
+     *     // ... data to create a MerkleSeal
+     *   }
+     * })
+     * 
+     */
+    create<T extends MerkleSealCreateArgs>(args: SelectSubset<T, MerkleSealCreateArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MerkleSeals.
+     * @param {MerkleSealCreateManyArgs} args - Arguments to create many MerkleSeals.
+     * @example
+     * // Create many MerkleSeals
+     * const merkleSeal = await prisma.merkleSeal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MerkleSealCreateManyArgs>(args?: SelectSubset<T, MerkleSealCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MerkleSeals and returns the data saved in the database.
+     * @param {MerkleSealCreateManyAndReturnArgs} args - Arguments to create many MerkleSeals.
+     * @example
+     * // Create many MerkleSeals
+     * const merkleSeal = await prisma.merkleSeal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MerkleSeals and only return the `id`
+     * const merkleSealWithIdOnly = await prisma.merkleSeal.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MerkleSealCreateManyAndReturnArgs>(args?: SelectSubset<T, MerkleSealCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MerkleSeal.
+     * @param {MerkleSealDeleteArgs} args - Arguments to delete one MerkleSeal.
+     * @example
+     * // Delete one MerkleSeal
+     * const MerkleSeal = await prisma.merkleSeal.delete({
+     *   where: {
+     *     // ... filter to delete one MerkleSeal
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MerkleSealDeleteArgs>(args: SelectSubset<T, MerkleSealDeleteArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MerkleSeal.
+     * @param {MerkleSealUpdateArgs} args - Arguments to update one MerkleSeal.
+     * @example
+     * // Update one MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MerkleSealUpdateArgs>(args: SelectSubset<T, MerkleSealUpdateArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MerkleSeals.
+     * @param {MerkleSealDeleteManyArgs} args - Arguments to filter MerkleSeals to delete.
+     * @example
+     * // Delete a few MerkleSeals
+     * const { count } = await prisma.merkleSeal.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MerkleSealDeleteManyArgs>(args?: SelectSubset<T, MerkleSealDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MerkleSeals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MerkleSeals
+     * const merkleSeal = await prisma.merkleSeal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MerkleSealUpdateManyArgs>(args: SelectSubset<T, MerkleSealUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MerkleSeals and returns the data updated in the database.
+     * @param {MerkleSealUpdateManyAndReturnArgs} args - Arguments to update many MerkleSeals.
+     * @example
+     * // Update many MerkleSeals
+     * const merkleSeal = await prisma.merkleSeal.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MerkleSeals and only return the `id`
+     * const merkleSealWithIdOnly = await prisma.merkleSeal.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MerkleSealUpdateManyAndReturnArgs>(args: SelectSubset<T, MerkleSealUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MerkleSeal.
+     * @param {MerkleSealUpsertArgs} args - Arguments to update or create a MerkleSeal.
+     * @example
+     * // Update or create a MerkleSeal
+     * const merkleSeal = await prisma.merkleSeal.upsert({
+     *   create: {
+     *     // ... data to create a MerkleSeal
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MerkleSeal we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MerkleSealUpsertArgs>(args: SelectSubset<T, MerkleSealUpsertArgs<ExtArgs>>): Prisma__MerkleSealClient<$Result.GetResult<Prisma.$MerkleSealPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MerkleSeals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealCountArgs} args - Arguments to filter MerkleSeals to count.
+     * @example
+     * // Count the number of MerkleSeals
+     * const count = await prisma.merkleSeal.count({
+     *   where: {
+     *     // ... the filter for the MerkleSeals we want to count
+     *   }
+     * })
+    **/
+    count<T extends MerkleSealCountArgs>(
+      args?: Subset<T, MerkleSealCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MerkleSealCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MerkleSeal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MerkleSealAggregateArgs>(args: Subset<T, MerkleSealAggregateArgs>): Prisma.PrismaPromise<GetMerkleSealAggregateType<T>>
+
+    /**
+     * Group by MerkleSeal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MerkleSealGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MerkleSealGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MerkleSealGroupByArgs['orderBy'] }
+        : { orderBy?: MerkleSealGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MerkleSealGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMerkleSealGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MerkleSeal model
+   */
+  readonly fields: MerkleSealFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MerkleSeal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MerkleSealClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    receipts<T extends MerkleSeal$receiptsArgs<ExtArgs> = {}>(args?: Subset<T, MerkleSeal$receiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GovernanceReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MerkleSeal model
+   */
+  interface MerkleSealFieldRefs {
+    readonly id: FieldRef<"MerkleSeal", 'Int'>
+    readonly merkleRoot: FieldRef<"MerkleSeal", 'String'>
+    readonly receiptCount: FieldRef<"MerkleSeal", 'Int'>
+    readonly lamportStart: FieldRef<"MerkleSeal", 'BigInt'>
+    readonly lamportEnd: FieldRef<"MerkleSeal", 'BigInt'>
+    readonly sealedAt: FieldRef<"MerkleSeal", 'DateTime'>
+    readonly sealDigest: FieldRef<"MerkleSeal", 'String'>
+    readonly prevRoot: FieldRef<"MerkleSeal", 'String'>
+    readonly prevSealDigest: FieldRef<"MerkleSeal", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MerkleSeal findUnique
+   */
+  export type MerkleSealFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter, which MerkleSeal to fetch.
+     */
+    where: MerkleSealWhereUniqueInput
+  }
+
+  /**
+   * MerkleSeal findUniqueOrThrow
+   */
+  export type MerkleSealFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter, which MerkleSeal to fetch.
+     */
+    where: MerkleSealWhereUniqueInput
+  }
+
+  /**
+   * MerkleSeal findFirst
+   */
+  export type MerkleSealFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter, which MerkleSeal to fetch.
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MerkleSeals to fetch.
+     */
+    orderBy?: MerkleSealOrderByWithRelationInput | MerkleSealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MerkleSeals.
+     */
+    cursor?: MerkleSealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MerkleSeals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MerkleSeals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MerkleSeals.
+     */
+    distinct?: MerkleSealScalarFieldEnum | MerkleSealScalarFieldEnum[]
+  }
+
+  /**
+   * MerkleSeal findFirstOrThrow
+   */
+  export type MerkleSealFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter, which MerkleSeal to fetch.
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MerkleSeals to fetch.
+     */
+    orderBy?: MerkleSealOrderByWithRelationInput | MerkleSealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MerkleSeals.
+     */
+    cursor?: MerkleSealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MerkleSeals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MerkleSeals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MerkleSeals.
+     */
+    distinct?: MerkleSealScalarFieldEnum | MerkleSealScalarFieldEnum[]
+  }
+
+  /**
+   * MerkleSeal findMany
+   */
+  export type MerkleSealFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter, which MerkleSeals to fetch.
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MerkleSeals to fetch.
+     */
+    orderBy?: MerkleSealOrderByWithRelationInput | MerkleSealOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MerkleSeals.
+     */
+    cursor?: MerkleSealWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MerkleSeals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MerkleSeals.
+     */
+    skip?: number
+    distinct?: MerkleSealScalarFieldEnum | MerkleSealScalarFieldEnum[]
+  }
+
+  /**
+   * MerkleSeal create
+   */
+  export type MerkleSealCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MerkleSeal.
+     */
+    data: XOR<MerkleSealCreateInput, MerkleSealUncheckedCreateInput>
+  }
+
+  /**
+   * MerkleSeal createMany
+   */
+  export type MerkleSealCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MerkleSeals.
+     */
+    data: MerkleSealCreateManyInput | MerkleSealCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MerkleSeal createManyAndReturn
+   */
+  export type MerkleSealCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * The data used to create many MerkleSeals.
+     */
+    data: MerkleSealCreateManyInput | MerkleSealCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MerkleSeal update
+   */
+  export type MerkleSealUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MerkleSeal.
+     */
+    data: XOR<MerkleSealUpdateInput, MerkleSealUncheckedUpdateInput>
+    /**
+     * Choose, which MerkleSeal to update.
+     */
+    where: MerkleSealWhereUniqueInput
+  }
+
+  /**
+   * MerkleSeal updateMany
+   */
+  export type MerkleSealUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MerkleSeals.
+     */
+    data: XOR<MerkleSealUpdateManyMutationInput, MerkleSealUncheckedUpdateManyInput>
+    /**
+     * Filter which MerkleSeals to update
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * Limit how many MerkleSeals to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MerkleSeal updateManyAndReturn
+   */
+  export type MerkleSealUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * The data used to update MerkleSeals.
+     */
+    data: XOR<MerkleSealUpdateManyMutationInput, MerkleSealUncheckedUpdateManyInput>
+    /**
+     * Filter which MerkleSeals to update
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * Limit how many MerkleSeals to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MerkleSeal upsert
+   */
+  export type MerkleSealUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MerkleSeal to update in case it exists.
+     */
+    where: MerkleSealWhereUniqueInput
+    /**
+     * In case the MerkleSeal found by the `where` argument doesn't exist, create a new MerkleSeal with this data.
+     */
+    create: XOR<MerkleSealCreateInput, MerkleSealUncheckedCreateInput>
+    /**
+     * In case the MerkleSeal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MerkleSealUpdateInput, MerkleSealUncheckedUpdateInput>
+  }
+
+  /**
+   * MerkleSeal delete
+   */
+  export type MerkleSealDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+    /**
+     * Filter which MerkleSeal to delete.
+     */
+    where: MerkleSealWhereUniqueInput
+  }
+
+  /**
+   * MerkleSeal deleteMany
+   */
+  export type MerkleSealDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MerkleSeals to delete
+     */
+    where?: MerkleSealWhereInput
+    /**
+     * Limit how many MerkleSeals to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MerkleSeal.receipts
+   */
+  export type MerkleSeal$receiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GovernanceReceipt
+     */
+    select?: GovernanceReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GovernanceReceipt
+     */
+    omit?: GovernanceReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GovernanceReceiptInclude<ExtArgs> | null
+    where?: GovernanceReceiptWhereInput
+    orderBy?: GovernanceReceiptOrderByWithRelationInput | GovernanceReceiptOrderByWithRelationInput[]
+    cursor?: GovernanceReceiptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GovernanceReceiptScalarFieldEnum | GovernanceReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * MerkleSeal without action
+   */
+  export type MerkleSealDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MerkleSeal
+     */
+    select?: MerkleSealSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MerkleSeal
+     */
+    omit?: MerkleSealOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MerkleSealInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -22395,28 +27615,28 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     password: 'password',
-    name: 'name',
     role: 'role',
-    tier: 'tier',
-    permissions: 'permissions',
-    orgId: 'orgId',
-    status: 'status',
-    lastLoginAt: 'lastLoginAt',
+    name: 'name',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    twoFactorEnabled: 'twoFactorEnabled',
-    twoFactorSecret: 'twoFactorSecret',
+    lastLoginAt: 'lastLoginAt',
+    orgId: 'orgId',
+    permissions: 'permissions',
+    status: 'status',
+    tier: 'tier',
     backupCodes: 'backupCodes',
     failedLoginAttempts: 'failedLoginAttempts',
     lockedUntil: 'lockedUntil',
     passwordChangedAt: 'passwordChangedAt',
-    ssoProvider: 'ssoProvider',
+    twoFactorEnabled: 'twoFactorEnabled',
+    twoFactorSecret: 'twoFactorSecret',
+    currentPersona: 'currentPersona',
+    lamportCounter: 'lamportCounter',
+    lastReceiptId: 'lastReceiptId',
+    personaLocked: 'personaLocked',
     ssoId: 'ssoId',
     ssoMetadata: 'ssoMetadata',
-    currentPersona: 'currentPersona',
-    personaLocked: 'personaLocked',
-    lamportCounter: 'lamportCounter',
-    lastReceiptId: 'lastReceiptId'
+    ssoProvider: 'ssoProvider'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -22461,15 +27681,15 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     action: 'action',
+    lamport: 'lamport',
+    createdAt: 'createdAt',
     category: 'category',
-    details: 'details',
+    hashPointer: 'hashPointer',
     metadata: 'metadata',
     status: 'status',
-    lamport: 'lamport',
-    hashPointer: 'hashPointer',
-    organizationId: 'organizationId',
+    details: 'details',
     blockHash: 'blockHash',
-    createdAt: 'createdAt',
+    organizationId: 'organizationId',
     updatedAt: 'updatedAt'
   };
 
@@ -22494,10 +27714,10 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     expiresAt: 'expiresAt',
-    userAgent: 'userAgent',
-    ipAddress: 'ipAddress',
     createdAt: 'createdAt',
-    lastUsedAt: 'lastUsedAt'
+    ipAddress: 'ipAddress',
+    lastUsedAt: 'lastUsedAt',
+    userAgent: 'userAgent'
   };
 
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -22561,6 +27781,17 @@ export namespace Prisma {
   };
 
   export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
+
+
+  export const LamportCounterScalarFieldEnum: {
+    id: 'id',
+    currentValue: 'currentValue',
+    lastUpdated: 'lastUpdated',
+    lastReceiptId: 'lastReceiptId',
+    metadata: 'metadata'
+  };
+
+  export type LamportCounterScalarFieldEnum = (typeof LamportCounterScalarFieldEnum)[keyof typeof LamportCounterScalarFieldEnum]
 
 
   export const BENReceiptScalarFieldEnum: {
@@ -22690,6 +27921,79 @@ export namespace Prisma {
   export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
 
 
+  export const ReceiptScalarFieldEnum: {
+    id: 'id',
+    ts: 'ts',
+    path: 'path',
+    event: 'event',
+    lamport: 'lamport',
+    self_hash: 'self_hash',
+    calc_hash: 'calc_hash',
+    verified: 'verified'
+  };
+
+  export type ReceiptScalarFieldEnum = (typeof ReceiptScalarFieldEnum)[keyof typeof ReceiptScalarFieldEnum]
+
+
+  export const GovernanceReceiptScalarFieldEnum: {
+    id: 'id',
+    lamport: 'lamport',
+    persona: 'persona',
+    obligationsApplied: 'obligationsApplied',
+    promptHash: 'promptHash',
+    outputHash: 'outputHash',
+    violations: 'violations',
+    timestamp: 'timestamp',
+    version: 'version',
+    userId: 'userId',
+    criesOmega: 'criesOmega',
+    criesCoherence: 'criesCoherence',
+    criesRigor: 'criesRigor',
+    criesIntegrity: 'criesIntegrity',
+    criesEmpathy: 'criesEmpathy',
+    criesStrictness: 'criesStrictness',
+    criesSubMetrics: 'criesSubMetrics',
+    criesEvidence: 'criesEvidence',
+    criesCalculation: 'criesCalculation',
+    criesBaseline: 'criesBaseline',
+    criesDeterminism: 'criesDeterminism',
+    governanceMode: 'governanceMode',
+    prompt: 'prompt',
+    output: 'output',
+    receiptId: 'receiptId',
+    conversationId: 'conversationId',
+    exchangeId: 'exchangeId',
+    traceId: 'traceId',
+    prevDigest: 'prevDigest',
+    currDigest: 'currDigest',
+    model: 'model',
+    tokensIn: 'tokensIn',
+    tokensOut: 'tokensOut',
+    policyFlags: 'policyFlags',
+    merkleSealId: 'merkleSealId',
+    lockBatchId: 'lockBatchId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GovernanceReceiptScalarFieldEnum = (typeof GovernanceReceiptScalarFieldEnum)[keyof typeof GovernanceReceiptScalarFieldEnum]
+
+
+  export const MerkleSealScalarFieldEnum: {
+    id: 'id',
+    merkleRoot: 'merkleRoot',
+    receiptCount: 'receiptCount',
+    lamportStart: 'lamportStart',
+    lamportEnd: 'lamportEnd',
+    sealedAt: 'sealedAt',
+    sealDigest: 'sealDigest',
+    prevRoot: 'prevRoot',
+    prevSealDigest: 'prevSealDigest'
+  };
+
+  export type MerkleSealScalarFieldEnum = (typeof MerkleSealScalarFieldEnum)[keyof typeof MerkleSealScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -22786,16 +28090,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'UserTier'
+   * Reference to a field of type 'DateTime'
    */
-  export type EnumUserTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserTier'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
   /**
-   * Reference to a field of type 'UserTier[]'
+   * Reference to a field of type 'DateTime[]'
    */
-  export type ListEnumUserTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserTier[]'>
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -22828,16 +28132,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'UserTier'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type EnumUserTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserTier'>
     
 
 
   /**
-   * Reference to a field of type 'DateTime[]'
+   * Reference to a field of type 'UserTier[]'
    */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+  export type ListEnumUserTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserTier[]'>
     
 
 
@@ -22845,20 +28149,6 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -22873,6 +28163,20 @@ export namespace Prisma {
    * Reference to a field of type 'BENPersona[]'
    */
   export type ListEnumBENPersonaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BENPersona[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -23070,6 +28374,20 @@ export namespace Prisma {
    */
   export type ListEnumSSOProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SSOProvider[]'>
     
+
+
+  /**
+   * Reference to a field of type 'BigInt'
+   */
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt[]'
+   */
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
   /**
    * Deep Input Types
    */
@@ -23082,36 +28400,36 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    name?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
-    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
-    permissions?: EnumPermissionNullableListFilter<"User">
-    orgId?: IntNullableFilter<"User"> | number | null
-    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
-    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    twoFactorEnabled?: BoolFilter<"User"> | boolean
-    twoFactorSecret?: StringNullableFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    orgId?: IntNullableFilter<"User"> | number | null
+    permissions?: EnumPermissionNullableListFilter<"User">
+    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
+    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
     backupCodes?: StringNullableListFilter<"User">
     failedLoginAttempts?: IntFilter<"User"> | number
     lockedUntil?: DateTimeNullableFilter<"User"> | Date | string | null
     passwordChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    ssoProvider?: StringNullableFilter<"User"> | string | null
-    ssoId?: StringNullableFilter<"User"> | string | null
-    ssoMetadata?: JsonNullableFilter<"User">
+    twoFactorEnabled?: BoolFilter<"User"> | boolean
+    twoFactorSecret?: StringNullableFilter<"User"> | string | null
     currentPersona?: EnumBENPersonaFilter<"User"> | $Enums.BENPersona
-    personaLocked?: BoolFilter<"User"> | boolean
     lamportCounter?: IntFilter<"User"> | number
     lastReceiptId?: IntNullableFilter<"User"> | number | null
-    organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
-    sessions?: SessionListRelationFilter
+    personaLocked?: BoolFilter<"User"> | boolean
+    ssoId?: StringNullableFilter<"User"> | string | null
+    ssoMetadata?: JsonNullableFilter<"User">
+    ssoProvider?: StringNullableFilter<"User"> | string | null
     audits?: AuditRecordListRelationFilter
-    teams?: TeamMemberListRelationFilter
-    notifications?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
     budgets?: BudgetListRelationFilter
-    regressionBaselines?: RegressionBaselineListRelationFilter
     feedbacks?: FeedbackListRelationFilter
+    notifications?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
+    regressionBaselines?: RegressionBaselineListRelationFilter
+    sessions?: SessionListRelationFilter
+    teams?: TeamMemberListRelationFilter
+    organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
     benReceipts?: BENReceiptListRelationFilter
     benSessions?: BENSessionListRelationFilter
     zscans?: ZScanVerificationListRelationFilter
@@ -23121,36 +28439,36 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrderInput | SortOrder
     role?: SortOrder
-    tier?: SortOrder
-    permissions?: SortOrder
-    orgId?: SortOrderInput | SortOrder
-    status?: SortOrder
-    lastLoginAt?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    twoFactorEnabled?: SortOrder
-    twoFactorSecret?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    orgId?: SortOrderInput | SortOrder
+    permissions?: SortOrder
+    status?: SortOrder
+    tier?: SortOrder
     backupCodes?: SortOrder
     failedLoginAttempts?: SortOrder
     lockedUntil?: SortOrderInput | SortOrder
     passwordChangedAt?: SortOrderInput | SortOrder
-    ssoProvider?: SortOrderInput | SortOrder
-    ssoId?: SortOrderInput | SortOrder
-    ssoMetadata?: SortOrderInput | SortOrder
+    twoFactorEnabled?: SortOrder
+    twoFactorSecret?: SortOrderInput | SortOrder
     currentPersona?: SortOrder
-    personaLocked?: SortOrder
     lamportCounter?: SortOrder
     lastReceiptId?: SortOrderInput | SortOrder
-    organization?: OrganizationOrderByWithRelationInput
-    sessions?: SessionOrderByRelationAggregateInput
+    personaLocked?: SortOrder
+    ssoId?: SortOrderInput | SortOrder
+    ssoMetadata?: SortOrderInput | SortOrder
+    ssoProvider?: SortOrderInput | SortOrder
     audits?: AuditRecordOrderByRelationAggregateInput
-    teams?: TeamMemberOrderByRelationAggregateInput
-    notifications?: NotificationPreferenceOrderByWithRelationInput
     budgets?: BudgetOrderByRelationAggregateInput
-    regressionBaselines?: RegressionBaselineOrderByRelationAggregateInput
     feedbacks?: FeedbackOrderByRelationAggregateInput
+    notifications?: NotificationPreferenceOrderByWithRelationInput
+    regressionBaselines?: RegressionBaselineOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    teams?: TeamMemberOrderByRelationAggregateInput
+    organization?: OrganizationOrderByWithRelationInput
     benReceipts?: BENReceiptOrderByRelationAggregateInput
     benSessions?: BENSessionOrderByRelationAggregateInput
     zscans?: ZScanVerificationOrderByRelationAggregateInput
@@ -23164,35 +28482,35 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
-    name?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
-    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
-    permissions?: EnumPermissionNullableListFilter<"User">
-    orgId?: IntNullableFilter<"User"> | number | null
-    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
-    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    twoFactorEnabled?: BoolFilter<"User"> | boolean
-    twoFactorSecret?: StringNullableFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    orgId?: IntNullableFilter<"User"> | number | null
+    permissions?: EnumPermissionNullableListFilter<"User">
+    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
+    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
     backupCodes?: StringNullableListFilter<"User">
     failedLoginAttempts?: IntFilter<"User"> | number
     lockedUntil?: DateTimeNullableFilter<"User"> | Date | string | null
     passwordChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    ssoProvider?: StringNullableFilter<"User"> | string | null
-    ssoMetadata?: JsonNullableFilter<"User">
+    twoFactorEnabled?: BoolFilter<"User"> | boolean
+    twoFactorSecret?: StringNullableFilter<"User"> | string | null
     currentPersona?: EnumBENPersonaFilter<"User"> | $Enums.BENPersona
-    personaLocked?: BoolFilter<"User"> | boolean
     lamportCounter?: IntFilter<"User"> | number
     lastReceiptId?: IntNullableFilter<"User"> | number | null
-    organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
-    sessions?: SessionListRelationFilter
+    personaLocked?: BoolFilter<"User"> | boolean
+    ssoMetadata?: JsonNullableFilter<"User">
+    ssoProvider?: StringNullableFilter<"User"> | string | null
     audits?: AuditRecordListRelationFilter
-    teams?: TeamMemberListRelationFilter
-    notifications?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
     budgets?: BudgetListRelationFilter
-    regressionBaselines?: RegressionBaselineListRelationFilter
     feedbacks?: FeedbackListRelationFilter
+    notifications?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
+    regressionBaselines?: RegressionBaselineListRelationFilter
+    sessions?: SessionListRelationFilter
+    teams?: TeamMemberListRelationFilter
+    organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
     benReceipts?: BENReceiptListRelationFilter
     benSessions?: BENSessionListRelationFilter
     zscans?: ZScanVerificationListRelationFilter
@@ -23202,28 +28520,28 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrderInput | SortOrder
     role?: SortOrder
-    tier?: SortOrder
-    permissions?: SortOrder
-    orgId?: SortOrderInput | SortOrder
-    status?: SortOrder
-    lastLoginAt?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    twoFactorEnabled?: SortOrder
-    twoFactorSecret?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    orgId?: SortOrderInput | SortOrder
+    permissions?: SortOrder
+    status?: SortOrder
+    tier?: SortOrder
     backupCodes?: SortOrder
     failedLoginAttempts?: SortOrder
     lockedUntil?: SortOrderInput | SortOrder
     passwordChangedAt?: SortOrderInput | SortOrder
-    ssoProvider?: SortOrderInput | SortOrder
-    ssoId?: SortOrderInput | SortOrder
-    ssoMetadata?: SortOrderInput | SortOrder
+    twoFactorEnabled?: SortOrder
+    twoFactorSecret?: SortOrderInput | SortOrder
     currentPersona?: SortOrder
-    personaLocked?: SortOrder
     lamportCounter?: SortOrder
     lastReceiptId?: SortOrderInput | SortOrder
+    personaLocked?: SortOrder
+    ssoId?: SortOrderInput | SortOrder
+    ssoMetadata?: SortOrderInput | SortOrder
+    ssoProvider?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -23238,28 +28556,28 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
-    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
-    tier?: EnumUserTierWithAggregatesFilter<"User"> | $Enums.UserTier
-    permissions?: EnumPermissionNullableListFilter<"User">
-    orgId?: IntNullableWithAggregatesFilter<"User"> | number | null
-    status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
-    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
-    twoFactorEnabled?: BoolWithAggregatesFilter<"User"> | boolean
-    twoFactorSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    orgId?: IntNullableWithAggregatesFilter<"User"> | number | null
+    permissions?: EnumPermissionNullableListFilter<"User">
+    status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
+    tier?: EnumUserTierWithAggregatesFilter<"User"> | $Enums.UserTier
     backupCodes?: StringNullableListFilter<"User">
     failedLoginAttempts?: IntWithAggregatesFilter<"User"> | number
     lockedUntil?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     passwordChangedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-    ssoProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
-    ssoId?: StringNullableWithAggregatesFilter<"User"> | string | null
-    ssoMetadata?: JsonNullableWithAggregatesFilter<"User">
+    twoFactorEnabled?: BoolWithAggregatesFilter<"User"> | boolean
+    twoFactorSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
     currentPersona?: EnumBENPersonaWithAggregatesFilter<"User"> | $Enums.BENPersona
-    personaLocked?: BoolWithAggregatesFilter<"User"> | boolean
     lamportCounter?: IntWithAggregatesFilter<"User"> | number
     lastReceiptId?: IntNullableWithAggregatesFilter<"User"> | number | null
+    personaLocked?: BoolWithAggregatesFilter<"User"> | boolean
+    ssoId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    ssoMetadata?: JsonNullableWithAggregatesFilter<"User">
+    ssoProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type OrganizationWhereInput = {
@@ -23272,9 +28590,9 @@ export namespace Prisma {
     status?: EnumOrgStatusFilter<"Organization"> | $Enums.OrgStatus
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
-    users?: UserListRelationFilter
-    teams?: TeamListRelationFilter
     ssoConfigs?: SSOConfigurationListRelationFilter
+    teams?: TeamListRelationFilter
+    users?: UserListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -23284,9 +28602,9 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    users?: UserOrderByRelationAggregateInput
-    teams?: TeamOrderByRelationAggregateInput
     ssoConfigs?: SSOConfigurationOrderByRelationAggregateInput
+    teams?: TeamOrderByRelationAggregateInput
+    users?: UserOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -23299,9 +28617,9 @@ export namespace Prisma {
     status?: EnumOrgStatusFilter<"Organization"> | $Enums.OrgStatus
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
-    users?: UserListRelationFilter
-    teams?: TeamListRelationFilter
     ssoConfigs?: SSOConfigurationListRelationFilter
+    teams?: TeamListRelationFilter
+    users?: UserListRelationFilter
   }, "id">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -23463,15 +28781,15 @@ export namespace Prisma {
     id?: IntFilter<"AuditRecord"> | number
     userId?: IntFilter<"AuditRecord"> | number
     action?: StringFilter<"AuditRecord"> | string
+    lamport?: IntFilter<"AuditRecord"> | number
+    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
     category?: EnumAuditCategoryFilter<"AuditRecord"> | $Enums.AuditCategory
-    details?: JsonNullableFilter<"AuditRecord">
+    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
     metadata?: JsonNullableFilter<"AuditRecord">
     status?: EnumAuditStatusFilter<"AuditRecord"> | $Enums.AuditStatus
-    lamport?: IntFilter<"AuditRecord"> | number
-    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
-    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
+    details?: JsonNullableFilter<"AuditRecord">
     blockHash?: StringNullableFilter<"AuditRecord"> | string | null
-    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
+    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
     updatedAt?: DateTimeFilter<"AuditRecord"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -23480,15 +28798,15 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     action?: SortOrder
+    lamport?: SortOrder
+    createdAt?: SortOrder
     category?: SortOrder
-    details?: SortOrderInput | SortOrder
+    hashPointer?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
     status?: SortOrder
-    lamport?: SortOrder
-    hashPointer?: SortOrderInput | SortOrder
-    organizationId?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
     blockHash?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -23500,15 +28818,15 @@ export namespace Prisma {
     NOT?: AuditRecordWhereInput | AuditRecordWhereInput[]
     userId?: IntFilter<"AuditRecord"> | number
     action?: StringFilter<"AuditRecord"> | string
+    lamport?: IntFilter<"AuditRecord"> | number
+    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
     category?: EnumAuditCategoryFilter<"AuditRecord"> | $Enums.AuditCategory
-    details?: JsonNullableFilter<"AuditRecord">
+    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
     metadata?: JsonNullableFilter<"AuditRecord">
     status?: EnumAuditStatusFilter<"AuditRecord"> | $Enums.AuditStatus
-    lamport?: IntFilter<"AuditRecord"> | number
-    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
-    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
+    details?: JsonNullableFilter<"AuditRecord">
     blockHash?: StringNullableFilter<"AuditRecord"> | string | null
-    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
+    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
     updatedAt?: DateTimeFilter<"AuditRecord"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -23517,15 +28835,15 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     action?: SortOrder
+    lamport?: SortOrder
+    createdAt?: SortOrder
     category?: SortOrder
-    details?: SortOrderInput | SortOrder
+    hashPointer?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
     status?: SortOrder
-    lamport?: SortOrder
-    hashPointer?: SortOrderInput | SortOrder
-    organizationId?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
     blockHash?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: AuditRecordCountOrderByAggregateInput
     _avg?: AuditRecordAvgOrderByAggregateInput
@@ -23541,15 +28859,15 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"AuditRecord"> | number
     userId?: IntWithAggregatesFilter<"AuditRecord"> | number
     action?: StringWithAggregatesFilter<"AuditRecord"> | string
+    lamport?: IntWithAggregatesFilter<"AuditRecord"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"AuditRecord"> | Date | string
     category?: EnumAuditCategoryWithAggregatesFilter<"AuditRecord"> | $Enums.AuditCategory
-    details?: JsonNullableWithAggregatesFilter<"AuditRecord">
+    hashPointer?: StringNullableWithAggregatesFilter<"AuditRecord"> | string | null
     metadata?: JsonNullableWithAggregatesFilter<"AuditRecord">
     status?: EnumAuditStatusWithAggregatesFilter<"AuditRecord"> | $Enums.AuditStatus
-    lamport?: IntWithAggregatesFilter<"AuditRecord"> | number
-    hashPointer?: StringNullableWithAggregatesFilter<"AuditRecord"> | string | null
-    organizationId?: IntNullableWithAggregatesFilter<"AuditRecord"> | number | null
+    details?: JsonNullableWithAggregatesFilter<"AuditRecord">
     blockHash?: StringNullableWithAggregatesFilter<"AuditRecord"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"AuditRecord"> | Date | string
+    organizationId?: IntNullableWithAggregatesFilter<"AuditRecord"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"AuditRecord"> | Date | string
   }
 
@@ -23629,10 +28947,10 @@ export namespace Prisma {
     id?: IntFilter<"Session"> | number
     userId?: IntFilter<"Session"> | number
     expiresAt?: DateTimeFilter<"Session"> | Date | string
-    userAgent?: StringNullableFilter<"Session"> | string | null
-    ipAddress?: StringNullableFilter<"Session"> | string | null
     createdAt?: DateTimeFilter<"Session"> | Date | string
+    ipAddress?: StringNullableFilter<"Session"> | string | null
     lastUsedAt?: DateTimeFilter<"Session"> | Date | string
+    userAgent?: StringNullableFilter<"Session"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -23640,10 +28958,10 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
-    userAgent?: SortOrderInput | SortOrder
-    ipAddress?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    ipAddress?: SortOrderInput | SortOrder
     lastUsedAt?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -23654,10 +28972,10 @@ export namespace Prisma {
     NOT?: SessionWhereInput | SessionWhereInput[]
     userId?: IntFilter<"Session"> | number
     expiresAt?: DateTimeFilter<"Session"> | Date | string
-    userAgent?: StringNullableFilter<"Session"> | string | null
-    ipAddress?: StringNullableFilter<"Session"> | string | null
     createdAt?: DateTimeFilter<"Session"> | Date | string
+    ipAddress?: StringNullableFilter<"Session"> | string | null
     lastUsedAt?: DateTimeFilter<"Session"> | Date | string
+    userAgent?: StringNullableFilter<"Session"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -23665,10 +28983,10 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
-    userAgent?: SortOrderInput | SortOrder
-    ipAddress?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    ipAddress?: SortOrderInput | SortOrder
     lastUsedAt?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
     _count?: SessionCountOrderByAggregateInput
     _avg?: SessionAvgOrderByAggregateInput
     _max?: SessionMaxOrderByAggregateInput
@@ -23683,10 +29001,10 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Session"> | number
     userId?: IntWithAggregatesFilter<"Session"> | number
     expiresAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
-    userAgent?: StringNullableWithAggregatesFilter<"Session"> | string | null
-    ipAddress?: StringNullableWithAggregatesFilter<"Session"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    ipAddress?: StringNullableWithAggregatesFilter<"Session"> | string | null
     lastUsedAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    userAgent?: StringNullableWithAggregatesFilter<"Session"> | string | null
   }
 
   export type BudgetWhereInput = {
@@ -23994,6 +29312,60 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
     resolvedAt?: DateTimeNullableWithAggregatesFilter<"Feedback"> | Date | string | null
+  }
+
+  export type LamportCounterWhereInput = {
+    AND?: LamportCounterWhereInput | LamportCounterWhereInput[]
+    OR?: LamportCounterWhereInput[]
+    NOT?: LamportCounterWhereInput | LamportCounterWhereInput[]
+    id?: IntFilter<"LamportCounter"> | number
+    currentValue?: IntFilter<"LamportCounter"> | number
+    lastUpdated?: DateTimeFilter<"LamportCounter"> | Date | string
+    lastReceiptId?: IntNullableFilter<"LamportCounter"> | number | null
+    metadata?: JsonNullableFilter<"LamportCounter">
+  }
+
+  export type LamportCounterOrderByWithRelationInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastUpdated?: SortOrder
+    lastReceiptId?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+  }
+
+  export type LamportCounterWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: LamportCounterWhereInput | LamportCounterWhereInput[]
+    OR?: LamportCounterWhereInput[]
+    NOT?: LamportCounterWhereInput | LamportCounterWhereInput[]
+    currentValue?: IntFilter<"LamportCounter"> | number
+    lastUpdated?: DateTimeFilter<"LamportCounter"> | Date | string
+    lastReceiptId?: IntNullableFilter<"LamportCounter"> | number | null
+    metadata?: JsonNullableFilter<"LamportCounter">
+  }, "id">
+
+  export type LamportCounterOrderByWithAggregationInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastUpdated?: SortOrder
+    lastReceiptId?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    _count?: LamportCounterCountOrderByAggregateInput
+    _avg?: LamportCounterAvgOrderByAggregateInput
+    _max?: LamportCounterMaxOrderByAggregateInput
+    _min?: LamportCounterMinOrderByAggregateInput
+    _sum?: LamportCounterSumOrderByAggregateInput
+  }
+
+  export type LamportCounterScalarWhereWithAggregatesInput = {
+    AND?: LamportCounterScalarWhereWithAggregatesInput | LamportCounterScalarWhereWithAggregatesInput[]
+    OR?: LamportCounterScalarWhereWithAggregatesInput[]
+    NOT?: LamportCounterScalarWhereWithAggregatesInput | LamportCounterScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"LamportCounter"> | number
+    currentValue?: IntWithAggregatesFilter<"LamportCounter"> | number
+    lastUpdated?: DateTimeWithAggregatesFilter<"LamportCounter"> | Date | string
+    lastReceiptId?: IntNullableWithAggregatesFilter<"LamportCounter"> | number | null
+    metadata?: JsonNullableWithAggregatesFilter<"LamportCounter">
   }
 
   export type BENReceiptWhereInput = {
@@ -24653,38 +30025,406 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"NotificationPreference"> | Date | string
   }
 
+  export type ReceiptWhereInput = {
+    AND?: ReceiptWhereInput | ReceiptWhereInput[]
+    OR?: ReceiptWhereInput[]
+    NOT?: ReceiptWhereInput | ReceiptWhereInput[]
+    id?: IntFilter<"Receipt"> | number
+    ts?: StringFilter<"Receipt"> | string
+    path?: StringFilter<"Receipt"> | string
+    event?: StringFilter<"Receipt"> | string
+    lamport?: IntFilter<"Receipt"> | number
+    self_hash?: StringFilter<"Receipt"> | string
+    calc_hash?: StringFilter<"Receipt"> | string
+    verified?: BoolFilter<"Receipt"> | boolean
+  }
+
+  export type ReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    ts?: SortOrder
+    path?: SortOrder
+    event?: SortOrder
+    lamport?: SortOrder
+    self_hash?: SortOrder
+    calc_hash?: SortOrder
+    verified?: SortOrder
+  }
+
+  export type ReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ReceiptWhereInput | ReceiptWhereInput[]
+    OR?: ReceiptWhereInput[]
+    NOT?: ReceiptWhereInput | ReceiptWhereInput[]
+    ts?: StringFilter<"Receipt"> | string
+    path?: StringFilter<"Receipt"> | string
+    event?: StringFilter<"Receipt"> | string
+    lamport?: IntFilter<"Receipt"> | number
+    self_hash?: StringFilter<"Receipt"> | string
+    calc_hash?: StringFilter<"Receipt"> | string
+    verified?: BoolFilter<"Receipt"> | boolean
+  }, "id">
+
+  export type ReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    ts?: SortOrder
+    path?: SortOrder
+    event?: SortOrder
+    lamport?: SortOrder
+    self_hash?: SortOrder
+    calc_hash?: SortOrder
+    verified?: SortOrder
+    _count?: ReceiptCountOrderByAggregateInput
+    _avg?: ReceiptAvgOrderByAggregateInput
+    _max?: ReceiptMaxOrderByAggregateInput
+    _min?: ReceiptMinOrderByAggregateInput
+    _sum?: ReceiptSumOrderByAggregateInput
+  }
+
+  export type ReceiptScalarWhereWithAggregatesInput = {
+    AND?: ReceiptScalarWhereWithAggregatesInput | ReceiptScalarWhereWithAggregatesInput[]
+    OR?: ReceiptScalarWhereWithAggregatesInput[]
+    NOT?: ReceiptScalarWhereWithAggregatesInput | ReceiptScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Receipt"> | number
+    ts?: StringWithAggregatesFilter<"Receipt"> | string
+    path?: StringWithAggregatesFilter<"Receipt"> | string
+    event?: StringWithAggregatesFilter<"Receipt"> | string
+    lamport?: IntWithAggregatesFilter<"Receipt"> | number
+    self_hash?: StringWithAggregatesFilter<"Receipt"> | string
+    calc_hash?: StringWithAggregatesFilter<"Receipt"> | string
+    verified?: BoolWithAggregatesFilter<"Receipt"> | boolean
+  }
+
+  export type GovernanceReceiptWhereInput = {
+    AND?: GovernanceReceiptWhereInput | GovernanceReceiptWhereInput[]
+    OR?: GovernanceReceiptWhereInput[]
+    NOT?: GovernanceReceiptWhereInput | GovernanceReceiptWhereInput[]
+    id?: IntFilter<"GovernanceReceipt"> | number
+    lamport?: BigIntFilter<"GovernanceReceipt"> | bigint | number
+    persona?: StringFilter<"GovernanceReceipt"> | string
+    obligationsApplied?: StringNullableListFilter<"GovernanceReceipt">
+    promptHash?: StringFilter<"GovernanceReceipt"> | string
+    outputHash?: StringFilter<"GovernanceReceipt"> | string
+    violations?: StringNullableListFilter<"GovernanceReceipt">
+    timestamp?: DateTimeNullableFilter<"GovernanceReceipt"> | Date | string | null
+    version?: StringFilter<"GovernanceReceipt"> | string
+    userId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    criesOmega?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesCoherence?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesRigor?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesIntegrity?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesEmpathy?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesStrictness?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesSubMetrics?: JsonNullableFilter<"GovernanceReceipt">
+    criesEvidence?: JsonNullableFilter<"GovernanceReceipt">
+    criesCalculation?: JsonNullableFilter<"GovernanceReceipt">
+    criesBaseline?: JsonNullableFilter<"GovernanceReceipt">
+    criesDeterminism?: JsonNullableFilter<"GovernanceReceipt">
+    governanceMode?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prompt?: StringFilter<"GovernanceReceipt"> | string
+    output?: StringFilter<"GovernanceReceipt"> | string
+    receiptId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    conversationId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    exchangeId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    traceId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prevDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    currDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    model?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    tokensIn?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    tokensOut?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    policyFlags?: StringNullableListFilter<"GovernanceReceipt">
+    merkleSealId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    lockBatchId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    createdAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
+    merkleSeal?: XOR<MerkleSealNullableScalarRelationFilter, MerkleSealWhereInput> | null
+  }
+
+  export type GovernanceReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    persona?: SortOrder
+    obligationsApplied?: SortOrder
+    promptHash?: SortOrder
+    outputHash?: SortOrder
+    violations?: SortOrder
+    timestamp?: SortOrderInput | SortOrder
+    version?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    criesOmega?: SortOrderInput | SortOrder
+    criesCoherence?: SortOrderInput | SortOrder
+    criesRigor?: SortOrderInput | SortOrder
+    criesIntegrity?: SortOrderInput | SortOrder
+    criesEmpathy?: SortOrderInput | SortOrder
+    criesStrictness?: SortOrderInput | SortOrder
+    criesSubMetrics?: SortOrderInput | SortOrder
+    criesEvidence?: SortOrderInput | SortOrder
+    criesCalculation?: SortOrderInput | SortOrder
+    criesBaseline?: SortOrderInput | SortOrder
+    criesDeterminism?: SortOrderInput | SortOrder
+    governanceMode?: SortOrderInput | SortOrder
+    prompt?: SortOrder
+    output?: SortOrder
+    receiptId?: SortOrderInput | SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    exchangeId?: SortOrderInput | SortOrder
+    traceId?: SortOrderInput | SortOrder
+    prevDigest?: SortOrderInput | SortOrder
+    currDigest?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    tokensIn?: SortOrderInput | SortOrder
+    tokensOut?: SortOrderInput | SortOrder
+    policyFlags?: SortOrder
+    merkleSealId?: SortOrderInput | SortOrder
+    lockBatchId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    merkleSeal?: MerkleSealOrderByWithRelationInput
+  }
+
+  export type GovernanceReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: GovernanceReceiptWhereInput | GovernanceReceiptWhereInput[]
+    OR?: GovernanceReceiptWhereInput[]
+    NOT?: GovernanceReceiptWhereInput | GovernanceReceiptWhereInput[]
+    lamport?: BigIntFilter<"GovernanceReceipt"> | bigint | number
+    persona?: StringFilter<"GovernanceReceipt"> | string
+    obligationsApplied?: StringNullableListFilter<"GovernanceReceipt">
+    promptHash?: StringFilter<"GovernanceReceipt"> | string
+    outputHash?: StringFilter<"GovernanceReceipt"> | string
+    violations?: StringNullableListFilter<"GovernanceReceipt">
+    timestamp?: DateTimeNullableFilter<"GovernanceReceipt"> | Date | string | null
+    version?: StringFilter<"GovernanceReceipt"> | string
+    userId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    criesOmega?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesCoherence?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesRigor?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesIntegrity?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesEmpathy?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesStrictness?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesSubMetrics?: JsonNullableFilter<"GovernanceReceipt">
+    criesEvidence?: JsonNullableFilter<"GovernanceReceipt">
+    criesCalculation?: JsonNullableFilter<"GovernanceReceipt">
+    criesBaseline?: JsonNullableFilter<"GovernanceReceipt">
+    criesDeterminism?: JsonNullableFilter<"GovernanceReceipt">
+    governanceMode?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prompt?: StringFilter<"GovernanceReceipt"> | string
+    output?: StringFilter<"GovernanceReceipt"> | string
+    receiptId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    conversationId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    exchangeId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    traceId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prevDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    currDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    model?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    tokensIn?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    tokensOut?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    policyFlags?: StringNullableListFilter<"GovernanceReceipt">
+    merkleSealId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    lockBatchId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    createdAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
+    merkleSeal?: XOR<MerkleSealNullableScalarRelationFilter, MerkleSealWhereInput> | null
+  }, "id">
+
+  export type GovernanceReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    persona?: SortOrder
+    obligationsApplied?: SortOrder
+    promptHash?: SortOrder
+    outputHash?: SortOrder
+    violations?: SortOrder
+    timestamp?: SortOrderInput | SortOrder
+    version?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    criesOmega?: SortOrderInput | SortOrder
+    criesCoherence?: SortOrderInput | SortOrder
+    criesRigor?: SortOrderInput | SortOrder
+    criesIntegrity?: SortOrderInput | SortOrder
+    criesEmpathy?: SortOrderInput | SortOrder
+    criesStrictness?: SortOrderInput | SortOrder
+    criesSubMetrics?: SortOrderInput | SortOrder
+    criesEvidence?: SortOrderInput | SortOrder
+    criesCalculation?: SortOrderInput | SortOrder
+    criesBaseline?: SortOrderInput | SortOrder
+    criesDeterminism?: SortOrderInput | SortOrder
+    governanceMode?: SortOrderInput | SortOrder
+    prompt?: SortOrder
+    output?: SortOrder
+    receiptId?: SortOrderInput | SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    exchangeId?: SortOrderInput | SortOrder
+    traceId?: SortOrderInput | SortOrder
+    prevDigest?: SortOrderInput | SortOrder
+    currDigest?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    tokensIn?: SortOrderInput | SortOrder
+    tokensOut?: SortOrderInput | SortOrder
+    policyFlags?: SortOrder
+    merkleSealId?: SortOrderInput | SortOrder
+    lockBatchId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GovernanceReceiptCountOrderByAggregateInput
+    _avg?: GovernanceReceiptAvgOrderByAggregateInput
+    _max?: GovernanceReceiptMaxOrderByAggregateInput
+    _min?: GovernanceReceiptMinOrderByAggregateInput
+    _sum?: GovernanceReceiptSumOrderByAggregateInput
+  }
+
+  export type GovernanceReceiptScalarWhereWithAggregatesInput = {
+    AND?: GovernanceReceiptScalarWhereWithAggregatesInput | GovernanceReceiptScalarWhereWithAggregatesInput[]
+    OR?: GovernanceReceiptScalarWhereWithAggregatesInput[]
+    NOT?: GovernanceReceiptScalarWhereWithAggregatesInput | GovernanceReceiptScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"GovernanceReceipt"> | number
+    lamport?: BigIntWithAggregatesFilter<"GovernanceReceipt"> | bigint | number
+    persona?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    obligationsApplied?: StringNullableListFilter<"GovernanceReceipt">
+    promptHash?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    outputHash?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    violations?: StringNullableListFilter<"GovernanceReceipt">
+    timestamp?: DateTimeNullableWithAggregatesFilter<"GovernanceReceipt"> | Date | string | null
+    version?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    userId?: IntNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesOmega?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesCoherence?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesRigor?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesIntegrity?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesEmpathy?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesStrictness?: FloatNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    criesSubMetrics?: JsonNullableWithAggregatesFilter<"GovernanceReceipt">
+    criesEvidence?: JsonNullableWithAggregatesFilter<"GovernanceReceipt">
+    criesCalculation?: JsonNullableWithAggregatesFilter<"GovernanceReceipt">
+    criesBaseline?: JsonNullableWithAggregatesFilter<"GovernanceReceipt">
+    criesDeterminism?: JsonNullableWithAggregatesFilter<"GovernanceReceipt">
+    governanceMode?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    prompt?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    output?: StringWithAggregatesFilter<"GovernanceReceipt"> | string
+    receiptId?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    conversationId?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    exchangeId?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    traceId?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    prevDigest?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    currDigest?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    model?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    tokensIn?: IntNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    tokensOut?: IntNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    policyFlags?: StringNullableListFilter<"GovernanceReceipt">
+    merkleSealId?: IntNullableWithAggregatesFilter<"GovernanceReceipt"> | number | null
+    lockBatchId?: StringNullableWithAggregatesFilter<"GovernanceReceipt"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GovernanceReceipt"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GovernanceReceipt"> | Date | string
+  }
+
+  export type MerkleSealWhereInput = {
+    AND?: MerkleSealWhereInput | MerkleSealWhereInput[]
+    OR?: MerkleSealWhereInput[]
+    NOT?: MerkleSealWhereInput | MerkleSealWhereInput[]
+    id?: IntFilter<"MerkleSeal"> | number
+    merkleRoot?: StringFilter<"MerkleSeal"> | string
+    receiptCount?: IntFilter<"MerkleSeal"> | number
+    lamportStart?: BigIntFilter<"MerkleSeal"> | bigint | number
+    lamportEnd?: BigIntFilter<"MerkleSeal"> | bigint | number
+    sealedAt?: DateTimeFilter<"MerkleSeal"> | Date | string
+    sealDigest?: StringNullableFilter<"MerkleSeal"> | string | null
+    prevRoot?: StringNullableFilter<"MerkleSeal"> | string | null
+    prevSealDigest?: StringNullableFilter<"MerkleSeal"> | string | null
+    receipts?: GovernanceReceiptListRelationFilter
+  }
+
+  export type MerkleSealOrderByWithRelationInput = {
+    id?: SortOrder
+    merkleRoot?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+    sealedAt?: SortOrder
+    sealDigest?: SortOrderInput | SortOrder
+    prevRoot?: SortOrderInput | SortOrder
+    prevSealDigest?: SortOrderInput | SortOrder
+    receipts?: GovernanceReceiptOrderByRelationAggregateInput
+  }
+
+  export type MerkleSealWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    merkleRoot?: string
+    AND?: MerkleSealWhereInput | MerkleSealWhereInput[]
+    OR?: MerkleSealWhereInput[]
+    NOT?: MerkleSealWhereInput | MerkleSealWhereInput[]
+    receiptCount?: IntFilter<"MerkleSeal"> | number
+    lamportStart?: BigIntFilter<"MerkleSeal"> | bigint | number
+    lamportEnd?: BigIntFilter<"MerkleSeal"> | bigint | number
+    sealedAt?: DateTimeFilter<"MerkleSeal"> | Date | string
+    sealDigest?: StringNullableFilter<"MerkleSeal"> | string | null
+    prevRoot?: StringNullableFilter<"MerkleSeal"> | string | null
+    prevSealDigest?: StringNullableFilter<"MerkleSeal"> | string | null
+    receipts?: GovernanceReceiptListRelationFilter
+  }, "id" | "merkleRoot">
+
+  export type MerkleSealOrderByWithAggregationInput = {
+    id?: SortOrder
+    merkleRoot?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+    sealedAt?: SortOrder
+    sealDigest?: SortOrderInput | SortOrder
+    prevRoot?: SortOrderInput | SortOrder
+    prevSealDigest?: SortOrderInput | SortOrder
+    _count?: MerkleSealCountOrderByAggregateInput
+    _avg?: MerkleSealAvgOrderByAggregateInput
+    _max?: MerkleSealMaxOrderByAggregateInput
+    _min?: MerkleSealMinOrderByAggregateInput
+    _sum?: MerkleSealSumOrderByAggregateInput
+  }
+
+  export type MerkleSealScalarWhereWithAggregatesInput = {
+    AND?: MerkleSealScalarWhereWithAggregatesInput | MerkleSealScalarWhereWithAggregatesInput[]
+    OR?: MerkleSealScalarWhereWithAggregatesInput[]
+    NOT?: MerkleSealScalarWhereWithAggregatesInput | MerkleSealScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"MerkleSeal"> | number
+    merkleRoot?: StringWithAggregatesFilter<"MerkleSeal"> | string
+    receiptCount?: IntWithAggregatesFilter<"MerkleSeal"> | number
+    lamportStart?: BigIntWithAggregatesFilter<"MerkleSeal"> | bigint | number
+    lamportEnd?: BigIntWithAggregatesFilter<"MerkleSeal"> | bigint | number
+    sealedAt?: DateTimeWithAggregatesFilter<"MerkleSeal"> | Date | string
+    sealDigest?: StringNullableWithAggregatesFilter<"MerkleSeal"> | string | null
+    prevRoot?: StringNullableWithAggregatesFilter<"MerkleSeal"> | string | null
+    prevSealDigest?: StringNullableWithAggregatesFilter<"MerkleSeal"> | string | null
+  }
+
   export type UserCreateInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -24694,35 +30434,35 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -24731,35 +30471,35 @@ export namespace Prisma {
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -24769,35 +30509,35 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -24807,82 +30547,82 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrganizationCreateInput = {
@@ -24891,9 +30631,9 @@ export namespace Prisma {
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutOrganizationInput
-    teams?: TeamCreateNestedManyWithoutOrganizationInput
     ssoConfigs?: SSOConfigurationCreateNestedManyWithoutOrganizationInput
+    teams?: TeamCreateNestedManyWithoutOrganizationInput
+    users?: UserCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -24903,9 +30643,9 @@ export namespace Prisma {
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
-    teams?: TeamUncheckedCreateNestedManyWithoutOrganizationInput
     ssoConfigs?: SSOConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+    teams?: TeamUncheckedCreateNestedManyWithoutOrganizationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -24914,9 +30654,9 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutOrganizationNestedInput
-    teams?: TeamUpdateManyWithoutOrganizationNestedInput
     ssoConfigs?: SSOConfigurationUpdateManyWithoutOrganizationNestedInput
+    teams?: TeamUpdateManyWithoutOrganizationNestedInput
+    users?: UserUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -24926,9 +30666,9 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
-    teams?: TeamUncheckedUpdateManyWithoutOrganizationNestedInput
     ssoConfigs?: SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutOrganizationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -25073,15 +30813,15 @@ export namespace Prisma {
 
   export type AuditRecordCreateInput = {
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutAuditsInput
   }
@@ -25090,29 +30830,29 @@ export namespace Prisma {
     id?: number
     userId: number
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
   }
 
   export type AuditRecordUpdateInput = {
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAuditsNestedInput
   }
@@ -25121,15 +30861,15 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25137,29 +30877,29 @@ export namespace Prisma {
     id?: number
     userId: number
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
   }
 
   export type AuditRecordUpdateManyMutationInput = {
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25167,15 +30907,15 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25255,10 +30995,10 @@ export namespace Prisma {
 
   export type SessionCreateInput = {
     expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
     createdAt?: Date | string
+    ipAddress?: string | null
     lastUsedAt?: Date | string
+    userAgent?: string | null
     user: UserCreateNestedOneWithoutSessionsInput
   }
 
@@ -25266,18 +31006,18 @@ export namespace Prisma {
     id?: number
     userId: number
     expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
     createdAt?: Date | string
+    ipAddress?: string | null
     lastUsedAt?: Date | string
+    userAgent?: string | null
   }
 
   export type SessionUpdateInput = {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutSessionsNestedInput
   }
 
@@ -25285,38 +31025,38 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionCreateManyInput = {
     id?: number
     userId: number
     expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
     createdAt?: Date | string
+    ipAddress?: string | null
     lastUsedAt?: Date | string
+    userAgent?: string | null
   }
 
   export type SessionUpdateManyMutationInput = {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BudgetCreateInput = {
@@ -25662,6 +31402,62 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type LamportCounterCreateInput = {
+    id?: number
+    currentValue?: number
+    lastUpdated?: Date | string
+    lastReceiptId?: number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterUncheckedCreateInput = {
+    id?: number
+    currentValue?: number
+    lastUpdated?: Date | string
+    lastReceiptId?: number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    currentValue?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    currentValue?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterCreateManyInput = {
+    id?: number
+    currentValue?: number
+    lastUpdated?: Date | string
+    lastReceiptId?: number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterUpdateManyMutationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    currentValue?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type LamportCounterUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    currentValue?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BENReceiptCreateInput = {
@@ -26410,6 +32206,448 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReceiptCreateInput = {
+    ts: string
+    path: string
+    event: string
+    lamport: number
+    self_hash: string
+    calc_hash: string
+    verified: boolean
+  }
+
+  export type ReceiptUncheckedCreateInput = {
+    id?: number
+    ts: string
+    path: string
+    event: string
+    lamport: number
+    self_hash: string
+    calc_hash: string
+    verified: boolean
+  }
+
+  export type ReceiptUpdateInput = {
+    ts?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    self_hash?: StringFieldUpdateOperationsInput | string
+    calc_hash?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ReceiptUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ts?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    self_hash?: StringFieldUpdateOperationsInput | string
+    calc_hash?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ReceiptCreateManyInput = {
+    id?: number
+    ts: string
+    path: string
+    event: string
+    lamport: number
+    self_hash: string
+    calc_hash: string
+    verified: boolean
+  }
+
+  export type ReceiptUpdateManyMutationInput = {
+    ts?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    self_hash?: StringFieldUpdateOperationsInput | string
+    calc_hash?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ReceiptUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ts?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    self_hash?: StringFieldUpdateOperationsInput | string
+    calc_hash?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type GovernanceReceiptCreateInput = {
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    lockBatchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    merkleSeal?: MerkleSealCreateNestedOneWithoutReceiptsInput
+  }
+
+  export type GovernanceReceiptUncheckedCreateInput = {
+    id?: number
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    merkleSealId?: number | null
+    lockBatchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GovernanceReceiptUpdateInput = {
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    merkleSeal?: MerkleSealUpdateOneWithoutReceiptsNestedInput
+  }
+
+  export type GovernanceReceiptUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    merkleSealId?: NullableIntFieldUpdateOperationsInput | number | null
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GovernanceReceiptCreateManyInput = {
+    id?: number
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    merkleSealId?: number | null
+    lockBatchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GovernanceReceiptUpdateManyMutationInput = {
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GovernanceReceiptUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    merkleSealId?: NullableIntFieldUpdateOperationsInput | number | null
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MerkleSealCreateInput = {
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint | number
+    lamportEnd: bigint | number
+    sealedAt?: Date | string
+    sealDigest?: string | null
+    prevRoot?: string | null
+    prevSealDigest?: string | null
+    receipts?: GovernanceReceiptCreateNestedManyWithoutMerkleSealInput
+  }
+
+  export type MerkleSealUncheckedCreateInput = {
+    id?: number
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint | number
+    lamportEnd: bigint | number
+    sealedAt?: Date | string
+    sealDigest?: string | null
+    prevRoot?: string | null
+    prevSealDigest?: string | null
+    receipts?: GovernanceReceiptUncheckedCreateNestedManyWithoutMerkleSealInput
+  }
+
+  export type MerkleSealUpdateInput = {
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    receipts?: GovernanceReceiptUpdateManyWithoutMerkleSealNestedInput
+  }
+
+  export type MerkleSealUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    receipts?: GovernanceReceiptUncheckedUpdateManyWithoutMerkleSealNestedInput
+  }
+
+  export type MerkleSealCreateManyInput = {
+    id?: number
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint | number
+    lamportEnd: bigint | number
+    sealedAt?: Date | string
+    sealDigest?: string | null
+    prevRoot?: string | null
+    prevSealDigest?: string | null
+  }
+
+  export type MerkleSealUpdateManyMutationInput = {
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MerkleSealUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -26436,6 +32674,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -26451,44 +32696,15 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type EnumUserTierFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
-    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserTierFilter<$PrismaModel> | $Enums.UserTier
-  }
-
-  export type EnumPermissionNullableListFilter<$PrismaModel = never> = {
-    equals?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel> | null
-    has?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel> | null
-    hasEvery?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
-    hasSome?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EnumUserStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -26502,20 +32718,37 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type EnumPermissionNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel> | null
+    has?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EnumUserStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
+  }
+
+  export type EnumUserTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
+    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTierFilter<$PrismaModel> | $Enums.UserTier
   }
 
   export type StringNullableListFilter<$PrismaModel = never> = {
@@ -26524,6 +32757,18 @@ export namespace Prisma {
     hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
     hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
     isEmpty?: boolean
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type EnumBENPersonaFilter<$PrismaModel = never> = {
+    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
+    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    not?: NestedEnumBENPersonaFilter<$PrismaModel> | $Enums.BENPersona
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -26549,39 +32794,10 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type EnumBENPersonaFilter<$PrismaModel = never> = {
-    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
-    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    not?: NestedEnumBENPersonaFilter<$PrismaModel> | $Enums.BENPersona
-  }
-
-  export type OrganizationNullableScalarRelationFilter = {
-    is?: OrganizationWhereInput | null
-    isNot?: OrganizationWhereInput | null
-  }
-
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
-  }
-
   export type AuditRecordListRelationFilter = {
     every?: AuditRecordWhereInput
     some?: AuditRecordWhereInput
     none?: AuditRecordWhereInput
-  }
-
-  export type TeamMemberListRelationFilter = {
-    every?: TeamMemberWhereInput
-    some?: TeamMemberWhereInput
-    none?: TeamMemberWhereInput
-  }
-
-  export type NotificationPreferenceNullableScalarRelationFilter = {
-    is?: NotificationPreferenceWhereInput | null
-    isNot?: NotificationPreferenceWhereInput | null
   }
 
   export type BudgetListRelationFilter = {
@@ -26590,16 +32806,38 @@ export namespace Prisma {
     none?: BudgetWhereInput
   }
 
+  export type FeedbackListRelationFilter = {
+    every?: FeedbackWhereInput
+    some?: FeedbackWhereInput
+    none?: FeedbackWhereInput
+  }
+
+  export type NotificationPreferenceNullableScalarRelationFilter = {
+    is?: NotificationPreferenceWhereInput | null
+    isNot?: NotificationPreferenceWhereInput | null
+  }
+
   export type RegressionBaselineListRelationFilter = {
     every?: RegressionBaselineWhereInput
     some?: RegressionBaselineWhereInput
     none?: RegressionBaselineWhereInput
   }
 
-  export type FeedbackListRelationFilter = {
-    every?: FeedbackWhereInput
-    some?: FeedbackWhereInput
-    none?: FeedbackWhereInput
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
+  export type TeamMemberListRelationFilter = {
+    every?: TeamMemberWhereInput
+    some?: TeamMemberWhereInput
+    none?: TeamMemberWhereInput
+  }
+
+  export type OrganizationNullableScalarRelationFilter = {
+    is?: OrganizationWhereInput | null
+    isNot?: OrganizationWhereInput | null
   }
 
   export type BENReceiptListRelationFilter = {
@@ -26625,15 +32863,7 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type AuditRecordOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type TeamMemberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26641,11 +32871,19 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type FeedbackOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type RegressionBaselineOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type FeedbackOrderByRelationAggregateInput = {
+  export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TeamMemberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26665,28 +32903,28 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrder
     role?: SortOrder
-    tier?: SortOrder
-    permissions?: SortOrder
-    orgId?: SortOrder
-    status?: SortOrder
-    lastLoginAt?: SortOrder
+    name?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    twoFactorEnabled?: SortOrder
-    twoFactorSecret?: SortOrder
+    lastLoginAt?: SortOrder
+    orgId?: SortOrder
+    permissions?: SortOrder
+    status?: SortOrder
+    tier?: SortOrder
     backupCodes?: SortOrder
     failedLoginAttempts?: SortOrder
     lockedUntil?: SortOrder
     passwordChangedAt?: SortOrder
-    ssoProvider?: SortOrder
-    ssoId?: SortOrder
-    ssoMetadata?: SortOrder
+    twoFactorEnabled?: SortOrder
+    twoFactorSecret?: SortOrder
     currentPersona?: SortOrder
-    personaLocked?: SortOrder
     lamportCounter?: SortOrder
     lastReceiptId?: SortOrder
+    personaLocked?: SortOrder
+    ssoId?: SortOrder
+    ssoMetadata?: SortOrder
+    ssoProvider?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -26701,50 +32939,50 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrder
     role?: SortOrder
-    tier?: SortOrder
-    orgId?: SortOrder
-    status?: SortOrder
-    lastLoginAt?: SortOrder
+    name?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    twoFactorEnabled?: SortOrder
-    twoFactorSecret?: SortOrder
+    lastLoginAt?: SortOrder
+    orgId?: SortOrder
+    status?: SortOrder
+    tier?: SortOrder
     failedLoginAttempts?: SortOrder
     lockedUntil?: SortOrder
     passwordChangedAt?: SortOrder
-    ssoProvider?: SortOrder
-    ssoId?: SortOrder
+    twoFactorEnabled?: SortOrder
+    twoFactorSecret?: SortOrder
     currentPersona?: SortOrder
-    personaLocked?: SortOrder
     lamportCounter?: SortOrder
     lastReceiptId?: SortOrder
+    personaLocked?: SortOrder
+    ssoId?: SortOrder
+    ssoProvider?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrder
     role?: SortOrder
-    tier?: SortOrder
-    orgId?: SortOrder
-    status?: SortOrder
-    lastLoginAt?: SortOrder
+    name?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    twoFactorEnabled?: SortOrder
-    twoFactorSecret?: SortOrder
+    lastLoginAt?: SortOrder
+    orgId?: SortOrder
+    status?: SortOrder
+    tier?: SortOrder
     failedLoginAttempts?: SortOrder
     lockedUntil?: SortOrder
     passwordChangedAt?: SortOrder
-    ssoProvider?: SortOrder
-    ssoId?: SortOrder
+    twoFactorEnabled?: SortOrder
+    twoFactorSecret?: SortOrder
     currentPersona?: SortOrder
-    personaLocked?: SortOrder
     lamportCounter?: SortOrder
     lastReceiptId?: SortOrder
+    personaLocked?: SortOrder
+    ssoId?: SortOrder
+    ssoProvider?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -26789,6 +33027,16 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -26807,24 +33055,32 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type EnumUserTierWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
-    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserTierWithAggregatesFilter<$PrismaModel> | $Enums.UserTier
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserTierFilter<$PrismaModel>
-    _max?: NestedEnumUserTierFilter<$PrismaModel>
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26853,32 +33109,14 @@ export namespace Prisma {
     _max?: NestedEnumUserStatusFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+  export type EnumUserTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
+    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTierWithAggregatesFilter<$PrismaModel> | $Enums.UserTier
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    _min?: NestedEnumUserTierFilter<$PrismaModel>
+    _max?: NestedEnumUserTierFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -26887,6 +33125,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumBENPersonaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
+    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    not?: NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel> | $Enums.BENPersona
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBENPersonaFilter<$PrismaModel>
+    _max?: NestedEnumBENPersonaFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -26915,16 +33163,6 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type EnumBENPersonaWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
-    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    not?: NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel> | $Enums.BENPersona
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumBENPersonaFilter<$PrismaModel>
-    _max?: NestedEnumBENPersonaFilter<$PrismaModel>
-  }
-
   export type EnumPlanTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
     in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
@@ -26939,10 +33177,10 @@ export namespace Prisma {
     not?: NestedEnumOrgStatusFilter<$PrismaModel> | $Enums.OrgStatus
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
+  export type SSOConfigurationListRelationFilter = {
+    every?: SSOConfigurationWhereInput
+    some?: SSOConfigurationWhereInput
+    none?: SSOConfigurationWhereInput
   }
 
   export type TeamListRelationFilter = {
@@ -26951,13 +33189,13 @@ export namespace Prisma {
     none?: TeamWhereInput
   }
 
-  export type SSOConfigurationListRelationFilter = {
-    every?: SSOConfigurationWhereInput
-    some?: SSOConfigurationWhereInput
-    none?: SSOConfigurationWhereInput
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
   }
 
-  export type UserOrderByRelationAggregateInput = {
+  export type SSOConfigurationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26965,7 +33203,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type SSOConfigurationOrderByRelationAggregateInput = {
+  export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27152,15 +33390,15 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     action?: SortOrder
+    lamport?: SortOrder
+    createdAt?: SortOrder
     category?: SortOrder
-    details?: SortOrder
+    hashPointer?: SortOrder
     metadata?: SortOrder
     status?: SortOrder
-    lamport?: SortOrder
-    hashPointer?: SortOrder
-    organizationId?: SortOrder
+    details?: SortOrder
     blockHash?: SortOrder
-    createdAt?: SortOrder
+    organizationId?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -27175,13 +33413,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     action?: SortOrder
-    category?: SortOrder
-    status?: SortOrder
     lamport?: SortOrder
-    hashPointer?: SortOrder
-    organizationId?: SortOrder
-    blockHash?: SortOrder
     createdAt?: SortOrder
+    category?: SortOrder
+    hashPointer?: SortOrder
+    status?: SortOrder
+    blockHash?: SortOrder
+    organizationId?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -27189,13 +33427,13 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     action?: SortOrder
-    category?: SortOrder
-    status?: SortOrder
     lamport?: SortOrder
-    hashPointer?: SortOrder
-    organizationId?: SortOrder
-    blockHash?: SortOrder
     createdAt?: SortOrder
+    category?: SortOrder
+    hashPointer?: SortOrder
+    status?: SortOrder
+    blockHash?: SortOrder
+    organizationId?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -27322,10 +33560,10 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
-    userAgent?: SortOrder
-    ipAddress?: SortOrder
     createdAt?: SortOrder
+    ipAddress?: SortOrder
     lastUsedAt?: SortOrder
+    userAgent?: SortOrder
   }
 
   export type SessionAvgOrderByAggregateInput = {
@@ -27337,20 +33575,20 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
-    userAgent?: SortOrder
-    ipAddress?: SortOrder
     createdAt?: SortOrder
+    ipAddress?: SortOrder
     lastUsedAt?: SortOrder
+    userAgent?: SortOrder
   }
 
   export type SessionMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
-    userAgent?: SortOrder
-    ipAddress?: SortOrder
     createdAt?: SortOrder
+    ipAddress?: SortOrder
     lastUsedAt?: SortOrder
+    userAgent?: SortOrder
   }
 
   export type SessionSumOrderByAggregateInput = {
@@ -27692,6 +33930,40 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type LamportCounterCountOrderByAggregateInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastUpdated?: SortOrder
+    lastReceiptId?: SortOrder
+    metadata?: SortOrder
+  }
+
+  export type LamportCounterAvgOrderByAggregateInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastReceiptId?: SortOrder
+  }
+
+  export type LamportCounterMaxOrderByAggregateInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastUpdated?: SortOrder
+    lastReceiptId?: SortOrder
+  }
+
+  export type LamportCounterMinOrderByAggregateInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastUpdated?: SortOrder
+    lastReceiptId?: SortOrder
+  }
+
+  export type LamportCounterSumOrderByAggregateInput = {
+    id?: SortOrder
+    currentValue?: SortOrder
+    lastReceiptId?: SortOrder
   }
 
   export type EnumReceiptTypeFilter<$PrismaModel = never> = {
@@ -28202,25 +34474,284 @@ export namespace Prisma {
     highScoreThreshold?: SortOrder
   }
 
+  export type ReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    ts?: SortOrder
+    path?: SortOrder
+    event?: SortOrder
+    lamport?: SortOrder
+    self_hash?: SortOrder
+    calc_hash?: SortOrder
+    verified?: SortOrder
+  }
+
+  export type ReceiptAvgOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+  }
+
+  export type ReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ts?: SortOrder
+    path?: SortOrder
+    event?: SortOrder
+    lamport?: SortOrder
+    self_hash?: SortOrder
+    calc_hash?: SortOrder
+    verified?: SortOrder
+  }
+
+  export type ReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    ts?: SortOrder
+    path?: SortOrder
+    event?: SortOrder
+    lamport?: SortOrder
+    self_hash?: SortOrder
+    calc_hash?: SortOrder
+    verified?: SortOrder
+  }
+
+  export type ReceiptSumOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+  }
+
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type MerkleSealNullableScalarRelationFilter = {
+    is?: MerkleSealWhereInput | null
+    isNot?: MerkleSealWhereInput | null
+  }
+
+  export type GovernanceReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    persona?: SortOrder
+    obligationsApplied?: SortOrder
+    promptHash?: SortOrder
+    outputHash?: SortOrder
+    violations?: SortOrder
+    timestamp?: SortOrder
+    version?: SortOrder
+    userId?: SortOrder
+    criesOmega?: SortOrder
+    criesCoherence?: SortOrder
+    criesRigor?: SortOrder
+    criesIntegrity?: SortOrder
+    criesEmpathy?: SortOrder
+    criesStrictness?: SortOrder
+    criesSubMetrics?: SortOrder
+    criesEvidence?: SortOrder
+    criesCalculation?: SortOrder
+    criesBaseline?: SortOrder
+    criesDeterminism?: SortOrder
+    governanceMode?: SortOrder
+    prompt?: SortOrder
+    output?: SortOrder
+    receiptId?: SortOrder
+    conversationId?: SortOrder
+    exchangeId?: SortOrder
+    traceId?: SortOrder
+    prevDigest?: SortOrder
+    currDigest?: SortOrder
+    model?: SortOrder
+    tokensIn?: SortOrder
+    tokensOut?: SortOrder
+    policyFlags?: SortOrder
+    merkleSealId?: SortOrder
+    lockBatchId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GovernanceReceiptAvgOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    userId?: SortOrder
+    criesOmega?: SortOrder
+    criesCoherence?: SortOrder
+    criesRigor?: SortOrder
+    criesIntegrity?: SortOrder
+    criesEmpathy?: SortOrder
+    criesStrictness?: SortOrder
+    tokensIn?: SortOrder
+    tokensOut?: SortOrder
+    merkleSealId?: SortOrder
+  }
+
+  export type GovernanceReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    persona?: SortOrder
+    promptHash?: SortOrder
+    outputHash?: SortOrder
+    timestamp?: SortOrder
+    version?: SortOrder
+    userId?: SortOrder
+    criesOmega?: SortOrder
+    criesCoherence?: SortOrder
+    criesRigor?: SortOrder
+    criesIntegrity?: SortOrder
+    criesEmpathy?: SortOrder
+    criesStrictness?: SortOrder
+    governanceMode?: SortOrder
+    prompt?: SortOrder
+    output?: SortOrder
+    receiptId?: SortOrder
+    conversationId?: SortOrder
+    exchangeId?: SortOrder
+    traceId?: SortOrder
+    prevDigest?: SortOrder
+    currDigest?: SortOrder
+    model?: SortOrder
+    tokensIn?: SortOrder
+    tokensOut?: SortOrder
+    merkleSealId?: SortOrder
+    lockBatchId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GovernanceReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    persona?: SortOrder
+    promptHash?: SortOrder
+    outputHash?: SortOrder
+    timestamp?: SortOrder
+    version?: SortOrder
+    userId?: SortOrder
+    criesOmega?: SortOrder
+    criesCoherence?: SortOrder
+    criesRigor?: SortOrder
+    criesIntegrity?: SortOrder
+    criesEmpathy?: SortOrder
+    criesStrictness?: SortOrder
+    governanceMode?: SortOrder
+    prompt?: SortOrder
+    output?: SortOrder
+    receiptId?: SortOrder
+    conversationId?: SortOrder
+    exchangeId?: SortOrder
+    traceId?: SortOrder
+    prevDigest?: SortOrder
+    currDigest?: SortOrder
+    model?: SortOrder
+    tokensIn?: SortOrder
+    tokensOut?: SortOrder
+    merkleSealId?: SortOrder
+    lockBatchId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GovernanceReceiptSumOrderByAggregateInput = {
+    id?: SortOrder
+    lamport?: SortOrder
+    userId?: SortOrder
+    criesOmega?: SortOrder
+    criesCoherence?: SortOrder
+    criesRigor?: SortOrder
+    criesIntegrity?: SortOrder
+    criesEmpathy?: SortOrder
+    criesStrictness?: SortOrder
+    tokensIn?: SortOrder
+    tokensOut?: SortOrder
+    merkleSealId?: SortOrder
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type GovernanceReceiptListRelationFilter = {
+    every?: GovernanceReceiptWhereInput
+    some?: GovernanceReceiptWhereInput
+    none?: GovernanceReceiptWhereInput
+  }
+
+  export type GovernanceReceiptOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MerkleSealCountOrderByAggregateInput = {
+    id?: SortOrder
+    merkleRoot?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+    sealedAt?: SortOrder
+    sealDigest?: SortOrder
+    prevRoot?: SortOrder
+    prevSealDigest?: SortOrder
+  }
+
+  export type MerkleSealAvgOrderByAggregateInput = {
+    id?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+  }
+
+  export type MerkleSealMaxOrderByAggregateInput = {
+    id?: SortOrder
+    merkleRoot?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+    sealedAt?: SortOrder
+    sealDigest?: SortOrder
+    prevRoot?: SortOrder
+    prevSealDigest?: SortOrder
+  }
+
+  export type MerkleSealMinOrderByAggregateInput = {
+    id?: SortOrder
+    merkleRoot?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+    sealedAt?: SortOrder
+    sealDigest?: SortOrder
+    prevRoot?: SortOrder
+    prevSealDigest?: SortOrder
+  }
+
+  export type MerkleSealSumOrderByAggregateInput = {
+    id?: SortOrder
+    receiptCount?: SortOrder
+    lamportStart?: SortOrder
+    lamportEnd?: SortOrder
+  }
+
   export type UserCreatepermissionsInput = {
     set: $Enums.Permission[]
   }
 
   export type UserCreatebackupCodesInput = {
     set: string[]
-  }
-
-  export type OrganizationCreateNestedOneWithoutUsersInput = {
-    create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
-    connect?: OrganizationWhereUniqueInput
-  }
-
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type AuditRecordCreateNestedManyWithoutUserInput = {
@@ -28230,24 +34761,24 @@ export namespace Prisma {
     connect?: AuditRecordWhereUniqueInput | AuditRecordWhereUniqueInput[]
   }
 
-  export type TeamMemberCreateNestedManyWithoutUserInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+  export type BudgetCreateNestedManyWithoutUserInput = {
+    create?: XOR<BudgetCreateWithoutUserInput, BudgetUncheckedCreateWithoutUserInput> | BudgetCreateWithoutUserInput[] | BudgetUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutUserInput | BudgetCreateOrConnectWithoutUserInput[]
+    createMany?: BudgetCreateManyUserInputEnvelope
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+  }
+
+  export type FeedbackCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
   export type NotificationPreferenceCreateNestedOneWithoutUserInput = {
     create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
     connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
     connect?: NotificationPreferenceWhereUniqueInput
-  }
-
-  export type BudgetCreateNestedManyWithoutUserInput = {
-    create?: XOR<BudgetCreateWithoutUserInput, BudgetUncheckedCreateWithoutUserInput> | BudgetCreateWithoutUserInput[] | BudgetUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: BudgetCreateOrConnectWithoutUserInput | BudgetCreateOrConnectWithoutUserInput[]
-    createMany?: BudgetCreateManyUserInputEnvelope
-    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
   }
 
   export type RegressionBaselineCreateNestedManyWithoutUserInput = {
@@ -28257,11 +34788,24 @@ export namespace Prisma {
     connect?: RegressionBaselineWhereUniqueInput | RegressionBaselineWhereUniqueInput[]
   }
 
-  export type FeedbackCreateNestedManyWithoutUserInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type TeamMemberCreateNestedManyWithoutUserInput = {
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
+    createMany?: TeamMemberCreateManyUserInputEnvelope
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutUsersInput = {
+    create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
+    connect?: OrganizationWhereUniqueInput
   }
 
   export type BENReceiptCreateNestedManyWithoutUserInput = {
@@ -28285,31 +34829,11 @@ export namespace Prisma {
     connect?: ZScanVerificationWhereUniqueInput | ZScanVerificationWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
   export type AuditRecordUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AuditRecordCreateWithoutUserInput, AuditRecordUncheckedCreateWithoutUserInput> | AuditRecordCreateWithoutUserInput[] | AuditRecordUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuditRecordCreateOrConnectWithoutUserInput | AuditRecordCreateOrConnectWithoutUserInput[]
     createMany?: AuditRecordCreateManyUserInputEnvelope
     connect?: AuditRecordWhereUniqueInput | AuditRecordWhereUniqueInput[]
-  }
-
-  export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-  }
-
-  export type NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    connect?: NotificationPreferenceWhereUniqueInput
   }
 
   export type BudgetUncheckedCreateNestedManyWithoutUserInput = {
@@ -28319,6 +34843,19 @@ export namespace Prisma {
     connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
   }
 
+  export type FeedbackUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  }
+
+  export type NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    connect?: NotificationPreferenceWhereUniqueInput
+  }
+
   export type RegressionBaselineUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<RegressionBaselineCreateWithoutUserInput, RegressionBaselineUncheckedCreateWithoutUserInput> | RegressionBaselineCreateWithoutUserInput[] | RegressionBaselineUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RegressionBaselineCreateOrConnectWithoutUserInput | RegressionBaselineCreateOrConnectWithoutUserInput[]
@@ -28326,11 +34863,18 @@ export namespace Prisma {
     connect?: RegressionBaselineWhereUniqueInput | RegressionBaselineWhereUniqueInput[]
   }
 
-  export type FeedbackUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
+    createMany?: TeamMemberCreateManyUserInputEnvelope
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
   }
 
   export type BENReceiptUncheckedCreateNestedManyWithoutUserInput = {
@@ -28358,16 +34902,20 @@ export namespace Prisma {
     set?: string
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role
   }
 
-  export type EnumUserTierFieldUpdateOperationsInput = {
-    set?: $Enums.UserTier
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type UserUpdatepermissionsInput = {
@@ -28379,16 +34927,8 @@ export namespace Prisma {
     set?: $Enums.UserStatus
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type EnumUserTierFieldUpdateOperationsInput = {
+    set?: $Enums.UserTier
   }
 
   export type UserUpdatebackupCodesInput = {
@@ -28404,6 +34944,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type EnumBENPersonaFieldUpdateOperationsInput = {
     set?: $Enums.BENPersona
   }
@@ -28414,30 +34958,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type OrganizationUpdateOneWithoutUsersNestedInput = {
-    create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
-    upsert?: OrganizationUpsertWithoutUsersInput
-    disconnect?: OrganizationWhereInput | boolean
-    delete?: OrganizationWhereInput | boolean
-    connect?: OrganizationWhereUniqueInput
-    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutUsersInput, OrganizationUpdateWithoutUsersInput>, OrganizationUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type SessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type AuditRecordUpdateManyWithoutUserNestedInput = {
@@ -28454,30 +34974,6 @@ export namespace Prisma {
     deleteMany?: AuditRecordScalarWhereInput | AuditRecordScalarWhereInput[]
   }
 
-  export type TeamMemberUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-  }
-
-  export type NotificationPreferenceUpdateOneWithoutUserNestedInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    upsert?: NotificationPreferenceUpsertWithoutUserInput
-    disconnect?: NotificationPreferenceWhereInput | boolean
-    delete?: NotificationPreferenceWhereInput | boolean
-    connect?: NotificationPreferenceWhereUniqueInput
-    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
-  }
-
   export type BudgetUpdateManyWithoutUserNestedInput = {
     create?: XOR<BudgetCreateWithoutUserInput, BudgetUncheckedCreateWithoutUserInput> | BudgetCreateWithoutUserInput[] | BudgetUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BudgetCreateOrConnectWithoutUserInput | BudgetCreateOrConnectWithoutUserInput[]
@@ -28490,6 +34986,30 @@ export namespace Prisma {
     update?: BudgetUpdateWithWhereUniqueWithoutUserInput | BudgetUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: BudgetUpdateManyWithWhereWithoutUserInput | BudgetUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+  }
+
+  export type FeedbackUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUpdateOneWithoutUserNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    upsert?: NotificationPreferenceUpsertWithoutUserInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
   }
 
   export type RegressionBaselineUpdateManyWithoutUserNestedInput = {
@@ -28506,18 +35026,42 @@ export namespace Prisma {
     deleteMany?: RegressionBaselineScalarWhereInput | RegressionBaselineScalarWhereInput[]
   }
 
-  export type FeedbackUpdateManyWithoutUserNestedInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type TeamMemberUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TeamMemberCreateManyUserInputEnvelope
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+  }
+
+  export type OrganizationUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
+    upsert?: OrganizationUpsertWithoutUsersInput
+    disconnect?: OrganizationWhereInput | boolean
+    delete?: OrganizationWhereInput | boolean
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutUsersInput, OrganizationUpdateWithoutUsersInput>, OrganizationUncheckedUpdateWithoutUsersInput>
   }
 
   export type BENReceiptUpdateManyWithoutUserNestedInput = {
@@ -28562,20 +35106,6 @@ export namespace Prisma {
     deleteMany?: ZScanVerificationScalarWhereInput | ZScanVerificationScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type AuditRecordUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AuditRecordCreateWithoutUserInput, AuditRecordUncheckedCreateWithoutUserInput> | AuditRecordCreateWithoutUserInput[] | AuditRecordUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuditRecordCreateOrConnectWithoutUserInput | AuditRecordCreateOrConnectWithoutUserInput[]
@@ -28588,30 +35118,6 @@ export namespace Prisma {
     update?: AuditRecordUpdateWithWhereUniqueWithoutUserInput | AuditRecordUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AuditRecordUpdateManyWithWhereWithoutUserInput | AuditRecordUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AuditRecordScalarWhereInput | AuditRecordScalarWhereInput[]
-  }
-
-  export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-  }
-
-  export type NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    upsert?: NotificationPreferenceUpsertWithoutUserInput
-    disconnect?: NotificationPreferenceWhereInput | boolean
-    delete?: NotificationPreferenceWhereInput | boolean
-    connect?: NotificationPreferenceWhereUniqueInput
-    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
   }
 
   export type BudgetUncheckedUpdateManyWithoutUserNestedInput = {
@@ -28628,6 +35134,30 @@ export namespace Prisma {
     deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
   }
 
+  export type FeedbackUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    upsert?: NotificationPreferenceUpsertWithoutUserInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
   export type RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<RegressionBaselineCreateWithoutUserInput, RegressionBaselineUncheckedCreateWithoutUserInput> | RegressionBaselineCreateWithoutUserInput[] | RegressionBaselineUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RegressionBaselineCreateOrConnectWithoutUserInput | RegressionBaselineCreateOrConnectWithoutUserInput[]
@@ -28642,18 +35172,32 @@ export namespace Prisma {
     deleteMany?: RegressionBaselineScalarWhereInput | RegressionBaselineScalarWhereInput[]
   }
 
-  export type FeedbackUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TeamMemberCreateManyUserInputEnvelope
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
   }
 
   export type BENReceiptUncheckedUpdateManyWithoutUserNestedInput = {
@@ -28698,11 +35242,11 @@ export namespace Prisma {
     deleteMany?: ZScanVerificationScalarWhereInput | ZScanVerificationScalarWhereInput[]
   }
 
-  export type UserCreateNestedManyWithoutOrganizationInput = {
-    create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
-    createMany?: UserCreateManyOrganizationInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type SSOConfigurationCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SSOConfigurationCreateWithoutOrganizationInput, SSOConfigurationUncheckedCreateWithoutOrganizationInput> | SSOConfigurationCreateWithoutOrganizationInput[] | SSOConfigurationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SSOConfigurationCreateOrConnectWithoutOrganizationInput | SSOConfigurationCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SSOConfigurationCreateManyOrganizationInputEnvelope
+    connect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
   }
 
   export type TeamCreateNestedManyWithoutOrganizationInput = {
@@ -28712,25 +35256,11 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
   }
 
-  export type SSOConfigurationCreateNestedManyWithoutOrganizationInput = {
-    create?: XOR<SSOConfigurationCreateWithoutOrganizationInput, SSOConfigurationUncheckedCreateWithoutOrganizationInput> | SSOConfigurationCreateWithoutOrganizationInput[] | SSOConfigurationUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: SSOConfigurationCreateOrConnectWithoutOrganizationInput | SSOConfigurationCreateOrConnectWithoutOrganizationInput[]
-    createMany?: SSOConfigurationCreateManyOrganizationInputEnvelope
-    connect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
-  }
-
-  export type UserUncheckedCreateNestedManyWithoutOrganizationInput = {
+  export type UserCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
     createMany?: UserCreateManyOrganizationInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type TeamUncheckedCreateNestedManyWithoutOrganizationInput = {
-    create?: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput> | TeamCreateWithoutOrganizationInput[] | TeamUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: TeamCreateOrConnectWithoutOrganizationInput | TeamCreateOrConnectWithoutOrganizationInput[]
-    createMany?: TeamCreateManyOrganizationInputEnvelope
-    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
   }
 
   export type SSOConfigurationUncheckedCreateNestedManyWithoutOrganizationInput = {
@@ -28740,40 +35270,26 @@ export namespace Prisma {
     connect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
   }
 
+  export type TeamUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput> | TeamCreateWithoutOrganizationInput[] | TeamUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOrganizationInput | TeamCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TeamCreateManyOrganizationInputEnvelope
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
+    createMany?: UserCreateManyOrganizationInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type EnumPlanTypeFieldUpdateOperationsInput = {
     set?: $Enums.PlanType
   }
 
   export type EnumOrgStatusFieldUpdateOperationsInput = {
     set?: $Enums.OrgStatus
-  }
-
-  export type UserUpdateManyWithoutOrganizationNestedInput = {
-    create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutOrganizationInput | UserUpsertWithWhereUniqueWithoutOrganizationInput[]
-    createMany?: UserCreateManyOrganizationInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutOrganizationInput | UserUpdateWithWhereUniqueWithoutOrganizationInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutOrganizationInput | UserUpdateManyWithWhereWithoutOrganizationInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
-  }
-
-  export type TeamUpdateManyWithoutOrganizationNestedInput = {
-    create?: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput> | TeamCreateWithoutOrganizationInput[] | TeamUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: TeamCreateOrConnectWithoutOrganizationInput | TeamCreateOrConnectWithoutOrganizationInput[]
-    upsert?: TeamUpsertWithWhereUniqueWithoutOrganizationInput | TeamUpsertWithWhereUniqueWithoutOrganizationInput[]
-    createMany?: TeamCreateManyOrganizationInputEnvelope
-    set?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
-    disconnect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
-    delete?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
-    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
-    update?: TeamUpdateWithWhereUniqueWithoutOrganizationInput | TeamUpdateWithWhereUniqueWithoutOrganizationInput[]
-    updateMany?: TeamUpdateManyWithWhereWithoutOrganizationInput | TeamUpdateManyWithWhereWithoutOrganizationInput[]
-    deleteMany?: TeamScalarWhereInput | TeamScalarWhereInput[]
   }
 
   export type SSOConfigurationUpdateManyWithoutOrganizationNestedInput = {
@@ -28790,7 +35306,21 @@ export namespace Prisma {
     deleteMany?: SSOConfigurationScalarWhereInput | SSOConfigurationScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
+  export type TeamUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput> | TeamCreateWithoutOrganizationInput[] | TeamUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOrganizationInput | TeamCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TeamUpsertWithWhereUniqueWithoutOrganizationInput | TeamUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TeamCreateManyOrganizationInputEnvelope
+    set?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    disconnect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    delete?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    update?: TeamUpdateWithWhereUniqueWithoutOrganizationInput | TeamUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TeamUpdateManyWithWhereWithoutOrganizationInput | TeamUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TeamScalarWhereInput | TeamScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
     upsert?: UserUpsertWithWhereUniqueWithoutOrganizationInput | UserUpsertWithWhereUniqueWithoutOrganizationInput[]
@@ -28802,6 +35332,20 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutOrganizationInput | UserUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: UserUpdateManyWithWhereWithoutOrganizationInput | UserUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SSOConfigurationCreateWithoutOrganizationInput, SSOConfigurationUncheckedCreateWithoutOrganizationInput> | SSOConfigurationCreateWithoutOrganizationInput[] | SSOConfigurationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SSOConfigurationCreateOrConnectWithoutOrganizationInput | SSOConfigurationCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SSOConfigurationUpsertWithWhereUniqueWithoutOrganizationInput | SSOConfigurationUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SSOConfigurationCreateManyOrganizationInputEnvelope
+    set?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
+    disconnect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
+    delete?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
+    connect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
+    update?: SSOConfigurationUpdateWithWhereUniqueWithoutOrganizationInput | SSOConfigurationUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SSOConfigurationUpdateManyWithWhereWithoutOrganizationInput | SSOConfigurationUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SSOConfigurationScalarWhereInput | SSOConfigurationScalarWhereInput[]
   }
 
   export type TeamUncheckedUpdateManyWithoutOrganizationNestedInput = {
@@ -28818,18 +35362,18 @@ export namespace Prisma {
     deleteMany?: TeamScalarWhereInput | TeamScalarWhereInput[]
   }
 
-  export type SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput = {
-    create?: XOR<SSOConfigurationCreateWithoutOrganizationInput, SSOConfigurationUncheckedCreateWithoutOrganizationInput> | SSOConfigurationCreateWithoutOrganizationInput[] | SSOConfigurationUncheckedCreateWithoutOrganizationInput[]
-    connectOrCreate?: SSOConfigurationCreateOrConnectWithoutOrganizationInput | SSOConfigurationCreateOrConnectWithoutOrganizationInput[]
-    upsert?: SSOConfigurationUpsertWithWhereUniqueWithoutOrganizationInput | SSOConfigurationUpsertWithWhereUniqueWithoutOrganizationInput[]
-    createMany?: SSOConfigurationCreateManyOrganizationInputEnvelope
-    set?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
-    disconnect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
-    delete?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
-    connect?: SSOConfigurationWhereUniqueInput | SSOConfigurationWhereUniqueInput[]
-    update?: SSOConfigurationUpdateWithWhereUniqueWithoutOrganizationInput | SSOConfigurationUpdateWithWhereUniqueWithoutOrganizationInput[]
-    updateMany?: SSOConfigurationUpdateManyWithWhereWithoutOrganizationInput | SSOConfigurationUpdateManyWithWhereWithoutOrganizationInput[]
-    deleteMany?: SSOConfigurationScalarWhereInput | SSOConfigurationScalarWhereInput[]
+  export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutOrganizationInput | UserUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: UserCreateManyOrganizationInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutOrganizationInput | UserUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutOrganizationInput | UserUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutTeamsInput = {
@@ -29256,6 +35800,99 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
+  export type GovernanceReceiptCreateobligationsAppliedInput = {
+    set: string[]
+  }
+
+  export type GovernanceReceiptCreateviolationsInput = {
+    set: string[]
+  }
+
+  export type GovernanceReceiptCreatepolicyFlagsInput = {
+    set: string[]
+  }
+
+  export type MerkleSealCreateNestedOneWithoutReceiptsInput = {
+    create?: XOR<MerkleSealCreateWithoutReceiptsInput, MerkleSealUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: MerkleSealCreateOrConnectWithoutReceiptsInput
+    connect?: MerkleSealWhereUniqueInput
+  }
+
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type GovernanceReceiptUpdateobligationsAppliedInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type GovernanceReceiptUpdateviolationsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type GovernanceReceiptUpdatepolicyFlagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type MerkleSealUpdateOneWithoutReceiptsNestedInput = {
+    create?: XOR<MerkleSealCreateWithoutReceiptsInput, MerkleSealUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: MerkleSealCreateOrConnectWithoutReceiptsInput
+    upsert?: MerkleSealUpsertWithoutReceiptsInput
+    disconnect?: MerkleSealWhereInput | boolean
+    delete?: MerkleSealWhereInput | boolean
+    connect?: MerkleSealWhereUniqueInput
+    update?: XOR<XOR<MerkleSealUpdateToOneWithWhereWithoutReceiptsInput, MerkleSealUpdateWithoutReceiptsInput>, MerkleSealUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type GovernanceReceiptCreateNestedManyWithoutMerkleSealInput = {
+    create?: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput> | GovernanceReceiptCreateWithoutMerkleSealInput[] | GovernanceReceiptUncheckedCreateWithoutMerkleSealInput[]
+    connectOrCreate?: GovernanceReceiptCreateOrConnectWithoutMerkleSealInput | GovernanceReceiptCreateOrConnectWithoutMerkleSealInput[]
+    createMany?: GovernanceReceiptCreateManyMerkleSealInputEnvelope
+    connect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+  }
+
+  export type GovernanceReceiptUncheckedCreateNestedManyWithoutMerkleSealInput = {
+    create?: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput> | GovernanceReceiptCreateWithoutMerkleSealInput[] | GovernanceReceiptUncheckedCreateWithoutMerkleSealInput[]
+    connectOrCreate?: GovernanceReceiptCreateOrConnectWithoutMerkleSealInput | GovernanceReceiptCreateOrConnectWithoutMerkleSealInput[]
+    createMany?: GovernanceReceiptCreateManyMerkleSealInputEnvelope
+    connect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+  }
+
+  export type GovernanceReceiptUpdateManyWithoutMerkleSealNestedInput = {
+    create?: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput> | GovernanceReceiptCreateWithoutMerkleSealInput[] | GovernanceReceiptUncheckedCreateWithoutMerkleSealInput[]
+    connectOrCreate?: GovernanceReceiptCreateOrConnectWithoutMerkleSealInput | GovernanceReceiptCreateOrConnectWithoutMerkleSealInput[]
+    upsert?: GovernanceReceiptUpsertWithWhereUniqueWithoutMerkleSealInput | GovernanceReceiptUpsertWithWhereUniqueWithoutMerkleSealInput[]
+    createMany?: GovernanceReceiptCreateManyMerkleSealInputEnvelope
+    set?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    disconnect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    delete?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    connect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    update?: GovernanceReceiptUpdateWithWhereUniqueWithoutMerkleSealInput | GovernanceReceiptUpdateWithWhereUniqueWithoutMerkleSealInput[]
+    updateMany?: GovernanceReceiptUpdateManyWithWhereWithoutMerkleSealInput | GovernanceReceiptUpdateManyWithWhereWithoutMerkleSealInput[]
+    deleteMany?: GovernanceReceiptScalarWhereInput | GovernanceReceiptScalarWhereInput[]
+  }
+
+  export type GovernanceReceiptUncheckedUpdateManyWithoutMerkleSealNestedInput = {
+    create?: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput> | GovernanceReceiptCreateWithoutMerkleSealInput[] | GovernanceReceiptUncheckedCreateWithoutMerkleSealInput[]
+    connectOrCreate?: GovernanceReceiptCreateOrConnectWithoutMerkleSealInput | GovernanceReceiptCreateOrConnectWithoutMerkleSealInput[]
+    upsert?: GovernanceReceiptUpsertWithWhereUniqueWithoutMerkleSealInput | GovernanceReceiptUpsertWithWhereUniqueWithoutMerkleSealInput[]
+    createMany?: GovernanceReceiptCreateManyMerkleSealInputEnvelope
+    set?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    disconnect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    delete?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    connect?: GovernanceReceiptWhereUniqueInput | GovernanceReceiptWhereUniqueInput[]
+    update?: GovernanceReceiptUpdateWithWhereUniqueWithoutMerkleSealInput | GovernanceReceiptUpdateWithWhereUniqueWithoutMerkleSealInput[]
+    updateMany?: GovernanceReceiptUpdateManyWithWhereWithoutMerkleSealInput | GovernanceReceiptUpdateManyWithWhereWithoutMerkleSealInput[]
+    deleteMany?: GovernanceReceiptScalarWhereInput | GovernanceReceiptScalarWhereInput[]
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -29281,6 +35918,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -29295,18 +35939,26 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type NestedEnumUserTierFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
-    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserTierFilter<$PrismaModel> | $Enums.UserTier
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
@@ -29327,26 +35979,11 @@ export namespace Prisma {
     not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  export type NestedEnumUserTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
+    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTierFilter<$PrismaModel> | $Enums.UserTier
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -29405,6 +36042,16 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -29422,24 +36069,32 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumUserTierWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
-    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserTierWithAggregatesFilter<$PrismaModel> | $Enums.UserTier
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserTierFilter<$PrismaModel>
-    _max?: NestedEnumUserTierFilter<$PrismaModel>
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -29479,32 +36134,14 @@ export namespace Prisma {
     _max?: NestedEnumUserStatusFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+  export type NestedEnumUserTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserTier | EnumUserTierFieldRefInput<$PrismaModel>
+    in?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserTier[] | ListEnumUserTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTierWithAggregatesFilter<$PrismaModel> | $Enums.UserTier
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    _min?: NestedEnumUserTierFilter<$PrismaModel>
+    _max?: NestedEnumUserTierFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -29513,6 +36150,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
+    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
+    not?: NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel> | $Enums.BENPersona
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBENPersonaFilter<$PrismaModel>
+    _max?: NestedEnumBENPersonaFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -29536,16 +36183,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.BENPersona | EnumBENPersonaFieldRefInput<$PrismaModel>
-    in?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BENPersona[] | ListEnumBENPersonaFieldRefInput<$PrismaModel>
-    not?: NestedEnumBENPersonaWithAggregatesFilter<$PrismaModel> | $Enums.BENPersona
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumBENPersonaFilter<$PrismaModel>
-    _max?: NestedEnumBENPersonaFilter<$PrismaModel>
   }
 
   export type NestedEnumPlanTypeFilter<$PrismaModel = never> = {
@@ -29841,85 +36478,59 @@ export namespace Prisma {
     _max?: NestedEnumSSOProviderFilter<$PrismaModel>
   }
 
-  export type OrganizationCreateWithoutUsersInput = {
-    name: string
-    plan?: $Enums.PlanType
-    status?: $Enums.OrgStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teams?: TeamCreateNestedManyWithoutOrganizationInput
-    ssoConfigs?: SSOConfigurationCreateNestedManyWithoutOrganizationInput
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
   }
 
-  export type OrganizationUncheckedCreateWithoutUsersInput = {
-    id?: number
-    name: string
-    plan?: $Enums.PlanType
-    status?: $Enums.OrgStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teams?: TeamUncheckedCreateNestedManyWithoutOrganizationInput
-    ssoConfigs?: SSOConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
-  }
-
-  export type OrganizationCreateOrConnectWithoutUsersInput = {
-    where: OrganizationWhereUniqueInput
-    create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
-  }
-
-  export type SessionCreateWithoutUserInput = {
-    expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
-    createdAt?: Date | string
-    lastUsedAt?: Date | string
-  }
-
-  export type SessionUncheckedCreateWithoutUserInput = {
-    id?: number
-    expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
-    createdAt?: Date | string
-    lastUsedAt?: Date | string
-  }
-
-  export type SessionCreateOrConnectWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionCreateManyUserInputEnvelope = {
-    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
   }
 
   export type AuditRecordCreateWithoutUserInput = {
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
   }
 
   export type AuditRecordUncheckedCreateWithoutUserInput = {
     id?: number
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
   }
 
@@ -29931,73 +36542,6 @@ export namespace Prisma {
   export type AuditRecordCreateManyUserInputEnvelope = {
     data: AuditRecordCreateManyUserInput | AuditRecordCreateManyUserInput[]
     skipDuplicates?: boolean
-  }
-
-  export type TeamMemberCreateWithoutUserInput = {
-    role?: $Enums.TeamRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutMembersInput
-  }
-
-  export type TeamMemberUncheckedCreateWithoutUserInput = {
-    id?: number
-    teamId: number
-    role?: $Enums.TeamRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type TeamMemberCreateOrConnectWithoutUserInput = {
-    where: TeamMemberWhereUniqueInput
-    create: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput>
-  }
-
-  export type TeamMemberCreateManyUserInputEnvelope = {
-    data: TeamMemberCreateManyUserInput | TeamMemberCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type NotificationPreferenceCreateWithoutUserInput = {
-    emailEnabled?: boolean
-    testComplete?: boolean
-    batchComplete?: boolean
-    scheduledTestComplete?: boolean
-    alertsEnabled?: boolean
-    lowScoreThreshold?: number
-    highScoreThreshold?: number
-    scoreDropAlert?: boolean
-    witnessFailureAlert?: boolean
-    dailyReport?: boolean
-    weeklyReport?: boolean
-    monthlyReport?: boolean
-    reportTime?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type NotificationPreferenceUncheckedCreateWithoutUserInput = {
-    id?: number
-    emailEnabled?: boolean
-    testComplete?: boolean
-    batchComplete?: boolean
-    scheduledTestComplete?: boolean
-    alertsEnabled?: boolean
-    lowScoreThreshold?: number
-    highScoreThreshold?: number
-    scoreDropAlert?: boolean
-    witnessFailureAlert?: boolean
-    dailyReport?: boolean
-    weeklyReport?: boolean
-    monthlyReport?: boolean
-    reportTime?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type NotificationPreferenceCreateOrConnectWithoutUserInput = {
-    where: NotificationPreferenceWhereUniqueInput
-    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
   }
 
   export type BudgetCreateWithoutUserInput = {
@@ -30022,49 +36566,6 @@ export namespace Prisma {
 
   export type BudgetCreateManyUserInputEnvelope = {
     data: BudgetCreateManyUserInput | BudgetCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type RegressionBaselineCreateWithoutUserInput = {
-    modelName: string
-    modelVersion?: string | null
-    testType: string
-    avgResponseTime: number
-    avgCost: number
-    avgQualityScore: number
-    avgAccuracy: number
-    successRate: number
-    alertThreshold?: number
-    sampleSize: number
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type RegressionBaselineUncheckedCreateWithoutUserInput = {
-    id?: number
-    modelName: string
-    modelVersion?: string | null
-    testType: string
-    avgResponseTime: number
-    avgCost: number
-    avgQualityScore: number
-    avgAccuracy: number
-    successRate: number
-    alertThreshold?: number
-    sampleSize: number
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type RegressionBaselineCreateOrConnectWithoutUserInput = {
-    where: RegressionBaselineWhereUniqueInput
-    create: XOR<RegressionBaselineCreateWithoutUserInput, RegressionBaselineUncheckedCreateWithoutUserInput>
-  }
-
-  export type RegressionBaselineCreateManyUserInputEnvelope = {
-    data: RegressionBaselineCreateManyUserInput | RegressionBaselineCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -30121,6 +36622,169 @@ export namespace Prisma {
   export type FeedbackCreateManyUserInputEnvelope = {
     data: FeedbackCreateManyUserInput | FeedbackCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type NotificationPreferenceCreateWithoutUserInput = {
+    emailEnabled?: boolean
+    testComplete?: boolean
+    batchComplete?: boolean
+    scheduledTestComplete?: boolean
+    alertsEnabled?: boolean
+    lowScoreThreshold?: number
+    highScoreThreshold?: number
+    scoreDropAlert?: boolean
+    witnessFailureAlert?: boolean
+    dailyReport?: boolean
+    weeklyReport?: boolean
+    monthlyReport?: boolean
+    reportTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceUncheckedCreateWithoutUserInput = {
+    id?: number
+    emailEnabled?: boolean
+    testComplete?: boolean
+    batchComplete?: boolean
+    scheduledTestComplete?: boolean
+    alertsEnabled?: boolean
+    lowScoreThreshold?: number
+    highScoreThreshold?: number
+    scoreDropAlert?: boolean
+    witnessFailureAlert?: boolean
+    dailyReport?: boolean
+    weeklyReport?: boolean
+    monthlyReport?: boolean
+    reportTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceCreateOrConnectWithoutUserInput = {
+    where: NotificationPreferenceWhereUniqueInput
+    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+  }
+
+  export type RegressionBaselineCreateWithoutUserInput = {
+    modelName: string
+    modelVersion?: string | null
+    testType: string
+    avgResponseTime: number
+    avgCost: number
+    avgQualityScore: number
+    avgAccuracy: number
+    successRate: number
+    alertThreshold?: number
+    sampleSize: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RegressionBaselineUncheckedCreateWithoutUserInput = {
+    id?: number
+    modelName: string
+    modelVersion?: string | null
+    testType: string
+    avgResponseTime: number
+    avgCost: number
+    avgQualityScore: number
+    avgAccuracy: number
+    successRate: number
+    alertThreshold?: number
+    sampleSize: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RegressionBaselineCreateOrConnectWithoutUserInput = {
+    where: RegressionBaselineWhereUniqueInput
+    create: XOR<RegressionBaselineCreateWithoutUserInput, RegressionBaselineUncheckedCreateWithoutUserInput>
+  }
+
+  export type RegressionBaselineCreateManyUserInputEnvelope = {
+    data: RegressionBaselineCreateManyUserInput | RegressionBaselineCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SessionCreateWithoutUserInput = {
+    expiresAt: Date | string
+    createdAt?: Date | string
+    ipAddress?: string | null
+    lastUsedAt?: Date | string
+    userAgent?: string | null
+  }
+
+  export type SessionUncheckedCreateWithoutUserInput = {
+    id?: number
+    expiresAt: Date | string
+    createdAt?: Date | string
+    ipAddress?: string | null
+    lastUsedAt?: Date | string
+    userAgent?: string | null
+  }
+
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TeamMemberCreateWithoutUserInput = {
+    role?: $Enums.TeamRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutUserInput = {
+    id?: number
+    teamId: number
+    role?: $Enums.TeamRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamMemberCreateOrConnectWithoutUserInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput>
+  }
+
+  export type TeamMemberCreateManyUserInputEnvelope = {
+    data: TeamMemberCreateManyUserInput | TeamMemberCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationCreateWithoutUsersInput = {
+    name: string
+    plan?: $Enums.PlanType
+    status?: $Enums.OrgStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ssoConfigs?: SSOConfigurationCreateNestedManyWithoutOrganizationInput
+    teams?: TeamCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutUsersInput = {
+    id?: number
+    name: string
+    plan?: $Enums.PlanType
+    status?: $Enums.OrgStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ssoConfigs?: SSOConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+    teams?: TeamUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutUsersInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
   }
 
   export type BENReceiptCreateWithoutUserInput = {
@@ -30238,67 +36902,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type OrganizationUpsertWithoutUsersInput = {
-    update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
-    create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
-    where?: OrganizationWhereInput
-  }
-
-  export type OrganizationUpdateToOneWithWhereWithoutUsersInput = {
-    where?: OrganizationWhereInput
-    data: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type OrganizationUpdateWithoutUsersInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teams?: TeamUpdateManyWithoutOrganizationNestedInput
-    ssoConfigs?: SSOConfigurationUpdateManyWithoutOrganizationNestedInput
-  }
-
-  export type OrganizationUncheckedUpdateWithoutUsersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teams?: TeamUncheckedUpdateManyWithoutOrganizationNestedInput
-    ssoConfigs?: SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
-  }
-
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: IntFilter<"Session"> | number
-    userId?: IntFilter<"Session"> | number
-    expiresAt?: DateTimeFilter<"Session"> | Date | string
-    userAgent?: StringNullableFilter<"Session"> | string | null
-    ipAddress?: StringNullableFilter<"Session"> | string | null
-    createdAt?: DateTimeFilter<"Session"> | Date | string
-    lastUsedAt?: DateTimeFilter<"Session"> | Date | string
-  }
-
   export type AuditRecordUpsertWithWhereUniqueWithoutUserInput = {
     where: AuditRecordWhereUniqueInput
     update: XOR<AuditRecordUpdateWithoutUserInput, AuditRecordUncheckedUpdateWithoutUserInput>
@@ -30322,44 +36925,87 @@ export namespace Prisma {
     id?: IntFilter<"AuditRecord"> | number
     userId?: IntFilter<"AuditRecord"> | number
     action?: StringFilter<"AuditRecord"> | string
+    lamport?: IntFilter<"AuditRecord"> | number
+    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
     category?: EnumAuditCategoryFilter<"AuditRecord"> | $Enums.AuditCategory
-    details?: JsonNullableFilter<"AuditRecord">
+    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
     metadata?: JsonNullableFilter<"AuditRecord">
     status?: EnumAuditStatusFilter<"AuditRecord"> | $Enums.AuditStatus
-    lamport?: IntFilter<"AuditRecord"> | number
-    hashPointer?: StringNullableFilter<"AuditRecord"> | string | null
-    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
+    details?: JsonNullableFilter<"AuditRecord">
     blockHash?: StringNullableFilter<"AuditRecord"> | string | null
-    createdAt?: DateTimeFilter<"AuditRecord"> | Date | string
+    organizationId?: IntNullableFilter<"AuditRecord"> | number | null
     updatedAt?: DateTimeFilter<"AuditRecord"> | Date | string
   }
 
-  export type TeamMemberUpsertWithWhereUniqueWithoutUserInput = {
-    where: TeamMemberWhereUniqueInput
-    update: XOR<TeamMemberUpdateWithoutUserInput, TeamMemberUncheckedUpdateWithoutUserInput>
-    create: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput>
+  export type BudgetUpsertWithWhereUniqueWithoutUserInput = {
+    where: BudgetWhereUniqueInput
+    update: XOR<BudgetUpdateWithoutUserInput, BudgetUncheckedUpdateWithoutUserInput>
+    create: XOR<BudgetCreateWithoutUserInput, BudgetUncheckedCreateWithoutUserInput>
   }
 
-  export type TeamMemberUpdateWithWhereUniqueWithoutUserInput = {
-    where: TeamMemberWhereUniqueInput
-    data: XOR<TeamMemberUpdateWithoutUserInput, TeamMemberUncheckedUpdateWithoutUserInput>
+  export type BudgetUpdateWithWhereUniqueWithoutUserInput = {
+    where: BudgetWhereUniqueInput
+    data: XOR<BudgetUpdateWithoutUserInput, BudgetUncheckedUpdateWithoutUserInput>
   }
 
-  export type TeamMemberUpdateManyWithWhereWithoutUserInput = {
-    where: TeamMemberScalarWhereInput
-    data: XOR<TeamMemberUpdateManyMutationInput, TeamMemberUncheckedUpdateManyWithoutUserInput>
+  export type BudgetUpdateManyWithWhereWithoutUserInput = {
+    where: BudgetScalarWhereInput
+    data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type TeamMemberScalarWhereInput = {
-    AND?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-    OR?: TeamMemberScalarWhereInput[]
-    NOT?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-    id?: IntFilter<"TeamMember"> | number
-    teamId?: IntFilter<"TeamMember"> | number
-    userId?: IntFilter<"TeamMember"> | number
-    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
-    createdAt?: DateTimeFilter<"TeamMember"> | Date | string
-    updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
+  export type BudgetScalarWhereInput = {
+    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    OR?: BudgetScalarWhereInput[]
+    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    id?: IntFilter<"Budget"> | number
+    userId?: IntFilter<"Budget"> | number
+    limit?: FloatFilter<"Budget"> | number
+    period?: StringFilter<"Budget"> | string
+    createdAt?: DateTimeFilter<"Budget"> | Date | string
+    updatedAt?: DateTimeFilter<"Budget"> | Date | string
+  }
+
+  export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    update: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    data: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateManyWithWhereWithoutUserInput = {
+    where: FeedbackScalarWhereInput
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FeedbackScalarWhereInput = {
+    AND?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+    OR?: FeedbackScalarWhereInput[]
+    NOT?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+    id?: IntFilter<"Feedback"> | number
+    userId?: IntFilter<"Feedback"> | number
+    type?: EnumFeedbackTypeFilter<"Feedback"> | $Enums.FeedbackType
+    category?: EnumFeedbackCategoryFilter<"Feedback"> | $Enums.FeedbackCategory
+    priority?: EnumFeedbackPriorityFilter<"Feedback"> | $Enums.FeedbackPriority
+    subject?: StringFilter<"Feedback"> | string
+    message?: StringFilter<"Feedback"> | string
+    url?: StringNullableFilter<"Feedback"> | string | null
+    userAgent?: StringNullableFilter<"Feedback"> | string | null
+    status?: EnumFeedbackStatusFilter<"Feedback"> | $Enums.FeedbackStatus
+    assignedTo?: IntNullableFilter<"Feedback"> | number | null
+    response?: StringNullableFilter<"Feedback"> | string | null
+    respondedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
+    respondedBy?: IntNullableFilter<"Feedback"> | number | null
+    sentiment?: StringNullableFilter<"Feedback"> | string | null
+    sentimentScore?: FloatNullableFilter<"Feedback"> | number | null
+    upvotes?: IntFilter<"Feedback"> | number
+    isPublic?: BoolFilter<"Feedback"> | boolean
+    createdAt?: DateTimeFilter<"Feedback"> | Date | string
+    updatedAt?: DateTimeFilter<"Feedback"> | Date | string
+    resolvedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
   }
 
   export type NotificationPreferenceUpsertWithoutUserInput = {
@@ -30410,34 +37056,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type BudgetUpsertWithWhereUniqueWithoutUserInput = {
-    where: BudgetWhereUniqueInput
-    update: XOR<BudgetUpdateWithoutUserInput, BudgetUncheckedUpdateWithoutUserInput>
-    create: XOR<BudgetCreateWithoutUserInput, BudgetUncheckedCreateWithoutUserInput>
-  }
-
-  export type BudgetUpdateWithWhereUniqueWithoutUserInput = {
-    where: BudgetWhereUniqueInput
-    data: XOR<BudgetUpdateWithoutUserInput, BudgetUncheckedUpdateWithoutUserInput>
-  }
-
-  export type BudgetUpdateManyWithWhereWithoutUserInput = {
-    where: BudgetScalarWhereInput
-    data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type BudgetScalarWhereInput = {
-    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    OR?: BudgetScalarWhereInput[]
-    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    id?: IntFilter<"Budget"> | number
-    userId?: IntFilter<"Budget"> | number
-    limit?: FloatFilter<"Budget"> | number
-    period?: StringFilter<"Budget"> | string
-    createdAt?: DateTimeFilter<"Budget"> | Date | string
-    updatedAt?: DateTimeFilter<"Budget"> | Date | string
-  }
-
   export type RegressionBaselineUpsertWithWhereUniqueWithoutUserInput = {
     where: RegressionBaselineWhereUniqueInput
     update: XOR<RegressionBaselineUpdateWithoutUserInput, RegressionBaselineUncheckedUpdateWithoutUserInput>
@@ -30475,47 +37093,93 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RegressionBaseline"> | Date | string
   }
 
-  export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
-    where: FeedbackWhereUniqueInput
-    update: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
-    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
   }
 
-  export type FeedbackUpdateWithWhereUniqueWithoutUserInput = {
-    where: FeedbackWhereUniqueInput
-    data: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
   }
 
-  export type FeedbackUpdateManyWithWhereWithoutUserInput = {
-    where: FeedbackScalarWhereInput
-    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutUserInput>
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type FeedbackScalarWhereInput = {
-    AND?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
-    OR?: FeedbackScalarWhereInput[]
-    NOT?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
-    id?: IntFilter<"Feedback"> | number
-    userId?: IntFilter<"Feedback"> | number
-    type?: EnumFeedbackTypeFilter<"Feedback"> | $Enums.FeedbackType
-    category?: EnumFeedbackCategoryFilter<"Feedback"> | $Enums.FeedbackCategory
-    priority?: EnumFeedbackPriorityFilter<"Feedback"> | $Enums.FeedbackPriority
-    subject?: StringFilter<"Feedback"> | string
-    message?: StringFilter<"Feedback"> | string
-    url?: StringNullableFilter<"Feedback"> | string | null
-    userAgent?: StringNullableFilter<"Feedback"> | string | null
-    status?: EnumFeedbackStatusFilter<"Feedback"> | $Enums.FeedbackStatus
-    assignedTo?: IntNullableFilter<"Feedback"> | number | null
-    response?: StringNullableFilter<"Feedback"> | string | null
-    respondedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
-    respondedBy?: IntNullableFilter<"Feedback"> | number | null
-    sentiment?: StringNullableFilter<"Feedback"> | string | null
-    sentimentScore?: FloatNullableFilter<"Feedback"> | number | null
-    upvotes?: IntFilter<"Feedback"> | number
-    isPublic?: BoolFilter<"Feedback"> | boolean
-    createdAt?: DateTimeFilter<"Feedback"> | Date | string
-    updatedAt?: DateTimeFilter<"Feedback"> | Date | string
-    resolvedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: IntFilter<"Session"> | number
+    userId?: IntFilter<"Session"> | number
+    expiresAt?: DateTimeFilter<"Session"> | Date | string
+    createdAt?: DateTimeFilter<"Session"> | Date | string
+    ipAddress?: StringNullableFilter<"Session"> | string | null
+    lastUsedAt?: DateTimeFilter<"Session"> | Date | string
+    userAgent?: StringNullableFilter<"Session"> | string | null
+  }
+
+  export type TeamMemberUpsertWithWhereUniqueWithoutUserInput = {
+    where: TeamMemberWhereUniqueInput
+    update: XOR<TeamMemberUpdateWithoutUserInput, TeamMemberUncheckedUpdateWithoutUserInput>
+    create: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput>
+  }
+
+  export type TeamMemberUpdateWithWhereUniqueWithoutUserInput = {
+    where: TeamMemberWhereUniqueInput
+    data: XOR<TeamMemberUpdateWithoutUserInput, TeamMemberUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TeamMemberUpdateManyWithWhereWithoutUserInput = {
+    where: TeamMemberScalarWhereInput
+    data: XOR<TeamMemberUpdateManyMutationInput, TeamMemberUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TeamMemberScalarWhereInput = {
+    AND?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    OR?: TeamMemberScalarWhereInput[]
+    NOT?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    id?: IntFilter<"TeamMember"> | number
+    teamId?: IntFilter<"TeamMember"> | number
+    userId?: IntFilter<"TeamMember"> | number
+    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
+    createdAt?: DateTimeFilter<"TeamMember"> | Date | string
+    updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
+  }
+
+  export type OrganizationUpsertWithoutUsersInput = {
+    update: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
+    create: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutUsersInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutUsersInput, OrganizationUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type OrganizationUpdateWithoutUsersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ssoConfigs?: SSOConfigurationUpdateManyWithoutOrganizationNestedInput
+    teams?: TeamUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutUsersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ssoConfigs?: SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BENReceiptUpsertWithWhereUniqueWithoutUserInput = {
@@ -30620,114 +37284,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ZScanVerification"> | Date | string
   }
 
-  export type UserCreateWithoutOrganizationInput = {
-    email: string
-    password: string
-    name?: string | null
-    role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
-    backupCodes?: UserCreatebackupCodesInput | string[]
-    failedLoginAttempts?: number
-    lockedUntil?: Date | string | null
-    passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
-    lamportCounter?: number
-    lastReceiptId?: number | null
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
-    budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
-    benSessions?: BENSessionCreateNestedManyWithoutUserInput
-    zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutOrganizationInput = {
-    id?: number
-    email: string
-    password: string
-    name?: string | null
-    role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
-    backupCodes?: UserCreatebackupCodesInput | string[]
-    failedLoginAttempts?: number
-    lockedUntil?: Date | string | null
-    passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
-    lamportCounter?: number
-    lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
-    benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
-    zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutOrganizationInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput>
-  }
-
-  export type UserCreateManyOrganizationInputEnvelope = {
-    data: UserCreateManyOrganizationInput | UserCreateManyOrganizationInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type TeamCreateWithoutOrganizationInput = {
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamUncheckedCreateWithoutOrganizationInput = {
-    id?: number
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamCreateOrConnectWithoutOrganizationInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput>
-  }
-
-  export type TeamCreateManyOrganizationInputEnvelope = {
-    data: TeamCreateManyOrganizationInput | TeamCreateManyOrganizationInput[]
-    skipDuplicates?: boolean
-  }
-
   export type SSOConfigurationCreateWithoutOrganizationInput = {
     provider: $Enums.SSOProvider
     enabled?: boolean
@@ -30789,78 +37345,112 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithWhereUniqueWithoutOrganizationInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutOrganizationInput, UserUncheckedUpdateWithoutOrganizationInput>
-    create: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput>
+  export type TeamCreateWithoutOrganizationInput = {
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
   }
 
-  export type UserUpdateWithWhereUniqueWithoutOrganizationInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutOrganizationInput, UserUncheckedUpdateWithoutOrganizationInput>
+  export type TeamUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   }
 
-  export type UserUpdateManyWithWhereWithoutOrganizationInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutOrganizationInput>
-  }
-
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    id?: IntFilter<"User"> | number
-    email?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
-    name?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
-    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
-    permissions?: EnumPermissionNullableListFilter<"User">
-    orgId?: IntNullableFilter<"User"> | number | null
-    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
-    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
-    twoFactorEnabled?: BoolFilter<"User"> | boolean
-    twoFactorSecret?: StringNullableFilter<"User"> | string | null
-    backupCodes?: StringNullableListFilter<"User">
-    failedLoginAttempts?: IntFilter<"User"> | number
-    lockedUntil?: DateTimeNullableFilter<"User"> | Date | string | null
-    passwordChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    ssoProvider?: StringNullableFilter<"User"> | string | null
-    ssoId?: StringNullableFilter<"User"> | string | null
-    ssoMetadata?: JsonNullableFilter<"User">
-    currentPersona?: EnumBENPersonaFilter<"User"> | $Enums.BENPersona
-    personaLocked?: BoolFilter<"User"> | boolean
-    lamportCounter?: IntFilter<"User"> | number
-    lastReceiptId?: IntNullableFilter<"User"> | number | null
-  }
-
-  export type TeamUpsertWithWhereUniqueWithoutOrganizationInput = {
+  export type TeamCreateOrConnectWithoutOrganizationInput = {
     where: TeamWhereUniqueInput
-    update: XOR<TeamUpdateWithoutOrganizationInput, TeamUncheckedUpdateWithoutOrganizationInput>
     create: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type TeamUpdateWithWhereUniqueWithoutOrganizationInput = {
-    where: TeamWhereUniqueInput
-    data: XOR<TeamUpdateWithoutOrganizationInput, TeamUncheckedUpdateWithoutOrganizationInput>
+  export type TeamCreateManyOrganizationInputEnvelope = {
+    data: TeamCreateManyOrganizationInput | TeamCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
   }
 
-  export type TeamUpdateManyWithWhereWithoutOrganizationInput = {
-    where: TeamScalarWhereInput
-    data: XOR<TeamUpdateManyMutationInput, TeamUncheckedUpdateManyWithoutOrganizationInput>
+  export type UserCreateWithoutOrganizationInput = {
+    email: string
+    password: string
+    role?: $Enums.Role
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
+    backupCodes?: UserCreatebackupCodesInput | string[]
+    failedLoginAttempts?: number
+    lockedUntil?: Date | string | null
+    passwordChangedAt?: Date | string | null
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
+    currentPersona?: $Enums.BENPersona
+    lamportCounter?: number
+    lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
+    audits?: AuditRecordCreateNestedManyWithoutUserInput
+    budgets?: BudgetCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
+    benSessions?: BENSessionCreateNestedManyWithoutUserInput
+    zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
   }
 
-  export type TeamScalarWhereInput = {
-    AND?: TeamScalarWhereInput | TeamScalarWhereInput[]
-    OR?: TeamScalarWhereInput[]
-    NOT?: TeamScalarWhereInput | TeamScalarWhereInput[]
-    id?: IntFilter<"Team"> | number
-    name?: StringFilter<"Team"> | string
-    orgId?: IntFilter<"Team"> | number
-    createdAt?: DateTimeFilter<"Team"> | Date | string
-    updatedAt?: DateTimeFilter<"Team"> | Date | string
+  export type UserUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    email: string
+    password: string
+    role?: $Enums.Role
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
+    backupCodes?: UserCreatebackupCodesInput | string[]
+    failedLoginAttempts?: number
+    lockedUntil?: Date | string | null
+    passwordChangedAt?: Date | string | null
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
+    currentPersona?: $Enums.BENPersona
+    lamportCounter?: number
+    lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
+    audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
+    benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
+    zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutOrganizationInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type UserCreateManyOrganizationInputEnvelope = {
+    data: UserCreateManyOrganizationInput | UserCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
   }
 
   export type SSOConfigurationUpsertWithWhereUniqueWithoutOrganizationInput = {
@@ -30909,14 +37499,88 @@ export namespace Prisma {
     lastUsedAt?: DateTimeNullableFilter<"SSOConfiguration"> | Date | string | null
   }
 
+  export type TeamUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: TeamWhereUniqueInput
+    update: XOR<TeamUpdateWithoutOrganizationInput, TeamUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<TeamCreateWithoutOrganizationInput, TeamUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TeamUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: TeamWhereUniqueInput
+    data: XOR<TeamUpdateWithoutOrganizationInput, TeamUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type TeamUpdateManyWithWhereWithoutOrganizationInput = {
+    where: TeamScalarWhereInput
+    data: XOR<TeamUpdateManyMutationInput, TeamUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type TeamScalarWhereInput = {
+    AND?: TeamScalarWhereInput | TeamScalarWhereInput[]
+    OR?: TeamScalarWhereInput[]
+    NOT?: TeamScalarWhereInput | TeamScalarWhereInput[]
+    id?: IntFilter<"Team"> | number
+    name?: StringFilter<"Team"> | string
+    orgId?: IntFilter<"Team"> | number
+    createdAt?: DateTimeFilter<"Team"> | Date | string
+    updatedAt?: DateTimeFilter<"Team"> | Date | string
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutOrganizationInput, UserUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutOrganizationInput, UserUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutOrganizationInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: IntFilter<"User"> | number
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    name?: StringNullableFilter<"User"> | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    orgId?: IntNullableFilter<"User"> | number | null
+    permissions?: EnumPermissionNullableListFilter<"User">
+    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
+    tier?: EnumUserTierFilter<"User"> | $Enums.UserTier
+    backupCodes?: StringNullableListFilter<"User">
+    failedLoginAttempts?: IntFilter<"User"> | number
+    lockedUntil?: DateTimeNullableFilter<"User"> | Date | string | null
+    passwordChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    twoFactorEnabled?: BoolFilter<"User"> | boolean
+    twoFactorSecret?: StringNullableFilter<"User"> | string | null
+    currentPersona?: EnumBENPersonaFilter<"User"> | $Enums.BENPersona
+    lamportCounter?: IntFilter<"User"> | number
+    lastReceiptId?: IntNullableFilter<"User"> | number | null
+    personaLocked?: BoolFilter<"User"> | boolean
+    ssoId?: StringNullableFilter<"User"> | string | null
+    ssoMetadata?: JsonNullableFilter<"User">
+    ssoProvider?: StringNullableFilter<"User"> | string | null
+  }
+
   export type OrganizationCreateWithoutTeamsInput = {
     name: string
     plan?: $Enums.PlanType
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutOrganizationInput
     ssoConfigs?: SSOConfigurationCreateNestedManyWithoutOrganizationInput
+    users?: UserCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTeamsInput = {
@@ -30926,8 +37590,8 @@ export namespace Prisma {
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
     ssoConfigs?: SSOConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTeamsInput = {
@@ -30977,8 +37641,8 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutOrganizationNestedInput
     ssoConfigs?: SSOConfigurationUpdateManyWithoutOrganizationNestedInput
+    users?: UserUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTeamsInput = {
@@ -30988,8 +37652,8 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
     ssoConfigs?: SSOConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
@@ -31031,34 +37695,34 @@ export namespace Prisma {
   export type UserCreateWithoutTeamsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31068,34 +37732,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31146,34 +37810,34 @@ export namespace Prisma {
   export type UserUpdateWithoutTeamsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31183,34 +37847,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31219,34 +37883,34 @@ export namespace Prisma {
   export type UserCreateWithoutAuditsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
+    budgets?: BudgetCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
-    budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31256,34 +37920,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
+    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31308,34 +37972,34 @@ export namespace Prisma {
   export type UserUpdateWithoutAuditsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    budgets?: BudgetUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
-    budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31345,34 +38009,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31381,34 +38045,34 @@ export namespace Prisma {
   export type UserCreateWithoutSessionsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31418,34 +38082,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31470,34 +38134,34 @@ export namespace Prisma {
   export type UserUpdateWithoutSessionsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31507,34 +38171,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31543,34 +38207,34 @@ export namespace Prisma {
   export type UserCreateWithoutBudgetsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
     notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31580,34 +38244,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31632,34 +38296,34 @@ export namespace Prisma {
   export type UserUpdateWithoutBudgetsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
     notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31669,34 +38333,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31705,34 +38369,34 @@ export namespace Prisma {
   export type UserCreateWithoutRegressionBaselinesInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31742,34 +38406,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31794,34 +38458,34 @@ export namespace Prisma {
   export type UserUpdateWithoutRegressionBaselinesInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31831,34 +38495,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31867,34 +38531,34 @@ export namespace Prisma {
   export type UserCreateWithoutFeedbacksInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -31904,34 +38568,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -31956,34 +38620,34 @@ export namespace Prisma {
   export type UserUpdateWithoutFeedbacksInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -31993,34 +38657,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32029,35 +38693,35 @@ export namespace Prisma {
   export type UserCreateWithoutBenReceiptsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
   }
@@ -32066,35 +38730,35 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
   }
@@ -32200,35 +38864,35 @@ export namespace Prisma {
   export type UserUpdateWithoutBenReceiptsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
   }
@@ -32237,35 +38901,35 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -32325,35 +38989,35 @@ export namespace Prisma {
   export type UserCreateWithoutBenSessionsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
   }
@@ -32362,35 +39026,35 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
   }
@@ -32414,35 +39078,35 @@ export namespace Prisma {
   export type UserUpdateWithoutBenSessionsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
   }
@@ -32451,35 +39115,35 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -32667,35 +39331,35 @@ export namespace Prisma {
   export type UserCreateWithoutZscansInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
   }
@@ -32704,35 +39368,35 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -32756,35 +39420,35 @@ export namespace Prisma {
   export type UserUpdateWithoutZscansInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
   }
@@ -32793,35 +39457,35 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -32832,8 +39496,8 @@ export namespace Prisma {
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserCreateNestedManyWithoutOrganizationInput
     teams?: TeamCreateNestedManyWithoutOrganizationInput
+    users?: UserCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSsoConfigsInput = {
@@ -32843,8 +39507,8 @@ export namespace Prisma {
     status?: $Enums.OrgStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
     teams?: TeamUncheckedCreateNestedManyWithoutOrganizationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSsoConfigsInput = {
@@ -32869,8 +39533,8 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUpdateManyWithoutOrganizationNestedInput
     teams?: TeamUpdateManyWithoutOrganizationNestedInput
+    users?: UserUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSsoConfigsInput = {
@@ -32880,41 +39544,41 @@ export namespace Prisma {
     status?: EnumOrgStatusFieldUpdateOperationsInput | $Enums.OrgStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
     teams?: TeamUncheckedUpdateManyWithoutOrganizationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    organization?: OrganizationCreateNestedOneWithoutUsersInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordCreateNestedManyWithoutUserInput
-    teams?: TeamMemberCreateNestedManyWithoutUserInput
     budgets?: BudgetCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    regressionBaselines?: RegressionBaselineCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teams?: TeamMemberCreateNestedManyWithoutUserInput
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
     benReceipts?: BENReceiptCreateNestedManyWithoutUserInput
     benSessions?: BENSessionCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationCreateNestedManyWithoutUserInput
@@ -32924,34 +39588,34 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
-    name?: string | null
     role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    orgId?: number | null
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
+    lastLoginAt?: Date | string | null
+    orgId?: number | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
     backupCodes?: UserCreatebackupCodesInput | string[]
     failedLoginAttempts?: number
     lockedUntil?: Date | string | null
     passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
     currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
     lamportCounter?: number
     lastReceiptId?: number | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    personaLocked?: boolean
+    ssoId?: string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: string | null
     audits?: AuditRecordUncheckedCreateNestedManyWithoutUserInput
-    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
-    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    regressionBaselines?: RegressionBaselineUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teams?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     benReceipts?: BENReceiptUncheckedCreateNestedManyWithoutUserInput
     benSessions?: BENSessionUncheckedCreateNestedManyWithoutUserInput
     zscans?: ZScanVerificationUncheckedCreateNestedManyWithoutUserInput
@@ -32976,34 +39640,34 @@ export namespace Prisma {
   export type UserUpdateWithoutNotificationsInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    organization?: OrganizationUpdateOneWithoutUsersNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
     budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
     benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
@@ -33013,68 +39677,262 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    orgId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    orgId?: NullableIntFieldUpdateOperationsInput | number | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
     backupCodes?: UserUpdatebackupCodesInput | string[]
     failedLoginAttempts?: IntFieldUpdateOperationsInput | number
     lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
     currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
     lamportCounter?: IntFieldUpdateOperationsInput | number
     lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
     audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
     benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
     zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type SessionCreateManyUserInput = {
+  export type MerkleSealCreateWithoutReceiptsInput = {
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint | number
+    lamportEnd: bigint | number
+    sealedAt?: Date | string
+    sealDigest?: string | null
+    prevRoot?: string | null
+    prevSealDigest?: string | null
+  }
+
+  export type MerkleSealUncheckedCreateWithoutReceiptsInput = {
     id?: number
-    expiresAt: Date | string
-    userAgent?: string | null
-    ipAddress?: string | null
+    merkleRoot: string
+    receiptCount: number
+    lamportStart: bigint | number
+    lamportEnd: bigint | number
+    sealedAt?: Date | string
+    sealDigest?: string | null
+    prevRoot?: string | null
+    prevSealDigest?: string | null
+  }
+
+  export type MerkleSealCreateOrConnectWithoutReceiptsInput = {
+    where: MerkleSealWhereUniqueInput
+    create: XOR<MerkleSealCreateWithoutReceiptsInput, MerkleSealUncheckedCreateWithoutReceiptsInput>
+  }
+
+  export type MerkleSealUpsertWithoutReceiptsInput = {
+    update: XOR<MerkleSealUpdateWithoutReceiptsInput, MerkleSealUncheckedUpdateWithoutReceiptsInput>
+    create: XOR<MerkleSealCreateWithoutReceiptsInput, MerkleSealUncheckedCreateWithoutReceiptsInput>
+    where?: MerkleSealWhereInput
+  }
+
+  export type MerkleSealUpdateToOneWithWhereWithoutReceiptsInput = {
+    where?: MerkleSealWhereInput
+    data: XOR<MerkleSealUpdateWithoutReceiptsInput, MerkleSealUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type MerkleSealUpdateWithoutReceiptsInput = {
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MerkleSealUncheckedUpdateWithoutReceiptsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    merkleRoot?: StringFieldUpdateOperationsInput | string
+    receiptCount?: IntFieldUpdateOperationsInput | number
+    lamportStart?: BigIntFieldUpdateOperationsInput | bigint | number
+    lamportEnd?: BigIntFieldUpdateOperationsInput | bigint | number
+    sealedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    prevRoot?: NullableStringFieldUpdateOperationsInput | string | null
+    prevSealDigest?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GovernanceReceiptCreateWithoutMerkleSealInput = {
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    lockBatchId?: string | null
     createdAt?: Date | string
-    lastUsedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GovernanceReceiptUncheckedCreateWithoutMerkleSealInput = {
+    id?: number
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    lockBatchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GovernanceReceiptCreateOrConnectWithoutMerkleSealInput = {
+    where: GovernanceReceiptWhereUniqueInput
+    create: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput>
+  }
+
+  export type GovernanceReceiptCreateManyMerkleSealInputEnvelope = {
+    data: GovernanceReceiptCreateManyMerkleSealInput | GovernanceReceiptCreateManyMerkleSealInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GovernanceReceiptUpsertWithWhereUniqueWithoutMerkleSealInput = {
+    where: GovernanceReceiptWhereUniqueInput
+    update: XOR<GovernanceReceiptUpdateWithoutMerkleSealInput, GovernanceReceiptUncheckedUpdateWithoutMerkleSealInput>
+    create: XOR<GovernanceReceiptCreateWithoutMerkleSealInput, GovernanceReceiptUncheckedCreateWithoutMerkleSealInput>
+  }
+
+  export type GovernanceReceiptUpdateWithWhereUniqueWithoutMerkleSealInput = {
+    where: GovernanceReceiptWhereUniqueInput
+    data: XOR<GovernanceReceiptUpdateWithoutMerkleSealInput, GovernanceReceiptUncheckedUpdateWithoutMerkleSealInput>
+  }
+
+  export type GovernanceReceiptUpdateManyWithWhereWithoutMerkleSealInput = {
+    where: GovernanceReceiptScalarWhereInput
+    data: XOR<GovernanceReceiptUpdateManyMutationInput, GovernanceReceiptUncheckedUpdateManyWithoutMerkleSealInput>
+  }
+
+  export type GovernanceReceiptScalarWhereInput = {
+    AND?: GovernanceReceiptScalarWhereInput | GovernanceReceiptScalarWhereInput[]
+    OR?: GovernanceReceiptScalarWhereInput[]
+    NOT?: GovernanceReceiptScalarWhereInput | GovernanceReceiptScalarWhereInput[]
+    id?: IntFilter<"GovernanceReceipt"> | number
+    lamport?: BigIntFilter<"GovernanceReceipt"> | bigint | number
+    persona?: StringFilter<"GovernanceReceipt"> | string
+    obligationsApplied?: StringNullableListFilter<"GovernanceReceipt">
+    promptHash?: StringFilter<"GovernanceReceipt"> | string
+    outputHash?: StringFilter<"GovernanceReceipt"> | string
+    violations?: StringNullableListFilter<"GovernanceReceipt">
+    timestamp?: DateTimeNullableFilter<"GovernanceReceipt"> | Date | string | null
+    version?: StringFilter<"GovernanceReceipt"> | string
+    userId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    criesOmega?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesCoherence?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesRigor?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesIntegrity?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesEmpathy?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesStrictness?: FloatNullableFilter<"GovernanceReceipt"> | number | null
+    criesSubMetrics?: JsonNullableFilter<"GovernanceReceipt">
+    criesEvidence?: JsonNullableFilter<"GovernanceReceipt">
+    criesCalculation?: JsonNullableFilter<"GovernanceReceipt">
+    criesBaseline?: JsonNullableFilter<"GovernanceReceipt">
+    criesDeterminism?: JsonNullableFilter<"GovernanceReceipt">
+    governanceMode?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prompt?: StringFilter<"GovernanceReceipt"> | string
+    output?: StringFilter<"GovernanceReceipt"> | string
+    receiptId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    conversationId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    exchangeId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    traceId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    prevDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    currDigest?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    model?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    tokensIn?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    tokensOut?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    policyFlags?: StringNullableListFilter<"GovernanceReceipt">
+    merkleSealId?: IntNullableFilter<"GovernanceReceipt"> | number | null
+    lockBatchId?: StringNullableFilter<"GovernanceReceipt"> | string | null
+    createdAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"GovernanceReceipt"> | Date | string
   }
 
   export type AuditRecordCreateManyUserInput = {
     id?: number
     action: string
+    lamport: number
+    createdAt?: Date | string
     category: $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.AuditStatus
-    lamport: number
-    hashPointer?: string | null
-    organizationId?: number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type TeamMemberCreateManyUserInput = {
-    id?: number
-    teamId: number
-    role?: $Enums.TeamRole
-    createdAt?: Date | string
+    organizationId?: number | null
     updatedAt?: Date | string
   }
 
@@ -33082,23 +39940,6 @@ export namespace Prisma {
     id?: number
     limit: number
     period?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type RegressionBaselineCreateManyUserInput = {
-    id?: number
-    modelName: string
-    modelVersion?: string | null
-    testType: string
-    avgResponseTime: number
-    avgCost: number
-    avgQualityScore: number
-    avgAccuracy: number
-    successRate: number
-    alertThreshold?: number
-    sampleSize: number
-    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33124,6 +39965,40 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resolvedAt?: Date | string | null
+  }
+
+  export type RegressionBaselineCreateManyUserInput = {
+    id?: number
+    modelName: string
+    modelVersion?: string | null
+    testType: string
+    avgResponseTime: number
+    avgCost: number
+    avgQualityScore: number
+    avgAccuracy: number
+    successRate: number
+    alertThreshold?: number
+    sampleSize: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: number
+    expiresAt: Date | string
+    createdAt?: Date | string
+    ipAddress?: string | null
+    lastUsedAt?: Date | string
+    userAgent?: string | null
+  }
+
+  export type TeamMemberCreateManyUserInput = {
+    id?: number
+    teamId: number
+    role?: $Enums.TeamRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type BENReceiptCreateManyUserInput = {
@@ -33168,96 +40043,47 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type SessionUpdateWithoutUserInput = {
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type AuditRecordUpdateWithoutUserInput = {
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditRecordUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditRecordUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     action?: StringFieldUpdateOperationsInput | string
+    lamport?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: EnumAuditCategoryFieldUpdateOperationsInput | $Enums.AuditCategory
-    details?: NullableJsonNullValueInput | InputJsonValue
+    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumAuditStatusFieldUpdateOperationsInput | $Enums.AuditStatus
-    lamport?: IntFieldUpdateOperationsInput | number
-    hashPointer?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableJsonNullValueInput | InputJsonValue
     blockHash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TeamMemberUpdateWithoutUserInput = {
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
-  }
-
-  export type TeamMemberUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    teamId?: IntFieldUpdateOperationsInput | number
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    teamId?: IntFieldUpdateOperationsInput | number
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organizationId?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -33280,56 +40106,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     limit?: FloatFieldUpdateOperationsInput | number
     period?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RegressionBaselineUpdateWithoutUserInput = {
-    modelName?: StringFieldUpdateOperationsInput | string
-    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    testType?: StringFieldUpdateOperationsInput | string
-    avgResponseTime?: FloatFieldUpdateOperationsInput | number
-    avgCost?: FloatFieldUpdateOperationsInput | number
-    avgQualityScore?: FloatFieldUpdateOperationsInput | number
-    avgAccuracy?: FloatFieldUpdateOperationsInput | number
-    successRate?: FloatFieldUpdateOperationsInput | number
-    alertThreshold?: FloatFieldUpdateOperationsInput | number
-    sampleSize?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RegressionBaselineUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    modelName?: StringFieldUpdateOperationsInput | string
-    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    testType?: StringFieldUpdateOperationsInput | string
-    avgResponseTime?: FloatFieldUpdateOperationsInput | number
-    avgCost?: FloatFieldUpdateOperationsInput | number
-    avgQualityScore?: FloatFieldUpdateOperationsInput | number
-    avgAccuracy?: FloatFieldUpdateOperationsInput | number
-    successRate?: FloatFieldUpdateOperationsInput | number
-    alertThreshold?: FloatFieldUpdateOperationsInput | number
-    sampleSize?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RegressionBaselineUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    modelName?: StringFieldUpdateOperationsInput | string
-    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    testType?: StringFieldUpdateOperationsInput | string
-    avgResponseTime?: FloatFieldUpdateOperationsInput | number
-    avgCost?: FloatFieldUpdateOperationsInput | number
-    avgQualityScore?: FloatFieldUpdateOperationsInput | number
-    avgAccuracy?: FloatFieldUpdateOperationsInput | number
-    successRate?: FloatFieldUpdateOperationsInput | number
-    alertThreshold?: FloatFieldUpdateOperationsInput | number
-    sampleSize?: IntFieldUpdateOperationsInput | number
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33400,6 +40176,105 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RegressionBaselineUpdateWithoutUserInput = {
+    modelName?: StringFieldUpdateOperationsInput | string
+    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    testType?: StringFieldUpdateOperationsInput | string
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    avgCost?: FloatFieldUpdateOperationsInput | number
+    avgQualityScore?: FloatFieldUpdateOperationsInput | number
+    avgAccuracy?: FloatFieldUpdateOperationsInput | number
+    successRate?: FloatFieldUpdateOperationsInput | number
+    alertThreshold?: FloatFieldUpdateOperationsInput | number
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegressionBaselineUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    modelName?: StringFieldUpdateOperationsInput | string
+    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    testType?: StringFieldUpdateOperationsInput | string
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    avgCost?: FloatFieldUpdateOperationsInput | number
+    avgQualityScore?: FloatFieldUpdateOperationsInput | number
+    avgAccuracy?: FloatFieldUpdateOperationsInput | number
+    successRate?: FloatFieldUpdateOperationsInput | number
+    alertThreshold?: FloatFieldUpdateOperationsInput | number
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegressionBaselineUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    modelName?: StringFieldUpdateOperationsInput | string
+    modelVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    testType?: StringFieldUpdateOperationsInput | string
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    avgCost?: FloatFieldUpdateOperationsInput | number
+    avgQualityScore?: FloatFieldUpdateOperationsInput | number
+    avgAccuracy?: FloatFieldUpdateOperationsInput | number
+    successRate?: FloatFieldUpdateOperationsInput | number
+    alertThreshold?: FloatFieldUpdateOperationsInput | number
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUpdateWithoutUserInput = {
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SessionUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TeamMemberUpdateWithoutUserInput = {
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BENReceiptUpdateWithoutUserInput = {
@@ -33529,40 +40404,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCreateManyOrganizationInput = {
-    id?: number
-    email: string
-    password: string
-    name?: string | null
-    role?: $Enums.Role
-    tier?: $Enums.UserTier
-    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
-    status?: $Enums.UserStatus
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    twoFactorEnabled?: boolean
-    twoFactorSecret?: string | null
-    backupCodes?: UserCreatebackupCodesInput | string[]
-    failedLoginAttempts?: number
-    lockedUntil?: Date | string | null
-    passwordChangedAt?: Date | string | null
-    ssoProvider?: string | null
-    ssoId?: string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: $Enums.BENPersona
-    personaLocked?: boolean
-    lamportCounter?: number
-    lastReceiptId?: number | null
-  }
-
-  export type TeamCreateManyOrganizationInput = {
-    id?: number
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
   export type SSOConfigurationCreateManyOrganizationInput = {
     id?: number
     provider: $Enums.SSOProvider
@@ -33589,126 +40430,38 @@ export namespace Prisma {
     lastUsedAt?: Date | string | null
   }
 
-  export type UserUpdateWithoutOrganizationInput = {
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
-    backupCodes?: UserUpdatebackupCodesInput | string[]
-    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
-    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+  export type TeamCreateManyOrganizationInput = {
+    id?: number
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserCreateManyOrganizationInput = {
+    id?: number
+    email: string
+    password: string
+    role?: $Enums.Role
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastLoginAt?: Date | string | null
+    permissions?: UserCreatepermissionsInput | $Enums.Permission[]
+    status?: $Enums.UserStatus
+    tier?: $Enums.UserTier
+    backupCodes?: UserCreatebackupCodesInput | string[]
+    failedLoginAttempts?: number
+    lockedUntil?: Date | string | null
+    passwordChangedAt?: Date | string | null
+    twoFactorEnabled?: boolean
+    twoFactorSecret?: string | null
+    currentPersona?: $Enums.BENPersona
+    lamportCounter?: number
+    lastReceiptId?: number | null
+    personaLocked?: boolean
+    ssoId?: string | null
     ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
-    lamportCounter?: IntFieldUpdateOperationsInput | number
-    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    audits?: AuditRecordUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
-    budgets?: BudgetUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
-    benSessions?: BENSessionUpdateManyWithoutUserNestedInput
-    zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutOrganizationInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
-    backupCodes?: UserUpdatebackupCodesInput | string[]
-    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
-    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
-    lamportCounter?: IntFieldUpdateOperationsInput | number
-    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
-    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
-    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
-    benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
-    zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateManyWithoutOrganizationInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
-    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
-    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
-    backupCodes?: UserUpdatebackupCodesInput | string[]
-    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
-    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
-    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
-    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
-    personaLocked?: BoolFieldUpdateOperationsInput | boolean
-    lamportCounter?: IntFieldUpdateOperationsInput | number
-    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type TeamUpdateWithoutOrganizationInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-  }
-
-  export type TeamUncheckedUpdateWithoutOrganizationInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-  }
-
-  export type TeamUncheckedUpdateManyWithoutOrganizationInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ssoProvider?: string | null
   }
 
   export type SSOConfigurationUpdateWithoutOrganizationInput = {
@@ -33786,6 +40539,128 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TeamUpdateWithoutOrganizationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpdateWithoutOrganizationInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
+    backupCodes?: UserUpdatebackupCodesInput | string[]
+    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
+    lamportCounter?: IntFieldUpdateOperationsInput | number
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    audits?: AuditRecordUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUpdateManyWithoutUserNestedInput
+    benReceipts?: BENReceiptUpdateManyWithoutUserNestedInput
+    benSessions?: BENSessionUpdateManyWithoutUserNestedInput
+    zscans?: ZScanVerificationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
+    backupCodes?: UserUpdatebackupCodesInput | string[]
+    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
+    lamportCounter?: IntFieldUpdateOperationsInput | number
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    audits?: AuditRecordUncheckedUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    regressionBaselines?: RegressionBaselineUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teams?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    benReceipts?: BENReceiptUncheckedUpdateManyWithoutUserNestedInput
+    benSessions?: BENSessionUncheckedUpdateManyWithoutUserNestedInput
+    zscans?: ZScanVerificationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    permissions?: UserUpdatepermissionsInput | $Enums.Permission[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    tier?: EnumUserTierFieldUpdateOperationsInput | $Enums.UserTier
+    backupCodes?: UserUpdatebackupCodesInput | string[]
+    failedLoginAttempts?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    twoFactorEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPersona?: EnumBENPersonaFieldUpdateOperationsInput | $Enums.BENPersona
+    lamportCounter?: IntFieldUpdateOperationsInput | number
+    lastReceiptId?: NullableIntFieldUpdateOperationsInput | number | null
+    personaLocked?: BoolFieldUpdateOperationsInput | boolean
+    ssoId?: NullableStringFieldUpdateOperationsInput | string | null
+    ssoMetadata?: NullableJsonNullValueInput | InputJsonValue
+    ssoProvider?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TeamMemberCreateManyTeamInput = {
@@ -33943,6 +40818,165 @@ export namespace Prisma {
     result?: NullableJsonNullValueInput | InputJsonValue
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GovernanceReceiptCreateManyMerkleSealInput = {
+    id?: number
+    lamport: bigint | number
+    persona: string
+    obligationsApplied?: GovernanceReceiptCreateobligationsAppliedInput | string[]
+    promptHash: string
+    outputHash: string
+    violations?: GovernanceReceiptCreateviolationsInput | string[]
+    timestamp?: Date | string | null
+    version: string
+    userId?: number | null
+    criesOmega?: number | null
+    criesCoherence?: number | null
+    criesRigor?: number | null
+    criesIntegrity?: number | null
+    criesEmpathy?: number | null
+    criesStrictness?: number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: string | null
+    prompt: string
+    output: string
+    receiptId?: string | null
+    conversationId?: string | null
+    exchangeId?: string | null
+    traceId?: string | null
+    prevDigest?: string | null
+    currDigest?: string | null
+    model?: string | null
+    tokensIn?: number | null
+    tokensOut?: number | null
+    policyFlags?: GovernanceReceiptCreatepolicyFlagsInput | string[]
+    lockBatchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GovernanceReceiptUpdateWithoutMerkleSealInput = {
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GovernanceReceiptUncheckedUpdateWithoutMerkleSealInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GovernanceReceiptUncheckedUpdateManyWithoutMerkleSealInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lamport?: BigIntFieldUpdateOperationsInput | bigint | number
+    persona?: StringFieldUpdateOperationsInput | string
+    obligationsApplied?: GovernanceReceiptUpdateobligationsAppliedInput | string[]
+    promptHash?: StringFieldUpdateOperationsInput | string
+    outputHash?: StringFieldUpdateOperationsInput | string
+    violations?: GovernanceReceiptUpdateviolationsInput | string[]
+    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    version?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    criesOmega?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesCoherence?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesRigor?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesIntegrity?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesEmpathy?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesStrictness?: NullableFloatFieldUpdateOperationsInput | number | null
+    criesSubMetrics?: NullableJsonNullValueInput | InputJsonValue
+    criesEvidence?: NullableJsonNullValueInput | InputJsonValue
+    criesCalculation?: NullableJsonNullValueInput | InputJsonValue
+    criesBaseline?: NullableJsonNullValueInput | InputJsonValue
+    criesDeterminism?: NullableJsonNullValueInput | InputJsonValue
+    governanceMode?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    output?: StringFieldUpdateOperationsInput | string
+    receiptId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    exchangeId?: NullableStringFieldUpdateOperationsInput | string | null
+    traceId?: NullableStringFieldUpdateOperationsInput | string | null
+    prevDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    currDigest?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    tokensIn?: NullableIntFieldUpdateOperationsInput | number | null
+    tokensOut?: NullableIntFieldUpdateOperationsInput | number | null
+    policyFlags?: GovernanceReceiptUpdatepolicyFlagsInput | string[]
+    lockBatchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

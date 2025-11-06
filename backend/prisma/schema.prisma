@@ -521,6 +521,14 @@ model GovernanceReceipt {
   criesEmpathy        Float?
   criesStrictness     Float?
   
+  // CRIES v3 additions (hybrid semantic + heuristic)
+  criesSubMetrics     Json?        // Sub-metric scores per pillar
+  criesEvidence       Json?        // Evidence objects for auditability
+  criesCalculation    Json?        // Calculation details and weights
+  criesBaseline       Json?        // Baseline comparison data
+  criesDeterminism    Json?        // Determinism info (seed, hash, version)
+  governanceMode      String?      // STRICT/BALANCED/PERMISSIVE/REGULATORY_AUDIT
+  
   // Full data (for audit)
   prompt              String       @db.Text
   output              String       @db.Text

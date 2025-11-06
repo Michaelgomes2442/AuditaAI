@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
+import { io, Socket } from 'socket.io-client';
 
 // ============ TYPES ============
 
@@ -91,50 +92,54 @@ export default function PilotPageNew() {
   const [pendingReceipts, setPendingReceipts] = useState<Receipt[]>([]);
   
   // WebSocket ref
-  const wsRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   // ============ EFFECTS ============
 
-  // Setup WebSocket for real-time receipt updates
+  // Setup Socket.IO for real-time receipt updates
   useEffect(() => {
-    const ws = new WebSocket(BACKEND_URL.replace('http', 'ws'));
+    const socket = io(BACKEND_URL, {
+      transports: ['websocket', 'polling']
+    });
     
-    ws.onopen = () => {
-      console.log('✅ WebSocket connected for live receipts');
-    };
+    socket.on('connect', () => {
+      console.log('✅ Socket.IO connected for live receipts');
+    });
     
-    ws.onmessage = (event) => {
+    socket.on('receipt-generated', (data) => {
       try {
-        const data = JSON.parse(event.data);
+        // Backend emits: { sessionId, runId, receipts: [...] }
+        const { sessionId: msgSessionId, receipts: newReceipts } = data;
         
-        if (data.type === 'receipt-generated' && data.sessionId === sessionId) {
-          const newReceipt: Receipt = data.receipt;
+        // Only process receipts for this session
+        if (msgSessionId === sessionId && newReceipts && newReceipts.length > 0) {
+          console.log(`📨 Received ${newReceipts.length} receipts via Socket.IO`);
           
           if (isPaused) {
             // Queue receipts while paused
-            setPendingReceipts(prev => [...prev, newReceipt]);
+            setPendingReceipts(prev => [...prev, ...newReceipts]);
           } else {
-            // Add immediately
-            setReceipts(prev => [newReceipt, ...prev]);
+            // Add immediately (prepend to show newest first)
+            setReceipts(prev => [...newReceipts, ...prev]);
           }
         }
       } catch (err) {
-        console.error('WebSocket message parse error:', err);
+        console.error('Socket.IO message parse error:', err);
       }
-    };
+    });
     
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    socket.on('disconnect', () => {
+      console.log('Socket.IO disconnected');
+    });
     
-    ws.onclose = () => {
-      console.log('WebSocket closed');
-    };
+    socket.on('error', (error) => {
+      console.error('Socket.IO error:', error);
+    });
     
-    wsRef.current = ws;
+    socketRef.current = socket;
     
     return () => {
-      ws.close();
+      socket.disconnect();
     };
   }, [BACKEND_URL, sessionId, isPaused]);
 
