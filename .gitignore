@@ -183,3 +183,9 @@ vite.config.ts.timestamp-*
 
 # Receipts (generated files)
 backend/receipts/
+receipts/
+frontend/app/receipts/
+frontend/app/lab/receipts/
+**/*.ben
+registry.json
+state.json
