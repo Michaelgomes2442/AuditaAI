@@ -1,0 +1,3 @@
+# Receipt data storage
+# This directory contains exported and archived receipts
+# Files here are ignored by git (see .gitignore)

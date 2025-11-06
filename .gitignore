@@ -189,3 +189,11 @@ frontend/app/lab/receipts/
 **/*.ben
 registry.json
 state.json
+
+# Receipt storage - ignore contents but allow structure
+backend/data/receipts/*
+backend/cache/receipts/*
+!backend/data/receipts/.gitkeep
+!backend/data/receipts/archives/.gitkeep
+!backend/data/receipts/exports/.gitkeep
+!backend/cache/receipts/.gitkeep
