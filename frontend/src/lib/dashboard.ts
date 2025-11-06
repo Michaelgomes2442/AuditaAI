@@ -2,10 +2,16 @@ export async function fetchParallelPrompt(body: any) {
   try {
     const res = await fetch('/api/live-demo/parallel-prompt', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-consent': 'true'
+      },
       body: JSON.stringify(body)
     });
-    if (!res.ok) throw new Error(`Parallel prompt failed: ${res.status}`);
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(`Parallel prompt failed: ${res.status} - ${errorData.error || 'Unknown error'}`);
+    }
     return await res.json();
   } catch (err) {
     console.error('fetchParallelPrompt error', err);

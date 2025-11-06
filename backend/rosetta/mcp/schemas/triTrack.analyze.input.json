@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "cries": {
+      "type": "object",
+      "properties": {
+        "C": { "type": "number" },
+        "R": { "type": "number" },
+        "I": { "type": "number" },
+        "E": { "type": "number" },
+        "S": { "type": "number" }
+      }
+    },
+    "goal": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

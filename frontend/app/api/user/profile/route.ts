@@ -9,11 +9,18 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions as any) as any;
     
+    console.log('[Profile API] Session:', {
+      hasSession: !!session,
+      email: session?.user?.email,
+      id: session?.user?.id
+    });
+    
     if (!session?.user?.email) {
+      console.warn('[Profile API] No session or email found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: {
         id: true,
@@ -28,8 +35,20 @@ export async function GET() {
       },
     });
 
+    // If user not found in database, create a default profile from session
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      console.warn('[Profile API] User not found in database, creating default profile from session');
+      user = {
+        id: session.user.id || 'unknown',
+        email: session.user.email,
+        name: session.user.name || null,
+        role: session.user.role || 'USER',
+        tier: session.user.tier || 'FREE',
+        permissions: [],
+        status: 'ACTIVE',
+        createdAt: new Date(),
+        lastLoginAt: new Date()
+      } as any;
     }
 
     return NextResponse.json(user);

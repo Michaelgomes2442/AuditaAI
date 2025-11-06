@@ -496,3 +496,85 @@ enum HandoffStatus {
   FAILED
   TIMEOUT
 }
+
+// ============================================================================
+// SPEECHCRAFT V2.1 GOVERNANCE RECEIPTS & MERKLE SEALING
+// ============================================================================
+
+model GovernanceReceipt {
+  id                  Int          @id @default(autoincrement())
+  lamport             BigInt       // Use BIGINT for large Lamport clocks
+  persona             String       // Architect/Auditor/Witness
+  obligationsApplied  String[]
+  promptHash          String       // SHA-256 (64-char hex)
+  outputHash          String       // SHA-256 (64-char hex) - also curr_digest
+  violations          String[]
+  timestamp           DateTime?    // Nullable for safety
+  version             String       // speechcraft-v2
+  userId              Int?
+  
+  // CRIES metrics
+  criesOmega          Float?
+  criesCoherence      Float?
+  criesRigor          Float?
+  criesIntegrity      Float?
+  criesEmpathy        Float?
+  criesStrictness     Float?
+  
+  // Full data (for audit)
+  prompt              String       @db.Text
+  output              String       @db.Text
+  
+  // Lamport receipt chain (Δ-ANALYSIS)
+  receiptId           String?      // Format: rcpt_<timestamp>_<random>
+  conversationId      String?      // Groups receipts by conversation
+  exchangeId          String?      // Turn within conversation
+  traceId             String?      // Format: TRACE-<timestamp>-<random>
+  prevDigest          String?      // Previous receipt's curr_digest (chain linkage)
+  currDigest          String?      // H(lamport||prev_digest||inputs||outputs||cries||timestamp)
+  model               String?      // Model identifier (gpt-4, claude-3, etc.)
+  tokensIn            Int?         // Input token count
+  tokensOut           Int?         // Output token count
+  policyFlags         String[]     @default([]) // Additional policy flags
+  
+  // Merkle seal linkage
+  merkleSealId        Int?
+  merkleSeal          MerkleSeal?  @relation(fields: [merkleSealId], references: [id])
+  
+  // Race-proof locking
+  lockBatchId         String?      // UUID for batch locking during seal
+  
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  
+  @@index([lamport])
+  @@index([merkleSealId])
+  @@index([userId])
+  @@index([lockBatchId])
+  @@index([promptHash])
+  @@index([createdAt])
+  @@index([conversationId])
+  @@index([receiptId])
+  @@index([traceId])
+  @@map("governance_receipts")
+}
+
+model MerkleSeal {
+  id                  Int                   @id @default(autoincrement())
+  merkleRoot          String                @unique
+  receiptCount        Int
+  lamportStart        BigInt                // Match GovernanceReceipt.lamport type
+  lamportEnd          BigInt
+  sealedAt            DateTime              @default(now())
+  
+  // Chain linkage (blockchain-style)
+  sealDigest          String?               // SHA-256 of seal body
+  prevRoot            String?               // Previous seal's merkleRoot (null for genesis)
+  prevSealDigest      String?               // Previous seal's digest (full chain)
+  
+  receipts            GovernanceReceipt[]
+  
+  @@index([lamportStart, lamportEnd])
+  @@index([sealedAt])
+  @@map("merkle_seals")
+}

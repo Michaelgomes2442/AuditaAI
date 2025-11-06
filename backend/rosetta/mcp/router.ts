@@ -76,13 +76,20 @@ const tools: { [key: string]: Function } = {
 };
 
 // Register new MCP kernel tools
+// Import and assign the actual functions from the kernel modules
+const { bootSequenceInit, handleWhoAmI } = RosettaMCPKernel.boot;
+const { personaLock } = RosettaMCPKernel.persona;
+const { triTrackAnalyze } = RosettaMCPKernel.triTrack;
+const { applySpeechcraft } = RosettaMCPKernel.speechcraft;
+const { crossCheckCanons } = RosettaMCPKernel.canons;
+
 Object.assign(tools, {
-  'rosetta.boot.init': RosettaMCPKernel.boot.bootSequenceInit,
-  'rosetta.boot.whoami': RosettaMCPKernel.boot.handleWhoAmI,
-  'rosetta.persona.lock': RosettaMCPKernel.persona.personaLock,
-  'rosetta.triTrack.analyze': RosettaMCPKernel.triTrack.triTrackAnalyze,
-  'rosetta.speechcraft.apply': RosettaMCPKernel.speechcraft.applySpeechcraft,
-  'rosetta.canons.crossCheck': RosettaMCPKernel.canons.crossCheckCanons
+  'rosetta.boot.init': bootSequenceInit,
+  'rosetta.boot.whoami': handleWhoAmI,
+  'rosetta.persona.lock': personaLock,
+  'rosetta.triTrack.analyze': triTrackAnalyze,
+  'rosetta.speechcraft.apply': applySpeechcraft,
+  'rosetta.canons.crossCheck': crossCheckCanons
 });
 
 export async function handleToolCall(request: ToolRequest): Promise<ToolResponse> {

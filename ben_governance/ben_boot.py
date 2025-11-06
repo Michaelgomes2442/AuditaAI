@@ -1,13 +1,12 @@
 import os, json, hashlib, time
 from datetime import datetime
 from cryptography.fernet import Fernet
-
-# === CONFIG ===
-RECEIPTS_DIR = os.path.expanduser("~/AuditaAI/receipts")
-KEY_PATH = os.path.expanduser("~/AuditaAI/ben_governance/ben.key")
+from path_utils import RECEIPTS_DIR, KEY_PATH
 
 # === BOOT: Load or create key ===
 if not os.path.exists(KEY_PATH):
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(KEY_PATH), exist_ok=True)
     key = Fernet.generate_key()
     with open(KEY_PATH, "wb") as f:
         f.write(key)

@@ -1,0 +1,2402 @@
+[
+  {
+    "id": "v2.3-examples",
+    "description": "V2.3 - Enhanced example specificity",
+    "file": "rosetta-frontier-v2.3-examples.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5932,
+          "Omega": 0.5932,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5932
+        },
+        "governed": {
+          "C": 0.5254,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.6063,
+          "Omega": 0.6063,
+          "tracks": {
+            "A": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.6063
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.01849999999999996,
+            "percentage": 3.6496350364963424
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 8.47457627118644
+          },
+          "overall": {
+            "absolute": 0.0131,
+            "percentage": 2.2083614295347274
+          },
+          "Omega": {
+            "absolute": 0.0131,
+            "percentage": 2.2083614295347274
+          }
+        },
+        "omegaImprovement": 2.2083614295347274
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.3839,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5499,
+          "Omega": 0.5499,
+          "tracks": {
+            "A": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5499
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.11609999999999998,
+            "percentage": -23.219999999999995
+          },
+          "R": {
+            "absolute": 0.2,
+            "percentage": 66.66666666666667
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.03620000000000001,
+            "percentage": 7.0469145415612235
+          },
+          "Omega": {
+            "absolute": 0.03620000000000001,
+            "percentage": 7.0469145415612235
+          }
+        },
+        "omegaImprovement": 7.0469145415612235
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.3842,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.55,
+          "Omega": 0.55,
+          "tracks": {
+            "A": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.55
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.11580000000000001,
+            "percentage": -23.160000000000004
+          },
+          "R": {
+            "absolute": 0.2,
+            "percentage": 66.66666666666667
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.0363,
+            "percentage": 7.066381156316916
+          },
+          "Omega": {
+            "absolute": 0.0363,
+            "percentage": 7.066381156316916
+          }
+        },
+        "omegaImprovement": 7.066381156316916
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "ungoverned": {
+          "C": 0.503,
+          "R": 0.2875,
+          "I": 0.55,
+          "E": 0.75,
+          "S": 0.7,
+          "overall": 0.5275,
+          "Omega": 0.5275,
+          "tracks": {
+            "A": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "B": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "C": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5275
+        },
+        "governed": {
+          "C": 0.5387,
+          "R": 0.35,
+          "I": 0.625,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5746,
+          "Omega": 0.5746,
+          "tracks": {
+            "A": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5746
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.035699999999999954,
+            "percentage": 7.0974155069582405
+          },
+          "R": {
+            "absolute": 0.0625,
+            "percentage": 21.73913043478261
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 13.636363636363628
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.03750000000000009,
+            "percentage": 5.35714285714287
+          },
+          "overall": {
+            "absolute": 0.04710000000000003,
+            "percentage": 8.928909952606642
+          },
+          "Omega": {
+            "absolute": 0.04710000000000003,
+            "percentage": 8.928909952606642
+          }
+        },
+        "omegaImprovement": 8.928909952606642
+      }
+    ],
+    "avgOmegaImprovement": 6.312641770004877,
+    "successRate": "4/4"
+  },
+  {
+    "id": "v2.1-cumulative",
+    "description": "V2.1 - Cumulative reasoning",
+    "file": "rosetta-frontier-v2.1-cumulative.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7625,
+          "overall": 0.5814,
+          "Omega": 0.5814,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5814
+        },
+        "governed": {
+          "C": 0.5102,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.6033,
+          "Omega": 0.6033,
+          "tracks": {
+            "A": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.6033
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.0032999999999999696,
+            "percentage": 0.6510159794831267
+          },
+          "R": {
+            "absolute": 0.0625,
+            "percentage": 14.285714285714285
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.03750000000000009,
+            "percentage": 4.918032786885258
+          },
+          "overall": {
+            "absolute": 0.02189999999999992,
+            "percentage": 3.766769865841059
+          },
+          "Omega": {
+            "absolute": 0.02189999999999992,
+            "percentage": 3.766769865841059
+          }
+        },
+        "omegaImprovement": 3.766769865841059
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.4035,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5726,
+          "Omega": 0.5726,
+          "tracks": {
+            "A": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5726
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.09649999999999997,
+            "percentage": -19.299999999999994
+          },
+          "R": {
+            "absolute": 0.2,
+            "percentage": 66.66666666666667
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.05889999999999995,
+            "percentage": 11.465836091103746
+          },
+          "Omega": {
+            "absolute": 0.05889999999999995,
+            "percentage": 11.465836091103746
+          }
+        },
+        "omegaImprovement": 11.465836091103746
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "ungoverned": {
+          "C": 0.3786,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5395,
+          "Omega": 0.5395,
+          "tracks": {
+            "A": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5395
+        },
+        "governed": {
+          "C": 0.3842,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.55,
+          "Omega": 0.55,
+          "tracks": {
+            "A": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.55
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.005599999999999994,
+            "percentage": 1.4791336502905426
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.010500000000000065,
+            "percentage": 1.9462465245597897
+          },
+          "Omega": {
+            "absolute": 0.010500000000000065,
+            "percentage": 1.9462465245597897
+          }
+        },
+        "omegaImprovement": 1.9462465245597897
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "ungoverned": {
+          "C": 0.5066,
+          "R": 0.35,
+          "I": 0.55,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5401,
+          "Omega": 0.5401,
+          "tracks": {
+            "A": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5401
+        },
+        "governed": {
+          "C": 0.5387,
+          "R": 0.35,
+          "I": 0.625,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5746,
+          "Omega": 0.5746,
+          "tracks": {
+            "A": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5746
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.032099999999999906,
+            "percentage": 6.336360047374636
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 13.636363636363628
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.034499999999999975,
+            "percentage": 6.387705980374
+          },
+          "Omega": {
+            "absolute": 0.034499999999999975,
+            "percentage": 6.387705980374
+          }
+        },
+        "omegaImprovement": 6.387705980374
+      }
+    ],
+    "avgOmegaImprovement": 5.891639615469649,
+    "successRate": "4/4"
+  },
+  {
+    "id": "v2.2-depth",
+    "description": "V2.2 - Stronger depth (2-3 points)",
+    "file": "rosetta-frontier-v2.2-depth.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7625,
+          "overall": 0.5814,
+          "Omega": 0.5814,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5814
+        },
+        "governed": {
+          "C": 0.5102,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.6033,
+          "Omega": 0.6033,
+          "tracks": {
+            "A": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.6033
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.0032999999999999696,
+            "percentage": 0.6510159794831267
+          },
+          "R": {
+            "absolute": 0.0625,
+            "percentage": 14.285714285714285
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.03750000000000009,
+            "percentage": 4.918032786885258
+          },
+          "overall": {
+            "absolute": 0.02189999999999992,
+            "percentage": 3.766769865841059
+          },
+          "Omega": {
+            "absolute": 0.02189999999999992,
+            "percentage": 3.766769865841059
+          }
+        },
+        "omegaImprovement": 3.766769865841059
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "ungoverned": {
+          "C": 0.3819,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5401,
+          "Omega": 0.5401,
+          "tracks": {
+            "A": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5401
+        },
+        "governed": {
+          "C": 0.4035,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5726,
+          "Omega": 0.5726,
+          "tracks": {
+            "A": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.4035,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5726
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.021600000000000008,
+            "percentage": 5.655930871956012
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.03249999999999997,
+            "percentage": 6.017404184410289
+          },
+          "Omega": {
+            "absolute": 0.03249999999999997,
+            "percentage": 6.017404184410289
+          }
+        },
+        "omegaImprovement": 6.017404184410289
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "ungoverned": {
+          "C": 0.3786,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5395,
+          "Omega": 0.5395,
+          "tracks": {
+            "A": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.3786,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5395
+        },
+        "governed": {
+          "C": 0.3783,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5613,
+          "Omega": 0.5613,
+          "tracks": {
+            "A": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5613
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.00029999999999996696,
+            "percentage": -0.07923930269412757
+          },
+          "R": {
+            "absolute": -0.0625,
+            "percentage": -12.5
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.125,
+            "percentage": 18.51851851851852
+          },
+          "overall": {
+            "absolute": 0.02180000000000004,
+            "percentage": 4.040778498609832
+          },
+          "Omega": {
+            "absolute": 0.02180000000000004,
+            "percentage": 4.040778498609832
+          }
+        },
+        "omegaImprovement": 4.040778498609832
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.503,
+          "R": 0.2875,
+          "I": 0.625,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5612,
+          "Omega": 0.5612,
+          "tracks": {
+            "A": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5612
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.0030000000000000027,
+            "percentage": 0.6000000000000005
+          },
+          "R": {
+            "absolute": -0.012500000000000011,
+            "percentage": -4.1666666666666705
+          },
+          "I": {
+            "absolute": 0.125,
+            "percentage": 25
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.125,
+            "percentage": 18.51851851851852
+          },
+          "overall": {
+            "absolute": 0.04749999999999999,
+            "percentage": 9.24664200895464
+          },
+          "Omega": {
+            "absolute": 0.04749999999999999,
+            "percentage": 9.24664200895464
+          }
+        },
+        "omegaImprovement": 9.24664200895464
+      }
+    ],
+    "avgOmegaImprovement": 5.767898639453955,
+    "successRate": "4/4"
+  },
+  {
+    "id": "v2.4-rigor",
+    "description": "V2.4 - Explicit rigor requirements",
+    "file": "rosetta-frontier-v2.4-rigor.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5932,
+          "Omega": 0.5932,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5932
+        },
+        "governed": {
+          "C": 0.5062,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5869,
+          "Omega": 0.5869,
+          "tracks": {
+            "A": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5869
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.0007000000000000339,
+            "percentage": -0.138094298678247
+          },
+          "R": {
+            "absolute": -0.0625,
+            "percentage": -12.5
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 8.47457627118644
+          },
+          "overall": {
+            "absolute": -0.006299999999999972,
+            "percentage": -1.0620364126770014
+          },
+          "Omega": {
+            "absolute": -0.006299999999999972,
+            "percentage": -1.0620364126770014
+          }
+        },
+        "omegaImprovement": -1.0620364126770014
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "ungoverned": {
+          "C": 0.3819,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5401,
+          "Omega": 0.5401,
+          "tracks": {
+            "A": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5401
+        },
+        "governed": {
+          "C": 0.3779,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5612,
+          "Omega": 0.5612,
+          "tracks": {
+            "A": {
+              "C": 0.3779,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.3779,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.3779,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5612
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.0040000000000000036,
+            "percentage": -1.0473946059177806
+          },
+          "R": {
+            "absolute": -0.0625,
+            "percentage": -12.5
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.125,
+            "percentage": 18.51851851851852
+          },
+          "overall": {
+            "absolute": 0.021100000000000008,
+            "percentage": 3.9066839474171466
+          },
+          "Omega": {
+            "absolute": 0.021100000000000008,
+            "percentage": 3.9066839474171466
+          }
+        },
+        "omegaImprovement": 3.9066839474171466
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.3783,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5613,
+          "Omega": 0.5613,
+          "tracks": {
+            "A": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5613
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.12169999999999997,
+            "percentage": -24.339999999999996
+          },
+          "R": {
+            "absolute": 0.1375,
+            "percentage": 45.833333333333336
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.125,
+            "percentage": 18.51851851851852
+          },
+          "overall": {
+            "absolute": 0.047599999999999976,
+            "percentage": 9.26610862371033
+          },
+          "Omega": {
+            "absolute": 0.047599999999999976,
+            "percentage": 9.26610862371033
+          }
+        },
+        "omegaImprovement": 9.26610862371033
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "ungoverned": {
+          "C": 0.5066,
+          "R": 0.35,
+          "I": 0.55,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5401,
+          "Omega": 0.5401,
+          "tracks": {
+            "A": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5401
+        },
+        "governed": {
+          "C": 0.5387,
+          "R": 0.35,
+          "I": 0.625,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5746,
+          "Omega": 0.5746,
+          "tracks": {
+            "A": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5746
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.032099999999999906,
+            "percentage": 6.336360047374636
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 13.636363636363628
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.034499999999999975,
+            "percentage": 6.387705980374
+          },
+          "Omega": {
+            "absolute": 0.034499999999999975,
+            "percentage": 6.387705980374
+          }
+        },
+        "omegaImprovement": 6.387705980374
+      }
+    ],
+    "avgOmegaImprovement": 4.624615534706119,
+    "successRate": "4/4"
+  },
+  {
+    "id": "v2-baseline",
+    "description": "V2 Baseline - Pure reasoning-first (proven +8.9% Omega)",
+    "file": "rosetta-frontier-v2-baseline.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7625,
+          "overall": 0.5814,
+          "Omega": 0.5814,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5814
+        },
+        "governed": {
+          "C": 0.5062,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5869,
+          "Omega": 0.5869,
+          "tracks": {
+            "A": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5062,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5869
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.0007000000000000339,
+            "percentage": -0.138094298678247
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.03750000000000009,
+            "percentage": 4.918032786885258
+          },
+          "overall": {
+            "absolute": 0.005499999999999949,
+            "percentage": 0.9459924320605347
+          },
+          "Omega": {
+            "absolute": 0.005499999999999949,
+            "percentage": 0.9459924320605347
+          }
+        },
+        "omegaImprovement": 0.9459924320605347
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "ungoverned": {
+          "C": 0.5,
+          "R": 0.3,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.675,
+          "overall": 0.5137,
+          "Omega": 0.5137,
+          "tracks": {
+            "A": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "B": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            },
+            "C": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5137
+        },
+        "governed": {
+          "C": 0.3839,
+          "R": 0.5,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5499,
+          "Omega": 0.5499,
+          "tracks": {
+            "A": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5499
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.11609999999999998,
+            "percentage": -23.219999999999995
+          },
+          "R": {
+            "absolute": 0.2,
+            "percentage": 66.66666666666667
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 9.25925925925926
+          },
+          "overall": {
+            "absolute": 0.03620000000000001,
+            "percentage": 7.0469145415612235
+          },
+          "Omega": {
+            "absolute": 0.03620000000000001,
+            "percentage": 7.0469145415612235
+          }
+        },
+        "omegaImprovement": 7.0469145415612235
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "ungoverned": {
+          "C": 0.5035,
+          "R": 0.4375,
+          "I": 0.5,
+          "E": 0.75,
+          "S": 0.7,
+          "overall": 0.5526,
+          "Omega": 0.5526,
+          "tracks": {
+            "A": {
+              "C": 0.5035,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "B": {
+              "C": 0.5035,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "C": {
+              "C": 0.5035,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5526
+        },
+        "governed": {
+          "C": 0.3783,
+          "R": 0.4375,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.5613,
+          "Omega": 0.5613,
+          "tracks": {
+            "A": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.3783,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5613
+        },
+        "improvements": {
+          "C": {
+            "absolute": -0.12519999999999992,
+            "percentage": -24.865938430983107
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 14.999999999999991
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.10000000000000009,
+            "percentage": 14.285714285714299
+          },
+          "overall": {
+            "absolute": 0.008700000000000041,
+            "percentage": 1.5743756786102139
+          },
+          "Omega": {
+            "absolute": 0.008700000000000041,
+            "percentage": 1.5743756786102139
+          }
+        },
+        "omegaImprovement": 1.5743756786102139
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "ungoverned": {
+          "C": 0.503,
+          "R": 0.2875,
+          "I": 0.55,
+          "E": 0.75,
+          "S": 0.7,
+          "overall": 0.5275,
+          "Omega": 0.5275,
+          "tracks": {
+            "A": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "B": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            },
+            "C": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5275
+        },
+        "governed": {
+          "C": 0.5387,
+          "R": 0.35,
+          "I": 0.625,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5746,
+          "Omega": 0.5746,
+          "tracks": {
+            "A": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5746
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.035699999999999954,
+            "percentage": 7.0974155069582405
+          },
+          "R": {
+            "absolute": 0.0625,
+            "percentage": 21.73913043478261
+          },
+          "I": {
+            "absolute": 0.07499999999999996,
+            "percentage": 13.636363636363628
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.03750000000000009,
+            "percentage": 5.35714285714287
+          },
+          "overall": {
+            "absolute": 0.04710000000000003,
+            "percentage": 8.928909952606642
+          },
+          "Omega": {
+            "absolute": 0.04710000000000003,
+            "percentage": 8.928909952606642
+          }
+        },
+        "omegaImprovement": 8.928909952606642
+      }
+    ],
+    "avgOmegaImprovement": 4.624048151209653,
+    "successRate": "4/4"
+  },
+  {
+    "id": "v2.5-balanced",
+    "description": "V2.5 - Balanced CRIES optimization",
+    "file": "rosetta-frontier-v2.5-balanced.txt",
+    "prompts": [
+      {
+        "promptId": "executive-ai-risk",
+        "promptName": "Executive AI Risk Explanation",
+        "ungoverned": {
+          "C": 0.5069,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.7375,
+          "overall": 0.5932,
+          "Omega": 0.5932,
+          "tracks": {
+            "A": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "B": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            },
+            "C": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.5932
+        },
+        "governed": {
+          "C": 0.5254,
+          "R": 0.5,
+          "I": 0.575,
+          "E": 0.75,
+          "S": 0.8,
+          "overall": 0.6063,
+          "Omega": 0.6063,
+          "tracks": {
+            "A": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "B": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            },
+            "C": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8
+            }
+          },
+          "weights": {
+            "wA": 0.4,
+            "wB": 0.4,
+            "wC": 0.2
+          },
+          "sigma": 0.6063
+        },
+        "improvements": {
+          "C": {
+            "absolute": 0.01849999999999996,
+            "percentage": 3.6496350364963424
+          },
+          "R": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "I": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "E": {
+            "absolute": 0,
+            "percentage": 0
+          },
+          "S": {
+            "absolute": 0.0625,
+            "percentage": 8.47457627118644
+          },
+          "overall": {
+            "absolute": 0.0131,
+            "percentage": 2.2083614295347274
+          },
+          "Omega": {
+            "absolute": 0.0131,
+            "percentage": 2.2083614295347274
+          }
+        },
+        "omegaImprovement": 2.2083614295347274
+      },
+      {
+        "promptId": "technical-architecture",
+        "promptName": "Technical Architecture Explanation",
+        "error": "apiRequestContext.post: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - → POST http://localhost:3001/api/live-demo/parallel-prompt\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - x-user-consent: true\u001b[22m\n\u001b[2m    - content-length: 366\u001b[22m\n"
+      },
+      {
+        "promptId": "strategic-analysis",
+        "promptName": "Strategic Business Analysis",
+        "error": "apiRequestContext.post: Test ended."
+      },
+      {
+        "promptId": "risk-assessment",
+        "promptName": "Risk Assessment Scenario",
+        "error": "apiRequestContext.post: Test ended."
+      }
+    ],
+    "avgOmegaImprovement": 2.2083614295347274,
+    "successRate": "1/4"
+  }
+]

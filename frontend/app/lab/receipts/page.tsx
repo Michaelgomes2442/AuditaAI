@@ -2,76 +2,115 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FileText, CheckCircle, AlertCircle, Shield } from 'lucide-react';
+import { FileText, CheckCircle, AlertCircle, Shield, Lock, TrendingUp, Database } from 'lucide-react';
 
-interface Receipt {
-  timestamp: string;
-  event: string;
-  lamport: number;
-  self_hash: string;
-  calc_hash?: string;
-  verified?: boolean;
-  path: string;
+interface GovernanceReceipt {
+  id: number;
+  lamport: string;
+  persona: string | null;
+  promptHash: string;
+  outputHash: string;
+  violations: string[];
+  timestamp?: string;
+  createdAt: Date;
+  criesOmega: number;
+  criesCoherence: number;
+  criesRigor: number;
+  criesIntegrity: number;
+  criesEmpathy: number;
+  criesStrictness: number;
+  merkleSealId: number | null;
+  merkleSeal?: {
+    id: number;
+    rootHash: string;
+    sealedAt: Date;
+  } | null;
+}
+
+interface ReceiptStats {
+  total: number;
+  sealed: number;
+  unsealed: number;
+  withViolations: number;
+  byPersona: Record<string, number>;
+  criesRanges: {
+    excellent: number;
+    good: number;
+    fair: number;
+    poor: number;
+  };
+  sealPercentage: string;
 }
 
 export default function ReceiptsPage() {
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const [receipts, setReceipts] = useState<Receipt[]>([]);
-  const [registry, setRegistry] = useState<any[]>([]);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+  const [receipts, setReceipts] = useState<GovernanceReceipt[]>([]);
+  const [stats, setStats] = useState<ReceiptStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedReceipt, setSelectedReceipt] = useState<Receipt | null>(null);
+  const [selectedReceipt, setSelectedReceipt] = useState<GovernanceReceipt | null>(null);
 
   useEffect(() => {
-    fetchReceipts();
+    fetchData();
   }, []);
 
-  const fetchReceipts = async () => {
+  const fetchData = async () => {
     try {
-      // Fetch registry from backend
-      const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/registry`);
-      if (response.ok) {
-        const data = await response.json();
-        setRegistry(data);
-
-        // Convert registry to receipt format
-        const receiptList = data.map((entry: any) => ({
-          timestamp: entry.ts,
-          event: entry.event,
-          lamport: entry.lamport,
-          self_hash: entry.self_hash,
-          calc_hash: entry.calc_hash,
-          verified: entry.verified,
-          path: entry.path
-        }));
-        setReceipts(receiptList);
-      } else {
-        // Enterprise feature - backend required
-        console.log('Enterprise feature: Backend required for receipts registry');
+      // Fetch receipts from the lab API
+      const receiptsResponse = await fetch(`${BACKEND_URL}/api/lab/receipts?take=100`);
+      if (receiptsResponse.ok) {
+        const receiptsData = await receiptsResponse.json();
+        if (receiptsData.success && receiptsData.receipts) {
+          setReceipts(receiptsData.receipts);
+          
+          // Calculate stats from receipts
+          const total = receiptsData.pagination.total;
+          const sealed = receiptsData.receipts.filter((r: GovernanceReceipt) => r.merkleSealId !== null).length;
+          const unsealed = total - sealed;
+          const withViolations = receiptsData.receipts.filter((r: GovernanceReceipt) => r.violations && r.violations.length > 0).length;
+          
+          // Group by persona
+          const byPersona: Record<string, number> = {};
+          receiptsData.receipts.forEach((r: GovernanceReceipt) => {
+            if (r.persona) {
+              byPersona[r.persona] = (byPersona[r.persona] || 0) + 1;
+            }
+          });
+          
+          // Calculate CRIES ranges
+          const criesRanges = {
+            excellent: receiptsData.receipts.filter((r: GovernanceReceipt) => r.criesOmega >= 0.8).length,
+            good: receiptsData.receipts.filter((r: GovernanceReceipt) => r.criesOmega >= 0.6 && r.criesOmega < 0.8).length,
+            fair: receiptsData.receipts.filter((r: GovernanceReceipt) => r.criesOmega >= 0.4 && r.criesOmega < 0.6).length,
+            poor: receiptsData.receipts.filter((r: GovernanceReceipt) => r.criesOmega < 0.4).length,
+          };
+          
+          setStats({
+            total,
+            sealed,
+            unsealed,
+            withViolations,
+            byPersona,
+            criesRanges,
+            sealPercentage: total > 0 ? ((sealed / total) * 100).toFixed(1) : '0.0'
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to fetch receipts:', error);
-      // Enterprise feature - backend required
-      console.log('Enterprise feature: Backend connection failed');
     } finally {
       setLoading(false);
     }
   };
 
-  const verifyReceipt = async (path: string) => {
+  const viewReceiptDetails = async (id: number) => {
     try {
-      const response = await fetch(`${BACKEND_URL ?? ''}/api/receipts/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path })
-      });
-      
+      const response = await fetch(`${BACKEND_URL}/api/governance/receipts/${id}`);
       if (response.ok) {
-        const result = await response.json();
-        setSelectedReceipt(result);
-        fetchReceipts(); // Refresh list
+        const data = await response.json();
+        setSelectedReceipt(data);
       }
     } catch (error) {
-      console.error('Verification failed:', error);
+      console.error('Failed to fetch receipt details:', error);
     }
   };
 
@@ -118,24 +157,26 @@ export default function ReceiptsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-slate-800/50 border border-cyan-500/30 rounded-lg p-6">
             <div className="text-sm font-mono text-cyan-400 mb-2">Total Receipts</div>
-            <div className="text-3xl font-bold font-mono text-white">{receipts.length}</div>
+            <div className="text-3xl font-bold font-mono text-white">{stats?.total || 0}</div>
           </div>
           <div className="bg-slate-800/50 border border-green-500/30 rounded-lg p-6">
-            <div className="text-sm font-mono text-green-400 mb-2">Verified</div>
+            <div className="text-sm font-mono text-green-400 mb-2">Sealed</div>
             <div className="text-3xl font-bold font-mono text-white">
-              {receipts.filter(r => r.verified).length}
+              {stats?.sealed || 0}
             </div>
           </div>
           <div className="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6">
             <div className="text-sm font-mono text-purple-400 mb-2">Latest Lamport</div>
             <div className="text-3xl font-bold font-mono text-white">
-              {Math.max(...receipts.map(r => r.lamport || 0), 0)}
+              {receipts.length > 0 ? Math.max(...receipts.map(r => parseInt(r.lamport || '0'))) : 0}
             </div>
           </div>
           <div className="bg-slate-800/50 border border-orange-500/30 rounded-lg p-6">
-            <div className="text-sm font-mono text-orange-400 mb-2">Event Types</div>
+            <div className="text-sm font-mono text-orange-400 mb-2">Avg CRIES Ω</div>
             <div className="text-3xl font-bold font-mono text-white">
-              {new Set(receipts.map(r => r.event)).size}
+              {receipts.length > 0 
+                ? ((receipts.reduce((sum, r) => sum + (r.criesOmega || 0), 0) / receipts.length) * 100).toFixed(1) + '%'
+                : '0%'}
             </div>
           </div>
         </div>
@@ -174,9 +215,11 @@ export default function ReceiptsPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {receipts.sort((a, b) => b.lamport - a.lamport).map((receipt, idx) => (
+              {[...receipts]
+                .sort((a, b) => parseInt(b.lamport) - parseInt(a.lamport))
+                .map((receipt, idx) => (
                 <div
-                  key={idx}
+                  key={receipt.id}
                   className="bg-slate-900/70 border border-slate-600 rounded-lg p-4 hover:border-cyan-500/50 transition-all cursor-pointer"
                   onClick={() => setSelectedReceipt(receipt)}
                 >
@@ -186,41 +229,45 @@ export default function ReceiptsPage() {
                         L{receipt.lamport}
                       </div>
                       <div className="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded text-purple-300 font-mono text-sm">
-                        {receipt.event}
+                        {receipt.persona || 'System'}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {receipt.verified ? (
+                      {receipt.merkleSealId && (
                         <div className="flex items-center gap-1 text-green-400">
                           <CheckCircle className="w-4 h-4" />
-                          <span className="text-xs font-mono">VERIFIED</span>
+                          <span className="text-xs font-mono">SEALED</span>
                         </div>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            verifyReceipt(receipt.path);
-                          }}
-                          className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-mono rounded transition-colors"
-                        >
-                          Verify
-                        </button>
                       )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded text-cyan-300 font-mono text-xs">
+                        Ω {(receipt.criesOmega * 100).toFixed(0)}%
+                      </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm font-mono">
                     <div>
                       <div className="text-gray-500 mb-1">Timestamp</div>
-                      <div className="text-gray-300">{new Date(receipt.timestamp).toLocaleString()}</div>
+                      <div className="text-gray-300">
+                        {new Date(receipt.createdAt).toLocaleString()}
+                      </div>
                     </div>
                     <div>
-                      <div className="text-gray-500 mb-1">Hash</div>
-                      <div className="text-gray-300 truncate" title={receipt.self_hash}>
-                        {receipt.self_hash.substring(0, 16)}...
+                      <div className="text-gray-500 mb-1">Prompt Hash</div>
+                      <div className="text-gray-300 truncate" title={receipt.promptHash}>
+                        {receipt.promptHash.substring(0, 16)}...
                       </div>
                     </div>
                   </div>
+
+                  {receipt.violations && receipt.violations.length > 0 && (
+                    <div className="mt-3 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded">
+                      <div className="text-red-400 font-mono text-xs flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4" />
+                        {receipt.violations.length} violation{receipt.violations.length !== 1 ? 's' : ''} detected
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -238,9 +285,9 @@ export default function ReceiptsPage() {
             <div className="space-y-4 font-mono text-sm">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-gray-500 mb-2">Event Type</div>
+                  <div className="text-gray-500 mb-2">Persona</div>
                   <div className="px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded text-purple-300">
-                    {selectedReceipt.event}
+                    {selectedReceipt.persona || 'System'}
                   </div>
                 </div>
                 <div>
@@ -254,56 +301,80 @@ export default function ReceiptsPage() {
               <div>
                 <div className="text-gray-500 mb-2">Timestamp (UTC)</div>
                 <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-gray-300">
-                  {selectedReceipt.timestamp}
+                  {new Date(selectedReceipt.createdAt).toISOString()}
                 </div>
               </div>
 
               <div>
-                <div className="text-gray-500 mb-2">Self Hash (SHA-256)</div>
+                <div className="text-gray-500 mb-2">Prompt Hash (SHA-256)</div>
                 <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-gray-300 break-all">
-                  {selectedReceipt.self_hash}
+                  {selectedReceipt.promptHash}
                 </div>
               </div>
 
-              {selectedReceipt.calc_hash && (
+              <div>
+                <div className="text-gray-500 mb-2">Output Hash (SHA-256)</div>
+                <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-gray-300 break-all">
+                  {selectedReceipt.outputHash}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gray-500 mb-2">CRIES Metrics</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Coherence</div>
+                    <div className="text-cyan-300">{(selectedReceipt.criesCoherence * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Rigor</div>
+                    <div className="text-cyan-300">{(selectedReceipt.criesRigor * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Integrity</div>
+                    <div className="text-cyan-300">{(selectedReceipt.criesIntegrity * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Empathy</div>
+                    <div className="text-cyan-300">{(selectedReceipt.criesEmpathy * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Strictness</div>
+                    <div className="text-cyan-300">{(selectedReceipt.criesStrictness * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="px-3 py-2 bg-slate-900 border border-cyan-500/30 rounded">
+                    <div className="text-gray-400 text-xs mb-1">Omega (Ω)</div>
+                    <div className="text-cyan-300 font-bold">{(selectedReceipt.criesOmega * 100).toFixed(1)}%</div>
+                  </div>
+                </div>
+              </div>
+
+              {selectedReceipt.violations && selectedReceipt.violations.length > 0 && (
                 <div>
-                  <div className="text-gray-500 mb-2">Calculated Hash</div>
-                  <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-gray-300 break-all">
-                    {selectedReceipt.calc_hash}
+                  <div className="text-gray-500 mb-2">Violations</div>
+                  <div className="px-3 py-2 bg-red-500/10 border border-red-500/30 rounded">
+                    <ul className="text-red-300 text-xs space-y-1">
+                      {selectedReceipt.violations.map((v, i) => (
+                        <li key={i}>• {v}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               )}
 
-              <div>
-                <div className="text-gray-500 mb-2">File Path</div>
-                <div className="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-gray-300 break-all">
-                  {selectedReceipt.path}
-                </div>
-              </div>
-
-              {selectedReceipt.verified !== undefined && (
-                <div className="mt-6 p-4 rounded-lg border-2" style={{
-                  backgroundColor: selectedReceipt.verified ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                  borderColor: selectedReceipt.verified ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'
-                }}>
+              {selectedReceipt.merkleSeal && (
+                <div className="mt-6 p-4 rounded-lg border-2 bg-green-500/10 border-green-500/30">
                   <div className="flex items-center gap-3">
-                    {selectedReceipt.verified ? (
-                      <>
-                        <CheckCircle className="w-6 h-6 text-green-400" />
-                        <div>
-                          <div className="font-bold text-green-400 text-lg">Verification Passed</div>
-                          <div className="text-green-300 text-xs">Hash matches - receipt is authentic</div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-6 h-6 text-red-400" />
-                        <div>
-                          <div className="font-bold text-red-400 text-lg">Verification Failed</div>
-                          <div className="text-red-300 text-xs">Hash mismatch - potential tampering detected</div>
-                        </div>
-                      </>
-                    )}
+                    <CheckCircle className="w-6 h-6 text-green-400" />
+                    <div>
+                      <div className="font-bold text-green-400 text-lg">Merkle Sealed</div>
+                      <div className="text-green-300 text-xs">
+                        Root: {selectedReceipt.merkleSeal.rootHash.substring(0, 16)}...
+                      </div>
+                      <div className="text-green-300 text-xs">
+                        Sealed: {new Date(selectedReceipt.merkleSeal.sealedAt).toLocaleString()}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

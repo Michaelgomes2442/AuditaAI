@@ -1,8 +1,16 @@
-# AuditaAI ↔ Rosetta.html Core Feature Alignment
+# ⚠️ ARCHIVED: AuditaAI ↔ Rosetta.html Core Feature Alignment (OLD SYSTEM)
+
+> **DEPRECATION NOTICE**: This document describes alignment with the OLD HTML-based Rosetta system.
+> 
+> **Status**: SUPERSEDED - References outdated implementation approach
+> 
+> **Current System**: MCP-based Execution Engine at `/backend/rosetta/mcp/`
+> 
+> **See Instead**: `ROSETTA_PROMPT_TRANSFORM.md` for current governance implementation
 
 **Document Purpose**: Cross-reference between implemented features and Rosetta Monolith v13 specifications  
-**Last Verified**: 2025-10-21  
-**Rosetta Version**: v13_TriTrack_vΩ3.18
+**Last Verified**: 2025-10-21 (OUTDATED - before MCP migration)  
+**Rosetta Version**: v13_TriTrack_vΩ3.18 (OLD SYSTEM)
 
 ---
 

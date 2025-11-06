@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["value", "identity", "causality", "speech", "simplicity", "omega"],
+  "properties": {
+    "value": { "type": "boolean" },
+    "identity": { "type": "boolean" },
+    "causality": { "type": "boolean" },
+    "speech": { "type": "boolean" },
+    "simplicity": { "type": "boolean" },
+    "omega": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

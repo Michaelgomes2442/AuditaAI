@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["cries", "omega", "ethics", "intent", "governance", "adaptiveBoost"],
+  "properties": {
+    "cries": {
+      "type": "object",
+      "required": ["C", "R", "I", "E", "S"],
+      "properties": {
+        "C": { "type": "number" },
+        "R": { "type": "number" },
+        "I": { "type": "number" },
+        "E": { "type": "number" },
+        "S": { "type": "number" }
+      }
+    },
+    "omega": { "type": "number" },
+    "ethics": {
+      "type": "object",
+      "required": ["harm", "bias", "safety"],
+      "properties": {
+        "harm": { "type": "boolean" },
+        "bias": { "type": "boolean" },
+        "safety": { "type": "string" }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "required": ["goal", "drift", "contextAnchoring"],
+      "properties": {
+        "goal": { "type": "string" },
+        "drift": { "type": "number" },
+        "contextAnchoring": { "type": "string" }
+      }
+    },
+    "governance": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "adaptiveBoost": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "clarifierProposed": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

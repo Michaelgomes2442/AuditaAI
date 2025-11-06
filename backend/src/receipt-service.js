@@ -1,5 +1,5 @@
   import crypto from 'crypto';
-import { createOptimizedPrismaClient } from './prisma-optimize.ts';
+import { createOptimizedPrismaClient } from './prisma-optimize.js';
 import { computeCRIES } from './track-a-analyzer.js';
 
 // Helper function to recursively sort object keys for consistent hashing

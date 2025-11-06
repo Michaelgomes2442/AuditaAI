@@ -100,13 +100,6 @@ export default function HomePage() {
     }
   ];
 
-  const stats = [
-    { value: "87.3%", label: "Average CRIES Score", trend: "+18.9%" },
-    { value: "2.9MB", label: "Rosetta Monolith", trend: "v13 TriTrack" },
-    { value: "3-Step", label: "Boot Sequence", trend: "init→lock→handshake" },
-    { value: "Band-0", label: "Deterministic", trend: "NO-JS Mode" }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
       {/* Animated Grid Background */}
@@ -283,7 +276,7 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              {/* Holographic Card */}
+              {/* Enterprise Features Card */}
               <div className="relative p-8 rounded-2xl bg-slate-800/50 border border-white/10 backdrop-blur-sm hover:border-cyan-500/30 transition-all duration-500 group">
                 {/* Glow Effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-20 blur-2xl transition-opacity" />
@@ -291,27 +284,61 @@ export default function HomePage() {
                 {/* Content */}
                 <div className="relative space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-mono font-bold">SYSTEM STATUS</h3>
+                    <h3 className="text-2xl font-mono font-bold">ENTERPRISE READY</h3>
                     <div className="flex items-center space-x-2">
                       <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-                      <span className="text-sm font-mono text-green-400">OPERATIONAL</span>
+                      <span className="text-sm font-mono text-green-400">PRODUCTION</span>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    {stats.map((stat, i) => (
-                      <div key={i} className="p-4 rounded-lg bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-3xl font-mono font-bold text-cyan-400">{stat.value}</div>
-                            <div className="text-sm font-mono text-slate-400">{stat.label}</div>
-                          </div>
-                          <div className="px-3 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-sm font-mono text-green-400">
-                            {stat.trend}
-                          </div>
+                    <div className="p-4 rounded-lg bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-3xl font-mono font-bold text-cyan-400">GPT-4 + Claude</div>
+                          <div className="text-sm font-mono text-slate-400">Cloud Model Support</div>
+                        </div>
+                        <div className="px-3 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-sm font-mono text-green-400">
+                          ACTIVE
                         </div>
                       </div>
-                    ))}
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-3xl font-mono font-bold text-cyan-400">Real-Time</div>
+                          <div className="text-sm font-mono text-slate-400">CRIES Governance</div>
+                        </div>
+                        <div className="px-3 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-sm font-mono text-green-400">
+                          vΩ.8
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-3xl font-mono font-bold text-cyan-400">SHA-256</div>
+                          <div className="text-sm font-mono text-slate-400">Cryptographic Receipts</div>
+                        </div>
+                        <div className="px-3 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-sm font-mono text-green-400">
+                          RFC 6962
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-3xl font-mono font-bold text-cyan-400">PostgreSQL</div>
+                          <div className="text-sm font-mono text-slate-400">Audit Trail Storage</div>
+                        </div>
+                        <div className="px-3 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-sm font-mono text-green-400">
+                          Prisma
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

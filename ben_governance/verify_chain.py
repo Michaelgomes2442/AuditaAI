@@ -1,9 +1,6 @@
 import os, json, hashlib
 from cryptography.fernet import Fernet
-
-APP_ROOT = os.path.expanduser("~/AuditaAI")
-RECEIPTS_DIR = os.path.join(APP_ROOT, "receipts")
-KEY_PATH = os.path.join(APP_ROOT, "ben_governance", "ben.key")
+from path_utils import PROJECT_ROOT, RECEIPTS_DIR, KEY_PATH
 
 def load_key():
     return Fernet(open(KEY_PATH, "rb").read())

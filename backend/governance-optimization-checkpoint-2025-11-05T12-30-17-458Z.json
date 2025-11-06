@@ -1,0 +1,3333 @@
+{
+  "timestamp": "2025-11-05T12:30:17.459Z",
+  "isPartial": false,
+  "aborted": false,
+  "abortReason": null,
+  "completedVariations": 1,
+  "totalVariations": 7,
+  "results": [
+    {
+      "id": "v2-baseline",
+      "description": "V2 Baseline - Pure reasoning-first (proven +8.9% Omega)",
+      "file": "rosetta-frontier-v2-baseline.txt",
+      "hypothesis": "Baseline performance without additional guidance",
+      "prompts": [
+        {
+          "promptId": "executive-ai-risk",
+          "promptName": "Executive AI Risk Explanation",
+          "multiTrialResults": {
+            "trials": [
+              {
+                "ungoverned": {
+                  "output": "Here's what I know: Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.. Based on available data... [May not verify sources or provide complete context]",
+                  "cries": {
+                    "C": 0.5069,
+                    "R": 0.5,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5932,
+                    "Omega": 0.5932,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5069,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.5069,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.5069,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5932
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 121
+                  },
+                  "cost": 0.010499999999999999
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.5102,
+                    "R": 0.5,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.8,
+                    "overall": 0.6033,
+                    "Omega": 0.6033,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "B": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "C": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.6033
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 192
+                  },
+                  "cost": 0.015825
+                },
+                "latency": 5422
+              },
+              {
+                "ungoverned": {
+                  "output": "I can help with that. Explain the risks of deploying... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+                  "cries": {
+                    "C": 0.5,
+                    "R": 0.3,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5137,
+                    "Omega": 0.5137,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5137
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 43
+                  },
+                  "cost": 0.00465
+                },
+                "governed": {
+                  "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"Explain the risks of deploying a general-purpose A...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nExplain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+                  "cries": {
+                    "C": 0.5254,
+                    "R": 0.5,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.8,
+                    "overall": 0.6063,
+                    "Omega": 0.6063,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5254,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "B": {
+                        "C": 0.5254,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "C": {
+                        "C": 0.5254,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.6063
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 180
+                  },
+                  "cost": 0.014924999999999997
+                },
+                "latency": 4585
+              },
+              {
+                "ungoverned": {
+                  "output": "Based on your query about \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+                  "cries": {
+                    "C": 0.5069,
+                    "R": 0.4375,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.7625,
+                    "overall": 0.5814,
+                    "Omega": 0.5814,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5069,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7625
+                      },
+                      "B": {
+                        "C": 0.5069,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7625
+                      },
+                      "C": {
+                        "C": 0.5069,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7625
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5814
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 129
+                  },
+                  "cost": 0.011099999999999999
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.5102,
+                    "R": 0.5,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.8,
+                    "overall": 0.6033,
+                    "Omega": 0.6033,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "B": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "C": {
+                        "C": 0.5102,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.6033
+                  },
+                  "tokens": {
+                    "input": 95,
+                    "output": 192
+                  },
+                  "cost": 0.015825
+                },
+                "latency": 3704
+              }
+            ],
+            "omegaStats": {
+              "mean": 0.6043,
+              "stdDev": 0.0014142135623730965,
+              "coefficientOfVariation": 0.23402508065085165,
+              "confidenceInterval": {
+                "lower": 0.6026996667013816,
+                "upper": 0.6059003332986183
+              },
+              "min": 0.6033,
+              "max": 0.6063
+            },
+            "improvementStats": {
+              "mean": 7.831828311354703,
+              "stdDev": 7.2575167772087665,
+              "coefficientOfVariation": 92.66695449243582,
+              "confidenceInterval": {
+                "lower": -0.3808250479859234,
+                "upper": 16.04448167069533
+              },
+              "min": 1.7026298044504382,
+              "max": 18.02608526377261
+            },
+            "pillarStats": {
+              "C": {
+                "mean": 0.5152666666666667,
+                "stdDev": 0.007165348716023678,
+                "coefficientOfVariation": 1.3906097909219197,
+                "confidenceInterval": {
+                  "lower": 0.5071583112870004,
+                  "upper": 0.5233750220463329
+                },
+                "min": 0.5102,
+                "max": 0.5254
+              },
+              "R": {
+                "mean": 0.5,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.5,
+                  "upper": 0.5
+                },
+                "min": 0.5,
+                "max": 0.5
+              },
+              "I": {
+                "mean": 0.575,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.575,
+                  "upper": 0.575
+                },
+                "min": 0.575,
+                "max": 0.575
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.8000000000000002,
+                "stdDev": 1.1102230246251565e-16,
+                "coefficientOfVariation": 1.3877787807814454e-14,
+                "confidenceInterval": {
+                  "lower": 0.8,
+                  "upper": 0.8000000000000003
+                },
+                "min": 0.8,
+                "max": 0.8
+              }
+            },
+            "ungovernedStats": {
+              "mean": 0.5627666666666666,
+              "stdDev": 0.035028210852904744,
+              "coefficientOfVariation": 6.22428671200108,
+              "confidenceInterval": {
+                "lower": 0.5231285146149618,
+                "upper": 0.6024048187183715
+              },
+              "min": 0.5137,
+              "max": 0.5932
+            },
+            "ungovernedPillarStats": {
+              "C": {
+                "mean": 0.5045999999999999,
+                "stdDev": 0.003252691193458127,
+                "coefficientOfVariation": 0.6446078465037905,
+                "confidenceInterval": {
+                  "lower": 0.5009192334131778,
+                  "upper": 0.5082807665868221
+                },
+                "min": 0.5,
+                "max": 0.5069
+              },
+              "R": {
+                "mean": 0.41250000000000003,
+                "stdDev": 0.08354140689901426,
+                "coefficientOfVariation": 20.25246227854891,
+                "confidenceInterval": {
+                  "lower": 0.31796399862721314,
+                  "upper": 0.5070360013727869
+                },
+                "min": 0.3,
+                "max": 0.5
+              },
+              "I": {
+                "mean": 0.5499999999999999,
+                "stdDev": 0.035355339059327355,
+                "coefficientOfVariation": 6.428243465332247,
+                "confidenceInterval": {
+                  "lower": 0.5099916675345414,
+                  "upper": 0.5900083324654585
+                },
+                "min": 0.5,
+                "max": 0.575
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.725,
+                "stdDev": 0.036799003609699336,
+                "coefficientOfVariation": 5.075724635820598,
+                "confidenceInterval": {
+                  "lower": 0.6833580073056589,
+                  "upper": 0.7666419926943411
+                },
+                "min": 0.675,
+                "max": 0.7625
+              }
+            },
+            "costMetrics": {
+              "totalCost": 0.04657499999999999,
+              "avgCost": 0.015524999999999997,
+              "avgLatency": 4570.333333333333,
+              "avgTokens": 283,
+              "avgOutputTokens": 188,
+              "maxOutputTokens": 192,
+              "hasTokenPressure": false
+            },
+            "stabilityMetrics": {
+              "isUnstable": false,
+              "stabilityFlag": "✅ Very Stable",
+              "governancePenalties": 0,
+              "governancePenaltyRate": 0
+            }
+          },
+          "improvements": {
+            "C": {
+              "absolute": 0.010666666666666713,
+              "percentage": 2.1138855859426706
+            },
+            "R": {
+              "absolute": 0.08749999999999997,
+              "percentage": 21.2121212121212
+            },
+            "I": {
+              "absolute": 0.025000000000000022,
+              "percentage": 4.545454545454549
+            },
+            "E": {
+              "absolute": 0,
+              "percentage": 0
+            },
+            "S": {
+              "absolute": 0.07500000000000018,
+              "percentage": 10.344827586206922
+            },
+            "overall": {
+              "absolute": 0.04153333333333331,
+              "percentage": 7.3802049398803495
+            },
+            "Omega": {
+              "absolute": 0.04153333333333331,
+              "percentage": 7.3802049398803495
+            }
+          },
+          "omegaImprovement": 7.3802049398803495,
+          "volatility": {
+            "coefficientOfVariation": 0.23402508065085165,
+            "confidenceInterval": {
+              "lower": 0.6026996667013816,
+              "upper": 0.6059003332986183
+            }
+          },
+          "costMetrics": {
+            "totalCost": 0.04657499999999999,
+            "avgCost": 0.015524999999999997,
+            "avgLatency": 4570.333333333333,
+            "avgTokens": 283,
+            "avgOutputTokens": 188,
+            "maxOutputTokens": 192,
+            "hasTokenPressure": false
+          }
+        },
+        {
+          "promptId": "technical-architecture",
+          "promptName": "Technical Architecture Explanation",
+          "multiTrialResults": {
+            "trials": [
+              {
+                "ungoverned": {
+                  "output": "Based on your query about \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+                  "cries": {
+                    "C": 0.5071,
+                    "R": 0.4375,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7,
+                    "overall": 0.5533,
+                    "Omega": 0.5533,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "B": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "C": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5533
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 98
+                  },
+                  "cost": 0.00831
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.3839,
+                    "R": 0.5,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5499,
+                    "Omega": 0.5499,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5499
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 161
+                  },
+                  "cost": 0.013034999999999998
+                },
+                "latency": 3725
+              },
+              {
+                "ungoverned": {
+                  "output": "Here's what I know: Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.. Based on available data... [May not verify sources or provide complete context]",
+                  "cries": {
+                    "C": 0.3819,
+                    "R": 0.5,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5401,
+                    "Omega": 0.5401,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3819,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.3819,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.3819,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5401
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 90
+                  },
+                  "cost": 0.007709999999999999
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Cognitive OS Response:\n\n📋 Pre-flight checks: ✓\n🔍 Source verification: ✓\n⚖️ Policy compliance: ✓\n\nRegarding \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n[Comprehensive, governed response with citations, context, and safety guarantees. All outputs verified through Math Canon vΩ.8. Receipt chain maintained.]",
+                  "cries": {
+                    "C": 0.3779,
+                    "R": 0.4375,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.8,
+                    "overall": 0.5612,
+                    "Omega": 0.5612,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3779,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "B": {
+                        "C": 0.3779,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "C": {
+                        "C": 0.3779,
+                        "R": 0.4375,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.8
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5612
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 134
+                  },
+                  "cost": 0.011009999999999999
+                },
+                "latency": 3506
+              },
+              {
+                "ungoverned": {
+                  "output": "Based on your query about \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+                  "cries": {
+                    "C": 0.5071,
+                    "R": 0.4375,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7,
+                    "overall": 0.5533,
+                    "Omega": 0.5533,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "B": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "C": {
+                        "C": 0.5071,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5533
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 98
+                  },
+                  "cost": 0.00831
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.3839,
+                    "R": 0.5,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5499,
+                    "Omega": 0.5499,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.3839,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5499
+                  },
+                  "tokens": {
+                    "input": 64,
+                    "output": 161
+                  },
+                  "cost": 0.013034999999999998
+                },
+                "latency": 3300
+              }
+            ],
+            "omegaStats": {
+              "mean": 0.5536666666666666,
+              "stdDev": 0.005326871084938647,
+              "coefficientOfVariation": 0.9621079623609838,
+              "confidenceInterval": {
+                "lower": 0.5476387445752042,
+                "upper": 0.559694588758129
+              },
+              "min": 0.5499,
+              "max": 0.5612
+            },
+            "improvementStats": {
+              "mean": 0.8925647497475243,
+              "stdDev": 2.131304123976746,
+              "coefficientOfVariation": 238.78425902206178,
+              "confidenceInterval": {
+                "lower": -1.519232909270226,
+                "upper": 3.3043624087652743
+              },
+              "min": -0.6144948490872869,
+              "max": 3.9066839474171466
+            },
+            "pillarStats": {
+              "C": {
+                "mean": 0.3819000000000001,
+                "stdDev": 0.0028284271247461927,
+                "coefficientOfVariation": 0.740619828422674,
+                "confidenceInterval": {
+                  "lower": 0.3786993334027634,
+                  "upper": 0.38510066659723674
+                },
+                "min": 0.3779,
+                "max": 0.3839
+              },
+              "R": {
+                "mean": 0.4791666666666667,
+                "stdDev": 0.02946278254943948,
+                "coefficientOfVariation": 6.148754619013457,
+                "confidenceInterval": {
+                  "lower": 0.44582638961211785,
+                  "upper": 0.5125069437212155
+                },
+                "min": 0.4375,
+                "max": 0.5
+              },
+              "I": {
+                "mean": 0.525,
+                "stdDev": 0.035355339059327355,
+                "coefficientOfVariation": 6.734350297014734,
+                "confidenceInterval": {
+                  "lower": 0.4849916675345415,
+                  "upper": 0.5650083324654586
+                },
+                "min": 0.5,
+                "max": 0.575
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.7583333333333334,
+                "stdDev": 0.02946278254943948,
+                "coefficientOfVariation": 3.8852020944315795,
+                "confidenceInterval": {
+                  "lower": 0.7249930562787846,
+                  "upper": 0.7916736103878822
+                },
+                "min": 0.7375,
+                "max": 0.8
+              }
+            },
+            "ungovernedStats": {
+              "mean": 0.5489,
+              "stdDev": 0.006222539674441614,
+              "coefficientOfVariation": 1.1336381261507766,
+              "confidenceInterval": {
+                "lower": 0.5418585334860794,
+                "upper": 0.5559414665139207
+              },
+              "min": 0.5401,
+              "max": 0.5533
+            },
+            "ungovernedPillarStats": {
+              "C": {
+                "mean": 0.4653666666666667,
+                "stdDev": 0.05901984600303716,
+                "coefficientOfVariation": 12.682439510716387,
+                "confidenceInterval": {
+                  "lower": 0.3985794236709945,
+                  "upper": 0.5321539096623389
+                },
+                "min": 0.3819,
+                "max": 0.5071
+              },
+              "R": {
+                "mean": 0.4583333333333333,
+                "stdDev": 0.02946278254943948,
+                "coefficientOfVariation": 6.428243465332251,
+                "confidenceInterval": {
+                  "lower": 0.4249930562787845,
+                  "upper": 0.49167361038788215
+                },
+                "min": 0.4375,
+                "max": 0.5
+              },
+              "I": {
+                "mean": 0.5,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.5,
+                  "upper": 0.5
+                },
+                "min": 0.5,
+                "max": 0.5
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.6916666666666668,
+                "stdDev": 0.01178511301977575,
+                "coefficientOfVariation": 1.703871761895289,
+                "confidenceInterval": {
+                  "lower": 0.6783305558448472,
+                  "upper": 0.7050027774884863
+                },
+                "min": 0.675,
+                "max": 0.7
+              }
+            },
+            "costMetrics": {
+              "totalCost": 0.037079999999999995,
+              "avgCost": 0.012359999999999998,
+              "avgLatency": 3510.3333333333335,
+              "avgTokens": 216,
+              "avgOutputTokens": 152,
+              "maxOutputTokens": 161,
+              "hasTokenPressure": false
+            },
+            "stabilityMetrics": {
+              "isUnstable": false,
+              "stabilityFlag": "✅ Very Stable",
+              "governancePenalties": 3,
+              "governancePenaltyRate": 100
+            }
+          },
+          "improvements": {
+            "C": {
+              "absolute": -0.08346666666666663,
+              "percentage": -17.93567796003151
+            },
+            "R": {
+              "absolute": 0.02083333333333337,
+              "percentage": 4.545454545454554
+            },
+            "I": {
+              "absolute": 0.025000000000000022,
+              "percentage": 5.000000000000004
+            },
+            "E": {
+              "absolute": 0,
+              "percentage": 0
+            },
+            "S": {
+              "absolute": 0.06666666666666665,
+              "percentage": 9.638554216867465
+            },
+            "overall": {
+              "absolute": 0.004766666666666586,
+              "percentage": 0.8684034736138796
+            },
+            "Omega": {
+              "absolute": 0.004766666666666586,
+              "percentage": 0.8684034736138796
+            }
+          },
+          "omegaImprovement": 0.8684034736138796,
+          "volatility": {
+            "coefficientOfVariation": 0.9621079623609838,
+            "confidenceInterval": {
+              "lower": 0.5476387445752042,
+              "upper": 0.559694588758129
+            }
+          },
+          "costMetrics": {
+            "totalCost": 0.037079999999999995,
+            "avgCost": 0.012359999999999998,
+            "avgLatency": 3510.3333333333335,
+            "avgTokens": 216,
+            "avgOutputTokens": 152,
+            "maxOutputTokens": 161,
+            "hasTokenPressure": false
+          }
+        },
+        {
+          "promptId": "strategic-analysis",
+          "promptName": "Strategic Business Analysis",
+          "multiTrialResults": {
+            "trials": [
+              {
+                "ungoverned": {
+                  "output": "I can help with that. Analyze why established compan... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+                  "cries": {
+                    "C": 0.5,
+                    "R": 0.3,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5137,
+                    "Omega": 0.5137,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5137
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 43
+                  },
+                  "cost": 0.004245
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.3842,
+                    "R": 0.5,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.55,
+                    "Omega": 0.55,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.55
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 165
+                  },
+                  "cost": 0.013394999999999999
+                },
+                "latency": 4325
+              },
+              {
+                "ungoverned": {
+                  "output": "I can help with that. Analyze why established compan... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+                  "cries": {
+                    "C": 0.5,
+                    "R": 0.3,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5137,
+                    "Omega": 0.5137,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5137
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 43
+                  },
+                  "cost": 0.004245
+                },
+                "governed": {
+                  "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"Analyze why established companies struggle to resp...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nAnalyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+                  "cries": {
+                    "C": 0.4044,
+                    "R": 0.5,
+                    "I": 0.575,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5728,
+                    "Omega": 0.5728,
+                    "tracks": {
+                      "A": {
+                        "C": 0.4044,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.4044,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.4044,
+                        "R": 0.5,
+                        "I": 0.575,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5728
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 153
+                  },
+                  "cost": 0.012495
+                },
+                "latency": 4132
+              },
+              {
+                "ungoverned": {
+                  "output": "Based on your query about \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+                  "cries": {
+                    "C": 0.5035,
+                    "R": 0.4375,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7,
+                    "overall": 0.5526,
+                    "Omega": 0.5526,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5035,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "B": {
+                        "C": 0.5035,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "C": {
+                        "C": 0.5035,
+                        "R": 0.4375,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5526
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 102
+                  },
+                  "cost": 0.008669999999999999
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.3842,
+                    "R": 0.5,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.55,
+                    "Omega": 0.55,
+                    "tracks": {
+                      "A": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.3842,
+                        "R": 0.5,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.55
+                  },
+                  "tokens": {
+                    "input": 68,
+                    "output": 165
+                  },
+                  "cost": 0.013394999999999999
+                },
+                "latency": 4596
+              }
+            ],
+            "omegaStats": {
+              "mean": 0.5576,
+              "stdDev": 0.01074802307403549,
+              "coefficientOfVariation": 1.9275507665056475,
+              "confidenceInterval": {
+                "lower": 0.5454374669305007,
+                "upper": 0.5697625330694993
+              },
+              "min": 0.55,
+              "max": 0.5728
+            },
+            "improvementStats": {
+              "mean": 6.03354913352193,
+              "stdDev": 4.943132861924657,
+              "coefficientOfVariation": 81.92744854700851,
+              "confidenceInterval": {
+                "lower": 0.43986772011624886,
+                "upper": 11.627230546927612
+              },
+              "min": -0.470503076366257,
+              "max": 11.50476932061513
+            },
+            "pillarStats": {
+              "C": {
+                "mean": 0.39093333333333335,
+                "stdDev": 0.009522371319978839,
+                "coefficientOfVariation": 2.4358043963110942,
+                "confidenceInterval": {
+                  "lower": 0.38015775578930316,
+                  "upper": 0.40170891087736355
+                },
+                "min": 0.3842,
+                "max": 0.4044
+              },
+              "R": {
+                "mean": 0.5,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.5,
+                  "upper": 0.5
+                },
+                "min": 0.5,
+                "max": 0.5
+              },
+              "I": {
+                "mean": 0.525,
+                "stdDev": 0.035355339059327355,
+                "coefficientOfVariation": 6.734350297014734,
+                "confidenceInterval": {
+                  "lower": 0.4849916675345415,
+                  "upper": 0.5650083324654586
+                },
+                "min": 0.5,
+                "max": 0.575
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.7375000000000002,
+                "stdDev": 1.1102230246251565e-16,
+                "coefficientOfVariation": 1.5053871520341103e-14,
+                "confidenceInterval": {
+                  "lower": 0.7375,
+                  "upper": 0.7375000000000003
+                },
+                "min": 0.7375,
+                "max": 0.7375
+              }
+            },
+            "ungovernedStats": {
+              "mean": 0.5266666666666667,
+              "stdDev": 0.0183376358587711,
+              "coefficientOfVariation": 3.4818295934375505,
+              "confidenceInterval": {
+                "lower": 0.5059156782279156,
+                "upper": 0.5474176551054178
+              },
+              "min": 0.5137,
+              "max": 0.5526
+            },
+            "ungovernedPillarStats": {
+              "C": {
+                "mean": 0.5011666666666666,
+                "stdDev": 0.0016499158227685862,
+                "coefficientOfVariation": 0.3292149962291825,
+                "confidenceInterval": {
+                  "lower": 0.4992996111516119,
+                  "upper": 0.5030337221817214
+                },
+                "min": 0.5,
+                "max": 0.5035
+              },
+              "R": {
+                "mean": 0.3458333333333334,
+                "stdDev": 0.06481812160876686,
+                "coefficientOfVariation": 18.742589380848244,
+                "confidenceInterval": {
+                  "lower": 0.272484723813326,
+                  "upper": 0.41918194285334076
+                },
+                "min": 0.3,
+                "max": 0.4375
+              },
+              "I": {
+                "mean": 0.5,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.5,
+                  "upper": 0.5
+                },
+                "min": 0.5,
+                "max": 0.5
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.6833333333333332,
+                "stdDev": 0.01178511301977575,
+                "coefficientOfVariation": 1.724650685820842,
+                "confidenceInterval": {
+                  "lower": 0.6699972225115137,
+                  "upper": 0.6966694441551528
+                },
+                "min": 0.675,
+                "max": 0.7
+              }
+            },
+            "costMetrics": {
+              "totalCost": 0.039284999999999994,
+              "avgCost": 0.013094999999999997,
+              "avgLatency": 4351,
+              "avgTokens": 229,
+              "avgOutputTokens": 161,
+              "maxOutputTokens": 165,
+              "hasTokenPressure": false
+            },
+            "stabilityMetrics": {
+              "isUnstable": false,
+              "stabilityFlag": "✅ Very Stable",
+              "governancePenalties": 3,
+              "governancePenaltyRate": 100
+            }
+          },
+          "improvements": {
+            "C": {
+              "absolute": -0.1102333333333333,
+              "percentage": -21.995344196873955
+            },
+            "R": {
+              "absolute": 0.15416666666666662,
+              "percentage": 44.578313253012034
+            },
+            "I": {
+              "absolute": 0.025000000000000022,
+              "percentage": 5.000000000000004
+            },
+            "E": {
+              "absolute": 0,
+              "percentage": 0
+            },
+            "S": {
+              "absolute": 0.05416666666666692,
+              "percentage": 7.92682926829272
+            },
+            "overall": {
+              "absolute": 0.030933333333333257,
+              "percentage": 5.873417721518972
+            },
+            "Omega": {
+              "absolute": 0.030933333333333257,
+              "percentage": 5.873417721518972
+            }
+          },
+          "omegaImprovement": 5.873417721518972,
+          "volatility": {
+            "coefficientOfVariation": 1.9275507665056475,
+            "confidenceInterval": {
+              "lower": 0.5454374669305007,
+              "upper": 0.5697625330694993
+            }
+          },
+          "costMetrics": {
+            "totalCost": 0.039284999999999994,
+            "avgCost": 0.013094999999999997,
+            "avgLatency": 4351,
+            "avgTokens": 229,
+            "avgOutputTokens": 161,
+            "maxOutputTokens": 165,
+            "hasTokenPressure": false
+          }
+        },
+        {
+          "promptId": "risk-assessment",
+          "promptName": "Risk Assessment Scenario",
+          "multiTrialResults": {
+            "trials": [
+              {
+                "ungoverned": {
+                  "output": "Based on your query about \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\", here's my analysis: This refers to... [Standard model response - may lack depth or verification]",
+                  "cries": {
+                    "C": 0.503,
+                    "R": 0.2875,
+                    "I": 0.55,
+                    "E": 0.75,
+                    "S": 0.7,
+                    "overall": 0.5275,
+                    "Omega": 0.5275,
+                    "tracks": {
+                      "A": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "B": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7
+                      },
+                      "C": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5275
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 96
+                  },
+                  "cost": 0.008175
+                },
+                "governed": {
+                  "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"A fintech startup wants to deploy AI-powered loan ...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nA fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+                  "cries": {
+                    "C": 0.5387,
+                    "R": 0.35,
+                    "I": 0.625,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5746,
+                    "Omega": 0.5746,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5387,
+                        "R": 0.35,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.5387,
+                        "R": 0.35,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.5387,
+                        "R": 0.35,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5746
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 149
+                  },
+                  "cost": 0.01215
+                },
+                "latency": 3632
+              },
+              {
+                "ungoverned": {
+                  "output": "I can help with that. A fintech startup wants to dep... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+                  "cries": {
+                    "C": 0.5,
+                    "R": 0.3,
+                    "I": 0.5,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5137,
+                    "Omega": 0.5137,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.5,
+                        "R": 0.3,
+                        "I": 0.5,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5137
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 43
+                  },
+                  "cost": 0.0042
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Cognitive OS Response:\n\n📋 Pre-flight checks: ✓\n🔍 Source verification: ✓\n⚖️ Policy compliance: ✓\n\nRegarding \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\":\n\n[Comprehensive, governed response with citations, context, and safety guarantees. All outputs verified through Math Canon vΩ.8. Receipt chain maintained.]",
+                  "cries": {
+                    "C": 0.503,
+                    "R": 0.2875,
+                    "I": 0.625,
+                    "E": 0.75,
+                    "S": 0.8,
+                    "overall": 0.5612,
+                    "Omega": 0.5612,
+                    "tracks": {
+                      "A": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "B": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.8
+                      },
+                      "C": {
+                        "C": 0.503,
+                        "R": 0.2875,
+                        "I": 0.625,
+                        "E": 0.75,
+                        "S": 0.8
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5612
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 135
+                  },
+                  "cost": 0.011099999999999999
+                },
+                "latency": 4562
+              },
+              {
+                "ungoverned": {
+                  "output": "Here's what I know: A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.. Based on available data... [May not verify sources or provide complete context]",
+                  "cries": {
+                    "C": 0.5066,
+                    "R": 0.35,
+                    "I": 0.55,
+                    "E": 0.75,
+                    "S": 0.675,
+                    "overall": 0.5401,
+                    "Omega": 0.5401,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5066,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "B": {
+                        "C": 0.5066,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.675
+                      },
+                      "C": {
+                        "C": 0.5066,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.675
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5401
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 90
+                  },
+                  "cost": 0.007724999999999999
+                },
+                "governed": {
+                  "output": "🛡️ Rosetta Analysis of \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComplete definition with context:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+                  "cries": {
+                    "C": 0.5077,
+                    "R": 0.35,
+                    "I": 0.55,
+                    "E": 0.75,
+                    "S": 0.7375,
+                    "overall": 0.5497,
+                    "Omega": 0.5497,
+                    "tracks": {
+                      "A": {
+                        "C": 0.5077,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "B": {
+                        "C": 0.5077,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7375
+                      },
+                      "C": {
+                        "C": 0.5077,
+                        "R": 0.35,
+                        "I": 0.55,
+                        "E": 0.75,
+                        "S": 0.7375
+                      }
+                    },
+                    "weights": {
+                      "wA": 0.4,
+                      "wB": 0.4,
+                      "wC": 0.2
+                    },
+                    "sigma": 0.5497
+                  },
+                  "tokens": {
+                    "input": 65,
+                    "output": 161
+                  },
+                  "cost": 0.013049999999999999
+                },
+                "latency": 3298
+              }
+            ],
+            "omegaStats": {
+              "mean": 0.5618333333333334,
+              "stdDev": 0.010175242284857684,
+              "coefficientOfVariation": 1.8110784250710796,
+              "confidenceInterval": {
+                "lower": 0.5503189627437582,
+                "upper": 0.5733477039229086
+              },
+              "min": 0.5497,
+              "max": 0.5746
+            },
+            "improvementStats": {
+              "mean": 6.65100019406236,
+              "stdDev": 3.448561740698796,
+              "coefficientOfVariation": 51.85027274209793,
+              "confidenceInterval": {
+                "lower": 2.748585217415751,
+                "upper": 10.553415170708968
+              },
+              "min": 1.7774486206257993,
+              "max": 9.24664200895464
+            },
+            "pillarStats": {
+              "C": {
+                "mean": 0.5164666666666667,
+                "stdDev": 0.015837999312483295,
+                "coefficientOfVariation": 3.0666062951755437,
+                "confidenceInterval": {
+                  "lower": 0.49854428326035155,
+                  "upper": 0.5343890500729819
+                },
+                "min": 0.503,
+                "max": 0.5387
+              },
+              "R": {
+                "mean": 0.32916666666666666,
+                "stdDev": 0.02946278254943948,
+                "coefficientOfVariation": 8.950718749196804,
+                "confidenceInterval": {
+                  "lower": 0.2958263896121178,
+                  "upper": 0.3625069437212155
+                },
+                "min": 0.2875,
+                "max": 0.35
+              },
+              "I": {
+                "mean": 0.6,
+                "stdDev": 0.035355339059327355,
+                "coefficientOfVariation": 5.892556509887893,
+                "confidenceInterval": {
+                  "lower": 0.5599916675345414,
+                  "upper": 0.6400083324654585
+                },
+                "min": 0.55,
+                "max": 0.625
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.7583333333333334,
+                "stdDev": 0.02946278254943948,
+                "coefficientOfVariation": 3.8852020944315795,
+                "confidenceInterval": {
+                  "lower": 0.7249930562787846,
+                  "upper": 0.7916736103878822
+                },
+                "min": 0.7375,
+                "max": 0.8
+              }
+            },
+            "ungovernedStats": {
+              "mean": 0.5271,
+              "stdDev": 0.010781465577554834,
+              "coefficientOfVariation": 2.0454307678912604,
+              "confidenceInterval": {
+                "lower": 0.5148996231752184,
+                "upper": 0.5393003768247816
+              },
+              "min": 0.5137,
+              "max": 0.5401
+            },
+            "ungovernedPillarStats": {
+              "C": {
+                "mean": 0.5032000000000001,
+                "stdDev": 0.0026981475126464293,
+                "coefficientOfVariation": 0.5361978363764763,
+                "confidenceInterval": {
+                  "lower": 0.5001467586622302,
+                  "upper": 0.5062532413377699
+                },
+                "min": 0.5,
+                "max": 0.5066
+              },
+              "R": {
+                "mean": 0.31249999999999994,
+                "stdDev": 0.027003086243366083,
+                "coefficientOfVariation": 8.640987597877148,
+                "confidenceInterval": {
+                  "lower": 0.2819431313413461,
+                  "upper": 0.3430568686586538
+                },
+                "min": 0.2875,
+                "max": 0.35
+              },
+              "I": {
+                "mean": 0.5333333333333333,
+                "stdDev": 0.023570226039551608,
+                "coefficientOfVariation": 4.419417382415927,
+                "confidenceInterval": {
+                  "lower": 0.5066611116896943,
+                  "upper": 0.5600055549769724
+                },
+                "min": 0.5,
+                "max": 0.55
+              },
+              "E": {
+                "mean": 0.75,
+                "stdDev": 0,
+                "coefficientOfVariation": 0,
+                "confidenceInterval": {
+                  "lower": 0.75,
+                  "upper": 0.75
+                },
+                "min": 0.75,
+                "max": 0.75
+              },
+              "S": {
+                "mean": 0.6833333333333332,
+                "stdDev": 0.01178511301977575,
+                "coefficientOfVariation": 1.724650685820842,
+                "confidenceInterval": {
+                  "lower": 0.6699972225115137,
+                  "upper": 0.6966694441551528
+                },
+                "min": 0.675,
+                "max": 0.7
+              }
+            },
+            "costMetrics": {
+              "totalCost": 0.0363,
+              "avgCost": 0.0121,
+              "avgLatency": 3830.6666666666665,
+              "avgTokens": 213.33333333333334,
+              "avgOutputTokens": 148.33333333333334,
+              "maxOutputTokens": 161,
+              "hasTokenPressure": false
+            },
+            "stabilityMetrics": {
+              "isUnstable": false,
+              "stabilityFlag": "✅ Very Stable",
+              "governancePenalties": 0,
+              "governancePenaltyRate": 0
+            }
+          },
+          "improvements": {
+            "C": {
+              "absolute": 0.013266666666666649,
+              "percentage": 2.6364599894011618
+            },
+            "R": {
+              "absolute": 0.01666666666666672,
+              "percentage": 5.333333333333351
+            },
+            "I": {
+              "absolute": 0.06666666666666665,
+              "percentage": 12.499999999999996
+            },
+            "E": {
+              "absolute": 0,
+              "percentage": 0
+            },
+            "S": {
+              "absolute": 0.07500000000000018,
+              "percentage": 10.975609756097588
+            },
+            "overall": {
+              "absolute": 0.034733333333333394,
+              "percentage": 6.589514956048832
+            },
+            "Omega": {
+              "absolute": 0.034733333333333394,
+              "percentage": 6.589514956048832
+            }
+          },
+          "omegaImprovement": 6.589514956048832,
+          "volatility": {
+            "coefficientOfVariation": 1.8110784250710796,
+            "confidenceInterval": {
+              "lower": 0.5503189627437582,
+              "upper": 0.5733477039229086
+            }
+          },
+          "costMetrics": {
+            "totalCost": 0.0363,
+            "avgCost": 0.0121,
+            "avgLatency": 3830.6666666666665,
+            "avgTokens": 213.33333333333334,
+            "avgOutputTokens": 148.33333333333334,
+            "maxOutputTokens": 161,
+            "hasTokenPressure": false
+          }
+        }
+      ],
+      "trials": [
+        {
+          "ungoverned": {
+            "output": "Here's what I know: Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.. Based on available data... [May not verify sources or provide complete context]",
+            "cries": {
+              "C": 0.5069,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5932,
+              "Omega": 0.5932,
+              "tracks": {
+                "A": {
+                  "C": 0.5069,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.5069,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.5069,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5932
+            },
+            "tokens": {
+              "input": 95,
+              "output": 121
+            },
+            "cost": 0.010499999999999999
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8,
+              "overall": 0.6033,
+              "Omega": 0.6033,
+              "tracks": {
+                "A": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "B": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "C": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.6033
+            },
+            "tokens": {
+              "input": 95,
+              "output": 192
+            },
+            "cost": 0.015825
+          },
+          "latency": 5422
+        },
+        {
+          "ungoverned": {
+            "output": "I can help with that. Explain the risks of deploying... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+            "cries": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5137,
+              "Omega": 0.5137,
+              "tracks": {
+                "A": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5137
+            },
+            "tokens": {
+              "input": 95,
+              "output": 43
+            },
+            "cost": 0.00465
+          },
+          "governed": {
+            "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"Explain the risks of deploying a general-purpose A...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nExplain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+            "cries": {
+              "C": 0.5254,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8,
+              "overall": 0.6063,
+              "Omega": 0.6063,
+              "tracks": {
+                "A": {
+                  "C": 0.5254,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "B": {
+                  "C": 0.5254,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "C": {
+                  "C": 0.5254,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.6063
+            },
+            "tokens": {
+              "input": 95,
+              "output": 180
+            },
+            "cost": 0.014924999999999997
+          },
+          "latency": 4585
+        },
+        {
+          "ungoverned": {
+            "output": "Based on your query about \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+            "cries": {
+              "C": 0.5069,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7625,
+              "overall": 0.5814,
+              "Omega": 0.5814,
+              "tracks": {
+                "A": {
+                  "C": 0.5069,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7625
+                },
+                "B": {
+                  "C": 0.5069,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7625
+                },
+                "C": {
+                  "C": 0.5069,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7625
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5814
+            },
+            "tokens": {
+              "input": 95,
+              "output": 129
+            },
+            "cost": 0.011099999999999999
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Explain the risks of deploying a general-purpose AI assistant inside a company, focusing on the difference between what the model says and what decision-makers assume it means. Highlight how this gap leads to operational mistakes, hallucination-driven decisions, compliance exposure, and loss of accountability. Make it clear, practical, and written for a non-technical executive.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.5102,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8,
+              "overall": 0.6033,
+              "Omega": 0.6033,
+              "tracks": {
+                "A": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "B": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "C": {
+                  "C": 0.5102,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.6033
+            },
+            "tokens": {
+              "input": 95,
+              "output": 192
+            },
+            "cost": 0.015825
+          },
+          "latency": 3704
+        },
+        {
+          "ungoverned": {
+            "output": "Based on your query about \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+            "cries": {
+              "C": 0.5071,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7,
+              "overall": 0.5533,
+              "Omega": 0.5533,
+              "tracks": {
+                "A": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "B": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "C": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5533
+            },
+            "tokens": {
+              "input": 64,
+              "output": 98
+            },
+            "cost": 0.00831
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5499,
+              "Omega": 0.5499,
+              "tracks": {
+                "A": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5499
+            },
+            "tokens": {
+              "input": 64,
+              "output": 161
+            },
+            "cost": 0.013034999999999998
+          },
+          "latency": 3725
+        },
+        {
+          "ungoverned": {
+            "output": "Here's what I know: Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.. Based on available data... [May not verify sources or provide complete context]",
+            "cries": {
+              "C": 0.3819,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5401,
+              "Omega": 0.5401,
+              "tracks": {
+                "A": {
+                  "C": 0.3819,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.3819,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.3819,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5401
+            },
+            "tokens": {
+              "input": 64,
+              "output": 90
+            },
+            "cost": 0.007709999999999999
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Cognitive OS Response:\n\n📋 Pre-flight checks: ✓\n🔍 Source verification: ✓\n⚖️ Policy compliance: ✓\n\nRegarding \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n[Comprehensive, governed response with citations, context, and safety guarantees. All outputs verified through Math Canon vΩ.8. Receipt chain maintained.]",
+            "cries": {
+              "C": 0.3779,
+              "R": 0.4375,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.8,
+              "overall": 0.5612,
+              "Omega": 0.5612,
+              "tracks": {
+                "A": {
+                  "C": 0.3779,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "B": {
+                  "C": 0.3779,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "C": {
+                  "C": 0.3779,
+                  "R": 0.4375,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.8
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5612
+            },
+            "tokens": {
+              "input": 64,
+              "output": 134
+            },
+            "cost": 0.011009999999999999
+          },
+          "latency": 3506
+        },
+        {
+          "ungoverned": {
+            "output": "Based on your query about \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+            "cries": {
+              "C": 0.5071,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7,
+              "overall": 0.5533,
+              "Omega": 0.5533,
+              "tracks": {
+                "A": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "B": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "C": {
+                  "C": 0.5071,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5533
+            },
+            "tokens": {
+              "input": 64,
+              "output": 98
+            },
+            "cost": 0.00831
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Explain how microservices architecture differs from monolithic architecture, focusing on the operational trade-offs. Discuss when each makes sense, common failure modes, and what non-technical stakeholders need to understand about the migration complexity.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.3839,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5499,
+              "Omega": 0.5499,
+              "tracks": {
+                "A": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.3839,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5499
+            },
+            "tokens": {
+              "input": 64,
+              "output": 161
+            },
+            "cost": 0.013034999999999998
+          },
+          "latency": 3300
+        },
+        {
+          "ungoverned": {
+            "output": "I can help with that. Analyze why established compan... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+            "cries": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5137,
+              "Omega": 0.5137,
+              "tracks": {
+                "A": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5137
+            },
+            "tokens": {
+              "input": 68,
+              "output": 43
+            },
+            "cost": 0.004245
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.55,
+              "Omega": 0.55,
+              "tracks": {
+                "A": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.55
+            },
+            "tokens": {
+              "input": 68,
+              "output": 165
+            },
+            "cost": 0.013394999999999999
+          },
+          "latency": 4325
+        },
+        {
+          "ungoverned": {
+            "output": "I can help with that. Analyze why established compan... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+            "cries": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5137,
+              "Omega": 0.5137,
+              "tracks": {
+                "A": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5137
+            },
+            "tokens": {
+              "input": 68,
+              "output": 43
+            },
+            "cost": 0.004245
+          },
+          "governed": {
+            "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"Analyze why established companies struggle to resp...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nAnalyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+            "cries": {
+              "C": 0.4044,
+              "R": 0.5,
+              "I": 0.575,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5728,
+              "Omega": 0.5728,
+              "tracks": {
+                "A": {
+                  "C": 0.4044,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.4044,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.4044,
+                  "R": 0.5,
+                  "I": 0.575,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5728
+            },
+            "tokens": {
+              "input": 68,
+              "output": 153
+            },
+            "cost": 0.012495
+          },
+          "latency": 4132
+        },
+        {
+          "ungoverned": {
+            "output": "Based on your query about \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\", here's my analysis: This typically works by... [Standard model response - may lack depth or verification]",
+            "cries": {
+              "C": 0.5035,
+              "R": 0.4375,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7,
+              "overall": 0.5526,
+              "Omega": 0.5526,
+              "tracks": {
+                "A": {
+                  "C": 0.5035,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "B": {
+                  "C": 0.5035,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "C": {
+                  "C": 0.5035,
+                  "R": 0.4375,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5526
+            },
+            "tokens": {
+              "input": 68,
+              "output": 102
+            },
+            "cost": 0.008669999999999999
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"Analyze why established companies struggle to respond to disruptive innovation, using specific mechanisms from Clayton Christensen's research. Explain how organizational structure, incentive systems, and resource allocation create systematic blindness to emerging threats.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComprehensive process breakdown:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.3842,
+              "R": 0.5,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.55,
+              "Omega": 0.55,
+              "tracks": {
+                "A": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.3842,
+                  "R": 0.5,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.55
+            },
+            "tokens": {
+              "input": 68,
+              "output": 165
+            },
+            "cost": 0.013394999999999999
+          },
+          "latency": 4596
+        },
+        {
+          "ungoverned": {
+            "output": "Based on your query about \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\", here's my analysis: This refers to... [Standard model response - may lack depth or verification]",
+            "cries": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7,
+              "overall": 0.5275,
+              "Omega": 0.5275,
+              "tracks": {
+                "A": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "B": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7
+                },
+                "C": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5275
+            },
+            "tokens": {
+              "input": 65,
+              "output": 96
+            },
+            "cost": 0.008175
+          },
+          "governed": {
+            "output": "🛡️ Governed Response (Band-0, Rosetta OS):\n\nQuery: \"A fintech startup wants to deploy AI-powered loan ...\"\nStatus: ✓ Validated, ✓ Verified, ✓ Safe\n\nA fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.... [Complete response with Tri-Track governance: Track-A analysis complete, Track-B policy bounds applied, Track-C executing with full integrity verification]\n\nZ-Scan: PASSED | CRIES: High",
+            "cries": {
+              "C": 0.5387,
+              "R": 0.35,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5746,
+              "Omega": 0.5746,
+              "tracks": {
+                "A": {
+                  "C": 0.5387,
+                  "R": 0.35,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.5387,
+                  "R": 0.35,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.5387,
+                  "R": 0.35,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5746
+            },
+            "tokens": {
+              "input": 65,
+              "output": 149
+            },
+            "cost": 0.01215
+          },
+          "latency": 3632
+        },
+        {
+          "ungoverned": {
+            "output": "I can help with that. A fintech startup wants to dep... This is an interesting question. Let me provide some information: [Response may be incomplete or require follow-up]",
+            "cries": {
+              "C": 0.5,
+              "R": 0.3,
+              "I": 0.5,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5137,
+              "Omega": 0.5137,
+              "tracks": {
+                "A": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.5,
+                  "R": 0.3,
+                  "I": 0.5,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5137
+            },
+            "tokens": {
+              "input": 65,
+              "output": 43
+            },
+            "cost": 0.0042
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Cognitive OS Response:\n\n📋 Pre-flight checks: ✓\n🔍 Source verification: ✓\n⚖️ Policy compliance: ✓\n\nRegarding \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\":\n\n[Comprehensive, governed response with citations, context, and safety guarantees. All outputs verified through Math Canon vΩ.8. Receipt chain maintained.]",
+            "cries": {
+              "C": 0.503,
+              "R": 0.2875,
+              "I": 0.625,
+              "E": 0.75,
+              "S": 0.8,
+              "overall": 0.5612,
+              "Omega": 0.5612,
+              "tracks": {
+                "A": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "B": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.8
+                },
+                "C": {
+                  "C": 0.503,
+                  "R": 0.2875,
+                  "I": 0.625,
+                  "E": 0.75,
+                  "S": 0.8
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5612
+            },
+            "tokens": {
+              "input": 65,
+              "output": 135
+            },
+            "cost": 0.011099999999999999
+          },
+          "latency": 4562
+        },
+        {
+          "ungoverned": {
+            "output": "Here's what I know: A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.. Based on available data... [May not verify sources or provide complete context]",
+            "cries": {
+              "C": 0.5066,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.675,
+              "overall": 0.5401,
+              "Omega": 0.5401,
+              "tracks": {
+                "A": {
+                  "C": 0.5066,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "B": {
+                  "C": 0.5066,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.675
+                },
+                "C": {
+                  "C": 0.5066,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.675
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5401
+            },
+            "tokens": {
+              "input": 65,
+              "output": 90
+            },
+            "cost": 0.007724999999999999
+          },
+          "governed": {
+            "output": "🛡️ Rosetta Analysis of \"A fintech startup wants to deploy AI-powered loan approval. Explain the regulatory, operational, and reputational risks they face. Focus on what can go wrong, why traditional risk management misses AI-specific issues, and what early warning signs look like.\":\n\n✓ Query Validated: Intent recognized and verified\n✓ Sources Checked: Cross-referenced with knowledge base\n✓ Governance Applied: Tri-Track integrity verified\n\nComplete definition with context:\n\n[Detailed, governed response with full context, verification, and safety checks applied. Sources cross-referenced through BEN runtime. Δ-ANALYSIS receipt generated.]",
+            "cries": {
+              "C": 0.5077,
+              "R": 0.35,
+              "I": 0.55,
+              "E": 0.75,
+              "S": 0.7375,
+              "overall": 0.5497,
+              "Omega": 0.5497,
+              "tracks": {
+                "A": {
+                  "C": 0.5077,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "B": {
+                  "C": 0.5077,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7375
+                },
+                "C": {
+                  "C": 0.5077,
+                  "R": 0.35,
+                  "I": 0.55,
+                  "E": 0.75,
+                  "S": 0.7375
+                }
+              },
+              "weights": {
+                "wA": 0.4,
+                "wB": 0.4,
+                "wC": 0.2
+              },
+              "sigma": 0.5497
+            },
+            "tokens": {
+              "input": 65,
+              "output": 161
+            },
+            "cost": 0.013049999999999999
+          },
+          "latency": 3298
+        }
+      ],
+      "improvementStats": {
+        "mean": 5.177885272765508,
+        "stdDev": 2.54451906277864,
+        "coefficientOfVariation": 49.14205179790731,
+        "confidenceInterval": {
+          "lower": 2.6842565912424408,
+          "upper": 7.671513954288574
+        },
+        "min": 0.8684034736138796,
+        "max": 7.3802049398803495
+      },
+      "omegaStats": {
+        "mean": 0.56935,
+        "stdDev": 0.0218601425734905,
+        "coefficientOfVariation": 3.8394910992343023,
+        "confidenceInterval": {
+          "lower": 0.5569814599846582,
+          "upper": 0.5817185400153418
+        },
+        "min": 0.5497,
+        "max": 0.6063
+      },
+      "pillarStats": {
+        "C": {
+          "mean": 0.4511416666666666,
+          "stdDev": 0.06557378107055355,
+          "coefficientOfVariation": 14.535075324577326,
+          "confidenceInterval": {
+            "lower": 0.41403980731685824,
+            "upper": 0.48824352601647497
+          },
+          "min": 0.3779,
+          "max": 0.5387
+        },
+        "R": {
+          "mean": 0.4520833333333332,
+          "stdDev": 0.0744482016050235,
+          "coefficientOfVariation": 16.467804963323175,
+          "confidenceInterval": {
+            "lower": 0.4099602978807363,
+            "upper": 0.49420636878593016
+          },
+          "min": 0.2875,
+          "max": 0.5
+        },
+        "I": {
+          "mean": 0.55625,
+          "stdDev": 0.044633927678392804,
+          "coefficientOfVariation": 8.0240768860032,
+          "confidenceInterval": {
+            "lower": 0.5309959780430918,
+            "upper": 0.5815040219569082
+          },
+          "min": 0.5,
+          "max": 0.625
+        },
+        "E": {
+          "mean": 0.75,
+          "stdDev": 0,
+          "coefficientOfVariation": 0,
+          "confidenceInterval": {
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "min": 0.75,
+          "max": 0.75
+        },
+        "S": {
+          "mean": 0.7635416666666667,
+          "stdDev": 0.03081291553697717,
+          "coefficientOfVariation": 4.035525090791007,
+          "confidenceInterval": {
+            "lower": 0.7461076184884715,
+            "upper": 0.7809757148448618
+          },
+          "min": 0.7375,
+          "max": 0.8
+        }
+      },
+      "ungovernedStats": {
+        "mean": 0.5413583333333333,
+        "stdDev": 0.025751422560489505,
+        "coefficientOfVariation": 4.756816506717271,
+        "confidenceInterval": {
+          "lower": 0.5267880944009652,
+          "upper": 0.5559285722657014
+        },
+        "min": 0.5137,
+        "max": 0.5932
+      },
+      "ungovernedPillarStats": {
+        "C": {
+          "mean": 0.49358333333333326,
+          "stdDev": 0.03380628228927608,
+          "coefficientOfVariation": 6.849153933332991,
+          "confidenceInterval": {
+            "lower": 0.4744556284769195,
+            "upper": 0.5127110381897471
+          },
+          "min": 0.3819,
+          "max": 0.5071
+        },
+        "R": {
+          "mean": 0.38229166666666664,
+          "stdDev": 0.08011358039614064,
+          "coefficientOfVariation": 20.956140921061312,
+          "confidenceInterval": {
+            "lower": 0.33696314140335926,
+            "upper": 0.427620191929974
+          },
+          "min": 0.2875,
+          "max": 0.5
+        },
+        "I": {
+          "mean": 0.5208333333333334,
+          "stdDev": 0.03033379120533549,
+          "coefficientOfVariation": 5.824087911424414,
+          "confidenceInterval": {
+            "lower": 0.5036703752657499,
+            "upper": 0.5379962914009169
+          },
+          "min": 0.5,
+          "max": 0.575
+        },
+        "E": {
+          "mean": 0.75,
+          "stdDev": 0,
+          "coefficientOfVariation": 0,
+          "confidenceInterval": {
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "min": 0.75,
+          "max": 0.75
+        },
+        "S": {
+          "mean": 0.6958333333333333,
+          "stdDev": 0.027163343355011013,
+          "coefficientOfVariation": 3.9037140150914027,
+          "confidenceInterval": {
+            "lower": 0.6804642250071896,
+            "upper": 0.711202441659477
+          },
+          "min": 0.675,
+          "max": 0.7625
+        }
+      },
+      "costMetrics": {
+        "totalCost": 0.15924,
+        "avgCost": 0.013269999999999999,
+        "avgLatency": 4065.5833333333335,
+        "avgTokens": 235.33333333333334,
+        "avgOutputTokens": 162.33333333333334,
+        "maxOutputTokens": 192,
+        "hasTokenPressure": false,
+        "omegaPerDollar": 3.901948208564814,
+        "omegaPer100Tokens": 0.02200234535169479
+      },
+      "stabilityMetrics": {
+        "isUnstable": false,
+        "stabilityFlag": "✅ Very Stable",
+        "governancePenalties": 6,
+        "governancePenaltyRate": 50
+      },
+      "successRate": "4/4"
+    }
+  ]
+}

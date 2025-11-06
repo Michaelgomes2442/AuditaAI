@@ -1,11 +1,7 @@
 import os, json, hashlib, time
 from datetime import datetime
 from cryptography.fernet import Fernet
-
-APP_ROOT = os.path.expanduser("~/AuditaAI")
-RECEIPTS_DIR = os.path.join(APP_ROOT, "receipts")
-KEY_PATH = os.path.join(APP_ROOT, "ben_governance", "ben.key")
-STATE_PATH = os.path.join(RECEIPTS_DIR, "state.json")
+from path_utils import PROJECT_ROOT, RECEIPTS_DIR, KEY_PATH, STATE_PATH
 
 def load_key() -> Fernet:
     with open(KEY_PATH, "rb") as f:

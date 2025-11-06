@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["persona", "text"],
+  "properties": {
+    "persona": {
+      "type": "string",
+      "enum": ["Architect", "Auditor", "Witness"]
+    },
+    "text": {
+      "type": "string"
+    },
+    "governance": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

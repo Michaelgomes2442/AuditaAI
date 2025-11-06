@@ -5,11 +5,7 @@ import os, json, hashlib
 from cryptography.fernet import Fernet
 from datetime import datetime
 from typing import List
-
-APP_ROOT = os.path.expanduser("~/AuditaAI")
-RECEIPTS_DIR = os.path.join(APP_ROOT, "receipts")
-KEY_PATH = os.path.join(APP_ROOT, "ben_governance", "ben.key")
-REGISTRY_PATH = os.path.join(RECEIPTS_DIR, "registry.json")
+from path_utils import PROJECT_ROOT, RECEIPTS_DIR, KEY_PATH, REGISTRY_PATH
 
 app = FastAPI(title="BEN Audit Service", version="0.1.0")
 

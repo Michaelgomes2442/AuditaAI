@@ -138,7 +138,7 @@ export default function OnboardingTour({ page = 'pilot', forceShow = false }: On
                 Start by uploading your AI model configuration or selecting from our pre-configured models.
               </p>
               <p className="text-sm text-gray-400">
-                We support OpenAI, Anthropic, Ollama, and custom endpoints.
+                We support OpenAI and Anthropic enterprise cloud models.
               </p>
             </>
           ),

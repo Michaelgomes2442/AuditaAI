@@ -37,6 +37,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (!session?.user) {
+      console.log('🔍 [UserProvider] No active session, clearing profile');
       setProfile(null);
       setIsLoading(false);
       return;
@@ -45,12 +46,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       setError(null);
-      console.log('🔍 [UserProvider] Fetching user profile...');
+      console.log('🔍 [UserProvider] Fetching user profile for:', session.user.email);
       
       const res = await fetch('/api/user/profile');
       
       if (!res.ok) {
-        throw new Error(`Failed to fetch profile: ${res.status}`);
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(`Failed to fetch profile: ${res.status} - ${errorData.error || 'Unknown error'}`);
       }
       
       const data = await res.json();
@@ -69,6 +71,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         permissions: data.permissions,
         status: data.status
       });
+      setError(null);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to fetch profile';
       console.error('❌ [UserProvider] Error:', errorMsg);

@@ -1,11 +1,21 @@
 """
 Chain Verification System
 Version: Band-1.3 (vΩ.9)
+
+Implements domain-separated Merkle proof verification following RFC 6962.
+Leaf hashes are prefixed with 0x00 and internal nodes with 0x01 to prevent
+second-preimage attacks.
 """
 
+import hashlib
 from typing import List, Optional, Tuple
 
 from .types import BaseReceipt
+
+
+# Domain separation prefixes (RFC 6962)
+LEAF_PREFIX = b'\x00'      # Prefix for leaf node hashes
+INTERNAL_PREFIX = b'\x01'  # Prefix for internal node hashes
 
 
 class ChainVerifier:
@@ -46,22 +56,60 @@ class ChainVerifier:
         merkle_root: str,
         proof: List[str]
     ) -> bool:
-        """Verify a Merkle proof for a receipt"""
-        current = receipt.self_hash
+        """
+        Verify a Merkle proof for a receipt using domain-separated hashing.
         
+        Args:
+            receipt: The receipt to verify
+            merkle_root: Expected Merkle root hash
+            proof: List of sibling hashes
+        
+        Returns:
+            True if proof is valid, False otherwise
+        
+        Implementation:
+            - Leaf hash: hash(0x00 || receipt.self_hash)
+            - Internal hash: hash(0x01 || sorted_left || sorted_right)
+            - Hashes are ordered lexicographically for determinism
+            - Follows RFC 6962 domain separation recommendations
+        """
+        # Start with leaf hash (domain separated)
+        current = hashlib.sha256(LEAF_PREFIX + receipt.self_hash.encode()).hexdigest()
+        
+        # Process each sibling in the proof
         for sibling in proof:
-            # Sort hashes to ensure deterministic ordering
+            # Lexicographic ordering for deterministic hashing
             if current < sibling:
-                current = self._hash_pair(current, sibling)
+                left, right = current, sibling
             else:
-                current = self._hash_pair(sibling, current)
+                left, right = sibling, current
+            
+            # Hash internal node with domain separation
+            combined = INTERNAL_PREFIX + left.encode() + right.encode()
+            current = hashlib.sha256(combined).hexdigest()
         
         return current == merkle_root
 
     def _hash_pair(self, left: str, right: str) -> str:
-        """Hash a pair of strings"""
-        import hashlib
-        combined = f"{left}{right}".encode()
+        """
+        Hash a pair of strings using domain-separated internal node hashing.
+        
+        Args:
+            left: Left child hash
+            right: Right child hash
+        
+        Returns:
+            Hex-encoded SHA-256 hash with internal node prefix
+        
+        Note:
+            This method is deprecated. Use domain-separated hashing in
+            verify_merkle_proof instead.
+        """
+        # Lexicographic ordering
+        if left > right:
+            left, right = right, left
+        
+        combined = INTERNAL_PREFIX + left.encode() + right.encode()
         return hashlib.sha256(combined).hexdigest()
 
     def verify_band_transition(

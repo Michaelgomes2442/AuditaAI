@@ -1,10 +1,28 @@
 nohup: ignoring input
-
-> backend@1.0.0 start /home/michaelgomes/AuditaAI/backend
-> node server.js
-
-[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-DATABASE_URL is not set — using in-memory fallback for local dev/testing
+[dotenv@17.2.3] injecting env (9) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+STARTUP: DATABASE_URL present=true; prismaFallback=false
+REDIS_URL not set — using in-memory cache fallback. Set REDIS_URL to enable Redis.
+⚠️ Could not create optimized Prisma client: require is not defined
+✅ Services initialized successfully
+✅ Lab API endpoints registered:
+   GET /api/lab/dashboard
+   GET /api/lab/receipts
+   GET /api/lab/receipts/:id
+   GET /api/lab/seals
+   GET /api/lab/seals/:id
+   GET /api/lab/conversations
+   GET /api/lab/cries-trends
+   GET /api/lab/violations
+   GET /api/lab/export
+🔄 Initializing default demo models...
+✅ Initialized 6 default models:
+   📡 GPT-4o Mini (openai)
+   🛡️ GPT-4o Mini (Rosetta) (openai)
+   📡 Claude 3.5 Haiku (anthropic)
+   🛡️ Claude 3.5 Haiku (Rosetta) (anthropic)
+   📡 Claude Opus 4.1 (anthropic)
+   🛡️ Claude Opus 4.1 (Rosetta) (anthropic)
 Server running on port 3001
 
 🔗 Connecting to:
@@ -18,4 +36,31 @@ Server running on port 3001
    4. Lamport receipts generated for each analysis
    5. Compare: Standard LLM vs Rosetta-governed LLM
 
- ELIFECYCLE  Command failed.
+Client connected: TEM7O1iKy63vWD06AAAB
+
+🔄 Parallel Prompt Processing
+   Conversation IDs:
+      Standard: conv-claude-opus-4-1-20250805-1762347733874-2xghf1fex
+      Rosetta: conv-claude-opus-4-1-20250805-rosetta-1762347733874-0z623u4z8
+   Prompt: "test"
+   Standard: Claude Opus 4.1
+   Rosetta: Claude Opus 4.1 (Rosetta)
+📡 Calling claude-opus-4-1-20250805 (standard mode)...
+🤖 Calling Claude...
+   Model: claude-opus-4-1-20250805
+   Prompt length: 4 chars
+   API Key: Provided ✓
+   ❌ Claude Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CUpnbhvgRMMHm3oqZRHfA"}
+❌ Error generating model response: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CUpnbhvgRMMHm3oqZRHfA"}
+❌ Stack trace: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CUpnbhvgRMMHm3oqZRHfA"}
+    at APIError.generate (file:///home/michaelgomes/AuditaAI/backend/node_modules/@anthropic-ai/sdk/core/error.mjs:37:20)
+    at Anthropic.makeStatusError (file:///home/michaelgomes/AuditaAI/backend/node_modules/@anthropic-ai/sdk/client.mjs:152:32)
+    at Anthropic.makeRequest (file:///home/michaelgomes/AuditaAI/backend/node_modules/@anthropic-ai/sdk/client.mjs:306:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async callClaude (file:///home/michaelgomes/AuditaAI/backend/src/llm-client.js:298:21)
+    at async generateModelResponse (file:///home/michaelgomes/AuditaAI/backend/server.js:2319:21)
+    at async file:///home/michaelgomes/AuditaAI/backend/server.js:2135:26
+Parallel prompt error: Standard model response failed Error: LLM API call failed: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CUpnbhvgRMMHm3oqZRHfA"}. Check API keys, network connection, and API service status.
+    at generateModelResponse (file:///home/michaelgomes/AuditaAI/backend/server.js:2345:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///home/michaelgomes/AuditaAI/backend/server.js:2135:26

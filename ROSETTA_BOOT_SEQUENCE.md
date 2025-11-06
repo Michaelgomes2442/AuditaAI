@@ -1,8 +1,21 @@
-# Rosetta Boot Sequence Implementation
+# ⚠️ ARCHIVED: Rosetta Boot Sequence Implementation (OLD SYSTEM)
+
+> **DEPRECATION NOTICE**: This document describes the OLD HTML-based Rosetta boot system (v13 TriTrack vΩ3).
+> 
+> **Status**: SUPERSEDED by MCP-based Execution Engine
+> 
+> **New System Documentation**: See `/backend/rosetta/mcp/` for current implementation
+> 
+> **Migration Date**: November 2025
+> 
+> **Reason for Deprecation**: The HTML-based boot with lightweight "↯ ROSETTA Ω³" framing was insufficient for enforcing real governance. Claude would often refuse these instructions with "I do not actually enter specialized modes" responses. The new MCP kernel with full Execution Engine provides deterministic pipeline enforcement.
+
+---
+
 # Based on Rosetta Monolith v13 TriTrack vΩ3
 # Implements BEN (Blockchain Event Network) Boot Protocol
 
-This document outlines the Rosetta Cognitive OS boot sequence that should be uploaded to an LLM during cold session initialization.
+This document outlines the OLD Rosetta Cognitive OS boot sequence that was used before MCP kernel implementation.
 
 ## Boot Sequence Components
 

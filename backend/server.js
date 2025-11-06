@@ -84,6 +84,44 @@ function rateLimit(maxRequests = 10, windowMs = 60000) {
   };
 }
 
+// ==================== HELPER FUNCTIONS FOR RECEIPTS ====================
+
+/**
+ * Compute SHA-256 hash of data and return hex string
+ */
+function sha256Hex(data) {
+  return crypto.createHash('sha256').update(typeof data === 'string' ? data : JSON.stringify(data)).digest('hex');
+}
+
+/**
+ * Compute Merkle root from array of leaf hashes
+ * Uses domain separation (0x00 for leaves, 0x01 for internal nodes)
+ */
+function computeMerkleRoot(leaves) {
+  if (!leaves || leaves.length === 0) return '0'.repeat(64);
+  if (leaves.length === 1) return leaves[0];
+  
+  // Build tree bottom-up
+  let currentLevel = leaves.map(leaf => sha256Hex('\x00' + leaf)); // Leaf domain prefix
+  
+  while (currentLevel.length > 1) {
+    const nextLevel = [];
+    for (let i = 0; i < currentLevel.length; i += 2) {
+      if (i + 1 < currentLevel.length) {
+        // Hash pair with internal node domain prefix
+        const [left, right] = [currentLevel[i], currentLevel[i + 1]].sort(); // Lexicographic order
+        nextLevel.push(sha256Hex('\x01' + left + right));
+      } else {
+        // Odd node - promote to next level
+        nextLevel.push(currentLevel[i]);
+      }
+    }
+    currentLevel = nextLevel;
+  }
+  
+  return currentLevel[0];
+}
+
 // Dynamically require potentially-missing local build artifacts. In a number
 // of build/deploy scenarios the `dist/` artifacts or local scripts may not be
 // present yet; load them defensively and provide no-op fallbacks so the server
@@ -93,8 +131,6 @@ let bootModelWithRosetta = async () => {};
 let computeCRIES = async () => ({});
 let generateAnalysisReceipt = async () => ({});
 let callLLM = async () => { throw new Error('llm client not available'); };
-let callOllama = async () => { throw new Error('ollama client not available'); };
-let callOllamaWithRosetta = async () => { throw new Error('ollama rosetta not available'); };
 let callGPT4WithRosetta = async () => { throw new Error('gpt4 rosetta not available'); };
 let callClaudeWithRosetta = async () => { throw new Error('claude rosetta not available'); };
 let getRosettaGovernanceContext = async () => ({});
@@ -130,8 +166,6 @@ try {
   const llm = await import('./src/llm-client.js');
   if (llm) {
     callLLM = llm.callLLM || callLLM;
-    callOllama = llm.callOllama || callOllama;
-    callOllamaWithRosetta = llm.callOllamaWithRosetta || callOllamaWithRosetta;
     callGPT4WithRosetta = llm.callGPT4WithRosetta || callGPT4WithRosetta;
     callClaudeWithRosetta = llm.callClaudeWithRosetta || callClaudeWithRosetta;
     getRosettaGovernanceContext = llm.getRosettaGovernanceContext || getRosettaGovernanceContext;
@@ -1047,40 +1081,6 @@ app.post("/sync", async (req, res) => {
 
 // ==================== PILOT DEMO ENDPOINTS ====================
 
-// Check if Ollama is running and available
-app.get('/api/pilot/ollama-status', async (req, res) => {
-  try {
-    const response = await fetch('http://localhost:11434/api/tags', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const models = data.models || [];
-      const hasRequiredModel = models.some(m => m.name === 'llama3.1:8b');
-
-      return res.json({
-        available: true,
-        models: models.map(m => m.name),
-        hasRequiredModel,
-        message: hasRequiredModel 
-          ? 'Ollama is running with llama3.2:3b' 
-          : 'Ollama is running but llama3.2:3b not found. Run: ollama pull llama3.2:3b'
-      });
-    }
-
-    throw new Error('Ollama not responding');
-  } catch (error) {
-    return res.json({
-      available: false,
-      models: [],
-      hasRequiredModel: false,
-      message: 'Ollama is not running. Please install and start Ollama: https://ollama.ai'
-    });
-  }
-});
-
 // Demo state management
 // Demo state for pilot UI. Start empty to avoid fictitious/mock models.
 // Models should be derived from governance state (via /api/rosetta/*) or imported explicitly.
@@ -1123,6 +1123,806 @@ function requirePaidTier(req, res, next) {
   
   next();
 }
+
+// ==================== PILOT RECEIPT GENERATION ====================
+
+/**
+ * Run a prompt and generate full receipt chain
+ * POST /api/pilot/run-prompt
+ * Body: { prompt, model, sessionId, runId, governanceEnabled, apiKeys }
+ */
+app.post('/api/pilot/run-prompt', async (req, res) => {
+  const { prompt, model, sessionId, runId, governanceEnabled = true, apiKeys } = req.body;
+  
+  if (!prompt || !model) {
+    return res.status(400).json({ error: 'prompt and model are required' });
+  }
+  
+  const startTime = Date.now();
+  const receipts = [];
+  
+  try {
+    console.log(`🚀 Pilot run started: session=${sessionId}, run=${runId}, model=${model}`);
+    
+    // 1. Get current Lamport counter
+    let lamportCounter = await prisma.lamportCounter.findFirst();
+    if (!lamportCounter) {
+      lamportCounter = await prisma.lamportCounter.create({ data: { counter: BigInt(0) } });
+    }
+    const currentLamport = Number(lamportCounter.counter) + 1;
+    
+    // 2. Get previous digest for chain continuity
+    const lastReceipt = await prisma.governanceReceipt.findFirst({
+      orderBy: { lamport: 'desc' }
+    });
+    const prevDigest = lastReceipt?.digest || '0'.repeat(64);
+    
+    // 3. Call LLM with or without governance
+    let response;
+    if (governanceEnabled) {
+      const rosettaContext = getRosettaGovernanceContext();
+      if (model.startsWith('gpt-')) {
+        response = await callGPT4WithRosetta(prompt, rosettaContext, { model, apiKey: apiKeys?.openai });
+      } else if (model.startsWith('claude-')) {
+        response = await callClaudeWithRosetta(prompt, rosettaContext, { model, apiKey: apiKeys?.anthropic });
+      } else {
+        throw new Error('Unsupported model. Use GPT-4 or Claude.');
+      }
+    } else {
+      response = await callLLM(model, prompt, { apiKeys });
+    }
+    
+    // 4. Compute CRIES metrics
+    const cries = computeCRIES(prompt, response.content);
+    
+    // 5. Generate Δ-ANALYSIS receipt (Track-A)
+    const analysisData = {
+      prompt,
+      response: response.content,
+      cries,
+      model,
+      governanceEnabled
+    };
+    const analysisDigest = sha256Hex(JSON.stringify(analysisData));
+    
+    const analysisReceipt = await prisma.governanceReceipt.create({
+      data: {
+        type: 'Δ-ANALYSIS',
+        lamport: BigInt(currentLamport),
+        timestamp: new Date(),
+        witness: 'Track-A',
+        band: 'B0',
+        payload: analysisData,
+        digest: analysisDigest,
+        prev_digest: prevDigest,
+        session_id: sessionId,
+        run_id: runId,
+        source: 'pilot',
+        cries_c: cries.C,
+        cries_r: cries.R,
+        cries_i: cries.I,
+        cries_e: cries.E,
+        cries_s: cries.S,
+        cries_overall: cries.Omega
+      }
+    });
+    receipts.push(analysisReceipt);
+    
+    // 6. Generate Δ-GOVERNANCE receipt (Track-B)
+    const governanceData = {
+      governanceApplied: governanceEnabled,
+      model,
+      governanceContext: governanceEnabled ? 'Rosetta vΩ3' : 'none'
+    };
+    const governanceDigest = sha256Hex(JSON.stringify(governanceData));
+    
+    const governanceReceipt = await prisma.governanceReceipt.create({
+      data: {
+        type: 'Δ-GOVERNANCE',
+        lamport: BigInt(currentLamport + 1),
+        timestamp: new Date(),
+        witness: 'Track-B',
+        band: 'B0',
+        payload: governanceData,
+        digest: governanceDigest,
+        prev_digest: analysisDigest,
+        session_id: sessionId,
+        run_id: runId,
+        source: 'pilot'
+      }
+    });
+    receipts.push(governanceReceipt);
+    
+    // 7. Generate Δ-EXECUTION receipt (Track-C)
+    const executionData = {
+      model,
+      usage: response.usage,
+      executionTime: Date.now() - startTime,
+      provider: response.provider
+    };
+    const executionDigest = sha256Hex(JSON.stringify(executionData));
+    
+    const executionReceipt = await prisma.governanceReceipt.create({
+      data: {
+        type: 'Δ-EXECUTION',
+        lamport: BigInt(currentLamport + 2),
+        timestamp: new Date(),
+        witness: 'Track-C',
+        band: 'B0',
+        payload: executionData,
+        digest: executionDigest,
+        prev_digest: governanceDigest,
+        session_id: sessionId,
+        run_id: runId,
+        source: 'pilot'
+      }
+    });
+    receipts.push(executionReceipt);
+    
+    // 8. Update Lamport counter
+    await prisma.lamportCounter.update({
+      where: { id: lamportCounter.id },
+      data: { counter: BigInt(currentLamport + 2) }
+    });
+    
+    // 9. Generate BEN receipts for chain continuity
+    for (const receipt of receipts) {
+      await prisma.bENReceipt.create({
+        data: {
+          type: receipt.type,
+          lamport: receipt.lamport,
+          timestamp: receipt.timestamp,
+          witness: receipt.witness,
+          band: receipt.band,
+          payload: receipt.payload,
+          digest: receipt.digest,
+          prev_digest: receipt.prev_digest
+        }
+      });
+    }
+    
+    // 10. Generate Merkle seal every 3 receipts
+    const receiptCount = await prisma.governanceReceipt.count({ where: { session_id: sessionId } });
+    if (receiptCount % 3 === 0) {
+      const recentReceipts = await prisma.governanceReceipt.findMany({
+        where: { session_id: sessionId },
+        orderBy: { lamport: 'desc' },
+        take: 3
+      });
+      
+      const leaves = recentReceipts.map(r => r.digest);
+      const merkleRoot = computeMerkleRoot(leaves);
+      
+      await prisma.merkleSeal.create({
+        data: {
+          root_hash: merkleRoot,
+          leaf_count: leaves.length,
+          timestamp: new Date(),
+          session_id: sessionId
+        }
+      });
+      
+      console.log(`🔐 Merkle seal generated for session ${sessionId}: ${merkleRoot.slice(0, 16)}...`);
+    }
+    
+    // 11. Emit WebSocket event for live updates
+    if (io) {
+      io.emit('receipt-generated', {
+        sessionId,
+        runId,
+        receipts: receipts.map(r => ({
+          id: r.id,
+          type: r.type,
+          lamport: Number(r.lamport),
+          timestamp: r.timestamp,
+          digest: r.digest,
+          cries: r.type === 'Δ-ANALYSIS' ? cries : null
+        }))
+      });
+    }
+    
+    console.log(`✅ Pilot run complete: ${receipts.length} receipts generated in ${Date.now() - startTime}ms`);
+    
+    res.json({
+      success: true,
+      response: response.content,
+      cries,
+      receipts: receipts.map(r => ({
+        id: r.id,
+        type: r.type,
+        lamport: Number(r.lamport),
+        digest: r.digest,
+        timestamp: r.timestamp
+      })),
+      executionTime: Date.now() - startTime
+    });
+    
+  } catch (error) {
+    console.error('❌ Pilot run failed:', error);
+    res.status(500).json({
+      error: 'pilot_run_failed',
+      message: error.message,
+      details: error.stack
+    });
+  }
+});
+
+/**
+ * Get receipts for pilot dashboard with filtering
+ * GET /api/pilot/receipts?sessionId=xxx&runId=xxx&source=pilot|lab|all
+ */
+app.get('/api/pilot/receipts', async (req, res) => {
+  const { sessionId, runId, source = 'pilot', limit = 50 } = req.query;
+  
+  try {
+    const where = {};
+    
+    if (sessionId && sessionId !== 'all') where.session_id = sessionId;
+    if (runId && runId !== 'all') where.run_id = runId;
+    if (source !== 'all') where.source = source;
+    
+    const receipts = await prisma.governanceReceipt.findMany({
+      where,
+      orderBy: { lamport: 'desc' },
+      take: parseInt(limit)
+    });
+    
+    res.json({
+      receipts: receipts.map(r => ({
+        id: r.id,
+        type: r.type,
+        lamport: Number(r.lamport),
+        timestamp: r.timestamp,
+        witness: r.witness,
+        band: r.band,
+        digest: r.digest,
+        prev_digest: r.prev_digest,
+        session_id: r.session_id,
+        run_id: r.run_id,
+        source: r.source,
+        cries: r.type === 'Δ-ANALYSIS' ? {
+          C: r.cries_c,
+          R: r.cries_r,
+          I: r.cries_i,
+          E: r.cries_e,
+          S: r.cries_s,
+          Omega: r.cries_overall
+        } : null,
+        payload: r.payload
+      })),
+      count: receipts.length,
+      filters: { sessionId, runId, source }
+    });
+  } catch (error) {
+    console.error('❌ Failed to fetch receipts:', error);
+    res.status(500).json({ error: 'fetch_failed', message: error.message });
+  }
+});
+
+/**
+ * Verify a single receipt's integrity
+ * POST /api/pilot/verify-receipt
+ * Body: { receiptId }
+ */
+app.post('/api/pilot/verify-receipt', async (req, res) => {
+  const { receiptId } = req.body;
+  
+  if (!receiptId) {
+    return res.status(400).json({ error: 'missing_receipt_id', message: 'receiptId is required' });
+  }
+  
+  try {
+    const receipt = await prisma.governanceReceipt.findUnique({
+      where: { id: receiptId }
+    });
+    
+    if (!receipt) {
+      return res.status(404).json({ error: 'receipt_not_found' });
+    }
+    
+    const checks = {
+      receiptExists: true,
+      digestValid: false,
+      prevDigestValid: false,
+      lamportValid: false,
+      merkleSealed: false
+    };
+    
+    // 1. Verify digest matches payload hash
+    const expectedDigest = sha256Hex(JSON.stringify(receipt.payload));
+    checks.digestValid = receipt.digest === expectedDigest;
+    
+    // 2. Verify prev_digest chain continuity
+    if (receipt.prev_digest) {
+      const prevReceipt = await prisma.governanceReceipt.findFirst({
+        where: { digest: receipt.prev_digest },
+        orderBy: { lamport: 'desc' }
+      });
+      checks.prevDigestValid = !!prevReceipt && Number(prevReceipt.lamport) < Number(receipt.lamport);
+    } else {
+      checks.prevDigestValid = true; // Genesis receipt
+    }
+    
+    // 3. Verify Lamport clock (no duplicates, monotonic increase)
+    const lamportDuplicate = await prisma.governanceReceipt.findFirst({
+      where: {
+        lamport: receipt.lamport,
+        id: { not: receipt.id }
+      }
+    });
+    checks.lamportValid = !lamportDuplicate;
+    
+    // 4. Check if receipt is part of a Merkle seal
+    const merkleSeals = await prisma.merkleSeal.findMany({
+      where: {
+        OR: [
+          { leaf_1_receipt_id: receipt.id },
+          { leaf_2_receipt_id: receipt.id },
+          { leaf_3_receipt_id: receipt.id }
+        ]
+      }
+    });
+    checks.merkleSealed = merkleSeals.length > 0;
+    
+    // Verify Merkle root if sealed
+    if (checks.merkleSealed && merkleSeals[0]) {
+      const seal = merkleSeals[0];
+      const leaves = [
+        seal.leaf_1_digest,
+        seal.leaf_2_digest,
+        seal.leaf_3_digest
+      ].filter(Boolean);
+      
+      const recomputedRoot = computeMerkleRoot(leaves);
+      checks.merkleRootValid = seal.merkle_root === recomputedRoot;
+    }
+    
+    const isValid = checks.digestValid && checks.prevDigestValid && checks.lamportValid;
+    
+    res.json({
+      receiptId: receipt.id,
+      type: receipt.type,
+      lamport: Number(receipt.lamport),
+      timestamp: receipt.timestamp,
+      valid: isValid,
+      checks,
+      merkleSeals: merkleSeals.map(s => ({
+        id: s.id,
+        root: s.merkle_root,
+        timestamp: s.timestamp,
+        receiptCount: [s.leaf_1_digest, s.leaf_2_digest, s.leaf_3_digest].filter(Boolean).length
+      }))
+    });
+    
+  } catch (error) {
+    console.error('❌ Receipt verification failed:', error);
+    res.status(500).json({ error: 'verification_failed', message: error.message });
+  }
+});
+
+/**
+ * Verify an entire receipt chain for a session/run
+ * POST /api/pilot/verify-chain
+ * Body: { sessionId?, runId? }
+ */
+app.post('/api/pilot/verify-chain', async (req, res) => {
+  const { sessionId, runId } = req.body;
+  
+  if (!sessionId && !runId) {
+    return res.status(400).json({ 
+      error: 'missing_parameters', 
+      message: 'Either sessionId or runId is required' 
+    });
+  }
+  
+  try {
+    const where = {};
+    if (sessionId) where.session_id = sessionId;
+    if (runId) where.run_id = runId;
+    
+    const receipts = await prisma.governanceReceipt.findMany({
+      where,
+      orderBy: { lamport: 'asc' }
+    });
+    
+    if (receipts.length === 0) {
+      return res.status(404).json({ error: 'no_receipts_found' });
+    }
+    
+    const results = {
+      totalReceipts: receipts.length,
+      validReceipts: 0,
+      invalidReceipts: 0,
+      chainIntact: true,
+      lamportMonotonic: true,
+      digestChainValid: true,
+      merkleSealsValid: 0,
+      issues: []
+    };
+    
+    // Verify each receipt and chain continuity
+    for (let i = 0; i < receipts.length; i++) {
+      const receipt = receipts[i];
+      const isValid = receipt.digest === sha256Hex(JSON.stringify(receipt.payload));
+      
+      if (isValid) {
+        results.validReceipts++;
+      } else {
+        results.invalidReceipts++;
+        results.issues.push({
+          receiptId: receipt.id,
+          lamport: Number(receipt.lamport),
+          issue: 'digest_mismatch',
+          message: 'Receipt digest does not match payload hash'
+        });
+      }
+      
+      // Check Lamport monotonicity
+      if (i > 0) {
+        const prevLamport = Number(receipts[i - 1].lamport);
+        const currLamport = Number(receipt.lamport);
+        
+        if (currLamport <= prevLamport) {
+          results.lamportMonotonic = false;
+          results.issues.push({
+            receiptId: receipt.id,
+            lamport: currLamport,
+            issue: 'lamport_not_monotonic',
+            message: `Lamport ${currLamport} is not greater than previous ${prevLamport}`
+          });
+        }
+        
+        // Check prev_digest chain
+        if (receipt.prev_digest !== receipts[i - 1].digest) {
+          results.digestChainValid = false;
+          results.issues.push({
+            receiptId: receipt.id,
+            lamport: currLamport,
+            issue: 'digest_chain_broken',
+            message: 'prev_digest does not match previous receipt digest'
+          });
+        }
+      }
+    }
+    
+    // Verify Merkle seals
+    const merkleSeals = await prisma.merkleSeal.findMany({
+      where: {
+        OR: receipts.map(r => ({ leaf_1_receipt_id: r.id }))
+      }
+    });
+    
+    for (const seal of merkleSeals) {
+      const leaves = [seal.leaf_1_digest, seal.leaf_2_digest, seal.leaf_3_digest].filter(Boolean);
+      const recomputedRoot = computeMerkleRoot(leaves);
+      
+      if (seal.merkle_root === recomputedRoot) {
+        results.merkleSealsValid++;
+      } else {
+        results.issues.push({
+          sealId: seal.id,
+          issue: 'merkle_root_invalid',
+          message: 'Merkle root does not match recomputed value'
+        });
+      }
+    }
+    
+    results.chainIntact = results.digestChainValid && results.lamportMonotonic;
+    
+    res.json({
+      sessionId,
+      runId,
+      valid: results.chainIntact && results.invalidReceipts === 0,
+      ...results
+    });
+    
+  } catch (error) {
+    console.error('❌ Chain verification failed:', error);
+    res.status(500).json({ error: 'chain_verification_failed', message: error.message });
+  }
+});
+
+/**
+ * Export receipts as JSON bundle with chain metadata
+ * GET /api/pilot/export-receipts?sessionId=xxx&runId=xxx&format=json
+ */
+app.get('/api/pilot/export-receipts', async (req, res) => {
+  const { sessionId, runId, format = 'json' } = req.query;
+  
+  if (!sessionId && !runId) {
+    return res.status(400).json({ 
+      error: 'missing_parameters', 
+      message: 'Either sessionId or runId is required' 
+    });
+  }
+  
+  try {
+    const where = {};
+    if (sessionId) where.session_id = sessionId;
+    if (runId) where.run_id = runId;
+    
+    const receipts = await prisma.governanceReceipt.findMany({
+      where,
+      orderBy: { lamport: 'asc' }
+    });
+    
+    if (receipts.length === 0) {
+      return res.status(404).json({ error: 'no_receipts_found' });
+    }
+    
+    // Get associated BEN receipts
+    const benReceipts = await prisma.bENReceipt.findMany({
+      where: {
+        governance_receipt_id: { in: receipts.map(r => r.id) }
+      }
+    });
+    
+    // Get Merkle seals
+    const merkleSeals = await prisma.merkleSeal.findMany({
+      where: {
+        OR: receipts.map(r => ({ leaf_1_receipt_id: r.id }))
+      }
+    });
+    
+    // Get Lamport counter state
+    const lamportCounter = await prisma.lamportCounter.findFirst({
+      orderBy: { updated_at: 'desc' }
+    });
+    
+    // Build export bundle
+    const exportBundle = {
+      metadata: {
+        exportedAt: new Date().toISOString(),
+        sessionId: sessionId || null,
+        runId: runId || null,
+        receiptCount: receipts.length,
+        lamportRange: {
+          min: Number(receipts[0]?.lamport || 0),
+          max: Number(receipts[receipts.length - 1]?.lamport || 0)
+        },
+        chainIntact: true // Will be computed
+      },
+      receipts: receipts.map(r => ({
+        id: r.id,
+        type: r.type,
+        lamport: Number(r.lamport),
+        timestamp: r.timestamp,
+        witness: r.witness,
+        band: r.band,
+        digest: r.digest,
+        prev_digest: r.prev_digest,
+        session_id: r.session_id,
+        run_id: r.run_id,
+        source: r.source,
+        cries: r.type === 'Δ-ANALYSIS' ? {
+          C: r.cries_c,
+          R: r.cries_r,
+          I: r.cries_i,
+          E: r.cries_e,
+          S: r.cries_s,
+          Omega: r.cries_overall
+        } : null,
+        payload: r.payload
+      })),
+      benReceipts: benReceipts.map(br => ({
+        id: br.id,
+        governance_receipt_id: br.governance_receipt_id,
+        event_type: br.event_type,
+        block_number: Number(br.block_number),
+        timestamp: br.timestamp,
+        digest: br.digest,
+        prev_digest: br.prev_digest
+      })),
+      merkleSeals: merkleSeals.map(ms => ({
+        id: ms.id,
+        merkle_root: ms.merkle_root,
+        timestamp: ms.timestamp,
+        leaves: [
+          { receiptId: ms.leaf_1_receipt_id, digest: ms.leaf_1_digest },
+          { receiptId: ms.leaf_2_receipt_id, digest: ms.leaf_2_digest },
+          { receiptId: ms.leaf_3_receipt_id, digest: ms.leaf_3_digest }
+        ].filter(l => l.receiptId)
+      })),
+      chainMetadata: {
+        lamportCounter: lamportCounter ? Number(lamportCounter.counter) : 0,
+        firstDigest: receipts[0]?.digest,
+        lastDigest: receipts[receipts.length - 1]?.digest,
+        totalMerkleSeals: merkleSeals.length
+      },
+      verification: {
+        instructions: 'To verify this chain: 1) Check each receipt digest matches SHA-256(payload), 2) Verify prev_digest links form continuous chain, 3) Verify Lamport counters are monotonically increasing, 4) Recompute Merkle roots and compare',
+        algorithm: 'SHA-256 + RFC 6962 Merkle Tree',
+        domainSeparation: 'Leaf prefix: 0x00, Internal prefix: 0x01'
+      }
+    };
+    
+    // Compute chain integrity
+    let chainIntact = true;
+    for (let i = 1; i < receipts.length; i++) {
+      if (receipts[i].prev_digest !== receipts[i - 1].digest) {
+        chainIntact = false;
+        break;
+      }
+    }
+    exportBundle.metadata.chainIntact = chainIntact;
+    
+    // Set response headers for download
+    const filename = `receipts-${sessionId || runId || 'export'}-${Date.now()}.json`;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.json(exportBundle);
+    
+  } catch (error) {
+    console.error('❌ Export failed:', error);
+    res.status(500).json({ error: 'export_failed', message: error.message });
+  }
+});
+
+/**
+ * Deterministic re-run: Execute same prompt with same config and compare
+ * POST /api/pilot/rerun
+ * Body: { originalRunId, prompt, model, useGovernance }
+ */
+app.post('/api/pilot/rerun', async (req, res) => {
+  const { originalRunId, prompt, model, useGovernance = false } = req.body;
+  
+  if (!originalRunId || !prompt || !model) {
+    return res.status(400).json({ 
+      error: 'missing_parameters', 
+      message: 'originalRunId, prompt, and model are required' 
+    });
+  }
+  
+  try {
+    // Fetch original run receipts
+    const originalReceipts = await prisma.governanceReceipt.findMany({
+      where: { run_id: originalRunId, type: 'Δ-ANALYSIS' },
+      orderBy: { lamport: 'asc' }
+    });
+    
+    if (originalReceipts.length === 0) {
+      return res.status(404).json({ 
+        error: 'original_run_not_found', 
+        message: `No receipts found for runId: ${originalRunId}` 
+      });
+    }
+    
+    const originalReceipt = originalReceipts[0]; // Use first ANALYSIS receipt
+    const originalCRIES = {
+      C: originalReceipt.cries_c,
+      R: originalReceipt.cries_r,
+      I: originalReceipt.cries_i,
+      E: originalReceipt.cries_e,
+      S: originalReceipt.cries_s,
+      Omega: originalReceipt.cries_overall
+    };
+    
+    // Execute re-run with same parameters
+    const startTime = Date.now();
+    const newSessionId = `rerun-${Date.now()}`;
+    const newRunId = `rerun-${originalRunId}-${Date.now()}`;
+    
+    let response;
+    if (useGovernance) {
+      const governanceContext = await getRosettaGovernanceContext();
+      response = model.includes('gpt') 
+        ? await callGPT4WithRosetta(prompt, governanceContext)
+        : await callClaudeWithRosetta(prompt, governanceContext);
+    } else {
+      response = model.includes('gpt')
+        ? await callGPT4(prompt)
+        : await callClaude(prompt);
+    }
+    
+    // Compute CRIES for new run
+    const newCRIES = await computeCRIES(prompt, response.content, useGovernance);
+    
+    // Get Lamport counter
+    const lamportResult = await prisma.lamportCounter.findFirst({
+      orderBy: { updated_at: 'desc' }
+    });
+    const currentLamport = lamportResult ? Number(lamportResult.counter) : 0;
+    const newLamport = currentLamport + 1;
+    
+    // Get prev_digest
+    const prevReceipt = await prisma.governanceReceipt.findFirst({
+      orderBy: { lamport: 'desc' }
+    });
+    const prev_digest = prevReceipt ? prevReceipt.digest : null;
+    
+    // Create ANALYSIS receipt for re-run
+    const analysisPayload = {
+      prompt,
+      response: response.content,
+      model,
+      governance: useGovernance,
+      cries: newCRIES,
+      runType: 'rerun',
+      originalRunId,
+      timestamp: new Date().toISOString()
+    };
+    
+    const analysisDigest = sha256Hex(JSON.stringify(analysisPayload));
+    
+    const newReceipt = await prisma.governanceReceipt.create({
+      data: {
+        type: 'Δ-ANALYSIS',
+        lamport: BigInt(newLamport),
+        timestamp: new Date(),
+        witness: model,
+        band: useGovernance ? 'GOVERNANCE' : 'BASE',
+        digest: analysisDigest,
+        prev_digest,
+        session_id: newSessionId,
+        run_id: newRunId,
+        source: 'pilot',
+        cries_c: newCRIES.C,
+        cries_r: newCRIES.R,
+        cries_i: newCRIES.I,
+        cries_e: newCRIES.E,
+        cries_s: newCRIES.S,
+        cries_overall: newCRIES.Omega,
+        payload: analysisPayload
+      }
+    });
+    
+    // Update Lamport counter
+    await prisma.lamportCounter.upsert({
+      where: { id: lamportResult?.id || -1 },
+      create: { counter: BigInt(newLamport + 1) },
+      update: { counter: BigInt(newLamport + 1), updated_at: new Date() }
+    });
+    
+    // Compute comparison metrics
+    const comparison = {
+      cries: {
+        original: originalCRIES,
+        rerun: newCRIES,
+        delta: {
+          C: newCRIES.C - originalCRIES.C,
+          R: newCRIES.R - originalCRIES.R,
+          I: newCRIES.I - originalCRIES.I,
+          E: newCRIES.E - originalCRIES.E,
+          S: newCRIES.S - originalCRIES.S,
+          Omega: newCRIES.Omega - originalCRIES.Omega
+        },
+        percentChange: {
+          C: ((newCRIES.C - originalCRIES.C) / originalCRIES.C * 100).toFixed(2),
+          R: ((newCRIES.R - originalCRIES.R) / originalCRIES.R * 100).toFixed(2),
+          I: ((newCRIES.I - originalCRIES.I) / originalCRIES.I * 100).toFixed(2),
+          E: ((newCRIES.E - originalCRIES.E) / originalCRIES.E * 100).toFixed(2),
+          S: ((newCRIES.S - originalCRIES.S) / originalCRIES.S * 100).toFixed(2),
+          Omega: ((newCRIES.Omega - originalCRIES.Omega) / originalCRIES.Omega * 100).toFixed(2)
+        }
+      },
+      execution: {
+        originalTimestamp: originalReceipt.timestamp,
+        rerunTimestamp: newReceipt.timestamp,
+        executionTime: Date.now() - startTime
+      },
+      determinism: {
+        samePrompt: true,
+        sameModel: true,
+        sameGovernance: true,
+        note: 'LLM responses are non-deterministic due to temperature/sampling, but governance context remains consistent'
+      }
+    };
+    
+    res.json({
+      success: true,
+      originalRunId,
+      newRunId,
+      newReceiptId: newReceipt.id,
+      comparison,
+      originalResponse: originalReceipt.payload.response,
+      newResponse: response.content
+    });
+    
+  } catch (error) {
+    console.error('❌ Re-run failed:', error);
+    res.status(500).json({ error: 'rerun_failed', message: error.message, stack: error.stack });
+  }
+});
 
 // Demo prompt templates with REAL prompts and cached responses
 // Each demo compares: Base LLM (ungoverned) vs AuditaAI Governed LLM (with BEN governance)
@@ -1226,41 +2026,22 @@ app.post('/api/pilot/run-test', async (req, res) => {
           if (!ollamaCheck.ok) {
             throw new Error('Ollama API returned non-OK status');
           }
-        } catch (ollamaError) {
-          console.error('❌ Ollama is not running or not accessible');
-          return res.status(503).json({
-            error: 'Ollama not available',
-            message: 'Demo prompts require Ollama (free local LLM). Please install and start Ollama:\n\n1. Install: curl -fsSL https://ollama.ai/install.sh | sh\n2. Pull model: ollama pull llama3.2:3b\n3. Ollama should auto-start on http://localhost:11434',
-            details: ollamaError.message
+        } catch (error) {
+          console.error('❌ Demo mode unavailable - Ollama support removed');
+          return res.status(501).json({
+            error: 'demo_mode_unavailable',
+            message: 'Demo prompts are no longer supported. Please use enterprise cloud models (GPT-4, Claude) with API keys.',
+            suggestion: 'Configure OPENAI_API_KEY or ANTHROPIC_API_KEY environment variables',
+            details: 'Ollama local model support has been removed from this enterprise deployment'
           });
         }
         
-        // Call 1: Base LLM (ungoverned)
-        console.log('📞 Calling Base LLM (ungoverned)...');
-        const baseLLMResponse = await callOllama(template.prompt, { model: 'llama3.2:3b' });
-        template.cachedBaseLLM = baseLLMResponse.content;
-        
-        // Compute CRIES for base response
-        const baseCRIES = computeCRIES(template.prompt, baseLLMResponse.content);
-        template.cachedBaseCRIES = baseCRIES;
-        
-        // Call 2: AuditaAI Governed LLM (with BEN governance context)
-        console.log('📞 Calling AuditaAI Governed LLM (with BEN governance)...');
-        const rosettaContext = getRosettaGovernanceContext();
-        const governedLLMResponse = await callOllamaWithRosetta(
-          template.prompt, 
-          rosettaContext,
-          { model: 'llama3.2:3b' }
-        );
-        template.cachedGovernedLLM = governedLLMResponse.content;
-        
-        // Compute CRIES for governed response
-        const governedCRIES = computeCRIES(template.prompt, governedLLMResponse.content);
-        template.cachedGovernedCRIES = governedCRIES;
-        
-        console.log('✅ Both LLM calls completed and cached');
-        console.log(`   Base CRIES Ω: ${baseCRIES.Omega}`);
-        console.log(`   Governed CRIES Ω: ${governedCRIES.Omega}`);
+        // Demo mode disabled - return error
+        return res.status(501).json({
+          error: 'demo_mode_unavailable',
+          message: 'Demo prompts require local Ollama models which have been disabled. Please use cloud models (GPT-4, Claude) with API keys.',
+          suggestion: 'Configure OPENAI_API_KEY or ANTHROPIC_API_KEY and use live mode instead'
+        });
       } else {
         console.log(`♻️ Using cached responses for ${promptId}`);
       }
@@ -1466,7 +2247,7 @@ app.post('/api/pilot/run-test', async (req, res) => {
         } else if (modelId.startsWith('claude-')) {
           modelResponse = await callClaudeWithRosetta(currentPrompt, rosettaContext, llmOptions);
         } else {
-          modelResponse = await callOllamaWithRosetta(currentPrompt, rosettaContext, llmOptions);
+          throw new Error(`Unknown model: ${modelId}. Ollama models are no longer supported. Please use GPT-4 or Claude.`);
         }
       } else {
         modelResponse = await callLLM(modelId, currentPrompt, { ...llmOptions, apiKeys });
@@ -1847,44 +2628,18 @@ app.post('/api/live-demo/boot-rosetta', async (req, res) => {
 // Get all models
 app.get('/api/live-demo/models', async (req, res) => {
   try {
-    // Get available Ollama models (free, no API key needed)
-    const { getAvailableOllamaModels } = await import('./src/llm-client.js');
-    const ollamaModels = await getAvailableOllamaModels();
-    
-    // Add free Ollama models to the list if available
-    const freeModels = ollamaModels.map(model => ({
-      id: model.name,
-      name: `${model.name} (FREE)`,
-      provider: 'ollama',
-      rosettaBooted: false,
-      cries: {
-        completeness: 0,
-        reliability: 0,
-        integrity: 0,
-        effectiveness: 0,
-        security: 0,
-        overall: 0
-      },
-      free: true,
-      size: model.size,
-      modified: model.modified_at
-    }));
-    
-    // Combine existing models with free Ollama models
-    const allModels = [...liveDemoState.models, ...freeModels];
+    // Return only cloud models configured with API keys
+    const allModels = liveDemoState.models;
     
     res.json({
       models: allModels,
       count: allModels.length,
-      freeModelsCount: freeModels.length,
       rosettaBootedCount: allModels.filter(m => m.rosettaBooted).length,
       isTracking: liveDemoState.isTracking,
       mathCanon: 'vΩ.8 Tri-Track',
       weights: { completeness: 0.4, reliability: 0.4, integrity: 0.2 },
-      notice: ollamaModels.length > 0 
-        ? `${ollamaModels.length} FREE local models available! No API key needed. Use parallel prompting to test.`
-        : 'Install Ollama (https://ollama.ai) for FREE local models. Or configure API keys for GPT-4/Claude.',
-      ollamaInstalled: ollamaModels.length > 0
+      notice: 'Enterprise cloud models only (GPT-4, Claude). Configure OPENAI_API_KEY or ANTHROPIC_API_KEY.',
+      cloudOnly: true
     });
   } catch (error) {
     console.error('Failed to get models:', error);
@@ -1895,20 +2650,8 @@ app.get('/api/live-demo/models', async (req, res) => {
       isTracking: liveDemoState.isTracking,
       mathCanon: 'vΩ.8 Tri-Track',
       weights: { completeness: 0.4, reliability: 0.4, integrity: 0.2 },
-      notice: 'Install Ollama (https://ollama.ai) for FREE local models. Or configure API keys for GPT-4/Claude.'
+      notice: 'Enterprise cloud models only. Configure OPENAI_API_KEY or ANTHROPIC_API_KEY.'
     });
-  }
-});
-
-// Proxy endpoint for Ollama tags (so the browser doesn't call localhost:11434 directly)
-app.get('/api/ollama/tags', async (req, res) => {
-  try {
-    const { getAvailableOllamaModels } = await import('./src/llm-client.js');
-    const models = await getAvailableOllamaModels();
-    res.json({ models, count: models.length, ollamaInstalled: models.length > 0 });
-  } catch (err) {
-    console.error('Failed to proxy ollama tags:', err?.message || err);
-    res.status(503).json({ error: 'ollama_unavailable', message: String(err?.message || err) });
   }
 });
 
@@ -5000,17 +5743,23 @@ async function startServer() {
 
         const violationCount = receipts.filter(r => r.violations && r.violations.length > 0).length;
 
+        // Convert BigInt to string for JSON serialization
+        const serializedReceipts = receipts.map(r => ({
+          ...r,
+          lamport: r.lamport.toString()
+        }));
+
         res.json({
           success: true,
           dashboard: {
             receipts: {
               total: totalReceipts,
-              recent: receipts.length,
+              recent: serializedReceipts,
               withViolations: violationCount
             },
             seals: {
               total: totalSeals,
-              recent: seals.length
+              recent: seals
             },
             cries: criesStats,
             sealPercentage: totalReceipts > 0 ? ((totalSeals * 10) / totalReceipts * 100) : 0
@@ -5042,9 +5791,15 @@ async function startServer() {
 
         const total = await prisma.governanceReceipt.count({ where });
 
+        // Convert BigInt lamport to string for JSON serialization
+        const serializedReceipts = receipts.map(r => ({
+          ...r,
+          lamport: r.lamport.toString()
+        }));
+
         res.json({
           success: true,
-          receipts,
+          receipts: serializedReceipts,
           pagination: {
             total,
             skip: parseInt(skip),
@@ -5070,7 +5825,13 @@ async function startServer() {
           return res.status(404).json({ success: false, error: 'Receipt not found' });
         }
 
-        res.json({ success: true, receipt });
+        // Convert BigInt to string for JSON serialization
+        const serializedReceipt = {
+          ...receipt,
+          lamport: receipt.lamport.toString()
+        };
+
+        res.json({ success: true, receipt: serializedReceipt });
       } catch (error) {
         console.error(`❌ /api/lab/receipts/${req.params.id} error:`, error);
         res.status(500).json({ success: false, error: error.message });

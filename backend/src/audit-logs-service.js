@@ -1,4 +1,4 @@
-import { createOptimizedPrismaClient } from './prisma-optimize.ts';
+import { createOptimizedPrismaClient } from './prisma-optimize.js';
 import { getCache, setCache } from './cache.js';
 
 /**
