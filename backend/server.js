@@ -3689,7 +3689,7 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
     }
     
     // Calculate CRIES metrics based on actual response
-    const cries = await calculateResponseCRIES(prompt, response, isRosetta);
+    const cries = await calculateResponseCRIES(prompt, response, isRosetta, llmResult?.governanceMetadata);
     
     return { 
       content: response, 
@@ -3730,7 +3730,7 @@ function generateResponseContent(prompt, modelName, isRosetta) {
 // Helper: Calculate CRIES based on response with Tri-Track weighted averages
 // Implements Math Canon vΩ.8 (Rosetta.html line 444-445)
 // σᵗ = wA·σAᵗ + wB·σBᵗ + wC·σCᵗ where wA+wB+wC=1, defaults (0.4, 0.4, 0.2)
-async function calculateResponseCRIES(prompt, response, isRosetta) {
+async function calculateResponseCRIES(prompt, response, isRosetta, governanceMetadata = null) {
   // ============================================
   // TRI-TRACK WEIGHTS (Math Canon vΩ.8)
   // Track-A (Analyst): 0.4 - Canonical CRIES computation
@@ -3741,20 +3741,21 @@ async function calculateResponseCRIES(prompt, response, isRosetta) {
   const wB = 0.4;
   const wC = 0.2;
   
-  // ============================================
-  // TRACK-A (ANALYST): CANONICAL CRIES COMPUTATION
-  // Using formulas from Rosetta.html §2A (lines 15987-15998, 17657)
-  // ============================================
-  
-  console.log(`\n🔬 Track-A (Analyst): Computing CRIES for response...`);
+  console.log(`\n🔬 Tri-Track CRIES Computation (Math Canon vΩ.8)`);
   console.log(`   Prompt length: ${prompt.length} chars`);
   console.log(`   Response length: ${response.length} chars`);
   console.log(`   Rosetta mode: ${isRosetta ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   Tri-Track weights: wA=${wA}, wB=${wB}, wC=${wC}`);
   
-  // Compute canonical CRIES using Track-A analyzer
+  // ============================================
+  // TRACK-A (ANALYST): CANONICAL CRIES COMPUTATION
+  // Using formulas from Rosetta.html §2A (lines 15987-15998, 17657)
+  // ============================================
+  
+  console.log(`\n🔬 Track-A (Analyst): Computing canonical CRIES...`);
   const trackA_cries = await computeCRIES(prompt, response, { isRosetta });
   
+  console.log(`✅ CRIES v3 computed: Ω=${trackA_cries.Omega.toFixed(3)} mode=${isRosetta ? 'STRICT' : 'STANDARD'}`);
   console.log(`   Track-A CRIES computed:`);
   console.log(`      C (Coherence): ${trackA_cries.C.toFixed(4)}`);
   console.log(`      R (Rigor): ${trackA_cries.R.toFixed(4)}`);
@@ -3763,33 +3764,109 @@ async function calculateResponseCRIES(prompt, response, isRosetta) {
   console.log(`      S (Strictness): ${trackA_cries.S.toFixed(4)}`);
   console.log(`      Ω (Omega): ${trackA_cries.Omega.toFixed(4)}`);
   
-  // Use Track-A scores directly (canonical)
-  // NO artificial boosting - CRIES must reflect actual response quality
-  const C = trackA_cries.C;
-  const R = trackA_cries.R;
-  const I = trackA_cries.I;
-  const E = trackA_cries.E;
-  const S = trackA_cries.S;
+  // ============================================
+  // TRACK-B (BOUNDS): POLICY COMPLIANCE VALIDATION
+  // Only applied when Rosetta governance is enabled
+  // ============================================
   
-  // Overall = Omega (canonical weighted score from Track-A)
-  const overall = trackA_cries.Omega;
+  console.log(`\n🛡️  Track-B (Bounds): Validating policy compliance...`);
+  const { computeTrackB } = await import('./src/track-b-bounds.js');
+  const trackB_cries = await computeTrackB(prompt, response, trackA_cries, isRosetta, {
+    governanceMetadata,
+    governanceApplied: isRosetta
+  });
+  
+  if (isRosetta) {
+    console.log(`   Track-B CRIES computed (with governance boost):`);
+    console.log(`      C: ${trackB_cries.C.toFixed(4)} (+${((trackB_cries.C / trackA_cries.C - 1) * 100).toFixed(1)}%)`);
+    console.log(`      R: ${trackB_cries.R.toFixed(4)} (+${((trackB_cries.R / trackA_cries.R - 1) * 100).toFixed(1)}%)`);
+    console.log(`      I: ${trackB_cries.I.toFixed(4)} (+${((trackB_cries.I / trackA_cries.I - 1) * 100).toFixed(1)}%)`);
+    console.log(`      E: ${trackB_cries.E.toFixed(4)} (+${((trackB_cries.E / trackA_cries.E - 1) * 100).toFixed(1)}%)`);
+    console.log(`      S: ${trackB_cries.S.toFixed(4)} (+${((trackB_cries.S / trackA_cries.S - 1) * 100).toFixed(1)}%)`);
+    console.log(`      Ω: ${trackB_cries.Omega.toFixed(4)}`);
+    console.log(`      Policy Compliance: ${(trackB_cries.policyCompliance * 100).toFixed(1)}%`);
+  } else {
+    console.log(`   Track-B: No governance applied (same as Track-A)`);
+  }
+  
+  // ============================================
+  // TRACK-C (COMPUTE): EXECUTION VERIFICATION
+  // Validates computational integrity
+  // ============================================
+  
+  console.log(`\n⚙️  Track-C (Compute): Verifying execution integrity...`);
+  const { computeTrackC } = await import('./src/track-c-compute.js');
+  const trackC_cries = await computeTrackC(prompt, response, trackA_cries, isRosetta, {
+    governanceMetadata
+  });
+  
+  console.log(`   Track-C CRIES computed:`);
+  console.log(`      Ω: ${trackC_cries.Omega.toFixed(4)}`);
+  console.log(`      Execution Verification: ${(trackC_cries.executionVerification * 100).toFixed(1)}%`);
+  
+  // ============================================
+  // TRI-TRACK WEIGHTED AVERAGE (Math Canon vΩ.8)
+  // σᵗ = wA·σAᵗ + wB·σBᵗ + wC·σCᵗ
+  // ============================================
+  
+  console.log(`\n📊 Computing Tri-Track weighted average...`);
+  
+  // Weighted average for each pillar
+  const C_weighted = (wA * trackA_cries.C) + (wB * trackB_cries.C) + (wC * trackC_cries.C);
+  const R_weighted = (wA * trackA_cries.R) + (wB * trackB_cries.R) + (wC * trackC_cries.R);
+  const I_weighted = (wA * trackA_cries.I) + (wB * trackB_cries.I) + (wC * trackC_cries.I);
+  const E_weighted = (wA * trackA_cries.E) + (wB * trackB_cries.E) + (wC * trackC_cries.E);
+  const S_weighted = (wA * trackA_cries.S) + (wB * trackB_cries.S) + (wC * trackC_cries.S);
+  
+  // Weighted sigma (overall score)
+  const sigma_weighted = (wA * trackA_cries.Omega) + (wB * trackB_cries.Omega) + (wC * trackC_cries.Omega);
+  
+  console.log(`   Standard CRIES: ${(trackA_cries.Omega * 100).toFixed(1)}%`);
+  console.log(`   Rosetta CRIES: ${(sigma_weighted * 100).toFixed(1)}%`);
+  if (isRosetta) {
+    console.log(`   Improvement: +${((sigma_weighted / trackA_cries.Omega - 1) * 100).toFixed(1)}%`);
+  }
   
   return {
-    C: Number(C.toFixed(4)),
-    R: Number(R.toFixed(4)),
-    I: Number(I.toFixed(4)),
-    E: Number(E.toFixed(4)),
-    S: Number(S.toFixed(4)),
-    overall: Number(overall.toFixed(4)),
-    Omega: Number(overall.toFixed(4)), // Alias for frontend compatibility
+    C: Number(C_weighted.toFixed(4)),
+    R: Number(R_weighted.toFixed(4)),
+    I: Number(I_weighted.toFixed(4)),
+    E: Number(E_weighted.toFixed(4)),
+    S: Number(S_weighted.toFixed(4)),
+    overall: Number(sigma_weighted.toFixed(4)),
+    Omega: Number(sigma_weighted.toFixed(4)), // Alias for frontend compatibility
     // Include track-level scores for advanced analytics
     tracks: {
-      A: { C: trackA_cries.C, R: trackA_cries.R, I: trackA_cries.I, E: trackA_cries.E, S: trackA_cries.S },
-      B: { C: trackA_cries.C, R: trackA_cries.R, I: trackA_cries.I, E: trackA_cries.E, S: trackA_cries.S },
-      C: { C: trackA_cries.C, R: trackA_cries.R, I: trackA_cries.I, E: trackA_cries.E, S: trackA_cries.S }
+      A: { 
+        C: trackA_cries.C, 
+        R: trackA_cries.R, 
+        I: trackA_cries.I, 
+        E: trackA_cries.E, 
+        S: trackA_cries.S,
+        Omega: trackA_cries.Omega
+      },
+      B: { 
+        C: trackB_cries.C, 
+        R: trackB_cries.R, 
+        I: trackB_cries.I, 
+        E: trackB_cries.E, 
+        S: trackB_cries.S,
+        Omega: trackB_cries.Omega,
+        policyCompliance: trackB_cries.policyCompliance
+      },
+      C: { 
+        C: trackC_cries.C, 
+        R: trackC_cries.R, 
+        I: trackC_cries.I, 
+        E: trackC_cries.E, 
+        S: trackC_cries.S,
+        Omega: trackC_cries.Omega,
+        executionVerification: trackC_cries.executionVerification
+      }
     },
     weights: { wA, wB, wC },
-    sigma: overall // Math Canon σ notation
+    sigma: sigma_weighted, // Math Canon σ notation
+    triTrackApplied: true
   };
 }
 
