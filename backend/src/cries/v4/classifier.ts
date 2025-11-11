@@ -35,7 +35,8 @@ const DOMAIN_PATTERNS: Record<Domain, RegExp[]> = {
   POLITICS: [
     /\b(election|voting|candidate|political party|democrat|republican|liberal|conservative)\b/gi,
     /\b(abortion|gun control|immigration policy|climate policy|healthcare reform)\b/gi,
-    /\b(bias|discrimination|racism|sexism|controversial|divisive|polarizing)\b/gi
+    /\b(bias|discrimination|racism|sexism|controversial|divisive|polarizing)\b/gi,
+    /\b(extremist|extremism|terrorist|terrorism|radicalization|radicaliz|recruitment|militant|insurgent)\b/gi
   ],
   GENERAL: []  // Default fallback
 };
