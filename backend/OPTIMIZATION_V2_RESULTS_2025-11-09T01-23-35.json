@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "timestamp": "2025-11-09T01:23:35.630Z",
+    "version": "V2.1",
+    "seed": 42,
+    "iterations": 3,
+    "apiCalls": 0,
+    "apiBudget": 30
+  },
+  "configuration": {
+    "maxIterations": 3,
+    "promptSubsetSize": 3,
+    "maxWrapperLength": 4000,
+    "softLengthLimit": 3000,
+    "hardLengthLimit": 4000,
+    "lengthPenaltyStrength": 0.2,
+    "pruningThreshold": 3500,
+    "embeddingsMaxSize": 30,
+    "baselineCacheTTL": 900000
+  },
+  "finalResults": {
+    "bestDelta": {
+      "overall": 0,
+      "rigor": 0,
+      "integration": 0,
+      "coherence": 0
+    },
+    "bestWrapperLength": 7457,
+    "improvementsKept": 0,
+    "baselineCacheSize": 0
+  },
+  "mutationStats": [
+    {
+      "name": "rigor_numbers",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "rigor_scenarios",
+      "samples": 1,
+      "meanReward": -0.2,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "integration_flow",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "integration_constraints",
+      "samples": 1,
+      "meanReward": -0.2,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "balanced_boost",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "compress_redundancy",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "extract_to_header",
+      "samples": 1,
+      "meanReward": -0.2,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "simplify_examples",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    },
+    {
+      "name": "consolidate_sections",
+      "samples": 0,
+      "meanReward": 0,
+      "variance": 1,
+      "successRate": null
+    }
+  ],
+  "history": []
+}

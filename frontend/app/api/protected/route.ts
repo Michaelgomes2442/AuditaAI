@@ -1,4 +1,4 @@
-import { prisma } from "../../../lib/prismadb";
+import { prisma } from "@/lib/prismadb";
 
 export async function GET(req: Request) {
   // Support Bearer <email> for local integration tests

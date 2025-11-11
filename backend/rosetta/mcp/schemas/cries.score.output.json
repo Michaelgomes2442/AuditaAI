@@ -31,6 +31,17 @@
       "type": "number",
       "minimum": 0,
       "maximum": 1
+    },
+    "cries_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "weights": {
+      "type": "object"
+    },
+    "sub_metrics": {
+      "type": "object"
     }
   },
   "required": ["C", "R", "I", "E", "S", "avg"],

@@ -5,7 +5,7 @@
  * good user experience for legitimate usage.
  */
 
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 // Default rate limit for general API endpoints
 export const defaultRateLimiter = rateLimit({
@@ -18,10 +18,7 @@ export const defaultRateLimiter = rateLimit({
   },
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
-  // Use IP address for rate limiting
-  keyGenerator: (req) => {
-    return req.ip || req.headers['x-forwarded-for'] || 'unknown';
-  }
+  keyGenerator: ipKeyGenerator // Use IPv6-compatible key generator
 });
 
 // Strict rate limit for expensive LLM operations
@@ -37,9 +34,12 @@ export const llmRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => {
-    // If authenticated, use userId, otherwise use IP
+    // If authenticated, use userId, otherwise use IPv6-compatible IP
     const userId = req.user?.id || req.session?.userId;
-    return userId ? `user-${userId}` : (req.ip || 'unknown');
+    if (userId) {
+      return `user-${userId}`;
+    }
+    return ipKeyGenerator(req);
   },
   // Skip rate limiting for admins
   skip: (req) => {
@@ -59,9 +59,12 @@ export const authRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => {
-    // Use email + IP for auth endpoints
-    const identifier = req.body?.email || req.body?.username || req.ip;
-    return `auth-${identifier}`;
+    // Use email + IPv6-compatible IP for auth endpoints
+    const identifier = req.body?.email || req.body?.username;
+    if (identifier) {
+      return `auth-${identifier}`;
+    }
+    return `auth-${ipKeyGenerator(req)}`;
   },
   // Increase delay with each failed attempt
   handler: (req, res) => {
@@ -83,7 +86,8 @@ export const readOnlyRateLimiter = rateLimit({
     retryAfter: 60
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  keyGenerator: ipKeyGenerator // Use IPv6-compatible key generator
 });
 
 // Export configuration for testing/monitoring

@@ -15,6 +15,24 @@
     },
     "identityLock": {
       "type": "boolean"
+    },
+    "criesWindow": {
+      "type": "array"
+    },
+    "lastClarifier": {
+      "type": "boolean"
+    },
+    "governanceBoost": {
+      "type": "boolean"
+    },
+    "persona": {
+      "type": "string",
+      "enum": ["Witness", "Auditor", "Architect"]
+    },
+    "empathy": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
     }
   },
   "required": ["version", "band", "witness", "identityLock"],

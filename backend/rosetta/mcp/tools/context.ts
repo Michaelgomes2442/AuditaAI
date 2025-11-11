@@ -11,13 +11,13 @@ import { criesScore } from './cries.js';
 
 
 // Adaptive persona/identity lock: persona and lock are set by user prompt (empathy score)
-export function contextGet(input: ContextGetInput): ContextGetOutput & {
+export async function contextGet(input: ContextGetInput): Promise<ContextGetOutput & {
   criesWindow: any[],
   lastClarifier: boolean,
   governanceBoost: boolean,
   persona: Persona,
   empathy: number
-} {
+}> {
   const store = getStore();
   // Get last 5 receipts with CRIES scores if available
   const criesWindow = (store.receipts || [])
@@ -31,9 +31,9 @@ export function contextGet(input: ContextGetInput): ContextGetOutput & {
     const last = store.receipts[store.receipts.length-1];
     lastText = last.payload?.text || '';
   }
-  const cries = criesScore({ text: lastText, window: criesWindow });
-  const lastClarifier = cries.clarifierProposed;
-  const governanceBoost = cries.clarifierProposed;
+  const cries = await criesScore({ text: lastText, governanceMode: 'standard' });
+  const lastClarifier = cries.cries_score < 0.6; // Propose clarifier if score is low
+  const governanceBoost = cries.cries_score < 0.6; // Boost governance if score is low
 
   // Persona/identity lock logic: adaptive to user prompt (empathy)
   // If empathy is high, persona = 'Architect', else 'Witness' (or 'Auditor' for mid)

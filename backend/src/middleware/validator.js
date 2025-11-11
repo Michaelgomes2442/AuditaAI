@@ -44,8 +44,8 @@ export const validateBody = (schema) => {
 export const validateQuery = (schema) => {
   return (req, res, next) => {
     try {
-      const validated = schema.parse(req.query);
-      req.query = validated; // Replace with validated data
+      // Validate query parameters without mutating req.query (read-only in Express 5.x)
+      schema.parse(req.query);
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {

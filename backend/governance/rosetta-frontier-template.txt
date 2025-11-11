@@ -1,19 +1,19 @@
 # Rosetta Frontier — Parameterized Template
 
-## Depth Control 
-Provide 3–4 layers of depth with explicit causal links.
+## Depth Control  
+<DEPTH_LEVEL>
 
-## Example Requirements 
-Include 3 concrete, domain-specific examples with dates, numbers, or specific metrics.
+## Example Requirements  
+<EXAMPLE_REQUIREMENTS>
 
-## Rigor Requirements 
-Use a 2-step causal chain.
+## Rigor Requirements  
+<RIGOR_PATTERN>
 
-## Structural Coherence 
-Use structured numbered reasoning trees.
+## Structural Coherence  
+<COHERENCE_STRUCTURE>
 
-## Strictness & Safety 
-Require explicit confidence statements and evidence citations.
+## Strictness & Safety  
+<STRICTNESS_RULES>
 
 ## Core Governance Logic (unchanged)
 
