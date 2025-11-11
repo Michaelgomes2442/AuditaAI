@@ -180,6 +180,18 @@ try {
   console.warn('Optional module ./src/track-a-analyzer.js not available:', e.message);
 }
 
+// Load CRIES v4 (pure, honest scoring - no synthetic boosts)
+let computeCRIESv4 = null;
+try {
+  const criesV4Module = await import('./src/cries/v4/index.js');
+  if (criesV4Module && criesV4Module.computeCriesV4) {
+    computeCRIESv4 = criesV4Module.computeCriesV4;
+    console.log('✅ CRIES v4 loaded successfully (pure scoring, no synthetic boosts)');
+  }
+} catch (e) {
+  console.warn('CRIES v4 not available:', e.message);
+}
+
 // Load CRIES v3 (hybrid semantic + heuristic scoring)
 try {
   const criesV3Module = await import('./src/cries/compute-cries.js');
@@ -3728,7 +3740,9 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
     }
     
     // Calculate CRIES metrics based on actual response
-    const cries = await calculateResponseCRIES(prompt, response, isRosetta, llmResult?.governanceMetadata);
+    // Use v4 by default (pure, honest scoring)
+    const criesVersion = process.env.CRIES_VERSION || 'v4';
+    const cries = await calculateResponseCRIES(prompt, response, isRosetta, llmResult?.governanceMetadata, criesVersion);
     
     return { 
       content: response, 
@@ -3769,25 +3783,73 @@ function generateResponseContent(prompt, modelName, isRosetta) {
 // Helper: Calculate CRIES with Tri-Track Audit Metadata
 // CRIES = Pure semantic scoring engine (measures actual quality)
 // Tri-Track = Audit metadata only (NOT weighted, NOT boosted)
-async function calculateResponseCRIES(prompt, response, isRosetta, governanceMetadata = null) {
-  console.log(`\n🔬 CRIES Semantic Analysis`);
+// 
+// @param version - 'v3' (default) or 'v4' (pure, honest scoring)
+async function calculateResponseCRIES(prompt, response, isRosetta, governanceMetadata = null, version = 'v4') {
+  console.log(`\n🔬 CRIES ${version.toUpperCase()} Semantic Analysis`);
   console.log(`   Prompt length: ${prompt.length} chars`);
   console.log(`   Response length: ${response.length} chars`);
   console.log(`   Governance: ${isRosetta ? 'ENABLED' : 'DISABLED'}`);
   
-  // ============================================
-  // CRIES: PURE SEMANTIC SCORING
-  // Measures actual response quality - no boosting, no multipliers
-  // ============================================
+  let cries;
   
-  const cries = await computeCRIES(prompt, response, { isRosetta });
+  // ============================================
+  // CRIES v4: PURE, HONEST SCORING
+  // Domain-aware, refusal-quality rewarding, no synthetic boosts
+  // ============================================
+  if (version === 'v4' && computeCRIESv4) {
+    try {
+      const v4Result = computeCRIESv4(prompt, response, { 
+        isGovernance: isRosetta,
+        metadata: governanceMetadata 
+      });
+      
+      console.log(`   ✅ CRIES v4 Score: ${(v4Result.Omega * 100).toFixed(1)}% (Domain: ${v4Result.domain})`);
+      console.log(`      C (Coherence): ${v4Result.C.toFixed(4)}`);
+      console.log(`      R (Rigor): ${v4Result.R.toFixed(4)}`);
+      console.log(`      I (Integration): ${v4Result.I.toFixed(4)}`);
+      console.log(`      E (Empathy): ${v4Result.E.toFixed(4)}`);
+      console.log(`      S (Strictness): ${v4Result.S.toFixed(4)}`);
+      console.log(`   📊 Signals:`);
+      console.log(`      RQS (Refusal Quality): ${(v4Result.signals.rqs * 100).toFixed(1)}%`);
+      console.log(`      ALD (Actionability Leak): ${(v4Result.signals.ald * 100).toFixed(1)}%`);
+      console.log(`      LCB (Legal/Compliance): ${(v4Result.signals.lcb * 100).toFixed(1)}%`);
+      console.log(`      Over-Refusal: ${(v4Result.signals.overRefusal * 100).toFixed(1)}%`);
+      
+      // Convert v4 result to standard format
+      cries = {
+        C: v4Result.C,
+        R: v4Result.R,
+        I: v4Result.I,
+        E: v4Result.E,
+        S: v4Result.S,
+        Omega: v4Result.Omega,
+        sub_metrics: {
+          domain: v4Result.domain,
+          signals: v4Result.signals,
+          components: v4Result.components,
+          version: 'v4'
+        }
+      };
+    } catch (v4Error) {
+      console.warn('CRIES v4 failed, falling back to v3:', v4Error.message);
+      version = 'v3';  // Fallback
+    }
+  }
   
-  console.log(`   ✅ CRIES Score: ${(cries.Omega * 100).toFixed(1)}%`);
-  console.log(`      C (Coherence): ${cries.C.toFixed(4)}`);
-  console.log(`      R (Rigor): ${cries.R.toFixed(4)}`);
-  console.log(`      I (Integration): ${cries.I.toFixed(4)}`);
-  console.log(`      E (Empathy): ${cries.E.toFixed(4)}`);
-  console.log(`      S (Strictness): ${cries.S.toFixed(4)}`);
+  // ============================================
+  // CRIES v3: FALLBACK (if v4 unavailable or requested)
+  // ============================================
+  if (version === 'v3' || !cries) {
+    cries = await computeCRIES(prompt, response, { isRosetta });
+    
+    console.log(`   ✅ CRIES v3 Score: ${(cries.Omega * 100).toFixed(1)}%`);
+    console.log(`      C (Coherence): ${cries.C.toFixed(4)}`);
+    console.log(`      R (Rigor): ${cries.R.toFixed(4)}`);
+    console.log(`      I (Integration): ${cries.I.toFixed(4)}`);
+    console.log(`      E (Empathy): ${cries.E.toFixed(4)}`);
+    console.log(`      S (Strictness): ${cries.S.toFixed(4)}`);
+  }
   
   // ============================================
   // TRI-TRACK: AUDIT METADATA (NOT SCORES)
@@ -3803,8 +3865,17 @@ async function calculateResponseCRIES(prompt, response, isRosetta, governanceMet
   console.log(`   Track-B (Governor): ${triTrackAudit.track_B.violations.length} policy violations`);
   console.log(`   Track-C (Executor): Determinism=${triTrackAudit.track_C.deterministic ? 'High' : 'Low'}`);
   
+  // DIAGNOSTIC: Log CRIES object before return
+  console.log(`\n🔍 [DIAGNOSTIC] CRIES object before return:`);
+  console.log(`   cries.C: ${cries.C} (type: ${typeof cries.C}, isNaN: ${isNaN(cries.C)})`);
+  console.log(`   cries.R: ${cries.R} (type: ${typeof cries.R}, isNaN: ${isNaN(cries.R)})`);
+  console.log(`   cries.I: ${cries.I} (type: ${typeof cries.I}, isNaN: ${isNaN(cries.I)})`);
+  console.log(`   cries.E: ${cries.E} (type: ${typeof cries.E}, isNaN: ${isNaN(cries.E)})`);
+  console.log(`   cries.S: ${cries.S} (type: ${typeof cries.S}, isNaN: ${isNaN(cries.S)})`);
+  console.log(`   cries.Omega: ${cries.Omega} (type: ${typeof cries.Omega}, isNaN: ${isNaN(cries.Omega)})`);
+  
   // Return PURE CRIES + audit metadata (no weighting, no boosting)
-  return {
+  const returnObj = {
     // Pure CRIES scores (unmodified)
     C: Number(cries.C.toFixed(4)),
     R: Number(cries.R.toFixed(4)),
@@ -3814,9 +3885,21 @@ async function calculateResponseCRIES(prompt, response, isRosetta, governanceMet
     overall: Number(cries.Omega.toFixed(4)),
     Omega: Number(cries.Omega.toFixed(4)),
     
+    // Include sub-metrics for transparency
+    sub_metrics: cries.sub_metrics,
+    
     // Tri-Track audit metadata (informational only)
-    triTrackAudit
+    triTrackAudit,
+    
+    // Version info
+    version: cries.sub_metrics?.version || 'v3'
   };
+  
+  console.log(`\n🔍 [DIAGNOSTIC] Return object:`);
+  console.log(`   overall: ${returnObj.overall} (isNaN: ${isNaN(returnObj.overall)})`);
+  console.log(`   Omega: ${returnObj.Omega} (isNaN: ${isNaN(returnObj.Omega)})`);
+  
+  return returnObj;
 }
 
 // Generate Tri-Track audit metadata (NOT scores)

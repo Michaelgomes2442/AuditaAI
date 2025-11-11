@@ -79,6 +79,14 @@ export async function computeCRIESv3(args: ComputeCRIESArgs): Promise<CRIESScore
   const empathyResult = await computeEmpathyMetrics(parsed, embedding, seed);
   const strictnessResult = await computeStrictnessMetrics(parsed, context, embedding, seed);
 
+  // DIAGNOSTIC: Log raw detector outputs before extraction
+  console.log('\n🔍 [CRIES v3 DIAGNOSTIC] Raw Detector Outputs:');
+  console.log('   coherenceResult:', JSON.stringify(coherenceResult, null, 2).substring(0, 200));
+  console.log('   rigorResult:', JSON.stringify(rigorResult, null, 2).substring(0, 200));
+  console.log('   integrationResult:', JSON.stringify(integrationResult, null, 2).substring(0, 200));
+  console.log('   empathyResult:', JSON.stringify(empathyResult, null, 2).substring(0, 200));
+  console.log('   strictnessResult:', JSON.stringify(strictnessResult, null, 2).substring(0, 200));
+
   // Extract pillar scores and evidence
   const pillarScores: Record<PillarKey, number> = {
     C: coherenceResult.score,
@@ -87,6 +95,20 @@ export async function computeCRIESv3(args: ComputeCRIESArgs): Promise<CRIESScore
     E: empathyResult.score,
     S: strictnessResult.score
   };
+
+  // DIAGNOSTIC: Log extracted scores with type information
+  console.log('\n🔍 [CRIES v3 DIAGNOSTIC] Extracted Pillar Scores:');
+  Object.entries(pillarScores).forEach(([pillar, score]) => {
+    console.log(`   ${pillar}: ${score} (type: ${typeof score}, isNaN: ${isNaN(score)}, isFinite: ${isFinite(score)})`);
+  });
+
+  // DIAGNOSTIC: Check sub-metrics
+  console.log('\n🔍 [CRIES v3 DIAGNOSTIC] Sub-Metrics Counts:');
+  console.log(`   coherence subMetrics keys: ${Object.keys(coherenceResult.subMetrics).length}`, Object.keys(coherenceResult.subMetrics));
+  console.log(`   rigor subMetrics keys: ${Object.keys(rigorResult.subMetrics).length}`, Object.keys(rigorResult.subMetrics));
+  console.log(`   integration subMetrics keys: ${Object.keys(integrationResult.subMetrics).length}`, Object.keys(integrationResult.subMetrics));
+  console.log(`   empathy subMetrics keys: ${Object.keys(empathyResult.subMetrics).length}`, Object.keys(empathyResult.subMetrics));
+  console.log(`   strictness subMetrics keys: ${Object.keys(strictnessResult.subMetrics).length}`, Object.keys(strictnessResult.subMetrics));
 
   const allEvidence: Record<string, SubMetricEvidence> = {
     ...coherenceResult.evidence,
@@ -104,6 +126,28 @@ export async function computeCRIESv3(args: ComputeCRIESArgs): Promise<CRIESScore
     ...strictnessResult.subMetrics
   };
 
+  // DIAGNOSTIC: Log weights
+  console.log('\n🔍 [CRIES v3 DIAGNOSTIC] Weights:');
+  console.log(`   C: ${weights.C}, R: ${weights.R}, I: ${weights.I}, E: ${weights.E}, S: ${weights.S}`);
+  console.log(`   Sum of weights: ${weights.C + weights.R + weights.I + weights.E + weights.S}`);
+
+  // DIAGNOSTIC: Log weighted contributions
+  console.log('\n🔍 [CRIES v3 DIAGNOSTIC] Weighted Contributions:');
+  const contributionC = pillarScores.C * weights.C;
+  const contributionR = pillarScores.R * weights.R;
+  const contributionI = pillarScores.I * weights.I;
+  const contributionE = pillarScores.E * weights.E;
+  const contributionS = pillarScores.S * weights.S;
+  
+  console.log(`   C: ${pillarScores.C} * ${weights.C} = ${contributionC} (isNaN: ${isNaN(contributionC)})`);
+  console.log(`   R: ${pillarScores.R} * ${weights.R} = ${contributionR} (isNaN: ${isNaN(contributionR)})`);
+  console.log(`   I: ${pillarScores.I} * ${weights.I} = ${contributionI} (isNaN: ${isNaN(contributionI)})`);
+  console.log(`   E: ${pillarScores.E} * ${weights.E} = ${contributionE} (isNaN: ${isNaN(contributionE)})`);
+  console.log(`   S: ${pillarScores.S} * ${weights.S} = ${contributionS} (isNaN: ${isNaN(contributionS)})`);
+
+  const sumBeforeClamp = contributionC + contributionR + contributionI + contributionE + contributionS;
+  console.log(`   Sum before clamp: ${sumBeforeClamp} (isNaN: ${isNaN(sumBeforeClamp)}, isFinite: ${isFinite(sumBeforeClamp)})`);
+
   // Compute weighted CRIES score
   const criesScore = clamp01(
     pillarScores.C * weights.C +
@@ -112,6 +156,8 @@ export async function computeCRIESv3(args: ComputeCRIESArgs): Promise<CRIESScore
     pillarScores.E * weights.E +
     pillarScores.S * weights.S
   );
+
+  console.log(`\n✅ [CRIES v3 DIAGNOSTIC] Final CRIES Score: ${criesScore} (isNaN: ${isNaN(criesScore)}, isFinite: ${isFinite(criesScore)})`);
 
   // Build calculation details
   const calculationDetails = {
