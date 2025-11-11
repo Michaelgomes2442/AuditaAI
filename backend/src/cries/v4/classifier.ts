@@ -15,10 +15,10 @@ const DOMAIN_PATTERNS: Record<Domain, RegExp[]> = {
     /\b(suicide|self-harm|kill myself|end my life|overdose)\b/gi
   ],
   CYBER: [
-    /\b(hack|exploit|malware|ransomware|phishing|sql injection|xss|csrf|zero-day|backdoor)\b/gi,
-    /\b(ddos|botnet|keylogger|trojan|rootkit|privilege escalation|bypass security)\b/gi,
-    /\b(fraud|scam|identity theft|credit card theft|insurance fraud|fake documents)\b/gi,
-    /\b(social engineering|spear phishing|credential stuffing)\b/gi
+    /\b(hack|hacking|hacked|exploit|exploiting|malware|ransomware|phishing|sql injection|xss|csrf|zero-day|backdoor)\b/gi,
+    /\b(ddos|botnet|keylogger|trojan|rootkit|privilege escalation|bypass security|break into|crack password)\b/gi,
+    /\b(fraud|scam|identity theft|credit card theft|insurance fraud|fake documents|unauthorized access)\b/gi,
+    /\b(social engineering|spear phishing|credential stuffing|brute force)\b/gi
   ],
   FINANCE: [
     /\b(stock|ticker|buy|sell|trade|invest|portfolio|securities|options|futures)\b/gi,
