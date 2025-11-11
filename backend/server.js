@@ -3575,7 +3575,7 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
           overall: rosettaResponse.cries.overall,
           triTrackAudit: rosettaResponse.cries.triTrackAudit
         },
-        improvement: improvement / standardResponse.cries.overall,
+        improvement: isFinite(improvementPercent) ? improvementPercent / 100 : 0,  // Convert % back to decimal, guard against NaN
         improvementType: improvement > 0 ? 'real' : 'none',
         timestamp: new Date().toISOString(),
         model: standardModel.name
