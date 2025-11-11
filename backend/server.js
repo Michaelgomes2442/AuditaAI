@@ -3450,6 +3450,46 @@ app.delete('/api/live-demo/models/:id', (req, res) => {
   });
 });
 
+/**
+ * Calculate safe percentage change that never returns Infinity or NaN
+ * Handles edge cases: zero baseline, very small numbers, etc.
+ * 
+ * @param current - New/current value (0-1)
+ * @param baseline - Previous/baseline value (0-1)
+ * @returns Percentage change (-100 to +100), safe number
+ */
+function calculateSafePercentage(current, baseline) {
+  // Guard against invalid inputs
+  if (!isFinite(current) || !isFinite(baseline)) {
+    return 0;
+  }
+  
+  // If baseline is zero or very close to zero
+  if (Math.abs(baseline) < 0.001) {
+    // If current is also near zero, change is 0%
+    if (Math.abs(current) < 0.001) {
+      return 0;
+    }
+    // If current improved from near-zero to something, cap at +100%
+    if (current > baseline) {
+      return 100;
+    }
+    // If current dropped from near-zero to something lower, cap at -100%
+    if (current < baseline) {
+      return -100;
+    }
+  }
+  
+  // Normal percentage calculation
+  const percentChange = ((current - baseline) / baseline) * 100;
+  
+  // Cap at ±100% to prevent extreme values
+  const capped = Math.max(-100, Math.min(100, percentChange));
+  
+  // Ensure result is finite
+  return isFinite(capped) ? capped : 0;
+}
+
 // Parallel prompt - Send prompt to both standard and Rosetta-booted models
 // Supports real LLM API calls with optional API keys
 // Each real prompt generates a Δ-ANALYSIS receipt with Lamport increment
@@ -3676,9 +3716,18 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       rosettaReceipt: rosettaReceiptData,
       standardMetrics: standardModel.conversationMetrics,
       rosettaMetrics: rosettaModel.conversationMetrics,
-      // Comparison metadata
+      // Comparison metadata with safe percentage calculations
       comparison: {
         criesDifference: rosettaResponse.cries.overall - standardResponse.cries.overall,
+        // Safe percentage calculation for each pillar - prevents Infinity/NaN
+        pillarDeltas: {
+          C: calculateSafePercentage(rosettaResponse.cries.C, standardResponse.cries.C),
+          R: calculateSafePercentage(rosettaResponse.cries.R, standardResponse.cries.R),
+          I: calculateSafePercentage(rosettaResponse.cries.I, standardResponse.cries.I),
+          E: calculateSafePercentage(rosettaResponse.cries.E, standardResponse.cries.E),
+          S: calculateSafePercentage(rosettaResponse.cries.S, standardResponse.cries.S)
+        },
+        overallDeltaPercent: calculateSafePercentage(rosettaResponse.cries.overall, standardResponse.cries.overall),
         violationReduction: (standardResponse.cries.triTrackAudit?.track_B.violations.length || 0) - 
                            (rosettaResponse.cries.triTrackAudit?.track_B.violations.length || 0),
         determinismImproved: !standardResponse.cries.triTrackAudit?.track_C.deterministic && 
