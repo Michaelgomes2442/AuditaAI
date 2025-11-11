@@ -3533,12 +3533,20 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
     
     // Calculate improvement (if any - based on pure CRIES, not fake boosting)
     const improvement = rosettaResponse.cries.overall - standardResponse.cries.overall;
-    const improvementPercent = (improvement / standardResponse.cries.overall) * 100;
+    
+    // Guard against division by zero or NaN
+    let improvementPercent;
+    if (standardResponse.cries.overall === 0 || !isFinite(standardResponse.cries.overall)) {
+      improvementPercent = 0;
+      console.warn(`⚠️  Standard CRIES score invalid (${standardResponse.cries.overall}), cannot calculate percentage`);
+    } else {
+      improvementPercent = (improvement / standardResponse.cries.overall) * 100;
+    }
     
     console.log(`\n📊 CRIES Comparison:`);
     console.log(`   Standard CRIES: ${(standardResponse.cries.overall * 100).toFixed(1)}%`);
     console.log(`   Rosetta CRIES:  ${(rosettaResponse.cries.overall * 100).toFixed(1)}%`);
-    console.log(`   Δ Difference: ${improvement >= 0 ? '+' : ''}${(improvementPercent).toFixed(1)}% (${improvement >= 0 ? 'governance improved quality' : 'no improvement'})`);
+    console.log(`   Δ Difference: ${isFinite(improvementPercent) ? (improvement >= 0 ? '+' : '') + improvementPercent.toFixed(1) + '%' : 'NaN (invalid score)'} (${improvement >= 0 ? 'governance improved quality' : 'no improvement'})`);
     
     console.log(`\n📋 Governance Audit:`);
     console.log(`   Standard Violations: ${standardResponse.cries.triTrackAudit?.track_B.violations.length || 0}`);
