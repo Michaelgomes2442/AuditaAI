@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { createRequire } from 'module';
 import path from "path";
 import fs from "fs/promises";
+import fsSync from "fs";
 import { fileURLToPath } from "url";
 
 // Load environment variables from .env file
@@ -3042,8 +3043,8 @@ let liveDemoState = {
 function loadGovernanceState() {
   try {
     const statePath = path.join(__dirname, '../receipts/state.json');
-    if (fs.existsSync(statePath)) {
-      const rawState = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    if (fsSync.existsSync(statePath)) {
+      const rawState = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
       // Return governance state with defaults for missing fields
       return {
         lamport: rawState.lamport || 0,
@@ -4031,8 +4032,8 @@ const REGISTRY_PATH = path.join(RECEIPTS_DIR, 'registry.json');
 // Get receipts registry
 app.get('/api/receipts/registry', (req, res) => {
   try {
-    if (fs.existsSync(REGISTRY_PATH)) {
-      const registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
+    if (fsSync.existsSync(REGISTRY_PATH)) {
+      const registry = JSON.parse(fsSync.readFileSync(REGISTRY_PATH, 'utf-8'));
       res.json(registry);
     } else {
       res.json([]);
@@ -4099,8 +4100,8 @@ app.post('/api/receipts/verify', async (req, res) => {
 // Get Lamport chain state
 app.get('/api/receipts/lamport-chain', (req, res) => {
   try {
-    if (fs.existsSync(REGISTRY_PATH)) {
-      const registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
+    if (fsSync.existsSync(REGISTRY_PATH)) {
+      const registry = JSON.parse(fsSync.readFileSync(REGISTRY_PATH, 'utf-8'));
       
       // Sort by Lamport counter
       const chain = registry
@@ -4155,11 +4156,11 @@ app.post('/api/receipts/verify-key', async (req, res) => {
     console.log(`   Receipt hash: ${receiptHash || 'all receipts'}`);
     
     // Load registry
-    if (!fs.existsSync(REGISTRY_PATH)) {
+    if (!fsSync.existsSync(REGISTRY_PATH)) {
       return res.status(404).json({ error: 'No receipts found' });
     }
     
-    const registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
+    const registry = JSON.parse(fsSync.readFileSync(REGISTRY_PATH, 'utf-8'));
     
     // If specific receipt hash provided, verify that one
     if (receiptHash) {
@@ -4227,8 +4228,8 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
     const conversationStatePath = path.join(RECEIPTS_DIR, `state_${conversationId}.json`);
     let conversationState = { lamport: 0, prev_hash: null, boot_time: null, model_id: modelId };
     
-    if (fs.existsSync(conversationStatePath)) {
-      conversationState = JSON.parse(fs.readFileSync(conversationStatePath, 'utf-8'));
+    if (fsSync.existsSync(conversationStatePath)) {
+      conversationState = JSON.parse(fsSync.readFileSync(conversationStatePath, 'utf-8'));
     } else {
       // First boot for this conversation instance
       conversationState.boot_time = new Date().toISOString();
@@ -4318,13 +4319,13 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
     
     // Write receipt to conversation-specific file (filesystem backup)
     const receiptPath = path.join(RECEIPTS_DIR, `receipt_${conversationId}_L${newLamport}_${Date.now()}.ben`);
-    fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf-8');
+    fsSync.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf-8');
     
     // Update conversation-specific registry
     const conversationRegistryPath = path.join(RECEIPTS_DIR, `registry_${conversationId}.json`);
     let conversationRegistry = [];
-    if (fs.existsSync(conversationRegistryPath)) {
-      conversationRegistry = JSON.parse(fs.readFileSync(conversationRegistryPath, 'utf-8'));
+    if (fsSync.existsSync(conversationRegistryPath)) {
+      conversationRegistry = JSON.parse(fsSync.readFileSync(conversationRegistryPath, 'utf-8'));
     }
     
     conversationRegistry.push({
@@ -4337,10 +4338,10 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
       ts: receipt.ts
     });
     
-    fs.writeFileSync(conversationRegistryPath, JSON.stringify(conversationRegistry, null, 2), 'utf-8');
+    fsSync.writeFileSync(conversationRegistryPath, JSON.stringify(conversationRegistry, null, 2), 'utf-8');
     
     // Update conversation-specific state.json with new Lamport and prev_hash
-    fs.writeFileSync(conversationStatePath, JSON.stringify({
+    fsSync.writeFileSync(conversationStatePath, JSON.stringify({
       conversation_id: conversationId,
       model_id: modelId,
       lamport: newLamport,
@@ -4380,7 +4381,7 @@ app.get('/api/receipts/conversation/:conversationId', async (req, res) => {
     
     // Load conversation-specific registry
     const conversationRegistryPath = path.join(RECEIPTS_DIR, `registry_${conversationId}.json`);
-    if (!fs.existsSync(conversationRegistryPath)) {
+    if (!fsSync.existsSync(conversationRegistryPath)) {
       return res.json({
         conversationId,
         receipts: [],
@@ -4389,12 +4390,12 @@ app.get('/api/receipts/conversation/:conversationId', async (req, res) => {
       });
     }
     
-    const registry = JSON.parse(fs.readFileSync(conversationRegistryPath, 'utf-8'));
+    const registry = JSON.parse(fsSync.readFileSync(conversationRegistryPath, 'utf-8'));
     
     // Load conversation state
     const conversationStatePath = path.join(RECEIPTS_DIR, `state_${conversationId}.json`);
-    const conversationState = fs.existsSync(conversationStatePath) 
-      ? JSON.parse(fs.readFileSync(conversationStatePath, 'utf-8'))
+    const conversationState = fsSync.existsSync(conversationStatePath) 
+      ? JSON.parse(fsSync.readFileSync(conversationStatePath, 'utf-8'))
       : null;
     
     console.log(`   Found ${registry.length} receipts for ${conversationId}`);
@@ -4434,23 +4435,23 @@ app.get('/api/receipts/export/:conversationId', async (req, res) => {
     
     // Load conversation-specific registry
     const conversationRegistryPath = path.join(RECEIPTS_DIR, `registry_${conversationId}.json`);
-    if (!fs.existsSync(conversationRegistryPath)) {
+    if (!fsSync.existsSync(conversationRegistryPath)) {
       return res.status(404).json({ error: 'No receipts found for this conversation' });
     }
     
-    const registry = JSON.parse(fs.readFileSync(conversationRegistryPath, 'utf-8'));
+    const registry = JSON.parse(fsSync.readFileSync(conversationRegistryPath, 'utf-8'));
     
     // Load conversation state
     const conversationStatePath = path.join(RECEIPTS_DIR, `state_${conversationId}.json`);
-    const conversationState = fs.existsSync(conversationStatePath)
-      ? JSON.parse(fs.readFileSync(conversationStatePath, 'utf-8'))
+    const conversationState = fsSync.existsSync(conversationStatePath)
+      ? JSON.parse(fsSync.readFileSync(conversationStatePath, 'utf-8'))
       : null;
     
     // Load all receipt files
     const receipts = [];
     for (const entry of registry) {
-      if (fs.existsSync(entry.path)) {
-        const receiptData = JSON.parse(fs.readFileSync(entry.path, 'utf-8'));
+      if (fsSync.existsSync(entry.path)) {
+        const receiptData = JSON.parse(fsSync.readFileSync(entry.path, 'utf-8'));
         receipts.push(receiptData);
       }
     }
@@ -4501,11 +4502,11 @@ app.get('/api/receipts/export-ndjson/:conversationId', async (req, res) => {
 
     // Load conversation-specific registry
     const conversationRegistryPath = path.join(RECEIPTS_DIR, `registry_${conversationId}.json`);
-    if (!fs.existsSync(conversationRegistryPath)) {
+    if (!fsSync.existsSync(conversationRegistryPath)) {
       return res.status(404).json({ error: 'No receipts found for this conversation' });
     }
 
-    const registry = JSON.parse(fs.readFileSync(conversationRegistryPath, 'utf-8'));
+    const registry = JSON.parse(fsSync.readFileSync(conversationRegistryPath, 'utf-8'));
 
     // Set headers for NDJSON download
     res.setHeader('Content-Type', 'application/x-ndjson');
@@ -4513,8 +4514,8 @@ app.get('/api/receipts/export-ndjson/:conversationId', async (req, res) => {
 
     // Stream receipts as NDJSON
     for (const entry of registry) {
-      if (fs.existsSync(entry.path)) {
-        const receiptData = JSON.parse(fs.readFileSync(entry.path, 'utf-8'));
+      if (fsSync.existsSync(entry.path)) {
+        const receiptData = JSON.parse(fsSync.readFileSync(entry.path, 'utf-8'));
 
         // Add export metadata
         const signedReceipt = {
@@ -4623,7 +4624,7 @@ app.post('/api/receipts/import', async (req, res) => {
         RECEIPTS_DIR, 
         `receipt_${conversationId}_L${receipt.lamport}_imported_${Date.now()}.ben`
       );
-      fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf-8');
+      fsSync.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf-8');
       
       importedReceipts.push({
         lamport: receipt.lamport,
@@ -4634,12 +4635,12 @@ app.post('/api/receipts/import', async (req, res) => {
     
     // Write conversation registry
     const conversationRegistryPath = path.join(RECEIPTS_DIR, `registry_${conversationId}.json`);
-    fs.writeFileSync(conversationRegistryPath, JSON.stringify(container.registry, null, 2), 'utf-8');
+    fsSync.writeFileSync(conversationRegistryPath, JSON.stringify(container.registry, null, 2), 'utf-8');
     
     // Write conversation state
     if (container.state) {
       const conversationStatePath = path.join(RECEIPTS_DIR, `state_${conversationId}.json`);
-      fs.writeFileSync(conversationStatePath, JSON.stringify(container.state, null, 2), 'utf-8');
+      fsSync.writeFileSync(conversationStatePath, JSON.stringify(container.state, null, 2), 'utf-8');
     }
     
     console.log(`   ✓ Imported ${importedReceipts.length} receipts successfully`);
@@ -4665,7 +4666,7 @@ app.get('/api/receipts/conversations', async (req, res) => {
   try {
     console.log(`📋 Listing all conversations with receipts`);
     
-    if (!fs.existsSync(RECEIPTS_DIR)) {
+    if (!fsSync.existsSync(RECEIPTS_DIR)) {
       return res.json({ conversations: [] });
     }
     
@@ -4677,7 +4678,7 @@ app.get('/api/receipts/conversations', async (req, res) => {
       if (file.startsWith('state_') && file.endsWith('.json') && file !== 'state.json') {
         const conversationId = file.replace('state_', '').replace('.json', '');
         const statePath = path.join(RECEIPTS_DIR, file);
-        const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+        const state = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
         
         conversationStates.set(conversationId, state);
       }
@@ -4800,12 +4801,12 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
     if (conversationId && conversationId !== 'aggregate') {
       // Query specific conversation
       const specificFile = `state_${conversationId}.json`;
-      if (fs.existsSync(path.join(receiptsDir, specificFile))) {
+      if (fsSync.existsSync(path.join(receiptsDir, specificFile))) {
         stateFiles = [specificFile];
       }
     } else {
       // Query all conversations (aggregate)
-      stateFiles = fs.existsSync(receiptsDir) 
+      stateFiles = fsSync.existsSync(receiptsDir) 
         ? fs.readdirSync(receiptsDir).filter(f => f.startsWith('state_') && f.endsWith('.json') && f !== 'state.json')
         : [];
     }
@@ -4820,19 +4821,19 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
       for (const file of stateFiles.slice(-10)) { // Last 10 conversations
         try {
           const statePath = path.join(receiptsDir, file);
-          const conversationState = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+          const conversationState = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
           
           // Get conversation registry to extract CRIES from receipts
           const conversationId = file.replace('state_', '').replace('.json', '');
           const registryPath = path.join(receiptsDir, `registry_${conversationId}.json`);
           
-          if (fs.existsSync(registryPath)) {
-            const registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
+          if (fsSync.existsSync(registryPath)) {
+            const registry = JSON.parse(fsSync.readFileSync(registryPath, 'utf-8'));
             
             // Read actual receipts to get CRIES scores
             for (const entry of registry.slice(-3)) { // Last 3 receipts per conversation
-              if (fs.existsSync(entry.path)) {
-                const receipt = JSON.parse(fs.readFileSync(entry.path, 'utf-8'));
+              if (fsSync.existsSync(entry.path)) {
+                const receipt = JSON.parse(fsSync.readFileSync(entry.path, 'utf-8'));
                 if (receipt.cries) {
                   allScores.push(receipt.cries);
                 }
@@ -4895,8 +4896,8 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
     let omega = 0.88; // Default
     let deltaClarity = 0;
     
-    if (fs.existsSync(statePath)) {
-      const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    if (fsSync.existsSync(statePath)) {
+      const state = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
       omega = state.omega || 0.88;
       // Calculate real delta from previous omega
       const prevOmega = state.prev_omega || omega;
@@ -4942,7 +4943,7 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
 app.get('/api/governance/bands', (req, res) => {
   try {
     const canonicalPath = path.join(__dirname, '../config/rosetta-canonical.json');
-    const canonical = JSON.parse(fs.readFileSync(canonicalPath, 'utf-8'));
+    const canonical = JSON.parse(fsSync.readFileSync(canonicalPath, 'utf-8'));
     
     const bandSystem = canonical.band_system || {};
     
@@ -5038,7 +5039,7 @@ app.get('/api/mesh/peers', (req, res) => {
     let receiptCount = 0;
     let chainTip = '0x000';
     
-    if (fs.existsSync(receiptsPath)) {
+    if (fsSync.existsSync(receiptsPath)) {
       const files = fs.readdirSync(receiptsPath).filter(f => f.endsWith('.ben'));
       receiptCount = files.length;
       
@@ -5047,7 +5048,7 @@ app.get('/api/mesh/peers', (req, res) => {
         try {
           const latestFile = files.sort().reverse()[0];
           const latestPath = path.join(receiptsPath, latestFile);
-          const latestReceipt = JSON.parse(fs.readFileSync(latestPath, 'utf-8'));
+          const latestReceipt = JSON.parse(fsSync.readFileSync(latestPath, 'utf-8'));
           chainTip = latestReceipt.self_hash || latestReceipt.calc_hash || '0x' + Math.random().toString(16).slice(2, 18);
         } catch (err) {
           console.error('Failed to read chain tip:', err);
@@ -5072,7 +5073,7 @@ app.get('/api/mesh/peers', (req, res) => {
     const replicaPaths = ['../replica_1', '../replica_2', '../replica_3'];
     replicaPaths.forEach((replicaPath, index) => {
       const fullPath = path.join(__dirname, replicaPath, 'receipts');
-      if (fs.existsSync(fullPath)) {
+      if (fsSync.existsSync(fullPath)) {
         const replicaFiles = fs.readdirSync(fullPath).filter(f => f.endsWith('.ben'));
         peers.push({
           id: `peer_replica_${index + 1}`,
@@ -5210,7 +5211,7 @@ app.get('/api/rosetta/boot', async (req, res) => {
 
     // Fallback to receipts directory
     const receiptsDir = path.join(__dirname, '../receipts');
-    if (!fs.existsSync(receiptsDir)) {
+    if (!fsSync.existsSync(receiptsDir)) {
       return res.status(404).json({ error: 'No receipts found - system not booted' });
     }
 
@@ -5225,7 +5226,7 @@ app.get('/api/rosetta/boot', async (req, res) => {
 
     const latestBootFile = files[0];
     const bootReceiptPath = path.join(receiptsDir, latestBootFile);
-    const fileContent = fs.readFileSync(bootReceiptPath, 'utf-8');
+    const fileContent = fsSync.readFileSync(bootReceiptPath, 'utf-8');
     
     let bootReceipt;
     if (fileContent.startsWith('gAAAAA')) {
@@ -5287,8 +5288,8 @@ app.get('/api/rosetta/registry', async (req, res) => {
     } catch (benError) {
       // Fallback to local registry if BEN service unavailable
       const registryPath = path.join(__dirname, '../receipts/registry.json');
-      if (fs.existsSync(registryPath)) {
-        const registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
+      if (fsSync.existsSync(registryPath)) {
+        const registry = JSON.parse(fsSync.readFileSync(registryPath, 'utf-8'));
         return res.json({
           receipts: registry.map(entry => ({
             type: entry.event,
@@ -5315,8 +5316,8 @@ app.get('/api/rosetta/registry', async (req, res) => {
 app.get('/api/rosetta/state', (req, res) => {
   try {
     const statePath = path.join(__dirname, '../receipts/state.json');
-    if (fs.existsSync(statePath)) {
-      const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    if (fsSync.existsSync(statePath)) {
+      const state = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
       return res.json({
         sigma: state.sigma || 0.85,
         omega: state.omega || 0.88,
@@ -5695,12 +5696,12 @@ app.get('/api/conversations/aggregate', async (req, res) => {
     if (conversationId && conversationId !== 'aggregate') {
       // Single conversation
       const specificFile = `state_${conversationId}.json`;
-      if (fs.existsSync(path.join(receiptsDir, specificFile))) {
+      if (fsSync.existsSync(path.join(receiptsDir, specificFile))) {
         stateFiles = [specificFile];
       }
     } else {
       // All conversations
-      stateFiles = fs.existsSync(receiptsDir)
+      stateFiles = fsSync.existsSync(receiptsDir)
         ? fs.readdirSync(receiptsDir).filter(f => f.startsWith('state_') && f.endsWith('.json') && f !== 'state.json')
         : [];
     }
@@ -5713,19 +5714,19 @@ app.get('/api/conversations/aggregate', async (req, res) => {
       try {
         const conversationId = file.replace('state_', '').replace('.json', '');
         const statePath = path.join(receiptsDir, file);
-        const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+        const state = JSON.parse(fsSync.readFileSync(statePath, 'utf-8'));
         
         // Get conversation registry
         const registryPath = path.join(receiptsDir, `registry_${conversationId}.json`);
-        const registry = fs.existsSync(registryPath) 
-          ? JSON.parse(fs.readFileSync(registryPath, 'utf-8'))
+        const registry = fsSync.existsSync(registryPath) 
+          ? JSON.parse(fsSync.readFileSync(registryPath, 'utf-8'))
           : [];
         
         // Read actual receipts for this conversation
         const conversationReceipts = [];
         for (const entry of registry) {
-          if (fs.existsSync(entry.path)) {
-            const receipt = JSON.parse(fs.readFileSync(entry.path, 'utf-8'));
+          if (fsSync.existsSync(entry.path)) {
+            const receipt = JSON.parse(fsSync.readFileSync(entry.path, 'utf-8'));
             conversationReceipts.push({
               ...receipt,
               conversationId,

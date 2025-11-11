@@ -23,11 +23,11 @@ export const validateBody = (schema) => {
         return res.status(400).json({
           error: 'validation_error',
           message: 'Invalid request body',
-          details: error.errors.map(err => ({
+          details: error.errors?.map(err => ({
             field: err.path.join('.'),
             message: err.message,
             code: err.code
-          }))
+          })) || []
         });
       }
       next(error);
@@ -52,11 +52,11 @@ export const validateQuery = (schema) => {
         return res.status(400).json({
           error: 'validation_error',
           message: 'Invalid query parameters',
-          details: error.errors.map(err => ({
+          details: error.errors?.map(err => ({
             field: err.path.join('.'),
             message: err.message,
             code: err.code
-          }))
+          })) || []
         });
       }
       next(error);
@@ -81,11 +81,11 @@ export const validateParams = (schema) => {
         return res.status(400).json({
           error: 'validation_error',
           message: 'Invalid URL parameters',
-          details: error.errors.map(err => ({
+          details: error.errors?.map(err => ({
             field: err.path.join('.'),
             message: err.message,
             code: err.code
-          }))
+          })) || []
         });
       }
       next(error);
