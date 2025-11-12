@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
 import { io, Socket } from 'socket.io-client';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 // ============ TYPES ============
 
@@ -618,9 +619,10 @@ export default function PilotPageNew() {
         </div>
         
         <div className="bg-slate-950 border border-white/10 rounded-lg p-4 mb-4">
-          <p className="text-slate-300 font-mono text-sm whitespace-pre-wrap">
-            {currentResult.response}
-          </p>
+          <MarkdownRenderer 
+            content={currentResult.response}
+            className="text-slate-300"
+          />
         </div>
         
         {currentResult.cries && (
@@ -966,14 +968,21 @@ export default function PilotPageNew() {
                   </div>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{comparisonResult.baseLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={comparisonResult.baseLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     {comparisonResult.baseLLM.cries && (
                       <div className="space-y-2">
-                        <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
+                        <p className="text-xs font-mono text-slate-500 mb-2">FORGE ANALYSIS</p>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">C</p>
+                            <p className="text-xs text-slate-500">F</p>
+                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                          </div>
+                          <div className="bg-slate-900/50 p-2 rounded">
+                            <p className="text-xs text-slate-500">O</p>
                             <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.C?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
@@ -981,19 +990,15 @@ export default function PilotPageNew() {
                             <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.R?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">I</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.I?.toFixed(2) || 'N/A'}</p>
-                          </div>
-                          <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">E</p>
+                            <p className="text-xs text-slate-500">G</p>
                             <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.E?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">S</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-xs text-slate-500">E</p>
+                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.R?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-orange-500/20 p-2 rounded border border-orange-500/30">
-                            <p className="text-xs text-orange-300 font-bold">Ω</p>
+                            <p className="text-xs text-orange-300 font-bold">Φ</p>
                             <p className="text-xl font-mono text-orange-300 font-bold">
                               {comparisonResult.baseLLM.cries.Omega?.toFixed(2) || 'N/A'}
                             </p>
@@ -1012,14 +1017,21 @@ export default function PilotPageNew() {
                   </div>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{comparisonResult.governedLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={comparisonResult.governedLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     {comparisonResult.governedLLM.cries && (
                       <div className="space-y-2">
-                        <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
+                        <p className="text-xs font-mono text-slate-500 mb-2">FORGE ANALYSIS</p>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">C</p>
+                            <p className="text-xs text-slate-500">F</p>
+                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                          </div>
+                          <div className="bg-slate-900/50 p-2 rounded">
+                            <p className="text-xs text-slate-500">O</p>
                             <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.C?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
@@ -1027,19 +1039,15 @@ export default function PilotPageNew() {
                             <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.R?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">I</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.I?.toFixed(2) || 'N/A'}</p>
-                          </div>
-                          <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">E</p>
+                            <p className="text-xs text-slate-500">G</p>
                             <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.E?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
-                            <p className="text-xs text-slate-500">S</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-xs text-slate-500">E</p>
+                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.R?.toFixed(2) || 'N/A'}</p>
                           </div>
                           <div className="bg-green-500/20 p-2 rounded border border-green-500/30">
-                            <p className="text-xs text-green-300 font-bold">Ω</p>
+                            <p className="text-xs text-green-300 font-bold">Φ</p>
                             <p className="text-xl font-mono text-green-300 font-bold">
                               {comparisonResult.governedLLM.cries.Omega?.toFixed(2) || 'N/A'}
                             </p>
@@ -1056,14 +1064,20 @@ export default function PilotPageNew() {
                 <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-lg p-4">
                   <h3 className="text-sm font-bold font-mono text-emerald-400 mb-3">GOVERNANCE IMPACT</h3>
                   <div className="grid grid-cols-6 gap-3">
-                    {['C', 'R', 'I', 'E', 'S'].map(metric => {
-                      const base = comparisonResult.baseLLM.cries[metric] || 0;
-                      const governed = comparisonResult.governedLLM.cries[metric] || 0;
+                    {[
+                      { key: 'S', label: 'F' },  // Fabrication (from S)
+                      { key: 'C', label: 'O' },  // Oversight (from C)
+                      { key: 'R', label: 'R' },  // Refusal (from R)
+                      { key: 'E', label: 'G' },  // Guidance (from E)
+                      { key: 'R', label: 'E' }   // Evidence (from R)
+                    ].map(({ key, label }) => {
+                      const base = comparisonResult.baseLLM.cries[key] || 0;
+                      const governed = comparisonResult.governedLLM.cries[key] || 0;
                       const improvement = ((governed - base) / base * 100).toFixed(1);
                       const isPositive = parseFloat(improvement) > 0;
                       return (
-                        <div key={metric} className="text-center">
-                          <p className="text-xs text-slate-500 mb-1">{metric}</p>
+                        <div key={label} className="text-center">
+                          <p className="text-xs text-slate-500 mb-1">{label}</p>
                           <p className={`text-lg font-mono font-bold ${isPositive ? 'text-green-400' : 'text-orange-400'}`}>
                             {isPositive ? '+' : ''}{improvement}%
                           </p>
@@ -1073,7 +1087,19 @@ export default function PilotPageNew() {
                     <div className="text-center">
                       <p className="text-xs text-emerald-300 font-bold mb-1">Overall</p>
                       <p className="text-lg font-mono font-bold text-emerald-300">
-                        +{(((comparisonResult.governedLLM.cries.Omega - comparisonResult.baseLLM.cries.Omega) / comparisonResult.baseLLM.cries.Omega * 100).toFixed(1))}%
+                        {(() => {
+                          const baseOmega = comparisonResult.baseLLM.cries.Omega;
+                          const governedOmega = comparisonResult.governedLLM.cries.Omega;
+                          
+                          // Check for undefined, null, or NaN values
+                          if (baseOmega == null || governedOmega == null || 
+                              isNaN(baseOmega) || isNaN(governedOmega) || baseOmega === 0) {
+                            return 'N/A';
+                          }
+                          
+                          const improvement = ((governedOmega - baseOmega) / baseOmega * 100).toFixed(1);
+                          return `+${improvement}%`;
+                        })()}
                       </p>
                     </div>
                   </div>

@@ -1,0 +1,27 @@
+━━━ RISK ANALYSIS GUIDANCE ━━━
+
+CONTEXT IS EVERYTHING IN RISK ASSESSMENT:
+The same risk has wildly different severity depending on:
+• Organization size & resources (5-person startup vs 500-person enterprise)
+• Current maturity (no security program vs SOC2 certified)
+• Industry & regulations (healthcare vs e-commerce)
+• Threat model (public website vs defense contractor)
+
+If the prompt is generic, explicitly state: "These risks assume [baseline context]. Your actual priorities depend on..."
+
+QUANTIFY WITH HONEST UNCERTAINTY:
+❌ "Data breaches cost $4.24M on average" (misleading precision for generic advice)
+✅ "IBM's 2021 study found breach costs averaged $4.24M, but this varies dramatically: small companies often face $100K-$500K, while large enterprises may exceed $10M. Your exposure depends on data volume, compliance requirements, and cyber insurance coverage."
+
+❌ "This occurs in 25% of cases" (where did this number come from?)
+✅ "Verizon's 2021 DBIR found 25% of companies experienced breaches, though this varies by industry: finance 40%, retail 35%, manufacturing 15%."
+
+FAILURE MODE SPECIFICITY:
+Don't just list risks - explain the exact mechanism and trigger conditions:
+❌ "The system might fail under load"
+✅ "If concurrent users exceed connection pool size (default 100), new requests queue. If queue fills (default 1000), requests fail with HTTP 503. This typically happens at 800-1200 users depending on query complexity."
+
+MITIGATION HONESTY:
+Acknowledge when mitigations are partial, expensive, or complex:
+❌ "Implement encryption to solve this"
+✅ "Encryption protects data at rest, but requires key management infrastructure ($50K-$200K annually for enterprise HSM solutions). It doesn't prevent insider threats or application-layer attacks. You'd still need access controls, audit logging, and monitoring."

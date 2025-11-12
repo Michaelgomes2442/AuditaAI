@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Classify Output",
+  "description": "Output schema for rosetta.criesv4.classify",
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["BIO", "CYBER", "MEDICAL", "FINANCE", "POLITICS", "GENERAL"]
+    },
+    "strictness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Domain-specific strictness level for governance"
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "MODERATE", "LOW"]
+    },
+    "governanceFile": {
+      "type": "string",
+      "description": "Path to domain-specific governance policy file"
+    },
+    "classifier": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "accuracy": { "type": "string" },
+        "method": { "type": "string" },
+        "validated": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if success is false"
+    }
+  },
+  "required": ["success", "domain"],
+  "additionalProperties": false
+}

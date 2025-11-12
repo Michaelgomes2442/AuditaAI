@@ -13,6 +13,7 @@ import ModelComparisonPanel from '@/components/ModelComparisonPanel';
 import ReceiptTimeline from '@/components/ReceiptTimeline';
 import AuditLogsPanel from '@/components/AuditLogsPanel';
 import { fetchParallelPrompt } from '@/lib/dashboard';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 // TODO: OnboardingTour disabled - react-joyride incompatible with React 19
 // import OnboardingTour from '@/components/OnboardingTour';
 
@@ -1058,7 +1059,10 @@ export default function PilotPage() {
                   </div>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{demoResult.baseLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={demoResult.baseLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
@@ -1100,7 +1104,10 @@ export default function PilotPage() {
                   </div>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{demoResult.governedLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={demoResult.governedLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
@@ -1309,7 +1316,10 @@ export default function PilotPage() {
                   <p className="text-xs text-slate-500 font-mono mb-3">Raw {comparisonResult.modelName} output</p>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{comparisonResult.baseLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={comparisonResult.baseLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>
@@ -1352,7 +1362,10 @@ export default function PilotPage() {
                   <p className="text-xs text-slate-500 font-mono mb-3">{comparisonResult.modelName} with boot sequence & governance</p>
                   <div className="space-y-3">
                     <div className="bg-slate-900/50 border border-white/5 rounded p-3 max-h-64 overflow-y-auto">
-                      <p className="text-sm text-slate-300 whitespace-pre-wrap">{comparisonResult.governedLLM.response}</p>
+                      <MarkdownRenderer 
+                        content={comparisonResult.governedLLM.response}
+                        className="text-sm text-slate-300"
+                      />
                     </div>
                     <div className="space-y-2">
                       <p className="text-xs font-mono text-slate-500 mb-2">CRIES ANALYSIS</p>

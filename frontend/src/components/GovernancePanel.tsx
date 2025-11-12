@@ -3,11 +3,11 @@ import { ResearchStation } from '@/types/research-station';
 import { useEffect, useState } from 'react';
 
 interface CRIESData {
-  C: number;
-  R: number;
-  I: number;
-  E: number;
-  S: number;
+  F: number; // Fabrication Detection
+  O: number; // Oversight Quality
+  R: number; // Refusal Accuracy
+  G: number; // Guidance Quality
+  E: number; // Evidence Grounding
   avg: number;
 }
 
@@ -27,11 +27,11 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
   useEffect(() => {
     const fetchCriesData = async () => {
       try {
-        const response = await fetch('/api/dashboard/cries-distribution');
+        const response = await fetch('/api/dashboard/forge-distribution');
         const data = await response.json();
         setDistribution(data.cries_distribution);
       } catch (error) {
-        console.error('Failed to fetch CRIES data:', error);
+        console.error('Failed to fetch FORGE data:', error);
       } finally {
         setLoading(false);
       }
@@ -58,28 +58,28 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>CRIES vΩ1.1 Governance Dashboard</CardTitle>
+        <CardTitle>FORGE v1 Governance Dashboard</CardTitle>
         <CardDescription>
-          Real-time CRIES metrics for {station.name}: Coherence, Rigor, Integration, Empathy, Strictness
+          Real-time FORGE metrics for {station.name}: Fabrication, Oversight, Refusal, Guidance, Evidence
         </CardDescription>
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="text-center py-8">Loading CRIES data...</div>
+          <div className="text-center py-8">Loading FORGE data...</div>
         ) : (
           <div className="space-y-6">
-            {/* CRIES Metrics */}
+            {/* FORGE Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">CRIES Components</CardTitle>
+                  <CardTitle className="text-lg">FORGE Components</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {renderMetricBar('Coherence', 0.75, '🧩')}
-                  {renderMetricBar('Rigor', 0.68, '🔬')}
-                  {renderMetricBar('Integration', 0.82, '🔗')}
-                  {renderMetricBar('Empathy', 0.71, '💝')}
-                  {renderMetricBar('Strictness', 0.89, '⚖️')}
+                  {renderMetricBar('Fabrication', 0.89, '🎭')}
+                  {renderMetricBar('Oversight', 0.75, '�️')}
+                  {renderMetricBar('Refusal', 0.82, '�️')}
+                  {renderMetricBar('Guidance', 0.71, '🧭')}
+                  {renderMetricBar('Evidence', 0.68, '📚')}
                 </CardContent>
               </Card>
 
@@ -90,7 +90,7 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
                 <CardContent>
                   <div className="text-center">
                     <div className="text-4xl font-bold text-blue-600 mb-2">79.0%</div>
-                    <div className="text-sm text-gray-600">Average CRIES Score</div>
+                    <div className="text-sm text-gray-600">Average FORGE Score (Φ)</div>
                     <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-green-600 h-3 rounded-full transition-all duration-300"
@@ -106,7 +106,7 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
             {distribution && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">CRIES Distribution</CardTitle>
+                  <CardTitle className="text-lg">FORGE Distribution</CardTitle>
                   <CardDescription>Score distribution across all evaluations</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -135,16 +135,16 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
               </Card>
             )}
 
-            {/* Δ-CRIES Receipts */}
+            {/* Δ-FORGE Receipts */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Δ-CRIES Receipts</CardTitle>
-                <CardDescription>Recent CRIES scoring receipts</CardDescription>
+                <CardTitle className="text-lg">Δ-FORGE Receipts</CardTitle>
+                <CardDescription>Recent FORGE scoring receipts</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center text-gray-500 py-4">
                   <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                    View CRIES Receipt History
+                    View FORGE Receipt History
                   </button>
                 </div>
               </CardContent>

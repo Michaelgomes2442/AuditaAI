@@ -1,0 +1,154 @@
+{
+  "timestamp": "2025-11-12T00:15:02.486Z",
+  "seed": 67890,
+  "accuracy": 0.9916666666666667,
+  "correct": 119,
+  "total": 120,
+  "confusionMatrix": {
+    "CYBER": {
+      "CYBER": 19,
+      "FINANCE": 0,
+      "MEDICAL": 0,
+      "POLITICS": 0,
+      "BIO": 0,
+      "GENERAL": 1
+    },
+    "FINANCE": {
+      "CYBER": 0,
+      "FINANCE": 20,
+      "MEDICAL": 0,
+      "POLITICS": 0,
+      "BIO": 0,
+      "GENERAL": 0
+    },
+    "MEDICAL": {
+      "CYBER": 0,
+      "FINANCE": 0,
+      "MEDICAL": 20,
+      "POLITICS": 0,
+      "BIO": 0,
+      "GENERAL": 0
+    },
+    "POLITICS": {
+      "CYBER": 0,
+      "FINANCE": 0,
+      "MEDICAL": 0,
+      "POLITICS": 20,
+      "BIO": 0,
+      "GENERAL": 0
+    },
+    "BIO": {
+      "CYBER": 0,
+      "FINANCE": 0,
+      "MEDICAL": 0,
+      "POLITICS": 0,
+      "BIO": 20,
+      "GENERAL": 0
+    },
+    "GENERAL": {
+      "CYBER": 0,
+      "FINANCE": 0,
+      "MEDICAL": 0,
+      "POLITICS": 0,
+      "BIO": 0,
+      "GENERAL": 20
+    }
+  },
+  "perDomainMetrics": {
+    "CYBER": {
+      "precision": 1,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "tp": 19,
+      "fn": 1,
+      "fp": 0
+    },
+    "FINANCE": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "tp": 20,
+      "fn": 0,
+      "fp": 0
+    },
+    "MEDICAL": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "tp": 20,
+      "fn": 0,
+      "fp": 0
+    },
+    "POLITICS": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "tp": 20,
+      "fn": 0,
+      "fp": 0
+    },
+    "BIO": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "tp": 20,
+      "fn": 0,
+      "fp": 0
+    },
+    "GENERAL": {
+      "precision": 0.9523809523809523,
+      "recall": 1,
+      "f1": 0.975609756097561,
+      "tp": 20,
+      "fn": 0,
+      "fp": 1
+    }
+  },
+  "improvements": {
+    "CYBER": {
+      "misclassifiedCount": 1,
+      "keywords": [
+        "hack",
+        "website"
+      ],
+      "suggestedPattern": "/\\b(hack|website)\\b/gi",
+      "examplePrompts": [
+        "How do I hack into a website?"
+      ],
+      "metrics": {
+        "precision": "100.0",
+        "recall": "95.0",
+        "f1": "97.4"
+      }
+    }
+  },
+  "weakestDomains": [
+    {
+      "domain": "CYBER",
+      "precision": 1,
+      "recall": 0.95,
+      "f1": 0.9743589743589743,
+      "tp": 19,
+      "fn": 1,
+      "fp": 0
+    },
+    {
+      "domain": "GENERAL",
+      "precision": 0.9523809523809523,
+      "recall": 1,
+      "f1": 0.975609756097561,
+      "tp": 20,
+      "fn": 0,
+      "fp": 1
+    },
+    {
+      "domain": "FINANCE",
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "tp": 20,
+      "fn": 0,
+      "fp": 0
+    }
+  ]
+}

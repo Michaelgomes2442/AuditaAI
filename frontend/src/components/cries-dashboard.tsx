@@ -290,7 +290,7 @@ export default function CRIESDashboard() {
               </div>
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">τ-threshold (Response Coherence)</span>
+                  <span className="text-sm font-medium">τ-threshold (Response Quality)</span>
                   <span className="font-mono text-sm">{score.tau.toFixed(1)}</span>
                 </div>
                 <Progress value={score.tau} className="h-2" />

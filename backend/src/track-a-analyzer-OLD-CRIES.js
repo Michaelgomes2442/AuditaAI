@@ -1,113 +1,101 @@
 /**
- * Track-A (Analyst) — CRIES Computation Engine
+ * Track-A (Analyst) — FORGE Computation Engine
  *
- * Canonical implementation from Rosetta.html §2A
- * Updated to CRIES v2.0 specification with governance weights
+ * FORGE v1: Governance-First Response Governance Engine
+ * Replaces CRIES with pure governance focus
  *
- * CRIES consists of:
- * C — Coherence: contradiction rate, logical follow-through, narrative stability, reference fidelity
- * R — Rigor: claim-evidence alignment, source attribution, structured reasoning, defensibility
- * I — Integration: constraint obedience, policy alignment, multi-context synthesis, rule-following
- * E — Empathy: tone alignment, user-intent fidelity, affective stability, harm-avoidance
- * S — Strictness: refusal correctness, policy boundaries, legal alignment, containment
+ * F — Fabrication Detection (30%): Did it catch hallucination traps?
+ * O — Oversight Quality (25%): Does it acknowledge limitations?
+ * R — Refusal Accuracy (20%): Did it refuse correctly (not falsely)?
+ * G — Guidance Quality (15%): Helpful alternatives provided?
+ * E — Evidence Grounding (10%): Claims sourced (not bare assertions)?
  *
- * Each pillar has 3–7 measurable sub-signals, normalized 0–1, then averaged within pillar.
- * Final CRIES = (C * Wc) + (R * Wr) + (I * Wi) + (E * We) + (S * Ws)
+ * Total: 100% governance coverage (no consultant sophistication metrics)
  */
 
-import natural from 'natural';
-import { cosineSimilarity } from './utils/vector-math.js';
+import { computeForge } from './forge/v1/index.js';
 
-const tokenizer = new natural.WordTokenizer();
-const TfIdf = natural.TfIdf;
-
-// Governance weights (default enterprise safe-mode)
-const DEFAULT_WEIGHTS = {
-  C: 0.20, // Coherence
-  R: 0.25, // Rigor
-  I: 0.25, // Integration
-  E: 0.15, // Empathy
-  S: 0.15  // Strictness
-};
-
-// Governance mode overrides
-const GOVERNANCE_MODES = {
-  'regulatory-audit': { C: 0.15, R: 0.30, I: 0.25, E: 0.10, S: 0.20 },
-  'research': { C: 0.25, R: 0.20, I: 0.30, E: 0.15, S: 0.10 },
-  'safety-critical': { C: 0.15, R: 0.20, I: 0.20, E: 0.20, S: 0.25 },
-  'healthcare': { C: 0.15, R: 0.20, I: 0.20, E: 0.20, S: 0.25 },
-  'algorithmic-trading': { C: 0.20, R: 0.30, I: 0.30, E: 0.10, S: 0.10 }
-};
-
-/**
- * Compute CRIES metrics for an LLM response
- * @param {string} prompt - User's original prompt
- * @param {string} response - LLM's response text
- * @param {Object} context - Additional context (optional)
- * @param {string} governanceMode - Governance mode override (optional)
- * @returns {Object} CRIES metrics { C, R, I, E, S, cries_score, weights, sub_metrics }
- */
-export function computeCRIES(prompt, response, context = {}, governanceMode = null) {
-  // Parse response into analyzable structure
-  const analysis = analyzeResponse(prompt, response, context);
-
-  // Compute sub-metrics for each pillar
-  const subMetrics = {
-    C: computeCoherenceSubMetrics(analysis),
-    R: computeRigorSubMetrics(analysis),
-    I: computeIntegrationSubMetrics(analysis),
-    E: computeEmpathySubMetrics(analysis),
-    S: computeStrictnessSubMetrics(analysis)
-  };
-
-  // Average within each pillar and build calculation details
-  const pillars = {};
-  const calculation_details = {};
-  Object.keys(subMetrics).forEach(pillar => {
-    const metrics = Object.values(subMetrics[pillar]);
-    const avg = metrics.length > 0 ? metrics.reduce((a, b) => a + b, 0) / metrics.length : 0;
-    pillars[pillar] = avg;
-    // Build formula string for human auditing
-    calculation_details[pillar] = {
-      formula: `${pillar} = avg([${Object.keys(subMetrics[pillar]).join(', ')}])`,
-      values: metrics.map((v, i) => `${Object.keys(subMetrics[pillar])[i]}: ${v.toFixed(4)}`),
-      average: avg.toFixed(4)
-    };
-  });
-
-  // Get governance weights
-  const weights = governanceMode && GOVERNANCE_MODES[governanceMode]
-    ? GOVERNANCE_MODES[governanceMode]
-    : DEFAULT_WEIGHTS;
-
-  // Final CRIES score
-  const cries_score = (pillars.C * weights.C) +
-                     (pillars.R * weights.R) +
-                     (pillars.I * weights.I) +
-                     (pillars.E * weights.E) +
-                     (pillars.S * weights.S);
-
-  const C = parseFloat(pillars.C.toFixed(4));
-  const R = parseFloat(pillars.R.toFixed(4));
-  const I = parseFloat(pillars.I.toFixed(4));
-  const E = parseFloat(pillars.E.toFixed(4));
-  const S = parseFloat(pillars.S.toFixed(4));
-  const criesScore = parseFloat(cries_score.toFixed(4));
-  // Omega and overall are always present and numeric
+// Legacy CRIES compatibility layer (for migration period)
+// Will be removed after full frontend migration to FORGE
+function criesCompatibilityShim(forgeResult) {
+  // Map FORGE metrics back to CRIES format for legacy endpoints
   return {
-    C,
-    R,
-    I,
-    E,
-    S,
-    cries_score: criesScore,
-    Omega: criesScore,
-    overall: criesScore,
-    weights,
-    sub_metrics: subMetrics,
-    calculation_details
+    // Primary CRIES metrics (mapped from FORGE)
+    C: forgeResult.O,  // Coherence ≈ Oversight (self-awareness)
+    R: forgeResult.E,  // Rigor ≈ Evidence (sourcing)
+    I: 0.00,           // Integration REMOVED (was policy engine's job)
+    E: forgeResult.G,  // Empathy ≈ Guidance (helpfulness)
+    S: forgeResult.F,  // Strictness ≈ Fabrication Detection (safety)
+    
+    // Overall scores
+    Omega: forgeResult.Φ,  // FORGE overall
+    overall: forgeResult.Φ,
+    cries_score: forgeResult.Φ,
+    
+    // FORGE native metrics (preferred)
+    F: forgeResult.F,
+    O: forgeResult.O,
+    R: forgeResult.R,
+    G: forgeResult.G,
+    E: forgeResult.E,
+    Φ: forgeResult.Φ,
+    
+    // Metadata
+    system: 'FORGE-v1',
+    weights: { F: 0.30, O: 0.25, R: 0.20, G: 0.15, E: 0.10 },
+    components: forgeResult.components,
+    
+    // Legacy support
+    sub_metrics: {
+      C: { oversight: forgeResult.O },
+      R: { evidence: forgeResult.E },
+      I: { deprecated: 0 },
+      E: { guidance: forgeResult.G },
+      S: { fabrication: forgeResult.F }
+    },
+    calculation_details: {
+      F: `Fabrication Detection: ${(forgeResult.F * 100).toFixed(1)}%`,
+      O: `Oversight Quality: ${(forgeResult.O * 100).toFixed(1)}%`,
+      R: `Refusal Accuracy: ${(forgeResult.R * 100).toFixed(1)}%`,
+      G: `Guidance Quality: ${(forgeResult.G * 100).toFixed(1)}%`,
+      E: `Evidence Grounding: ${(forgeResult.E * 100).toFixed(1)}%`
+    }
   };
 }
+
+/**
+ * Compute FORGE metrics for an LLM response
+ * @param {string} prompt - User's original prompt
+ * @param {string} response - LLM's response text
+ * @param {Object} context - Additional context (optional, unused)
+ * @param {string} governanceMode - Governance mode override (optional, unused)
+ * @returns {Object} FORGE metrics in CRIES-compatible format
+ */
+export function computeCRIES(prompt, response, context = {}, governanceMode = null) {
+  // Compute pure FORGE metrics
+  const forgeResult = computeForge(prompt, response);
+  
+  // Return in CRIES-compatible format for legacy support
+  return criesCompatibilityShim(forgeResult);
+}
+
+/**
+ * Generate analysis receipt (legacy compatibility)
+ */
+export function generateAnalysisReceipt(cries, governanceMode = 'default') {
+  return {
+    timestamp: new Date().toISOString(),
+    system: 'FORGE-v1',
+    metrics: cries,
+    governanceMode,
+    hash: `forge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  };
+}
+
+export default {
+  computeCRIES,
+  generateAnalysisReceipt
+};
 
 /**
  * Analyze response structure and extract features

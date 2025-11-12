@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Score Output",
+  "description": "Output schema for rosetta.criesv4.score",
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "version": {
+      "type": "string",
+      "const": "v4"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["BIO", "CYBER", "MEDICAL", "FINANCE", "POLITICS", "GENERAL"]
+    },
+    "pillars": {
+      "type": "object",
+      "properties": {
+        "C": { "type": "number", "minimum": 0, "maximum": 1 },
+        "R": { "type": "number", "minimum": 0, "maximum": 1 },
+        "I": { "type": "number", "minimum": 0, "maximum": 1 },
+        "E": { "type": "number", "minimum": 0, "maximum": 1 },
+        "S": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["C", "R", "I", "E", "S"]
+    },
+    "Omega": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "weights": {
+      "type": "object",
+      "description": "Domain-adaptive weights for each pillar"
+    },
+    "signals": {
+      "type": "object",
+      "description": "Detected semantic signals (RQS, ALD, LCB, OverRefusal)"
+    },
+    "components": {
+      "type": "object",
+      "description": "Component-level scores for each pillar"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "classifier": {
+      "type": "object",
+      "properties": {
+        "accuracy": { "type": "string" },
+        "validation": { "type": "string" },
+        "method": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if success is false"
+    }
+  },
+  "required": ["success", "version"],
+  "additionalProperties": true
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Classify Input",
+  "description": "Input schema for rosetta.criesv4.classify - domain classification",
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "description": "The prompt to classify by domain",
+      "minLength": 1
+    }
+  },
+  "required": ["prompt"],
+  "additionalProperties": false
+}

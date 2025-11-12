@@ -6,17 +6,25 @@ import { Activity, TrendingUp, Shield, Zap } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
 interface CRIESData {
-  C: number; // Coherence
-  R: number; // Rigor
-  I: number; // Integration
-  E: number; // Empathy
-  S: number; // Strictness
+  F: number; // Fabrication Detection
+  O: number; // Oversight Quality
+  R: number; // Refusal Accuracy
+  G: number; // Guidance Quality
+  E: number; // Evidence Grounding
+  // Legacy CRIES mapping (for backward compatibility)
+  C?: number; // Mapped from O (Oversight)
+  I?: number; // Deprecated (was Integration)
+  S?: number; // Mapped from F (Fabrication)
   avg: number; // Average score
   sub_metrics?: {
-    C?: Record<string, number>;
+    F?: Record<string, number>;
+    O?: Record<string, number>;
     R?: Record<string, number>;
-    I?: Record<string, number>;
+    G?: Record<string, number>;
     E?: Record<string, number>;
+    // Legacy (backward compatibility)
+    C?: Record<string, number>;
+    I?: Record<string, number>;
     S?: Record<string, number>;
   };
 // End CRIESData interface
@@ -35,7 +43,7 @@ interface CRIESMetricsProps {
   title?: string;
 }
 
-export default function CRIESMetrics({ showComparison = false, title = "Live CRIES Metrics" }: CRIESMetricsProps) {
+export default function CRIESMetrics({ showComparison = false, title = "Live FORGE Metrics" }: CRIESMetricsProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [latestMetrics, setLatestMetrics] = useState<CRIESUpdate | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -53,17 +61,17 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
     const socketInstance = BACKEND_URL ? io(BACKEND_URL, options) : io(options);
 
     socketInstance.on('connect', () => {
-      console.log('✅ CRIES WebSocket connected');
+      console.log('✅ FORGE WebSocket connected');
       setIsConnected(true);
     });
 
     socketInstance.on('disconnect', () => {
-      console.log('❌ CRIES WebSocket disconnected');
+      console.log('❌ FORGE WebSocket disconnected');
       setIsConnected(false);
     });
 
-    socketInstance.on('cries-update', (data: CRIESUpdate) => {
-      console.log('📊 CRIES Update received:', data);
+    socketInstance.on('forge-update', (data: CRIESUpdate) => {
+      console.log('📊 FORGE Update received:', data);
       setLatestMetrics(data);
       
       // Trigger pulse animation
@@ -146,11 +154,11 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
 
   const renderComparisonView = (metrics: CRIESUpdate) => {
     const metricLabels = [
-      { key: 'coherence', label: 'Coherence', icon: '🧩' },
-      { key: 'relevance', label: 'Relevance', icon: '🎯' },
-      { key: 'integrity', label: 'Integrity', icon: '🔒' },
-      { key: 'ethical_alignment', label: 'Ethics', icon: '⚖️' },
-      { key: 'safety', label: 'Safety', icon: '🛡️' }
+      { key: 'fabrication', label: 'Fabrication', icon: '🎭' },
+      { key: 'oversight', label: 'Oversight', icon: '👁️' },
+      { key: 'refusal', label: 'Refusal', icon: '�️' },
+      { key: 'guidance', label: 'Guidance', icon: '🧭' },
+      { key: 'evidence', label: 'Evidence', icon: '�' }
     ];
 
     return (
@@ -215,15 +223,15 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
   const renderSingleMetrics = (metrics: CRIESData) => {
     return (
       <div className="space-y-4">
-        {renderMetricBar('Coherence', metrics.C, '🧩', metrics.sub_metrics?.C)}
-        {renderMetricBar('Rigor', metrics.R, '🔬', metrics.sub_metrics?.R)}
-        {renderMetricBar('Integration', metrics.I, '🔗', metrics.sub_metrics?.I)}
-        {renderMetricBar('Empathy', metrics.E, '💝', metrics.sub_metrics?.E)}
-        {renderMetricBar('Strictness', metrics.S, '⚖️', metrics.sub_metrics?.S)}
+        {renderMetricBar('Fabrication', metrics.F, '🎭', metrics.sub_metrics?.F)}
+        {renderMetricBar('Oversight', metrics.O, '�️', metrics.sub_metrics?.O)}
+        {renderMetricBar('Refusal', metrics.R, '�️', metrics.sub_metrics?.R)}
+        {renderMetricBar('Guidance', metrics.G, '🧭', metrics.sub_metrics?.G)}
+        {renderMetricBar('Evidence', metrics.E, '📚', metrics.sub_metrics?.E)}
 
         <div className={`mt-6 p-4 rounded-lg border-2 ${getBackgroundClass(metrics.avg)}`}>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-200">Overall CRIES Score</span>
+            <span className="text-sm font-semibold text-gray-200">Overall FORGE Score (Φ)</span>
             <div className="flex items-center gap-3">
               <span className={`text-3xl font-bold ${getColorClass(metrics.avg)}`}>
                 {Math.round(metrics.avg * 100)}%
@@ -258,7 +266,7 @@ export default function CRIESMetrics({ showComparison = false, title = "Live CRI
       {!latestMetrics && (
         <div className="text-center py-12 text-gray-500">
           <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p className="text-sm">Waiting for CRIES data...</p>
+          <p className="text-sm">Waiting for FORGE data...</p>
           <p className="text-xs mt-2">Run a test to see live metrics</p>
         </div>
       )}

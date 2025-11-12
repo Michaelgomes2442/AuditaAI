@@ -13,11 +13,11 @@ import {
 } from 'recharts';
 
 interface CRIESScore {
-  completeness: number;
-  reliability: number;
-  integrity: number;
-  effectiveness: number;
-  security: number;
+  fabrication: number;
+  oversight: number;
+  refusal: number;
+  guidance: number;
+  evidence: number;
   overall?: number;
 }
 
@@ -37,11 +37,11 @@ export default function CRIESChart({
   height = 400
 }: CRIESChartProps) {
   const [animatedScores, setAnimatedScores] = useState<CRIESScore>({
-    completeness: 0,
-    reliability: 0,
-    integrity: 0,
-    effectiveness: 0,
-    security: 0
+    fabrication: 0,
+    oversight: 0,
+    refusal: 0,
+    guidance: 0,
+    evidence: 0
   });
   const [isPulsing, setIsPulsing] = useState(false);
 
@@ -59,11 +59,11 @@ export default function CRIESChart({
       const progress = frame / totalFrames;
       
       setAnimatedScores({
-        completeness: scores.completeness * progress,
-        reliability: scores.reliability * progress,
-        integrity: scores.integrity * progress,
-        effectiveness: scores.effectiveness * progress,
-        security: scores.security * progress
+        fabrication: scores.fabrication * progress,
+        oversight: scores.oversight * progress,
+        refusal: scores.refusal * progress,
+        guidance: scores.guidance * progress,
+        evidence: scores.evidence * progress
       });
 
       if (frame >= totalFrames) {
@@ -81,34 +81,34 @@ export default function CRIESChart({
   // Format data for Recharts
   const chartData = [
     {
-      dimension: 'Completeness',
-      value: animatedScores.completeness * 100,
+      dimension: 'Fabrication',
+      value: animatedScores.fabrication * 100,
       fullMark: 100,
-      description: 'Response coverage and depth of analysis'
+      description: 'Detection of hallucinations and false information'
     },
     {
-      dimension: 'Reliability',
-      value: animatedScores.reliability * 100,
+      dimension: 'Oversight',
+      value: animatedScores.oversight * 100,
       fullMark: 100,
-      description: 'Consistency and error rate evaluation'
+      description: 'Acknowledgment of limitations and training cutoffs'
     },
     {
-      dimension: 'Integrity',
-      value: animatedScores.integrity * 100,
+      dimension: 'Refusal',
+      value: animatedScores.refusal * 100,
       fullMark: 100,
-      description: 'Hallucination, bias, and alignment checks'
+      description: 'Appropriate refusal for the right reasons'
     },
     {
-      dimension: 'Effectiveness',
-      value: animatedScores.effectiveness * 100,
+      dimension: 'Guidance',
+      value: animatedScores.guidance * 100,
       fullMark: 100,
-      description: 'Task completion and goal achievement'
+      description: 'Helpful alternatives and actionable recommendations'
     },
     {
-      dimension: 'Security',
-      value: animatedScores.security * 100,
+      dimension: 'Evidence',
+      value: animatedScores.evidence * 100,
       fullMark: 100,
-      description: 'Prompt injection and adversarial resistance'
+      description: 'Grounded claims with proper source attribution'
     }
   ];
 
@@ -122,11 +122,11 @@ export default function CRIESChart({
   // Get gradient color for the radar fill
   const getGradientId = () => {
     const avgScore = (
-      animatedScores.completeness +
-      animatedScores.reliability +
-      animatedScores.integrity +
-      animatedScores.effectiveness +
-      animatedScores.security
+      animatedScores.fabrication +
+      animatedScores.oversight +
+      animatedScores.refusal +
+      animatedScores.guidance +
+      animatedScores.evidence
     ) / 5 * 100;
 
     if (avgScore >= 85) return 'url(#colorGreen)';
@@ -198,14 +198,14 @@ export default function CRIESChart({
 
           {/* Radar Area */}
           <Radar
-            name="CRIES Score"
+            name="FORGE Score"
             dataKey="value"
             stroke={getColor(
-              ((animatedScores.completeness +
-                animatedScores.reliability +
-                animatedScores.integrity +
-                animatedScores.effectiveness +
-                animatedScores.security) / 5) * 100
+              ((animatedScores.fabrication +
+                animatedScores.oversight +
+                animatedScores.refusal +
+                animatedScores.guidance +
+                animatedScores.evidence) / 5) * 100
             )}
             fill={getGradientId()}
             fillOpacity={0.6}

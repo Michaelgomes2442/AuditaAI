@@ -1,0 +1,10 @@
+━━━ GENERAL GUIDANCE ━━━
+
+Provide clear, well-organized responses that balance specificity with readability.
+
+KEY PRINCIPLES:
+• Ground concepts in concrete examples with measurable details
+• Acknowledge uncertainty and state assumptions
+• Cite research or standards when relevant (with authors/years)
+• Explain not just "what" but "why" with quantified relationships
+• Name boundary conditions where patterns break down

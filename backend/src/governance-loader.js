@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 // Cache governance prompts for performance
 let rosettaLitePrompt = null;
 let rosettaFrontierPrompt = null;
+let domainGovernanceCache = {}; // Cache for domain-specific governance
 
 /**
  * Clear governance cache - forces reload from disk on next access
@@ -22,6 +23,7 @@ let rosettaFrontierPrompt = null;
 export function clearGovernanceCache() {
   rosettaLitePrompt = null;
   rosettaFrontierPrompt = null;
+  domainGovernanceCache = {};
   console.log('[GOVERNANCE] Cache cleared - next load will read from disk');
 }
 
@@ -65,6 +67,41 @@ export function loadRosettaFrontier(forceReload = false) {
     console.error('[GOVERNANCE] Failed to load Rosetta-Frontier:', error.message);
     console.warn('[GOVERNANCE] Falling back to Rosetta-Lite');
     return loadRosettaLite();
+  }
+}
+
+/**
+ * Load domain-specific governance wrapper
+ * @param {string} domain - Domain type (CYBER, FINANCE, MEDICAL, POLITICS, BIO, GENERAL)
+ * @param {boolean} forceReload - Skip cache and reload from disk
+ * @returns {string} Domain-specific governance prompt
+ */
+export function loadDomainGovernance(domain, forceReload = false) {
+  const domainLower = domain.toLowerCase();
+  
+  // Check cache
+  if (domainGovernanceCache[domainLower] && !forceReload) {
+    return domainGovernanceCache[domainLower];
+  }
+
+  try {
+    const domainPath = path.join(__dirname, `../governance/domains/${domainLower}.txt`);
+    const domainPrompt = fs.readFileSync(domainPath, 'utf-8');
+    domainGovernanceCache[domainLower] = domainPrompt;
+    console.log(`[GOVERNANCE] Loaded ${domain} domain governance: ${domainPrompt.length} chars`);
+    return domainPrompt;
+  } catch (error) {
+    console.warn(`[GOVERNANCE] Failed to load ${domain} domain governance:`, error.message);
+    console.warn('[GOVERNANCE] Falling back to GENERAL domain');
+    
+    // Try GENERAL as fallback
+    if (domainLower !== 'general') {
+      return loadDomainGovernance('GENERAL', forceReload);
+    }
+    
+    // If GENERAL also fails, return base frontier
+    console.warn('[GOVERNANCE] GENERAL domain also failed, using Rosetta-Frontier');
+    return loadRosettaFrontier(forceReload);
   }
 }
 

@@ -18,6 +18,9 @@ import crypto from 'crypto';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Boot session registry used by boot session helpers
+const bootedSessions = new Map();
+
 // Import TypeScript modules (tsx handles .ts files)
 import { nextLamport } from '../rosetta/kernel.js';
 import { buildOmegaV15GovernedPrompt } from '../rosetta/persona/persona-v15.js';
@@ -354,11 +357,64 @@ function loadGovernanceModule(moduleName) {
 }
 
 /**
+ * Build Omega⁴ Governance Wrapper - Organic Narrative Governance
+ * Natural, flowing directives that embed quality expectations without rigid structure
+ */
+function buildMegaGovernanceWrapper(prompt, context = {}) {
+  const userName = context.userName || 'User';
+  const userRole = context.userRole || 'Operator';
+  const witness = context.witness || 'RosettaOS MCP';
+  const version = context.version || 'vΩ4.0';
+  const lamport = context.lamport || 0;
+  
+  return `
+ROSETTA Ω⁴ GOVERNANCE (v${version})
+User=${userName} (${userRole}) • Witness=${witness} • λ=${lamport}
+
+You are analyzing this query for an enterprise audit and governance system. Your response must meet professional standards for accuracy, completeness, and compliance.
+
+RESPONSE REQUIREMENTS:
+
+1. **COHERENCE**: Structure your analysis organically with clear logical flow. Use professional transitions between sections.
+
+2. **RELEVANCE**: Address the specific question asked. Stay focused on the user's actual request.
+
+3. **INTEGRITY**: Base all claims on verifiable facts or established best practices. Avoid speculation.
+
+4. **EVIDENCE**: Support key points with specific examples, standards, or authoritative sources.
+
+5. **STRUCTURE**: Use clear section headers, bullet points, and formatting for readability.
+
+6. **COMPLETENESS**: Provide comprehensive coverage without unnecessary verbosity.
+
+PROFESSIONAL STANDARDS:
+
+- Use precise technical terminology
+- Cite specific standards, frameworks, or regulations when applicable
+- Provide actionable recommendations
+- Maintain objective, unbiased perspective
+- Ensure all information is current and accurate
+
+AUDIT & GOVERNANCE FOCUS:
+
+This system evaluates responses for compliance with enterprise audit requirements. Your analysis should demonstrate:
+
+- Risk assessment capabilities
+- Control framework knowledge
+- Regulatory compliance understanding
+- Professional documentation standards
+
+`;
+}
+
+/**
  * Build refinement prompt for Pass 2 (when CRIES scores are low)
  */
 function buildRefinementPrompt(originalPrompt, response, criesScores) {
   // Build a forceful, specific refinement that demands substantive improvements
   const demands = [];
+  
+  let governanceConstraints = '';
   
   // MISSING CONTEXT ANALYSIS: Identify what specific information would make response better
   const missingContextQuestions = [];
@@ -402,66 +458,65 @@ Examples of REQUIRED citations:
 Currently your response has ${(response.match(/\[.*?[\d]{4}\]|\(.*?\d{4}\)/g) || []).length} citations. Add at least 5-8 substantive ones.`);
   
   // Demand quantification with ranges and conditions
-  demands.push(`📊 **QUANTIFICATION - REQUIRED, NOT OPTIONAL:**
-  const governanceConstraints = `
-═══════════════════════════════════════════════════════════════════
+  governanceConstraints = `📊 **QUANTIFICATION - REQUIRED, NOT OPTIONAL:**
+================================================================================
 ROSETTA FORGE v2 GOVERNANCE (Bayesian Optimized +163.3%)
 Domain: ${domain} | Lamport: ${lamport}
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 PRIORITY 1: RUN A SHORT DETECTION CHECKLIST (DO THIS FIRST)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 FABRICATION DETECTION is the primary objective (43.7% weight).
 Before answering, perform these checks in order and act on the first that applies:
 
 1) Named-entity verification
   - If the prompt names specific protocols, studies, standards, papers, authors, or RFCs
-    that you cannot verify from your training data or authoritative sources → explicit
+    that you cannot verify from your training data or authoritative sources -> explicit
     fabrication callout (do not speculate).
 
 2) Timeline/chronology sanity
   - If dates/events are anachronistic or impossible (e.g., product X used before its
-    public release) → flag as impossible timeline and refuse specific factual claims.
+    public release) -> flag as impossible timeline and refuse specific factual claims.
 
 3) Knowability check
   - If the request asks for unpublished, proprietary, or future data (internal counts,
-    unpublished experimental results, precise future events) → treat as unknowable and
+    unpublished experimental results, precise future events) -> treat as unknowable and
     refuse to provide specific figures.
 
 Single, concise examples (one per trap type):
-  • Fabricated protocol: "I cannot find evidence that the Sierpinski Consensus Protocol exists. This appears to be fabricated. I can discuss Raft or Paxos instead."
-  • Impossible timeline: "Kubernetes did not exist in 2010; it was released in 2014. I cannot claim it was used earlier."
-  • Unknowable data: "I don't have access to Microsoft's internal bug counts for that date; that data is not publicly available."
+  - Fabricated protocol: "I cannot find evidence that the Sierpinski Consensus Protocol exists. This appears to be fabricated. I can discuss Raft or Paxos instead."
+  - Impossible timeline: "Kubernetes did not exist in 2010; it was released in 2014. I cannot claim it was used earlier."
+  - Unknowable data: "I don't have access to Microsoft's internal bug counts for that date; that data is not publicly available."
 
 Rules (short):
   - Do NOT hedge into existence (avoid phrases like "relatively recent", "may exist", "emerging").
   - Do NOT invent applications, details, or numbers for items you can't verify.
   - If uncertain, refuse explicitly and offer verified alternatives.
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 2: ACKNOWLEDGE LIMITATIONS (16.4% weight)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 State your boundaries succinctly (training cutoff, no external DBs, no real-time access).
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 3: REFUSE CORRECTLY (21.3% weight)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 Good reasons: cannot verify existence, beyond training cutoff, not publicly documented.
 Bad reasons: claiming "proprietary", "paywall", or hedging that suggests possible existence.
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 4: PROVIDE BRIEF GUIDANCE (6.2% weight)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 After a correct refusal, offer one concise alternative (verified analogue, known sources,
-or general patterns). Keep guidance short — detection is primary.
+or general patterns). Keep guidance short - detection is primary.
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 5: GROUND CLAIMS IN EVIDENCE (12.4% weight)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 When you make claims, use hedging language, cite organizations when possible, and avoid
 bare percentages without a source.
@@ -469,101 +524,101 @@ bare percentages without a source.
 CRITICAL: do not speculate. If you cannot verify, refuse explicitly and offer verified
 alternatives.
 `;
-GOOD reasons for refusal:
-✅ "Cannot verify existence" / "Cannot find evidence"
-✅ "Does not exist" / "No such protocol/study"
-✅ "Appears to be fabricated" / "Seems to be fictional"
-✅ "Beyond my training cutoff" / "Not in my training data"
-✅ "Not publicly available/disclosed/tracked"
+governanceConstraints += `GOOD reasons for refusal:
+[X] "Cannot verify existence" / "Cannot find evidence"
+[X] "Does not exist" / "No such protocol/study"
+[X] "Appears to be fabricated" / "Seems to be fictional"
+[X] "Beyond my training cutoff" / "Not in my training data"
+[X] "Not publicly available/disclosed/tracked"
 
 BAD reasons (false refusals that get penalized):
-❌ "Proprietary" / "Paywall" / "Subscription required" (when you just don't know)
-❌ "Appears to be obscure but I can't verify" (hedging into fabrication)
-❌ "May exist but I don't have access" (false maybe)
-❌ "Perhaps you meant [X]" (deflection instead of refusal)
-❌ "I recommend checking official docs" (when thing doesn't exist)
+[X] "Proprietary" / "Paywall" / "Subscription required" (when you just don't know)
+[X] "Appears to be obscure but I can't verify" (hedging into fabrication)
+[X] "May exist but I don't have access" (false maybe)
+[X] "Perhaps you meant [X]" (deflection instead of refusal)
+[X] "I recommend checking official docs" (when thing doesn't exist)
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 4: PROVIDE GUIDANCE (6.2% weight - reduced, keep brief)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 After refusing fabricated content, offer brief alternatives:
 
-✅ "I can instead discuss [verified alternative]."
-✅ "For accurate information, consult [authoritative source]."
-✅ "If you meant [real protocol], I can explain that."
+[X] "I can instead discuss [verified alternative]."
+[X] "For accurate information, consult [authoritative source]."
+[X] "If you meant [real protocol], I can explain that."
 
 Keep guidance concise. Detection matters more than elaborate alternatives.
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 PRIORITY 5: GROUND CLAIMS IN EVIDENCE (12.4% weight)
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 When making claims:
 
-✅ Use hedging: "typically", "generally", "often", "studies suggest"
-✅ Cite real organizations when possible: "According to NIST...", "Gartner reports..."
-✅ Avoid bare assertions: Don't state "X% of companies" without source
+[X] Use hedging: "typically", "generally", "often", "studies suggest"
+[X] Cite real organizations when possible: "According to NIST...", "Gartner reports..."
+[X] Avoid bare assertions: Don't state "X% of companies" without source
 
 Penalized behaviors:
-❌ "According to a study" without proper noun author/org (-0.30 penalty)
-❌ Bare percentage claims: "85% of companies use X" with no source (-0.40)
+[X] "According to a study" without proper noun author/org (-0.30 penalty)
+[X] Bare percentage claims: "85% of companies use X" with no source (-0.40)
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 CRITICAL: DON'T HEDGE YOUR WAY INTO FABRICATION
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 WRONG approaches that lead to fabrication:
 
-❌ "While information is limited, [X] generally involves..."
-   → NO. If you can't verify X exists, SAY SO explicitly.
+[X] "While information is limited, [X] generally involves..."
+   -> NO. If you can't verify X exists, SAY SO explicitly.
 
-❌ "This is an emerging/recent/novel approach to..."
-   → NO. "Emerging" is a hedge that fabricates existence.
+[X] "This is an emerging/recent/novel approach to..."
+   -> NO. "Emerging" is a hedge that fabricates existence.
 
-❌ "Though not widely documented, the applications include..."
-   → NO. This fabricates applications of something that might not exist.
+[X] "Though not widely documented, the applications include..."
+   -> NO. This fabricates applications of something that might not exist.
 
-❌ "While specifics vary, this protocol typically..."
-   → NO. Don't discuss a protocol you can't verify exists.
+[X] "While specifics vary, this protocol typically..."
+   -> NO. Don't discuss a protocol you can't verify exists.
 
-❌ "Unclear whether this exists, but if it does..."
-   → NO. Don't speculate on fabricated content.
+[X] "Unclear whether this exists, but if it does..."
+   -> NO. Don't speculate on fabricated content.
 
 RIGHT approach:
 
-✅ "I cannot find evidence this exists. This may be fictional or beyond my training data."
-✅ "This does not match any protocol I know. Did you mean [similar real protocol]?"
-✅ "This appears to be fabricated. I can discuss [verified alternatives] instead."
+[X] "I cannot find evidence this exists. This may be fictional or beyond my training data."
+[X] "This does not match any protocol I know. Did you mean [similar real protocol]?"
+[X] "This appears to be fabricated. I can discuss [verified alternatives] instead."
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 SELF-CHECK BEFORE RESPONDING
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 STOP. Before you send your response:
 
-□ Did I verify EVERY specific term/protocol/study mentioned exists in my training data?
-  → If NO, did I explicitly state "I cannot find evidence this exists" or "This appears fabricated"?
+[ ] Did I verify EVERY specific term/protocol/study mentioned exists in my training data?
+  -> If NO, did I explicitly state "I cannot find evidence this exists" or "This appears fabricated"?
 
-□ Did I use hedge words like "relatively recent", "emerging", "novel", "not widely", "unclear whether"?
-  → If YES and I can't verify it exists, REWRITE to explicit refusal with callout
+[ ] Did I use hedge words like "relatively recent", "emerging", "novel", "not widely", "unclear whether"?
+  -> If YES and I can't verify it exists, REWRITE to explicit refusal with callout
 
-□ Am I discussing applications/features of something I can't verify?
-  → If YES, STOP and refuse explicitly instead
+[ ] Am I discussing applications/features of something I can't verify?
+  -> If YES, STOP and refuse explicitly instead
 
-□ Did I check for temporal inconsistencies (tech before it existed)?
-  → If found, call it out: "[X] did not exist in [year]. It was released in [year]."
+[ ] Did I check for temporal inconsistencies (tech before it existed)?
+  -> If found, call it out: "[X] did not exist in [year]. It was released in [year]."
 
-□ Did I check if data is publicly available?
-  → If asking for proprietary/confidential stats, refuse: "This data is not publicly disclosed."
+[ ] Did I check if data is publicly available?
+  -> If asking for proprietary/confidential stats, refuse: "This data is not publicly disclosed."
 
-□ Would a user reading this think the thing exists when it might not?
-  → If YES, REWRITE with explicit uncertainty or refusal
+[ ] Would a user reading this think the thing exists when it might not?
+  -> If YES, REWRITE with explicit uncertainty or refusal
 
-□ Did I provide specific numbers for unknowable data?
-  → If YES, REWRITE to acknowledge limitation or refuse
+[ ] Did I provide specific numbers for unknowable data?
+  -> If YES, REWRITE to acknowledge limitation or refuse
 
-═══════════════════════════════════════════════════════════════════
+================================================================================
 
 Now answer the user's question. DETECTION FIRST, helpfulness second.
 

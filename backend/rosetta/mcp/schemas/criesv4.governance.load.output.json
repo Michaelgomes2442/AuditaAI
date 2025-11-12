@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Governance Load Output",
+  "description": "Output schema for rosetta.criesv4.governance.load",
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["BIO", "CYBER", "MEDICAL", "FINANCE", "POLITICS", "GENERAL"]
+    },
+    "governance": {
+      "type": "string",
+      "description": "Complete governance policy content"
+    },
+    "path": {
+      "type": "string",
+      "description": "File path to governance policy"
+    },
+    "lines": {
+      "type": "number",
+      "description": "Number of lines in governance file"
+    },
+    "size": {
+      "type": "number",
+      "description": "Size in bytes of governance content"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "created": { "type": "string" },
+        "accuracy": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if success is false"
+    }
+  },
+  "required": ["success", "domain", "governance"],
+  "additionalProperties": false
+}

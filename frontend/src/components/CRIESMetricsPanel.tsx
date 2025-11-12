@@ -5,11 +5,11 @@ import { useState } from 'react';
 
 interface MetricsData {
   timestamp: string;
-  C: number; // Coherence
-  R: number; // Rigor
-  I: number; // Integration
-  E: number; // Empathy
-  S: number; // Strictness
+  F: number; // Fabrication Detection
+  O: number; // Oversight Quality
+  R: number; // Refusal Accuracy
+  G: number; // Guidance Quality
+  E: number; // Evidence Grounding
   avg: number; // Average
 }
 
@@ -21,12 +21,12 @@ export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
   const dummyData: MetricsData[] = [
     {
       timestamp: '2025-10-20T10:00:00Z',
-      C: 0.85,
-      R: 0.78,
-      I: 0.92,
+      F: 0.89,
+      O: 0.85,
+      R: 0.92,
+      G: 0.78,
       E: 0.88,
-      S: 0.95,
-      avg: 0.88
+      avg: 0.86
     },
     // ... more data points
   ];
@@ -35,7 +35,7 @@ export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>CRIES Metrics Overview</CardTitle>
+          <CardTitle>FORGE Metrics Overview</CardTitle>
           <CardDescription>
             Real-time metrics tracking for {selectedModels.length} selected models
           </CardDescription>
@@ -48,12 +48,12 @@ export function CRIESMetricsPanel({ station }: { station: ResearchStation }) {
               <YAxis domain={[0, 1]} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="C" stroke="#8884d8" name="Coherence" />
-              <Line type="monotone" dataKey="R" stroke="#82ca9d" name="Rigor" />
-              <Line type="monotone" dataKey="I" stroke="#ffc658" name="Integration" />
-              <Line type="monotone" dataKey="E" stroke="#ff7300" name="Empathy" />
-              <Line type="monotone" dataKey="S" stroke="#00C49F" name="Strictness" />
-              <Line type="monotone" dataKey="avg" stroke="#ff0000" name="Average" strokeWidth={3} />
+              <Line type="monotone" dataKey="F" stroke="#8884d8" name="Fabrication" />
+              <Line type="monotone" dataKey="O" stroke="#82ca9d" name="Oversight" />
+              <Line type="monotone" dataKey="R" stroke="#ffc658" name="Refusal" />
+              <Line type="monotone" dataKey="G" stroke="#ff7300" name="Guidance" />
+              <Line type="monotone" dataKey="E" stroke="#00C49F" name="Evidence" />
+              <Line type="monotone" dataKey="avg" stroke="#ff0000" name="Average (Φ)" strokeWidth={3} />
             </LineChart>
           </div>
         </CardContent>

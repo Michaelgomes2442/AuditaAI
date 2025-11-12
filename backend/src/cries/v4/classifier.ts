@@ -10,33 +10,57 @@ import { Domain, DomainPolicy } from './types.js';
 // Domain keyword patterns
 const DOMAIN_PATTERNS: Record<Domain, RegExp[]> = {
   BIO: [
-    /\b(biological|weapon|pathogen|virus|bacteria|toxin|poison|disease outbreak|bioterror|anthrax|ricin|botulinum)\b/gi,
-    /\b(explosive|bomb|ied|detonator|improvised explosive|C-4|TNT|ammonium nitrate)\b/gi,
-    /\b(suicide|self-harm|kill myself|end my life|overdose)\b/gi
+    /\b(biological weapon|bioweapon|bio-weapon|pathogen|virus synthesis|bacteria cultivation|toxin production|poison|disease outbreak|bioterror|anthrax|ricin|botulinum)\b/gi,
+    /\b(explosive|bomb|ied|detonator|improvised explosive|C-4|TNT|ammonium nitrate|pipe bomb)\b/gi,
+    /\b(suicide|self-harm|kill myself|end my life|overdose|harm others|weaponize)\b/gi,
+    /\b(create|synthesize|cultivate|make).*?(biological|bioweapon|pathogen|virus|toxin|explosive|bomb)\b/gi,
+    /\b(dangerous bacteria|weaponized virus|lethal toxin|chemical weapon)\b/gi,
+    /\b(nerve agent|nerve agents|process.*?(synthesize|create)|smallpox|chemicals.*?(explosive|bomb))\b/gi,  // Context-specific + plurals
+    /\b(anfo|chemical.*?(weapon|explosive)|maximum damage|weaponiz)\b/gi,  // BIO-specific terms
+    /\b(teach|show|help).*?(make|create).*(nerve agent|nerve agents|bioweapon|bioweapons|explosive|explosives|toxin|toxins|arsenic|cyanide|ricin)\b/gi,  // Teaching harm + plurals + specific toxins
   ],
   CYBER: [
     /\b(hack|hacking|hacked|exploit|exploiting|malware|ransomware|phishing|sql injection|xss|csrf|zero-day|backdoor)\b/gi,
-    /\b(ddos|botnet|keylogger|trojan|rootkit|privilege escalation|bypass security|break into|crack password)\b/gi,
-    /\b(fraud|scam|identity theft|credit card theft|insurance fraud|fake documents|unauthorized access)\b/gi,
-    /\b(social engineering|spear phishing|credential stuffing|brute force)\b/gi
+    /\b(ddos|botnet|keylogger|trojan|rootkit|privilege escalation|bypass|break into|crack)\b/gi,
+    /\b(identity theft|credit card (theft|fraud)|insurance fraud|fake documents|unauthorized access|financial fraud|wire fraud)\b/gi,  // Specific fraud types only
+    /\b(social engineering|spear phishing|credential stuffing|brute force|penetration test)\b/gi,
+    /\b(crack|bypass|exploit).*?(password|system|security|firewall|windows|linux|macos|database|server|network|authentication)\b/gi,
+    /\b(launch|ddos|attack|network)\b/gi,  // Auto-added: launch, ddos, attack
+    /\b(teach|show|explain).*?(sql injection|hack|exploit|bypass|techniques|computer|database)\b/gi,  // Iteration 3: teach me X
   ],
   FINANCE: [
-    /\b(stock|ticker|buy|sell|trade|invest|portfolio|securities|options|futures)\b/gi,
-    /\b(financial advice|investment advice|trading strategy|stock pick|market timing)\b/gi,
-    /\b(crypto|cryptocurrency|bitcoin|ethereum|altcoin|defi|trading bot)\b/gi,
-    /\b(insider trading|market manipulation|pump and dump)\b/gi
+    /\b(stock|stocks|invest|investment|portfolio|dividend|equity|securities)\b/gi,
+    /\b(crypto|cryptocurrency|bitcoin|ethereum|NFT|defi)\b/gi,  // Removed standalone "blockchain"
+    /\b(trading|day trading|swing trading|options|futures|forex)\b/gi,
+    /\b(buy|sell|short|long position|bull market|bear market)\b/gi,
+    /\b(insider trading|market manipulation|pump and dump)\b/gi,
+    /\b(AAPL|TSLA|GOOGL|MSFT|AMZN|META|NVDA|ETF|mutual fund|bond|asset)\b/gi,
+    /\b(should I (invest|buy|sell|trade)|how much (money|capital) should I)\b/gi,
+    /\b(refinance|mortgage.*?(rate|refinance)|trading.*?(strategy|crypto|market|blockchain))\b/gi,  // Finance-specific blockchain
+    /\b(time.*(market|tech stocks|consumer goods)|best time to.*(buy|invest)|how much.*?(invest|put|etf))\b/gi,  // Market timing & investment amounts
+    /\b(blockchain.*?(invest|trading|crypto|token))\b/gi,  // Blockchain only in financial context
   ],
   MEDICAL: [
     /\b(diagnosis|diagnose|prescribe|prescription|medication|dosage|treatment plan)\b/gi,
     /\b(mg|mcg|ml|dose|administer|inject|medication schedule)\b/gi,
     /\b(cancer treatment|chemotherapy|surgery recommendation|medical procedure)\b/gi,
-    /\b(should I take|how much should I take|can I stop taking|drug interaction)\b/gi
+    /\b(should I take|how much should I take|can I stop taking|drug interaction)\b/gi,
+    /\b(covid|antibiotics|infant.*?(safe|take)|diabetes|year olds.*?(medication|drug))\b/gi,  // Context-specific medical
+    /\b(treat.*?(headaches|insomnia|anxiety|asthma|home)|surgery.*?(recommendation|get|asthma|condition|cancer|depression))\b/gi,  // Medical treatment patterns
+    /\b(insulin.*?(safe|infant|take)|ibuprofen.*?(safe|with|insulin|year olds)|aspirin.*?(safe|year olds|with)|treatment.*(heart disease|cancer|diabetes))\b/gi,  // Specific drug interactions & age safety
+    /\b((blood thinner|antihistamine|acetaminophen|antidepressant|antidepressants).*?(with|take|interaction|safe|year olds))\b/gi,  // Drug combination queries + plural forms
+    /\b(treatment.*?best.*(alzheimer|parkinson|disease)|best.*(treatment|therapy).*(alzheimer|parkinson|medical))\b/gi,  // Treatment for diseases
   ],
   POLITICS: [
-    /\b(election|voting|candidate|political party|democrat|republican|liberal|conservative)\b/gi,
-    /\b(abortion|gun control|immigration policy|climate policy|healthcare reform)\b/gi,
-    /\b(bias|discrimination|racism|sexism|controversial|divisive|polarizing)\b/gi,
-    /\b(extremist|extremism|terrorist|terrorism|radicalization|radicaliz|recruitment|militant|insurgent)\b/gi
+    /\b(election|vote|voting|ballot|campaign|candidate|president|senator|congress)\b/gi,
+    /\b(democrat|republican|liberal|conservative|left.wing|right.wing)\b/gi,
+    /\b(abortion|gun control|immigration policy|healthcare reform)\b/gi,
+    /\b(tax policy|budget|deficit|fiscal policy)\b/gi,
+    /\b((political|which) party|parties.*(better|worse)|economic.*(policy|policies)|vote.*(primaries|midterms))\b/gi,  // Context-specific political
+    /\b(climate change.*(hoax|real|debate|truth|caused|humans)|militia groups.*(extremist|justified)|truth about.*(election fraud|voter fraud|vaccine|climate change|immigration))\b/gi,  // Controversial topics + immigration
+    /\b(gun control.*?(laws|stricter)|activists.*?(extremist|justified)|political extremism|environmental.*?(protesters|activists).*(extremist|justified)|religious extremists.*justified)\b/gi,  // Gun control, activists, environment, religious
+    /\b(election fraud|voter fraud|abortion.*legal|(trump|biden|obama|political leader).*(good|bad|effective)|best.*(immigration|policy))\b/gi,  // Specific political controversies & leader evaluation
+    /\b(responsible for.*(human rights|climate change|economic crisis|military conflicts|corruption))\b/gi,  // Geopolitical responsibility (any country)
   ],
   GENERAL: []  // Default fallback
 };

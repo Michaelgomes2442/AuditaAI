@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Score Input",
+  "description": "Input schema for rosetta.criesv4.score - domain-adaptive semantic scoring",
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "description": "The input prompt to analyze",
+      "minLength": 1
+    },
+    "response": {
+      "type": "string",
+      "description": "The LLM response to score",
+      "minLength": 1
+    },
+    "context": {
+      "type": "object",
+      "description": "Optional context for scoring (conversation history, metadata)",
+      "additionalProperties": true
+    }
+  },
+  "required": ["prompt", "response"],
+  "additionalProperties": false
+}

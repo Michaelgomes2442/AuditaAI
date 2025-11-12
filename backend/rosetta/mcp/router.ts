@@ -13,6 +13,8 @@ import { receiptEmit } from './tools/receipts.js';
 import { hashVerify } from './tools/hashing.js';
 import { criesScore } from './tools/cries.js';
 import { contextGet } from './tools/context.js';
+import { criesV4Score, criesV4Classify, criesV4GovernanceLoad, criesV4Batch } from './tools/criesv4.js';
+import { governanceLoad, governanceApply, governanceSelect } from './tools/governance.js';
 import { RosettaMCPKernel } from './kernel/index.js';
 import { ToolRequest, ToolResponse } from './types.js';
 
@@ -72,7 +74,16 @@ const tools: { [key: string]: Function } = {
   'rosetta.receipt.emit': receiptEmit,
   'rosetta.hash.verify': hashVerify,
   'rosetta.cries.score': criesScore,
-  'rosetta.context.get': contextGet
+  'rosetta.context.get': contextGet,
+  // CRIES v4 tools (production-ready, 98% accuracy)
+  'rosetta.criesv4.score': criesV4Score,
+  'rosetta.criesv4.classify': criesV4Classify,
+  'rosetta.criesv4.governance.load': criesV4GovernanceLoad,
+  'rosetta.criesv4.batch': criesV4Batch,
+  // Governance tools (domain-adaptive policy loading)
+  'rosetta.governance.load': governanceLoad,
+  'rosetta.governance.apply': governanceApply,
+  'rosetta.governance.select': governanceSelect
 };
 
 // Register new MCP kernel tools

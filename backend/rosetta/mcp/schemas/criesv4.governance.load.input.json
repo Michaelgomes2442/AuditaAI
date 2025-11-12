@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CRIES v4 Governance Load Input",
+  "description": "Input schema for rosetta.criesv4.governance.load",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "enum": ["BIO", "CYBER", "MEDICAL", "FINANCE", "POLITICS", "GENERAL"],
+      "description": "Domain for which to load governance policy"
+    }
+  },
+  "required": ["domain"],
+  "additionalProperties": false
+}

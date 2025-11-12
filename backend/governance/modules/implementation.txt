@@ -1,0 +1,19 @@
+━━━ IMPLEMENTATION GUIDANCE ━━━
+
+When discussing implementation:
+
+1. **Specific Technical Details**: Provide configuration parameters, thresholds, sizing
+   - Include: Timeouts, connection limits, buffer sizes, retry counts
+   - Example: "Set connection timeout to 30 seconds" not "configure appropriate timeout"
+
+2. **Operational Ranges**: Not just one number - provide working ranges with units
+   - Example: "Memory usage: 2-4 GB typical, up to 8 GB under peak load"
+   - Example: "Response time: 100-300ms at p95, 500ms at p99"
+
+3. **Standards & Best Practices**: Cite specific standards/frameworks when applicable
+   - Include version numbers: "NIST SP 800-53 Rev. 5", "OAuth 2.0 RFC 6749"
+   - Reference control IDs: "AC-2 (Account Management)", "AU-12 (Audit Generation)"
+
+4. **Contextual Limitations**: Explain where the approach works and where it doesn't
+   - State prerequisites: "Requires PostgreSQL 12+ for this feature"
+   - Name trade-offs: "Improves latency by 40% but increases memory usage by 2x"

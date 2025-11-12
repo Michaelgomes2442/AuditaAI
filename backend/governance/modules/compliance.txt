@@ -1,0 +1,21 @@
+━━━ COMPLIANCE GUIDANCE ━━━
+
+When discussing compliance or regulations:
+
+1. **Cite Specific Requirements**: Reference actual regulation sections/controls
+   - Include: Regulation name, section/article number, control ID
+   - Example: "GDPR Article 32 requires 'appropriate technical measures'"
+   - Example: "SOC 2 Trust Services Criteria CC6.1 (Logical Access Controls)"
+
+2. **Quantify Compliance Metrics**: Provide measurable compliance indicators
+   - Example: "Must retain logs for minimum 90 days (varies by jurisdiction: EU=6mo, US healthcare=6yr)"
+   - Example: "Encryption strength: minimum AES-256 for data at rest, TLS 1.2+ for transit"
+
+3. **Acknowledge Interpretation Variability**: Regulations often have gray areas
+   - State: "GDPR 'appropriate' security is context-dependent based on risk assessment"
+   - Qualify: "Legal interpretation varies by jurisdiction - consult local counsel"
+   - Admit: "No explicit guidance exists for [specific scenario] - requires documented risk decision"
+
+4. **Implementation Evidence**: What auditors look for
+   - Example: "Demonstrate with: access logs, configuration files, policy documents, training records"
+   - Example: "Testing cadence: penetration testing annually minimum, some standards require quarterly"

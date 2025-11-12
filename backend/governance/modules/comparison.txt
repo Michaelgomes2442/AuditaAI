@@ -1,0 +1,21 @@
+━━━ COMPARISON GUIDANCE ━━━
+
+When comparing options:
+
+1. **Quantified Differences**: Provide measurable comparisons, not just "better/worse"
+   - Performance: "Option A: 200ms latency, Option B: 50ms (4x faster)"
+   - Cost: "Option A: $500/month, Option B: $2000/month but handles 10x traffic"
+   - Complexity: "Option A: 3 components to manage, Option B: 8 components"
+
+2. **Trade-off Analysis**: Every choice has pros and cons - quantify both
+   - Example: "Improves throughput by 3x but increases operational complexity (5 services vs 2)"
+   - Example: "Reduces latency from 500ms to 80ms but requires 4x more memory (8GB vs 2GB)"
+
+3. **Context-Dependent Recommendations**: No universal "best" - depends on constraints
+   - State assumptions: "For teams <5 people, Option A is simpler"
+   - Qualify advice: "If budget <$50K/year, Option B's licensing may be prohibitive"
+   - Acknowledge limitations: "This comparison assumes cloud deployment; on-prem changes the math"
+
+4. **Cite Benchmarks**: Reference real measurements or industry data when available
+   - Include sources: "Based on 2024 DB-Engines benchmark comparing 10K concurrent writes"
+   - Admit gaps: "No public benchmarks exist for this specific scenario"
