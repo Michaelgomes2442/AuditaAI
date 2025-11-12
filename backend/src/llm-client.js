@@ -9,12 +9,21 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
+import fssync from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { v4 as uuid } from 'uuid';
+import crypto from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import TypeScript modules (tsx handles .ts files)
 import { nextLamport } from '../rosetta/kernel.js';
 import { buildOmegaV15GovernedPrompt } from '../rosetta/persona/persona-v15.js';
 import { writeReceipt, appendChain, sha256Hex } from '../rosetta/audit/receipts.js';
+import { loadDomainGovernance } from './governance-loader.js'; // Domain-specific governance
+import { computeForge } from './forge/v2/pillars-production.js'; // FORGE v2 Bayesian-optimized governance scoring
 
 // Optional MCP client - only import if available
 let mcp = null;
@@ -58,13 +67,19 @@ async function buildGovernedPrompt(rawPrompt, opts = {}) {
   const userName = opts.userName ?? 'User';
   const userRole = opts.userRole ?? 'Operator';
 
+  // DEPRECATED: Legacy boot sequence removed - use FORGE v1 domain classification instead
   // Boot: Δ-WHOAMI
-  let bootStatus = await mcp('rosetta.boot.init', {});
-  let whoami = await mcp('rosetta.boot.whoami', { name: userName });
-  let personaCtx = await mcp('rosetta.persona.lock', userName);
+  // let bootStatus = await mcp('rosetta.boot.init', {});
+  // let whoami = await mcp('rosetta.boot.whoami', { name: userName });
+  // let personaCtx = await mcp('rosetta.persona.lock', userName);
 
-  // Tri-Track: CRIES→Ω, Ethics, Intent
-  let triTrack = await mcp('rosetta.triTrack.analyze', { cries: opts.cries, goal: opts.goal });
+  // Tri-Track: CRIES→Ω, Ethics, Intent (keeping for backward compatibility)
+  let triTrack = { cries: opts.cries || {}, goal: opts.goal || 'assist', ethics: 'neutral', intent: 'helpful' };
+  try {
+    triTrack = await mcp('rosetta.triTrack.analyze', { cries: opts.cries, goal: opts.goal });
+  } catch {
+    // MCP tool may not be available, use defaults
+  }
 
   // Speechcraft: persona-based
   let speech = await mcp('rosetta.speechcraft.apply', { persona: personaCtx.persona, text: rawPrompt });
@@ -314,215 +329,1033 @@ export async function callGemini(prompt, options = {}) {
 }
 
 /**
- * Build Omega⁴ Governance Wrapper - Optimized for Maximum CRIES
- * vΩ4.1-optimized: Balanced optimization across Coherence, Rigor, Integration, Empathy, Strictness
- * CRITICAL: Visible answer = prose only. All evidence structures = receipts only.
+ * Detect prompt type from content (for modular injection)
  */
-function buildMegaGovernanceWrapper(prompt, context = {}) {
-  const userName = context.userName || 'User';
-  const userRole = context.userRole || 'Operator';
-  const witness = context.witness || 'RosettaOS MCP';
-  const version = context.version || 'vΩ4.1-optimized';
-  const lamport = context.lamport || 0;
-  
-  return `
-ROSETTA Ω⁴ GOVERNANCE (${version})
-User=${userName} (${userRole}) • Witness=${witness} • λ=${lamport}
-
-You are analyzing this query for an enterprise audit and governance system. Your visible response must be natural, narrative prose without any explicit evidence structures, metric tables, enumerated claims, or verification scaffolding.
-
-Compose your response as a flowing narrative where each paragraph builds on the previous. Start with core context. Progress through implications using causal language: because, therefore, consequently, this leads to, which means. Conclude with actionable synthesis. Use transitional phrases that reveal logical progression: "In practice this means...", "Taking this further...", "The implication for operations is...", "From an implementation standpoint...". Every sentence should feel like a necessary step in explaining something complex to a peer.
-
-Every technical mechanism must include concrete numbers. Describe thresholds where they trigger (e.g., 100ms timeout, 500 error rate). Give ranges where mechanisms operate reliably (e.g., 50-500 concurrent connections). Specify failure conditions with exact metrics. Walk through realistic failure scenarios with specific values: "When load exceeds 10,000 req/s, the circuit breaker triggers after 5 consecutive 503s within a 30-second window." Reference established standards with exact control numbers: NIST 800-53 AC-2.1 (single-factor authentication), SOC2 CC6.1 (restrict access to authenticated principals), ISO 27001 A.9.2.1 (establish formal access procedures). Cite production observables: query latency in CloudWatch, authentication failures in syslog, throughput in Prometheus.
-
-Trace the complete system flow: where input comes from, how your component processes it, where output goes. Explain how this mechanism interacts with other systems: "Rate limiting coordinates with the load balancer via a shared Redis key", "Configuration changes propagate to all 50 instances through ZooKeeper watches", "Audit logging feeds directly into the SIEM pipeline for threat detection." Connect to operational constraints: "Our legacy Oracle database maxes out at 100 concurrent connections, so connection pooling must cap at 80 to avoid saturation." Show business implications: "When this mechanism fails, the customer-facing SLA breach costs $5k per minute, which makes redundancy a business requirement, not just a technical preference."
-
-Address the person implementing this tomorrow morning. Acknowledge their actual constraints: "Your team has 2 backend engineers and no dedicated DevOps role." Explain real trade-offs: "The perfect solution requires 6 months; a pragmatic version takes 2 weeks and covers 95% of the risk." Explain what matters: "This control prevents credential stuffing attacks that hit your API 1000 times per day—that's your number one vulnerability." Signal decision points clearly: "If you have automated deployment, do X; if your deployment is still manual, do Y instead—they have different trade-offs." Validate legitimate concerns: "Yes, this adds about 50 milliseconds of latency, and it's worth it because..."
-
-Explicitly state what could go wrong. Name the failure mode: "This approach fails completely if the database becomes unavailable—there is no graceful degradation." State your assumptions: "We assume network latency under 100ms; beyond that, the retry logic breaks down." Quantify your uncertainty: "Industry best practice suggests X; however, your 10-year-old system may not support it, and I cannot verify without seeing your infrastructure logs." Cite your confidence level: "This is from NIST guidelines (peer-reviewed, authoritative source, high confidence). That estimate is my inference from limited data (treat with skepticism)." Acknowledge information gaps: "We don't have visibility into the upstream API's failure patterns, so monitoring recommendations are educated guesses based on industry norms."
-
-Your tone should match the question and user's expertise level. In general: knowledgeable, precise, but accessible to technical professionals. No bullet lists. No numbered sections. No metric tables. No evidence ledgers. Just clear, rigorous, professional prose that earns trust through demonstrated expertise while keeping all structured rigor in the automated receipt system.
-
-The user's query follows.
-
-
-━━━ ENHANCED RIGOR REQUIREMENTS ━━━
-Your response MUST include specific, concrete details:
-1. QUANTIFIED THRESHOLDS: Provide exact numbers (e.g., "timeout after 30 seconds", "max 1000 requests/minute", "retain logs for 90 days")
-2. NUMERICAL RANGES: Give min/max bounds (e.g., "between 50-200ms latency", "2-5 replicas", "99.9-99.99% uptime")
-3. STANDARD REFERENCES: Cite specific standards with version numbers (e.g., "OAuth 2.0 RFC 6749", "TLS 1.3", "NIST SP 800-53 Rev. 5")
-4. CONTROL NUMBERS: Reference exact control IDs (e.g., "AC-2", "AU-12", "SC-7")
-5. QUANTIFIED SCENARIOS: Provide failure progression with numbers (e.g., "At 80% capacity, throttle. At 95%, reject. At 100%, circuit break for 60s")
-6. PRODUCTION OBSERVABLES: Include measurable metrics (e.g., "p99 latency", "error rate < 0.1%", "CPU usage < 70%")
-
-EXAMPLES OF RIGOROUS RESPONSES:
-- "Implement rate limiting with a token bucket: 1000 tokens/min per user, burst of 100, refill rate of 16.67/second"
-- "Use exponential backoff: initial delay 100ms, max 30s, multiplier 2.0, with jitter ±20%"
-- "Configure circuit breaker: failure threshold 50%, timeout 10s, half-open after 30s, success threshold 3/5 calls"
-
-
-━━━ ENHANCED RIGOR REQUIREMENTS ━━━
-Your response MUST include specific, concrete details:
-1. QUANTIFIED THRESHOLDS: Provide exact numbers (e.g., "timeout after 30 seconds", "max 1000 requests/minute", "retain logs for 90 days")
-2. NUMERICAL RANGES: Give min/max bounds (e.g., "between 50-200ms latency", "2-5 replicas", "99.9-99.99% uptime")
-3. STANDARD REFERENCES: Cite specific standards with version numbers (e.g., "OAuth 2.0 RFC 6749", "TLS 1.3", "NIST SP 800-53 Rev. 5")
-4. CONTROL NUMBERS: Reference exact control IDs (e.g., "AC-2", "AU-12", "SC-7")
-5. QUANTIFIED SCENARIOS: Provide failure progression with numbers (e.g., "At 80% capacity, throttle. At 95%, reject. At 100%, circuit break for 60s")
-6. PRODUCTION OBSERVABLES: Include measurable metrics (e.g., "p99 latency", "error rate < 0.1%", "CPU usage < 70%")
-
-EXAMPLES OF RIGOROUS RESPONSES:
-- "Implement rate limiting with a token bucket: 1000 tokens/min per user, burst of 100, refill rate of 16.67/second"
-- "Use exponential backoff: initial delay 100ms, max 30s, multiplier 2.0, with jitter ±20%"
-- "Configure circuit breaker: failure threshold 50%, timeout 10s, half-open after 30s, success threshold 3/5 calls"
-
-
-━━━ SCENARIO-BASED RIGOR ━━━
-For EVERY recommendation, provide:
-1. NORMAL OPERATION: Exact behavior under typical load with numbers
-2. DEGRADED STATE: What happens at 70-90% capacity - specific symptoms
-3. FAILURE MODE: What breaks at >95% - exact failure conditions
-4. RECOVERY PATH: Step-by-step restoration with timing (e.g., "1. Drain traffic (30s), 2. Reset state (10s), 3. Gradual ramp-up (5min)")
-
-EXAMPLE:
-"Authentication Service:
-- Normal: <100ms latency, 1000 QPS, 99.99% success
-- Degraded (80% load): 200-500ms latency, enable caching, shed non-critical checks
-- Failure (>95%): Return 503, circuit open for 60s, redirect to backup
-- Recovery: Clear connection pool (10s), restart with 10% traffic, ramp 10%/min to 100%"
-`.trim();
+function detectPromptType(prompt) {
+  const lower = prompt.toLowerCase();
+  if (/(risk|vulnerability|threat|attack|security|breach)/i.test(lower)) return 'risk_analysis';
+  if (/(compliance|regulation|policy|audit|governance)/i.test(lower)) return 'compliance';
+  if (/(implement|deploy|architecture|design|system)/i.test(lower)) return 'implementation';
+  if (/(compare|versus|vs|difference|which|better)/i.test(lower)) return 'comparison';
+  return 'general';
 }
 
 /**
- * Analyze CRIES dimensions of a response by examining receipt payloads
- * Returns structured CRIES scores based on receipt evidence
+ * Load governance module from file system
+ */
+function loadGovernanceModule(moduleName) {
+  try {
+    const modulePath = path.join(__dirname, '../governance/modules', `${moduleName}.txt`);
+    return fssync.readFileSync(modulePath, 'utf-8');
+  } catch (error) {
+    console.warn(`⚠️ Could not load module ${moduleName}`);
+    return '';
+  }
+}
+
+/**
+ * Build refinement prompt for Pass 2 (when CRIES scores are low)
+ */
+function buildRefinementPrompt(originalPrompt, response, criesScores) {
+  // Build a forceful, specific refinement that demands substantive improvements
+  const demands = [];
+  
+  // MISSING CONTEXT ANALYSIS: Identify what specific information would make response better
+  const missingContextQuestions = [];
+  
+  // Analyze what context gaps might exist
+  const mentionsCompanySize = /\b(small|large|startup|enterprise|firm|company|organization)\b/i.test(originalPrompt);
+  const mentionsCompliance = /\b(regulated|compliance|regulatory|sec|finra|sox|hipaa|gdpr)\b/i.test(originalPrompt);
+  const mentionsDataType = /\b(pii|data|customer|financial|transaction|sensitive)\b/i.test(originalPrompt);
+  const mentionsTechStack = /\b(api|database|cloud|infrastructure|aws|azure|gcp|legacy)\b/i.test(originalPrompt);
+  const mentionsBudget = /\b(budget|cost|spend|investment|price)\b/i.test(originalPrompt);
+  
+  if (!mentionsCompanySize) {
+    missingContextQuestions.push("What is your company size and maturity level? (startup <50 people, mid-market 50-5000, enterprise >5000)");
+  }
+  if (!mentionsCompliance) {
+    missingContextQuestions.push("What compliance/regulatory frameworks apply? (SEC, FINRA, SOX, HIPAA, GDPR, none)");
+  }
+  if (!mentionsDataType) {
+    missingContextQuestions.push("What data types will the AI handle? (public data only, internal documents, PII, financial records, account information)");
+  }
+  if (!mentionsTechStack) {
+    missingContextQuestions.push("What's your current infrastructure? (cloud-native on AWS/Azure, legacy on-prem systems, hybrid)");
+  }
+  if (!mentionsBudget) {
+    missingContextQuestions.push("What's your budget constraint and risk appetite? (early-stage capital constraints, public company risk-averse, startup speed-first)");
+  }
+  
+  // If we have missing context, demand it upfront
+  if (missingContextQuestions.length > 0) {
+    demands.push(`❓ **CRITICAL MISSING CONTEXT - PROVIDE THESE DETAILS FOR A MEANINGFUL RESPONSE:**\n\nYour original question is too generic. To give you a response that's actually useful (not generic risk list), I need to know:\n\n${missingContextQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n\n⚠️ Different answers for each scenario:\n• Small startup with no regulations ≠ Large bank with SEC oversight\n• Company handling non-PII data ≠ Company handling customer financial records\n• AWS-native company ≠ Legacy on-prem system`);
+  }
+  
+  // ALWAYS demand citations and specific sourcing
+  demands.push(`🔍 **CITATIONS AND SOURCING - MANDATORY:**
+Every claim must cite sources. Use format: "[Author, Year]" or "[Standard: Section#]"
+Examples of REQUIRED citations:
+  • "SOC 2 Type II (AICPA 2022) requires continuous monitoring..."
+  • "Kaminski & Staley (2023) found LLM hallucination rates of X% in financial contexts..."
+  • "SEC 17a-4(f) mandates immutable records for 6 years..."
+  • "NIST SP 800-53 Rev5 Control AU-12 requires audit trail capture..."
+Currently your response has ${(response.match(/\[.*?[\d]{4}\]|\(.*?\d{4}\)/g) || []).length} citations. Add at least 5-8 substantive ones.`);
+  
+  // Demand quantification with ranges and conditions
+  demands.push(`📊 **QUANTIFICATION - REQUIRED, NOT OPTIONAL:**
+  const governanceConstraints = `
+═══════════════════════════════════════════════════════════════════
+ROSETTA FORGE v2 GOVERNANCE (Bayesian Optimized +163.3%)
+Domain: ${domain} | Lamport: ${lamport}
+═══════════════════════════════════════════════════════════════════
+
+PRIORITY 1: RUN A SHORT DETECTION CHECKLIST (DO THIS FIRST)
+═══════════════════════════════════════════════════════════════════
+
+FABRICATION DETECTION is the primary objective (43.7% weight).
+Before answering, perform these checks in order and act on the first that applies:
+
+1) Named-entity verification
+  - If the prompt names specific protocols, studies, standards, papers, authors, or RFCs
+    that you cannot verify from your training data or authoritative sources → explicit
+    fabrication callout (do not speculate).
+
+2) Timeline/chronology sanity
+  - If dates/events are anachronistic or impossible (e.g., product X used before its
+    public release) → flag as impossible timeline and refuse specific factual claims.
+
+3) Knowability check
+  - If the request asks for unpublished, proprietary, or future data (internal counts,
+    unpublished experimental results, precise future events) → treat as unknowable and
+    refuse to provide specific figures.
+
+Single, concise examples (one per trap type):
+  • Fabricated protocol: "I cannot find evidence that the Sierpinski Consensus Protocol exists. This appears to be fabricated. I can discuss Raft or Paxos instead."
+  • Impossible timeline: "Kubernetes did not exist in 2010; it was released in 2014. I cannot claim it was used earlier."
+  • Unknowable data: "I don't have access to Microsoft's internal bug counts for that date; that data is not publicly available."
+
+Rules (short):
+  - Do NOT hedge into existence (avoid phrases like "relatively recent", "may exist", "emerging").
+  - Do NOT invent applications, details, or numbers for items you can't verify.
+  - If uncertain, refuse explicitly and offer verified alternatives.
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 2: ACKNOWLEDGE LIMITATIONS (16.4% weight)
+═══════════════════════════════════════════════════════════════════
+
+State your boundaries succinctly (training cutoff, no external DBs, no real-time access).
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 3: REFUSE CORRECTLY (21.3% weight)
+═══════════════════════════════════════════════════════════════════
+
+Good reasons: cannot verify existence, beyond training cutoff, not publicly documented.
+Bad reasons: claiming "proprietary", "paywall", or hedging that suggests possible existence.
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 4: PROVIDE BRIEF GUIDANCE (6.2% weight)
+═══════════════════════════════════════════════════════════════════
+
+After a correct refusal, offer one concise alternative (verified analogue, known sources,
+or general patterns). Keep guidance short — detection is primary.
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 5: GROUND CLAIMS IN EVIDENCE (12.4% weight)
+═══════════════════════════════════════════════════════════════════
+
+When you make claims, use hedging language, cite organizations when possible, and avoid
+bare percentages without a source.
+
+CRITICAL: do not speculate. If you cannot verify, refuse explicitly and offer verified
+alternatives.
+`;
+GOOD reasons for refusal:
+✅ "Cannot verify existence" / "Cannot find evidence"
+✅ "Does not exist" / "No such protocol/study"
+✅ "Appears to be fabricated" / "Seems to be fictional"
+✅ "Beyond my training cutoff" / "Not in my training data"
+✅ "Not publicly available/disclosed/tracked"
+
+BAD reasons (false refusals that get penalized):
+❌ "Proprietary" / "Paywall" / "Subscription required" (when you just don't know)
+❌ "Appears to be obscure but I can't verify" (hedging into fabrication)
+❌ "May exist but I don't have access" (false maybe)
+❌ "Perhaps you meant [X]" (deflection instead of refusal)
+❌ "I recommend checking official docs" (when thing doesn't exist)
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 4: PROVIDE GUIDANCE (6.2% weight - reduced, keep brief)
+═══════════════════════════════════════════════════════════════════
+
+After refusing fabricated content, offer brief alternatives:
+
+✅ "I can instead discuss [verified alternative]."
+✅ "For accurate information, consult [authoritative source]."
+✅ "If you meant [real protocol], I can explain that."
+
+Keep guidance concise. Detection matters more than elaborate alternatives.
+
+═══════════════════════════════════════════════════════════════════
+PRIORITY 5: GROUND CLAIMS IN EVIDENCE (12.4% weight)
+═══════════════════════════════════════════════════════════════════
+
+When making claims:
+
+✅ Use hedging: "typically", "generally", "often", "studies suggest"
+✅ Cite real organizations when possible: "According to NIST...", "Gartner reports..."
+✅ Avoid bare assertions: Don't state "X% of companies" without source
+
+Penalized behaviors:
+❌ "According to a study" without proper noun author/org (-0.30 penalty)
+❌ Bare percentage claims: "85% of companies use X" with no source (-0.40)
+
+═══════════════════════════════════════════════════════════════════
+CRITICAL: DON'T HEDGE YOUR WAY INTO FABRICATION
+═══════════════════════════════════════════════════════════════════
+
+WRONG approaches that lead to fabrication:
+
+❌ "While information is limited, [X] generally involves..."
+   → NO. If you can't verify X exists, SAY SO explicitly.
+
+❌ "This is an emerging/recent/novel approach to..."
+   → NO. "Emerging" is a hedge that fabricates existence.
+
+❌ "Though not widely documented, the applications include..."
+   → NO. This fabricates applications of something that might not exist.
+
+❌ "While specifics vary, this protocol typically..."
+   → NO. Don't discuss a protocol you can't verify exists.
+
+❌ "Unclear whether this exists, but if it does..."
+   → NO. Don't speculate on fabricated content.
+
+RIGHT approach:
+
+✅ "I cannot find evidence this exists. This may be fictional or beyond my training data."
+✅ "This does not match any protocol I know. Did you mean [similar real protocol]?"
+✅ "This appears to be fabricated. I can discuss [verified alternatives] instead."
+
+═══════════════════════════════════════════════════════════════════
+SELF-CHECK BEFORE RESPONDING
+═══════════════════════════════════════════════════════════════════
+
+STOP. Before you send your response:
+
+□ Did I verify EVERY specific term/protocol/study mentioned exists in my training data?
+  → If NO, did I explicitly state "I cannot find evidence this exists" or "This appears fabricated"?
+
+□ Did I use hedge words like "relatively recent", "emerging", "novel", "not widely", "unclear whether"?
+  → If YES and I can't verify it exists, REWRITE to explicit refusal with callout
+
+□ Am I discussing applications/features of something I can't verify?
+  → If YES, STOP and refuse explicitly instead
+
+□ Did I check for temporal inconsistencies (tech before it existed)?
+  → If found, call it out: "[X] did not exist in [year]. It was released in [year]."
+
+□ Did I check if data is publicly available?
+  → If asking for proprietary/confidential stats, refuse: "This data is not publicly disclosed."
+
+□ Would a user reading this think the thing exists when it might not?
+  → If YES, REWRITE with explicit uncertainty or refusal
+
+□ Did I provide specific numbers for unknowable data?
+  → If YES, REWRITE to acknowledge limitation or refuse
+
+═══════════════════════════════════════════════════════════════════
+
+Now answer the user's question. DETECTION FIRST, helpfulness second.
+
+Remember: Fabrication Detection = 43.7% of your score. Get this right.
+`;
+
+  
+  return governanceConstraints.trim();
+}
+
+/**
+ * Analyze FORGE dimensions of a response
+ * Returns structured FORGE scores (F-O-R-G-E)
  */
 function analyzeCRIES(prompt, response, analysisReceipt) {
-  const scores = {
-    coherence: 0,
-    rigor: 0,
-    integration: 0,
-    empathy: 0,
-    strictness: 0
-  };
+  // Compute FORGE metrics
+  const forgeResult = computeForge(prompt, response);
   
-  const evidence = {
-    mechanisms_count: 0,
-    quantitative_anchors: 0,
-    standards_cited: [],
-    scenarios_present: false,
-    prose_quality: 'unknown'
+  // Return in CRIES-compatible format for legacy endpoints
+  return {
+    // Legacy CRIES format (mapped from FORGE v2)
+    coherence: forgeResult.O,  // Oversight
+    rigor: forgeResult.E,      // Evidence
+    integration: 0,            // REMOVED
+    empathy: forgeResult.G,    // Guidance
+    strictness: forgeResult.F, // Fabrication Detection
+    
+    // FORGE v2 native metrics (Bayesian optimized)
+    F: forgeResult.F,
+    O: forgeResult.O,
+    R: forgeResult.R,
+    G: forgeResult.G,
+    E: forgeResult.E,
+    Φ: forgeResult.Φ,
+    
+    // Overall scores
+    overall: forgeResult.Φ,
+    omega: forgeResult.Φ,
+    
+    // Components for debugging
+    components: forgeResult.components,
+    system: 'FORGE-v2',
+    optimization: 'bayesian-100-iterations',
+    improvement: '+163.3%'
+  };
+}
+
+/**
+ * CONTEXT ANCHORING - Extract explicit/implicit/missing context from prompt
+ * Prevents generic answers by forcing reasoning FROM prompt details
+ */
+function extractPromptContext(prompt) {
+  const explicit = {
+    size: null,
+    domain: null,
+    mentioned_actors: [],
+    mentioned_tools: [],
+    mentioned_constraints: [],
+    success_criteria: null
   };
 
-  // COHERENCE: Check for narrative flow and organic structure
-  const hasParagraphs = (response.match(/\n\n/g) || []).length >= 2;
-  const hasTransitions = /in practice|from a .* standpoint|this means|as a result|consequently/i.test(response);
-  const noBullets = !response.match(/^[\s]*[-*•]\s/m);
-  const noHeaders = !response.match(/^#{1,6}\s|^[A-Z][A-Z\s]{3,}:?\s*$/m);
-  
-  scores.coherence = (hasParagraphs ? 0.3 : 0) + (hasTransitions ? 0.3 : 0) + (noBullets ? 0.2 : 0) + (noHeaders ? 0.2 : 0);
-  evidence.prose_quality = scores.coherence >= 0.7 ? 'organic' : (scores.coherence >= 0.4 ? 'mixed' : 'structured');
+  const implicit = {
+    urgency: 'normal', // low, normal, high
+    risk_level: 'normal', // low, normal, high
+    decision_stage: 'planning', // planning, implementation, troubleshooting
+    budget_signal: null // high, medium, low, unknown
+  };
 
-  // RIGOR: Check for mechanisms, thresholds, scenarios, and standards
-  // Count quantitative mechanisms (thresholds, ranges, percentages, specific values)
-  const mechanismPatterns = [
-    /\d+\s*(ms|seconds?|minutes?|hours?|days?|bytes?|KB|MB|GB|requests?|connections?|threads?|processes?)/gi,
-    /threshold of \d+|limit of \d+|maximum of \d+|minimum of \d+/gi,
-    /between \d+ and \d+|range of \d+-\d+|from \d+ to \d+/gi,
-    /\d+%|\d+\.\d+%/g,
-    /exceeds \d+|below \d+|above \d+|under \d+|over \d+/gi
+  const gaps = {
+    missing_info: [],
+    assumed_defaults: [],
+    unknowns_acknowledged: false
+  };
+
+  // Extract explicit mentions
+  const sizePatterns = [
+    { pattern: /\bmid-?size\b/i, value: 'medium' },
+    { pattern: /\bsmall(\s+(team|company|organization))?\b/i, value: 'small' },
+    { pattern: /\blarge(\s+(team|company|organization))?\b/i, value: 'large' },
+    { pattern: /\b(\d+)\s*(employees?|team members?|users?)\b/i, value: 'explicit_count' },
+    { pattern: /\benterprise\b/i, value: 'enterprise' }
   ];
   
-  mechanismPatterns.forEach(pattern => {
-    const matches = response.match(pattern) || [];
-    evidence.mechanisms_count += matches.length;
+  for (const { pattern, value } of sizePatterns) {
+    if (pattern.test(prompt)) {
+      explicit.size = value;
+      break;
+    }
+  }
+
+  // Extract domain
+  const domainPatterns = [
+    /\b(finance|financial|banking|investment|trading)\b/i,
+    /\b(healthcare|medical|clinical|hospital)\b/i,
+    /\b(ecommerce|retail|shopping)\b/i,
+    /\b(manufacturing|production|industrial)\b/i,
+    /\b(saas|software|application|platform)\b/i
+  ];
+
+  for (const pattern of domainPatterns) {
+    if (pattern.test(prompt)) {
+      const match = prompt.match(pattern);
+      explicit.domain = match[1].toLowerCase();
+      break;
+    }
+  }
+
+  // Extract actors and roles
+  const actorPatterns = [
+    /\b(analysts?|engineers?|developers?|data scientists?|stakeholders?|clients?|users?|managers?)\b/gi
+  ];
+  
+  for (const pattern of actorPatterns) {
+    let match;
+    while ((match = pattern.exec(prompt)) !== null) {
+      explicit.mentioned_actors.push(match[1].toLowerCase());
+    }
+  }
+
+  // Extract mentioned tools/technologies
+  const toolPatterns = [
+    /\b(kubernetes|docker|microservices?|apis?|databases?|sql|nosql|rest|graphql|llm|gpt|claude|azure|aws|gcp)\b/gi
+  ];
+
+  for (const pattern of toolPatterns) {
+    let match;
+    while ((match = pattern.exec(prompt)) !== null) {
+      explicit.mentioned_tools.push(match[1].toLowerCase());
+    }
+  }
+
+  // Extract constraints
+  const constraintPatterns = [
+    { pattern: /\b(productivity|performance|speed|latency|throughput)\b/gi, category: 'performance' },
+    { pattern: /\b(security|compliance|privacy|regulatory|audit|governance)\b/gi, category: 'governance' },
+    { pattern: /\b(cost|budget|expensive|cheap|optimization)\b/gi, category: 'cost' },
+    { pattern: /\b(scalability|scalable|growth|expansion)\b/gi, category: 'scale' }
+  ];
+
+  for (const { pattern, category } of constraintPatterns) {
+    if (pattern.test(prompt)) {
+      explicit.mentioned_constraints.push(category);
+    }
+  }
+
+  // Extract implicit signals
+  const hasNegatives = /don't|shouldn't|avoid|prevent|reduce|minimize|stop/i.test(prompt);
+  const hasPositives = /improve|enhance|increase|maximize|grow|accelerate/i.test(prompt);
+  const hasUrgency = /urgent|asap|immediately|critical|deadline|soon/i.test(prompt);
+  const hasHighRisk = /breach|exploit|attack|vulnerability|failure|crash|down/i.test(prompt);
+
+  if (hasUrgency) implicit.urgency = 'high';
+  if (hasHighRisk || /security|compliance|regulatory/i.test(prompt)) implicit.risk_level = 'high';
+  if (hasNegatives && !hasPositives) implicit.urgency = 'high';
+
+  // Extract what's NOT mentioned (gaps)
+  const criticalMissing = [
+    { name: 'budget', pattern: /\b(budget|cost|pricing|expense|investment)\b/i },
+    { name: 'timeline', pattern: /\b(timeline|deadline|schedule|month|week|quarter|year)\b/i },
+    { name: 'existing_stack', pattern: /\b(currently|existing|have|use|deploy|running)\b/i },
+    { name: 'team_expertise', pattern: /\b(expertise|skilled|experienced|knowledge|capabilities)\b/i },
+    { name: 'failure_modes', pattern: /\b(if|when|scenario|happens|goes wrong|fails)\b/i }
+  ];
+
+  for (const { name, pattern } of criticalMissing) {
+    if (!pattern.test(prompt)) {
+      gaps.missing_info.push(name);
+    }
+  }
+
+  // Identify assumed defaults
+  if (!explicit.size) gaps.assumed_defaults.push('assuming no specific company size');
+  if (!explicit.mentioned_tools.length) gaps.assumed_defaults.push('no tech stack specified, assuming generic setup');
+  if (!explicit.mentioned_constraints.length) gaps.assumed_defaults.push('no stated constraints, assuming all equally important');
+
+  return { explicit, implicit, gaps };
+}
+
+/**
+ * Build Context-Aware System Prompt
+ * Forces LLM to reason FROM extracted context, not generic patterns
+ */
+function buildContextAwareSystemPrompt(prompt, contextAnalysis) {
+  const { explicit, implicit, gaps } = contextAnalysis;
+  
+  let systemPrompt = `You are an expert advisor providing strategic guidance.
+
+## CONTEXT CONSTRAINTS (MUST READ)
+This prompt mentions:
+- Domain: ${explicit.domain || 'General/Unspecified'}
+- Organization size: ${explicit.size || 'NOT SPECIFIED'}
+- Key actors: ${explicit.mentioned_actors.length > 0 ? explicit.mentioned_actors.join(', ') : 'General audience'}
+- Constraints mentioned: ${explicit.mentioned_constraints.length > 0 ? explicit.mentioned_constraints.join(', ') : 'None explicitly stated'}
+
+The user has NOT mentioned:
+${gaps.missing_info.map(g => `- ${g}`).join('\n')}
+
+## FORBIDDEN PATTERNS (AUTOMATIC FAILURE IF VIOLATED)
+❌ DO NOT use generic frameworks like these:
+  - "There are 7 standard risks: data security, bias, accuracy, over-reliance, compliance, integration, change management"
+  - "Some key concerns include: authentication, authorization, encryption"
+  - Any response that lists >3 parallel risks without context
+  - Vague citations like "research shows" or "general AI risk literature"
+  - Unqualified claims (use "typically", "likely", "ranges from X to Y" instead)
+
+## YOUR REASONING CONSTRAINT
+You must answer ONLY from what the prompt tells you. Your job is:
+
+1. **Name 1 PRIMARY risk** directly relevant to THIS scenario
+   - Why is it THE biggest one for mid-size + finance + analysts + productivity concern?
+   - Why would this risk matter MORE for them than for other companies?
+   - Be specific: not "compliance risk" but "SEC Rule 17a-4(f) audit trail requirements conflict with real-time analysis speed"
+
+2. **Name 1 SECONDARY risk** (if there's a genuinely different concern)
+   - Must be different from primary, not just a variant
+   - Connect it explicitly to their stated constraints
+
+3. **For each risk, explain:**
+   - EXACTLY what they said that triggered this risk identification
+   - What assumption about their company size/setup makes this relevant
+   - How it relates to their "productivity" priority (trade-offs are key)
+
+4. **Acknowledge the critical unknowns:**
+   - List which of these would change your answer: ${gaps.missing_info.join(', ')}
+   - For each, explain HOW it would change your answer
+
+5. **Give 1-2 specific mitigations**, not generic ones
+   - Not "implement encryption" but "use deterministic queries to maintain analyst query audit trails while keeping sub-100ms response times"
+
+## STRICTNESS REQUIREMENTS
+- Every factual claim: [Source], and if no source, say "Practitioners report X" or "No published research found"
+- Confidence levels: "With high confidence (>90%), X... With lower confidence (60%), Y..."
+- Ranges not vague words: not "may vary" but "typically 5-15% depending on X"
+- Trade-offs visible: "Option A: X benefit but Y cost. Option B: Z benefit but W cost."`;
+
+  return systemPrompt;
+}
+
+/**
+ * Enhanced Governance Response Schema - Forces structured, rigorous thinking
+ * Generic for ANY prompt type
+ */
+const GOVERNANCE_RESPONSE_SCHEMA = {
+  type: "json_schema",
+  json_schema: {
+    name: "governance_response",
+    strict: true,
+    schema: {
+      type: "object",
+      properties: {
+        reasoning: {
+          type: "object",
+          description: "Your actual reasoning process - what you're assuming, what's uncertain, how you'd approach this differently for different contexts",
+          properties: {
+            core_assumptions: {
+              type: "array",
+              items: { type: "string" },
+              description: "What are you assuming to be true? List 3-5 key assumptions that frame your answer."
+            },
+            uncertainty_bounds: {
+              type: "array",
+              items: { type: "string" },
+              description: "Where are you uncertain? For each area, give actual ranges/confidence levels, not vague language."
+            },
+            context_sensitivity: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  context_factor: { type: "string" },
+                  how_it_changes_answer: { type: "string" }
+                },
+                required: ["context_factor", "how_it_changes_answer"],
+                additionalProperties: false
+              },
+              description: "How would your answer change if key context differed? List 2-3 scenarios."
+            }
+          },
+          required: ["core_assumptions", "uncertainty_bounds", "context_sensitivity"],
+          additionalProperties: false
+        },
+        evidence_base: {
+          type: "object",
+          description: "What evidence supports your claims? Make it visible.",
+          properties: {
+            citations: {
+              type: "array",
+              items: { type: "string" },
+              description: "All sources: [Author Year], [Standard], [Research], etc. Every quantitative claim must cite something."
+            },
+            quantified_claims: {
+              type: "array",
+              items: { type: "string" },
+              description: "All numeric/measurable claims with their ranges and conditions."
+            },
+            what_you_dont_know: { type: "string", description: "What information would you need to answer better? Be specific." }
+          },
+          required: ["citations", "quantified_claims", "what_you_dont_know"],
+          additionalProperties: false
+        },
+        answer: { 
+          type: "string",
+          description: "Your actual answer. This should naturally incorporate the reasoning above - show your thinking, not hide it."
+        }
+      },
+      required: ["reasoning", "evidence_base", "answer"],
+      additionalProperties: false
+    }
+  }
+};
+
+/**
+ * Call GPT-4 with Structured Output + Constitutional AI
+ * Forces governance through JSON schema + self-critique, not just prompts
+ */
+export async function callGPT4WithStructuredGovernance(prompt, rosettaContext, options = {}) {
+  const model = options.model || 'gpt-4o-2024-11-20'; // Must support structured output
+  const timeoutMs = options.timeout || 120000;
+  const apiKey = options.apiKey;
+  const domain = options.domain || rosettaContext?.domain || 'GENERAL';
+
+  console.log(`🚀 Calling ${model} with Structured Output + Constitutional AI Governance (Domain: ${domain})...`);
+
+  const openaiClient = apiKey ? new OpenAI({ apiKey }) : openai;
+  if (!openaiClient) {
+    throw new Error('OpenAI API key not configured');
+  }
+
+  // Build governance wrapper
+  const governanceWrapper = buildMegaGovernanceWrapper(prompt, {
+    userName: options.userName || 'User',
+    userRole: options.userRole || 'Operator',
+    domain,
+    lamport: nextLamport()
   });
 
-  // Check for standards citations
-  const standardsPatterns = [
-    /NIST\s+\d+-\d+/gi,
-    /SOC\s*2/gi,
-    /ISO\s+\d+/gi,
-    /HIPAA/gi,
-    /GDPR/gi,
-    /PCI\s*DSS/gi,
-    /SEC\s+\d+[a-z]-\d+/gi,
-    /FISMA/gi
-  ];
+  // System prompt includes constitutional AI instruction + format change
+  const systemPromptWithConstitution = `${governanceWrapper}
+
+CRITICAL THINKING FRAMEWORK:
+
+Your response must show your reasoning, not hide it:
+
+1. **State your assumptions clearly:**
+   - What are you taking for granted about the user's situation?
+   - What would need to be different to change your answer?
+
+2. **Quantify uncertainty, don't hide it:**
+   - Instead of "may vary": "ranges from X to Y depending on Z"
+   - Instead of "depends on context": "For scenario A: X. For scenario B: Y. For scenario C: Z"
+   - Give confidence levels: "High confidence (95%+ of cases): X. Lower confidence (60-70%): Y"
+
+3. **Cite everything you know:**
+   - Every factual claim should have a source
+   - Format: [Author Year], [Standard Section], [Research Org]
+   - If you don't know a source, say: "Practitioners report X, but I haven't seen this in published research"
+
+4. **Make trade-offs visible:**
+   - Don't just list options, show what each option costs
+   - "Option A: faster but less secure (30ms overhead, 15% false positives)"
+   - "Option B: slower but more secure (500ms overhead, 2% false positives)"
+
+5. **Acknowledge what you don't know:**
+   - What additional information would make your answer better?
+   - What are the limits of what you can confidently say?
+
+Your answer should naturally incorporate this thinking. Don't fake rigor with formatting changes - actually think more deeply.`;
+
+  try {
+    const completion = await withTimeout(
+      openaiClient.chat.completions.create({
+        model,
+        messages: [
+          { role: 'system', content: systemPromptWithConstitution },
+          { role: 'user', content: prompt }
+        ],
+        response_format: GOVERNANCE_RESPONSE_SCHEMA,
+        temperature: 0.5,
+        max_tokens: 4000
+      }),
+      timeoutMs,
+      'Structured governance completion'
+    );
+
+    const responseText = completion.choices[0]?.message?.content || '';
+    let structuredResponse;
+    try {
+      structuredResponse = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Failed to parse structured response:', e.message);
+      return {
+        response: responseText,
+        criesAnalysis: null,
+        structured: false
+      };
+    }
+
+    // Extract the answer
+    const finalAnswer = structuredResponse.answer || '';
+
+    // Analyze with CRIES
+    const forgeResult = computeForge(prompt, finalAnswer);
+    const criesResult = {
+      ...forgeResult,
+      Omega: forgeResult.Φ,
+      C: forgeResult.O,
+      R: forgeResult.E,
+      I: 0,
+      E: forgeResult.G,
+      S: forgeResult.F,
+      domain,
+      governance: true,
+      userName: options.userName || 'User',
+      userRole: options.userRole || 'Operator'
+    };
+
+    console.log(`   📊 FORGE Analysis: C=${criesResult.C.toFixed(2)} R=${criesResult.R.toFixed(2)} I=${criesResult.I.toFixed(2)} E=${criesResult.E.toFixed(2)} S=${criesResult.S.toFixed(2)} | Ω=${criesResult.Omega.toFixed(2)}`);
+    console.log(`   ✅ Reasoning Summary:`);
+    console.log(`      Assumptions: ${structuredResponse.reasoning?.core_assumptions?.[0]?.substring(0, 80)}...`);
+    console.log(`      Citations: ${structuredResponse.evidence_base?.citations?.length || 0} sources cited`);
+    console.log(`      Unknowns acknowledged: ${structuredResponse.reasoning?.uncertainty_bounds?.length || 0}`);
+
+    return {
+      response: finalAnswer,
+      criesAnalysis: criesResult,
+      structured: true,
+      rawStructured: structuredResponse,
+      reasoning: structuredResponse.reasoning,
+      evidenceBase: structuredResponse.evidence_base
+    };
+  } catch (error) {
+    console.error('❌ Structured governance error:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Call GPT-4 with Context-Anchored Governance (NEW)
+ * Forces scenario-specific reasoning by extracting and constraining context
+ * 
+ * KEY DIFFERENCE: Instead of adding governance on top,
+ * we CONSTRAIN the reasoning space using what's IN the prompt
+ * 
+ * Reduces genericness by forcing: "answer ONLY from prompt context"
+ */
+export async function callGPT4WithContextAnchoredGovernance(prompt, rosettaContext, options = {}) {
+  const model = options.model || 'gpt-4o-2024-11-20';
+  const timeoutMs = options.timeout || 120000;
+  const apiKey = options.apiKey;
+  const domain = options.domain || rosettaContext?.domain || 'GENERAL';
+
+  console.log(`🚀 Calling ${model} with Context-Anchored Governance (Domain: ${domain})...`);
+  console.log(`   📍 Extracting context constraints from prompt...`);
+
+  const openaiClient = apiKey ? new OpenAI({ apiKey }) : openai;
+  if (!openaiClient) {
+    throw new Error('OpenAI API key not configured');
+  }
+
+  // Step 1: Extract context from prompt
+  const contextAnalysis = extractPromptContext(prompt);
+  console.log(`   ✅ Context extracted: ${contextAnalysis.explicit.domain || 'general'}, size=${contextAnalysis.explicit.size}, gaps=${contextAnalysis.gaps.missing_info.length}`);
+
+  // Step 2: Build context-aware system prompt (forces scenario reasoning)
+  const contextAwareSystemPrompt = buildContextAwareSystemPrompt(prompt, contextAnalysis);
+
+  // Step 3: Call LLM with structured output + context constraints
+  try {
+    const completion = await withTimeout(
+      openaiClient.chat.completions.create({
+        model,
+        messages: [
+          { role: 'system', content: contextAwareSystemPrompt },
+          { role: 'user', content: prompt }
+        ],
+        response_format: GOVERNANCE_RESPONSE_SCHEMA,
+        temperature: 0.4, // Slightly lower to enforce constraint adherence
+        max_tokens: 4000
+      }),
+      timeoutMs,
+      'Context-anchored governance completion'
+    );
+
+    const responseText = completion.choices[0]?.message?.content || '';
+    let structuredResponse;
+    try {
+      structuredResponse = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Failed to parse structured response:', e.message);
+      return {
+        response: responseText,
+        criesAnalysis: null,
+        structured: false,
+        contextAnalysis
+      };
+    }
+
+    // Extract the answer
+    const finalAnswer = structuredResponse.answer || '';
+
+    // Analyze with CRIES
+    const forgeResult = computeForge(prompt, finalAnswer);
+    const criesResult = {
+      ...forgeResult,
+      Omega: forgeResult.Φ,
+      C: forgeResult.O,
+      R: forgeResult.E,
+      I: 0,
+      E: forgeResult.G,
+      S: forgeResult.F,
+      domain,
+      governance: true,
+      userName: options.userName || 'User',
+      userRole: options.userRole || 'Operator'
+    };
+
+    console.log(`   📊 FORGE Analysis: C=${criesResult.C.toFixed(2)} R=${criesResult.R.toFixed(2)} I=${criesResult.I.toFixed(2)} E=${criesResult.E.toFixed(2)} S=${criesResult.S.toFixed(2)} | Ω=${criesResult.Omega.toFixed(2)}`);
+    console.log(`   ✅ Context-Aware Reasoning:`);
+    console.log(`      Domain: ${contextAnalysis.explicit.domain || 'general'}`);
+    console.log(`      Size: ${contextAnalysis.explicit.size || 'not specified'}`);
+    console.log(`      Constraints: ${contextAnalysis.explicit.mentioned_constraints.join(', ') || 'none stated'}`);
+    console.log(`      Missing info: ${contextAnalysis.gaps.missing_info.join(', ')}`);
+    console.log(`      Assumptions: ${structuredResponse.reasoning?.core_assumptions?.[0]?.substring(0, 60)}...`);
+
+    return {
+      response: finalAnswer,
+      criesAnalysis: criesResult,
+      structured: true,
+      rawStructured: structuredResponse,
+      reasoning: structuredResponse.reasoning,
+      evidenceBase: structuredResponse.evidence_base,
+      contextAnalysis // Return context for reference
+    };
+  } catch (error) {
+    console.error('❌ Context-anchored governance error:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * EXPERIMENTAL: Self-Verifying Governance
+ * Makes LLM validate its OWN answer against constraints and regenerate if it fails
+ * This forces actual behavioral compliance, not just instruction-following
+ */
+export async function callGPT4WithSelfVerifyingGovernance(prompt, rosettaContext, options = {}) {
+  const model = options.model || 'gpt-4o-2024-11-20';
+  const timeoutMs = options.timeout || 120000;
+  const apiKey = options.apiKey;
+  const domain = options.domain || rosettaContext?.domain || 'GENERAL';
+  const maxRetries = 2; // Regenerate up to 2 times if constraints violated
+
+  console.log(`🚀 Calling ${model} with SELF-VERIFYING Governance (Domain: ${domain})...`);
+
+  const openaiClient = apiKey ? new OpenAI({ apiKey }) : openai;
+  if (!openaiClient) {
+    throw new Error('OpenAI API key not configured');
+  }
+
+  const contextAnalysis = extractPromptContext(prompt);
+  const { explicit } = contextAnalysis;
   
-  standardsPatterns.forEach(pattern => {
-    const matches = response.match(pattern) || [];
-    matches.forEach(match => {
-      if (!evidence.standards_cited.includes(match.toUpperCase())) {
-        evidence.standards_cited.push(match.toUpperCase());
+  // Build constraint checklist that LLM will validate against
+  const constraintChecklist = `## CONSTRAINT VALIDATION CHECKLIST
+Your answer MUST satisfy ALL of these:
+
+1. ✓ SPECIFICITY: No generic frameworks
+   - ✗ FAIL: "7 standard risks include X, Y, Z"
+   - ✓ PASS: "The primary risk is [SPECIFIC TO THIS SCENARIO]"
+   
+2. ✓ CONTEXT USAGE: Answer references specific details from prompt
+   - ✗ FAIL: Answer could apply to ANY finance company of ANY size
+   - ✓ PASS: Answer explicitly mentions "mid-size" or the $X budget or "analysts" roles
+   
+3. ✓ ACKNOWLEDGED SCOPE: Admits what you don't know
+   - ✗ FAIL: Presents recommendations without saying "I'm assuming X"
+   - ✓ PASS: "I'm treating this as a company with <$Y staff" or "assuming legacy systems"
+   
+4. ✓ TRADE-OFF CLARITY: Explicitly shows what solutions cost
+   - ✗ FAIL: "Mitigation: implement encryption"
+   - ✓ PASS: "Mitigation adds 15-20ms latency but reduces breach cost from $4M to $100K"
+   
+5. ✓ NO OFF-TOPIC DISCUSSION: Answer stays on ${explicit.domain || 'stated domain'}
+   - ✗ FAIL: Mentions scenarios the prompt didn't mention (e.g., startups for mid-size prompt)
+   - ✓ PASS: Only discusses scenarios/constraints the prompt actually mentioned
+
+## SELF-CHECK PROTOCOL
+Before returning your answer:
+1. Re-read the original prompt
+2. Check: Does my answer mention the company size/type from the prompt?
+3. Check: Would my answer change if the company size was different?
+4. Check: Did I avoid listing generic frameworks?
+5. Check: Did I show trade-offs, not just recommendations?
+
+If any check fails, REGENERATE a better answer now.`;
+
+  let currentAnswer = null;
+  let currentStructured = null;
+  let attemptCount = 0;
+
+  while (attemptCount < maxRetries + 1) {
+    attemptCount++;
+    console.log(`   📌 Attempt ${attemptCount}/${maxRetries + 1}...`);
+
+    try {
+      // First call: Generate answer
+      const initialSystemPrompt = `You are an expert advisor. ${buildContextAwareSystemPrompt(prompt, contextAnalysis)}
+
+${constraintChecklist}`;
+
+      const completion = await withTimeout(
+        openaiClient.chat.completions.create({
+          model,
+          messages: [
+            { role: 'system', content: initialSystemPrompt },
+            { role: 'user', content: prompt }
+          ],
+          response_format: GOVERNANCE_RESPONSE_SCHEMA,
+          temperature: attemptCount === 1 ? 0.4 : 0.6, // Increase temp on retries for diversity
+          max_tokens: 4000
+        }),
+        timeoutMs,
+        'Self-verifying governance initial call'
+      );
+
+      const responseText = completion.choices[0]?.message?.content || '';
+      let structuredResponse;
+      try {
+        structuredResponse = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse structured response:', e.message);
+        if (attemptCount === maxRetries) {
+          return {
+            response: responseText,
+            criesAnalysis: null,
+            structured: false,
+            contextAnalysis,
+            validationAttempts: attemptCount
+          };
+        }
+        continue;
       }
-    });
-  });
 
-  // Check for realistic scenarios
-  evidence.scenarios_present = /for example|consider a case|imagine|suppose|in a scenario where|let's say/i.test(response);
+      const candidateAnswer = structuredResponse.answer || '';
 
-  // Calculate rigor score
-  const mechanismScore = Math.min(evidence.mechanisms_count / 5, 0.3); // 5+ mechanisms = 0.3
-  const standardsScore = Math.min(evidence.standards_cited.length / 3, 0.3); // 3+ standards = 0.3
-  const scenarioScore = evidence.scenarios_present ? 0.2 : 0;
-  const quantitativeScore = evidence.mechanisms_count >= 3 ? 0.2 : (evidence.mechanisms_count * 0.066);
-  
-  scores.rigor = mechanismScore + standardsScore + scenarioScore + quantitativeScore;
-  evidence.quantitative_anchors = evidence.mechanisms_count;
+      // Second call: LLM validates its OWN answer
+      const validationPrompt = `I just gave this answer to the prompt "${prompt.substring(0, 100)}...":
 
-  // INTEGRATION: Check for system interactions and operational context
-  const hasSystemLinks = /connect|integrate|interact|interface|communicate|coordinate|synchronize/i.test(response);
-  const hasOperationalContext = /in production|in practice|operationally|in deployment|at runtime/i.test(response);
-  const hasBusinessImplications = /budget|cost|staffing|resource|business|operational/i.test(response);
-  const hasCausalChains = /because|therefore|thus|consequently|as a result|this leads to/i.test(response);
-  
-  scores.integration = (hasSystemLinks ? 0.3 : 0) + (hasOperationalContext ? 0.3 : 0) + 
-                       (hasBusinessImplications ? 0.2 : 0) + (hasCausalChains ? 0.2 : 0);
+"${candidateAnswer.substring(0, 500)}..."
 
-  // EMPATHY: Check for audience awareness and practical guidance
-  const answersWhy = response.toLowerCase().includes('why') || /the reason|this is because/i.test(response);
-  const acknowledgesConstraints = /constraint|limitation|challenge|trade-off|budget|legacy/i.test(response);
-  const providesContext = response.length > 500 && hasParagraphs;
-  const anticipatesQuestions = /you might wonder|a common question|note that|keep in mind/i.test(response);
-  
-  scores.empathy = (answersWhy ? 0.25 : 0) + (acknowledgesConstraints ? 0.25 : 0) + 
-                   (providesContext ? 0.25 : 0) + (anticipatesQuestions ? 0.25 : 0);
+Now evaluate: Does this answer satisfy ALL 5 constraints in the checklist below?
 
-  // STRICTNESS: Check for risk disclosure and accuracy signals
-  const acknowledgesUncertainty = /may|might|could|possibly|likely|unclear|depends|uncertain/i.test(response);
-  const directAboutRisks = /risk|danger|vulnerability|gap|unsafe|insecure|failure/i.test(response);
-  const noInventedStandards = !response.match(/ACME-\d+|XYZ Standard|ABC Protocol/i); // Heuristic
-  const qualifiesClaims = /generally|typically|often|usually|in most cases|commonly/i.test(response);
-  
-  scores.strictness = (acknowledgesUncertainty ? 0.25 : 0) + (directAboutRisks ? 0.3 : 0) + 
-                      (noInventedStandards ? 0.25 : 0) + (qualifiesClaims ? 0.2 : 0);
+${constraintChecklist}
+
+Respond ONLY with JSON:
+{
+  "passes_specificity": boolean,
+  "passes_context_usage": boolean,
+  "passes_acknowledged_scope": boolean,
+  "passes_trade_off_clarity": boolean,
+  "passes_no_off_topic": boolean,
+  "overall_pass": boolean,
+  "violations": ["list", "of", "violations"],
+  "repair_suggestion": "If failing, what should the answer emphasize instead?"
+}`;
+
+      const validationCompletion = await withTimeout(
+        openaiClient.chat.completions.create({
+          model,
+          messages: [
+            { role: 'system', content: 'You are a rigorous constraints validator. Use the JSON schema provided. Be strict.' },
+            { role: 'user', content: validationPrompt }
+          ],
+          temperature: 0.2, // Low temp for consistent validation
+          max_tokens: 500
+        }),
+        timeoutMs,
+        'Self-verifying governance validation call'
+      );
+
+      const validationText = validationCompletion.choices[0]?.message?.content || '{}';
+      let validation;
+      try {
+        validation = JSON.parse(validationText);
+      } catch (e) {
+        console.error('Failed to parse validation response:', e.message);
+        validation = { overall_pass: false };
+      }
+
+      console.log(`   🔍 Validation: ${validation.overall_pass ? '✅ PASS' : '❌ FAIL'}`);
+      if (!validation.overall_pass && validation.violations) {
+        console.log(`      Violations: ${validation.violations.join(', ')}`);
+      }
+
+      if (validation.overall_pass || attemptCount === maxRetries) {
+        // Use this answer (either it passed or we're out of retries)
+        currentAnswer = candidateAnswer;
+        currentStructured = structuredResponse;
+        
+        // Analyze with CRIES
+        const forgeResult = computeForge(prompt, currentAnswer);
+    const criesResult = {
+      ...forgeResult,
+      Omega: forgeResult.Φ,
+      C: forgeResult.O,
+      R: forgeResult.E,
+      I: 0,
+      E: forgeResult.G,
+      S: forgeResult.F,
+          domain,
+          governance: true,
+          userName: options.userName || 'User',
+          userRole: options.userRole || 'Operator'
+        };
+
+        console.log(`   📊 FORGE: C=${criesResult.C.toFixed(2)} R=${criesResult.R.toFixed(2)} S=${criesResult.S.toFixed(2)} | Ω=${criesResult.Omega.toFixed(2)}`);
+        
+        return {
+          response: currentAnswer,
+          criesAnalysis: criesResult,
+          structured: true,
+          rawStructured: currentStructured,
+          reasoning: currentStructured.reasoning,
+          evidenceBase: currentStructured.evidence_base,
+          contextAnalysis,
+          validationAttempts: attemptCount,
+          validationResult: validation
+        };
+      } else {
+        // Failed validation, will retry
+        console.log(`   🔄 Regenerating with feedback: ${validation.repair_suggestion}`);
+        const feedbackPrompt = `Your previous answer had these issues: ${validation.violations.join('; ')}
+
+${validation.repair_suggestion}
+
+Please generate a new answer that specifically addresses these failures. Focus on being SPECIFIC to the scenario, USING the context details, and showing clear TRADE-OFFS.`;
+
+        const retryCompletion = await withTimeout(
+          openaiClient.chat.completions.create({
+            model,
+            messages: [
+              { role: 'system', content: buildContextAwareSystemPrompt(prompt, contextAnalysis) + `\n${constraintChecklist}` },
+              { role: 'user', content: prompt },
+              { role: 'assistant', content: responseText },
+              { role: 'user', content: feedbackPrompt }
+            ],
+            response_format: GOVERNANCE_RESPONSE_SCHEMA,
+            temperature: 0.7, // Higher for more diverse retry
+            max_tokens: 4000
+          }),
+          timeoutMs,
+          'Self-verifying governance retry call'
+        );
+
+        const retryResponseText = retryCompletion.choices[0]?.message?.content || '';
+        try {
+          structuredResponse = JSON.parse(retryResponseText);
+        } catch (e) {
+          console.error('Failed to parse retry response:', e.message);
+          continue;
+        }
+      }
+    } catch (error) {
+      console.error(`❌ Error on attempt ${attemptCount}:`, error.message);
+      if (attemptCount === maxRetries) {
+        throw error;
+      }
+    }
+  }
 
   return {
-    scores,
-    evidence,
-    overall: (scores.coherence + scores.rigor + scores.integration + scores.empathy + scores.strictness) / 5
+    response: currentAnswer,
+    criesAnalysis: null,
+    structured: false,
+    contextAnalysis,
+    validationAttempts: attemptCount,
+    error: 'Failed to generate valid response after retries'
   };
 }
 
 /**
  * Call GPT-4 with Rosetta Ω³ Mega Governance
- * Uses optimized unified prompt wrapper for maximum CRIES performance
+ * Uses optimized unified prompt wrapper for maximum FORGE performance
  */
+
 export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) {
   const model = options.model || 'gpt-4o';
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000;
   const apiKey = options.apiKey;
+  const domain = options.domain || rosettaContext?.domain || 'GENERAL';  // Extract domain from context or options
 
-  // Check if Rosetta is booted - if not, fall back to basic call
-  try {
-    await mcp('rosetta.boot.init', {});
-  } catch {
-    console.log('Rosetta not booted, falling back to basic GPT-4 call');
-    return callGPT4(prompt, { ...options, model, apiKey });
-  }
-
-  console.log(`🚀 Calling ${model} with Rosetta Ω³ Mega Governance...`);
+  console.log(`🚀 Calling ${model} with Rosetta Ω³ Mega Governance (Domain: ${domain})...`);
   console.log(`   Timeout: ${timeoutMs}ms`);
 
   // Create OpenAI client with provided API key
@@ -531,14 +1364,11 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
     throw new Error('OpenAI API key not configured');
   }
 
-  // 1) Context via MCP (fallback)
+  // 1) Context via MCP (fallback) - DEPRECATED: Use FORGE v1 domain classification instead
   let ctx = { witness: "RosettaOS MCP", version: "vΩ3.5" };
   let lamport = nextLamport();
-  try {
-    ctx = await mcp("rosetta.context.get", {});
-    const lam = await mcp("rosetta.lamport.increment", { current: lamport });
-    lamport = lam?.next ?? lamport;
-  } catch { /* fallback ok */ }
+  // Legacy boot sequence removed - rosetta.boot.init and rosetta.context.get deprecated
+  // Use domain classification from CRIES v4 instead
 
   // 2) Build mega governance context
   const context = {
@@ -549,9 +1379,10 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
     version: ctx.version,
     lamport,
     mode: (managedGovernance ? 'MANAGED' : 'UNIFIED'),
+    domain,  // Include domain for governance wrapper
   };
 
-  // 3) Build unified mega governance wrapper (SYSTEM MESSAGE)
+  // 3) Build unified mega governance wrapper (SYSTEM MESSAGE) - NOW DOMAIN-AWARE
   const governanceWrapper = buildMegaGovernanceWrapper(prompt, context);
 
   // ✅ DELTA BUNDLE: Cache receipts for bundling
@@ -660,8 +1491,72 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
   try {
     const chainData = JSON.parse(await fs.readFile('./receipts/chain.json', 'utf8').catch(() => '{"last_hash":"' + '0'.repeat(64) + '"}'));
     
-    // Perform CRIES analysis on the response
-    const criesAnalysis = analyzeCRIES(prompt, answer, receiptCache.analysis);
+    // ✅ Use FORGE v1 for receipt generation (not legacy analyzeCRIES)
+    const forgeResult = computeForge(prompt, answer);
+    const criesResult = {
+      ...forgeResult,
+      Omega: forgeResult.Φ,
+      C: forgeResult.O,
+      R: forgeResult.E,
+      I: 0,
+      E: forgeResult.G,
+      S: forgeResult.F,
+      domain,
+      governance: true,
+      userName: context.userName,
+      userRole: context.userRole
+    };
+    
+    console.log(`   📊 Pass 1 FORGE: C=${criesResult.C.toFixed(2)} R=${criesResult.R.toFixed(2)} I=${criesResult.I.toFixed(2)} E=${criesResult.E.toFixed(2)} S=${criesResult.S.toFixed(2)} | Ω=${criesResult.Omega.toFixed(2)}`);
+    
+    // ✅ TWO-PASS REFINEMENT: DISABLED - testing context gating strategy instead
+    // const criesPillars = { C: criesResult.C, R: criesResult.R, I: criesResult.I, E: criesResult.E, S: criesResult.S };
+    // const refinementPrompt = buildRefinementPrompt(prompt, answer, criesPillars);
+    // console.log(`   [DEBUG] refinementPrompt is null: ${refinementPrompt === null}, S score: ${criesResult.S}`);
+    
+    // if (refinementPrompt) {
+    //   console.log(`   🔄 Pass 2 refinement triggered (low scores detected)`);
+    //   console.log(`   [DEBUG] Refinement prompt:\n${refinementPrompt.substring(0, 200)}...`);
+    //   
+    //   // Call LLM again with refinement instructions
+    //   const refinementCompletion = await openaiClient.chat.completions.create({
+    //     model,
+    //     messages: [
+    //       { role: 'system', content: governanceWrapper },
+    //       { role: 'user', content: prompt },
+    //       { role: 'assistant', content: answer },
+    //       { role: 'user', content: refinementPrompt }
+    //     ],
+    //     temperature: 0.7,
+    //     max_tokens: 4000
+    //   });
+    //   
+    //   const refinedAnswer = refinementCompletion.choices[0]?.message?.content?.trim();
+    //   if (refinedAnswer) {
+    //     // Re-analyze refined response
+    //     const refinedCriesResult = computeCriesV4(prompt, refinedAnswer, {
+    //       domain,
+    //       governance: true,
+    //       userName: context.userName,
+    //       userRole: context.userRole
+    //     });
+    //     
+    //     console.log(`   📊 Pass 2 FORGE: C=${refinedCriesResult.C.toFixed(2)} R=${refinedCriesResult.R.toFixed(2)} I=${refinedCriesResult.I.toFixed(2)} E=${refinedCriesResult.E.toFixed(2)} S=${refinedCriesResult.S.toFixed(2)} | Ω=${refinedCriesResult.Omega.toFixed(2)}`);
+    //     console.log(`   ✅ Improvement: Ω ${criesResult.Omega.toFixed(2)} → ${refinedCriesResult.Omega.toFixed(2)} (${((refinedCriesResult.Omega - criesResult.Omega) * 100).toFixed(1)}%)`);
+    //     
+    //     // Use refined answer and scores
+    //     answer = refinedAnswer;
+    //     criesResult.C = refinedCriesResult.C;
+    //     criesResult.R = refinedCriesResult.R;
+    //     criesResult.I = refinedCriesResult.I;
+    //     criesResult.E = refinedCriesResult.E;
+    //     criesResult.S = refinedCriesResult.S;
+    //     criesResult.signals = refinedCriesResult.signals;
+    //     criesResult.Omega = refinedCriesResult.Omega;
+    //   }
+    // } else {
+    //   console.log(`   [DEBUG] Pass 2 NOT triggered - refinementPrompt is null`);
+    // }
     
     receiptCache.response = await writeReceipt({
       id: uuid(),
@@ -673,18 +1568,22 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
       payload: { 
         content: answer.slice(0, 6000),
         governance_applied: true,
-        governance_version: 'vΩ4.0-organic',
+        governance_version: 'vΩ4.3-modular',
+        governance_domain: domain,
         response_length: answer.length,
         model: model,
-        cries_scores: criesAnalysis.scores,
-        cries_evidence: criesAnalysis.evidence,
-        cries_overall: criesAnalysis.overall
+        two_pass: !!refinementPrompt,
+        cries_v4: {
+          pillars: { C: criesResult.C, R: criesResult.R, I: criesResult.I, E: criesResult.E, S: criesResult.S },
+          signals: criesResult.signals,
+          omega: criesResult.Omega,
+          domain: criesResult.domain
+        }
       },
       prev_hash: chainData.last_hash || '0'.repeat(64)
     }, { skipWrite: true }); // Cache only
     console.log(`Δ-cache Δ-RESPONSE lamport=${context.lamport} id=${receiptCache.response.id}`);
-    console.log(`   📊 CRIES Scores: C=${criesAnalysis.scores.coherence.toFixed(2)} R=${criesAnalysis.scores.rigor.toFixed(2)} I=${criesAnalysis.scores.integration.toFixed(2)} E=${criesAnalysis.scores.empathy.toFixed(2)} S=${criesAnalysis.scores.strictness.toFixed(2)} | Overall=${criesAnalysis.overall.toFixed(2)}`);
-    console.log(`   🔍 Evidence: ${criesAnalysis.evidence.mechanisms_count} mechanisms, ${criesAnalysis.evidence.standards_cited.length} standards, ${criesAnalysis.evidence.quantitative_anchors} quantitative anchors`);
+    console.log(`   🔍 Signals: RQS=${(criesResult.signals.rqs * 100).toFixed(1)}%, ALD=${(criesResult.signals.ald * 100).toFixed(1)}%, LCB=${(criesResult.signals.lcb * 100).toFixed(1)}%, OverRefusal=${(criesResult.signals.overRefusal * 100).toFixed(1)}%`);
   } catch (e) {
     console.error('Failed to cache Δ-RESPONSE receipt:', e?.message ?? e);
   }
@@ -742,23 +1641,16 @@ export async function callGPT4WithRosetta(prompt, rosettaContext, options = {}) 
 
 /**
  * Call Claude with Rosetta Ω³ Mega Governance
- * Uses optimized unified prompt wrapper for maximum CRIES performance
+ * Uses optimized unified prompt wrapper for maximum FORGE performance
  */
 export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}) {
   const model = options.model || 'claude-3-5-sonnet-20241022';
   const managedGovernance = options.managedGovernance || false;
   const timeoutMs = options.timeout || 60000;
   const apiKey = options.apiKey;
+  const domain = options.domain || rosettaContext?.domain || 'GENERAL';  // Extract domain from context or options
 
-  // Check if Rosetta is booted - if not, fall back to basic call
-  try {
-    await mcp('rosetta.boot.init', {});
-  } catch {
-    console.log('Rosetta not booted, falling back to basic Claude call');
-    return callClaude(prompt, { ...options, model, apiKey });
-  }
-
-  console.log(`🚀 Calling ${model} with Rosetta Ω³ Mega Governance...`);
+  console.log(`🚀 Calling ${model} with Rosetta Ω³ Mega Governance (Domain: ${domain})...`);
   console.log(`   Timeout: ${timeoutMs}ms`);
 
   // Create Anthropic client with provided API key
@@ -767,14 +1659,11 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
     throw new Error('Anthropic API key not configured');
   }
 
-  // 1) Context via MCP (fallback)
+  // 1) Context via MCP (fallback) - DEPRECATED: Use FORGE v1 domain classification instead
   let ctx = { witness: "RosettaOS MCP", version: "vΩ3.5" };
   let lamport = nextLamport();
-  try {
-    ctx = await mcp("rosetta.context.get", {});
-    const lam = await mcp("rosetta.lamport.increment", { current: lamport });
-    lamport = lam?.next ?? lamport;
-  } catch { /* fallback ok */ }
+  // Legacy boot sequence removed - rosetta.boot.init and rosetta.context.get deprecated
+  // Use domain classification from CRIES v4 instead
 
   // 2) Build mega governance context
   const context = {
@@ -785,9 +1674,10 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
     version: ctx.version,
     lamport,
     mode: (managedGovernance ? 'MANAGED' : 'UNIFIED'),
+    domain,  // Include domain for governance wrapper
   };
 
-  // 3) Build unified mega governance wrapper (SYSTEM MESSAGE)
+  // 3) Build unified mega governance wrapper (SYSTEM MESSAGE) - NOW DOMAIN-AWARE
   const governanceWrapper = buildMegaGovernanceWrapper(prompt, context);
 
   // ✅ DELTA BUNDLE: Cache receipts for bundling
@@ -893,8 +1783,72 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
   try {
     const chainData = JSON.parse(await fs.readFile('./receipts/chain.json', 'utf8').catch(() => '{"last_hash":"' + '0'.repeat(64) + '"}'));
     
-    // Perform CRIES analysis on the response
-    const criesAnalysis = analyzeCRIES(prompt, answer, receiptCache.analysis);
+    // ✅ Use FORGE v1 for receipt generation (not legacy analyzeCRIES)
+    const forgeResult = computeForge(prompt, answer);
+    const criesResult = {
+      ...forgeResult,
+      Omega: forgeResult.Φ,
+      C: forgeResult.O,
+      R: forgeResult.E,
+      I: 0,
+      E: forgeResult.G,
+      S: forgeResult.F,
+      domain,
+      governance: true,
+      userName: context.userName,
+      userRole: context.userRole
+    };
+    
+    console.log(`   📊 Pass 1 FORGE: C=${criesResult.C.toFixed(2)} R=${criesResult.R.toFixed(2)} I=${criesResult.I.toFixed(2)} E=${criesResult.E.toFixed(2)} S=${criesResult.S.toFixed(2)} | Ω=${criesResult.Omega.toFixed(2)}`);
+    
+    // ✅ TWO-PASS REFINEMENT: DISABLED - testing context gating strategy instead
+    // const criesPillars = { C: criesResult.C, R: criesResult.R, I: criesResult.I, E: criesResult.E, S: criesResult.S };
+    // const refinementPrompt = buildRefinementPrompt(prompt, answer, criesPillars);
+    // console.log(`   [DEBUG] refinementPrompt is null: ${refinementPrompt === null}, S score: ${criesResult.S}`);
+    // 
+    // if (refinementPrompt) {
+    //   console.log(`   🔄 Pass 2 refinement triggered (low scores detected)`);
+    //   console.log(`   [DEBUG] Refinement prompt:\n${refinementPrompt.substring(0, 200)}...`);
+    //   
+    //   // Call Claude again with refinement instructions
+    //   const refinementMessage = await anthropic.messages.create({
+    //     model,
+    //     max_tokens: 4000,
+    //     temperature: 0.7,
+    //     system: governanceWrapper,
+    //     messages: [
+    //       { role: 'user', content: prompt },
+    //       { role: 'assistant', content: answer },
+    //       { role: 'user', content: refinementPrompt }
+    //     ]
+    //   });
+    //   
+    //   const refinedAnswer = refinementMessage.content[0]?.text?.trim();
+    //   if (refinedAnswer) {
+    //     // Re-analyze refined response
+    //     const refinedCriesResult = computeCriesV4(prompt, refinedAnswer, {
+    //       domain,
+    //       governance: true,
+    //       userName: context.userName,
+    //       userRole: context.userRole
+    //     });
+    //     
+    //     console.log(`   📊 Pass 2 FORGE: C=${refinedCriesResult.C.toFixed(2)} R=${refinedCriesResult.R.toFixed(2)} I=${refinedCriesResult.I.toFixed(2)} E=${refinedCriesResult.E.toFixed(2)} S=${refinedCriesResult.S.toFixed(2)} | Ω=${refinedCriesResult.Omega.toFixed(2)}`);
+    //     console.log(`   ✅ Improvement: Ω ${criesResult.Omega.toFixed(2)} → ${refinedCriesResult.Omega.toFixed(2)} (${((refinedCriesResult.Omega - criesResult.Omega) * 100).toFixed(1)}%)`);
+    //     
+    //     // Use refined answer and scores
+    //     answer = refinedAnswer;
+    //     criesResult.C = refinedCriesResult.C;
+    //     criesResult.R = refinedCriesResult.R;
+    //     criesResult.I = refinedCriesResult.I;
+    //     criesResult.E = refinedCriesResult.E;
+    //     criesResult.S = refinedCriesResult.S;
+    //     criesResult.signals = refinedCriesResult.signals;
+    //     criesResult.Omega = refinedCriesResult.Omega;
+    //   }
+    // } else {
+    //   console.log(`   [DEBUG] Pass 2 NOT triggered - refinementPrompt is null`);
+    // }
     
     receiptCache.response = await writeReceipt({
       id: uuid(),
@@ -906,18 +1860,22 @@ export async function callClaudeWithRosetta(prompt, rosettaContext, options = {}
       payload: { 
         content: answer.slice(0, 6000),
         governance_applied: true,
-        governance_version: 'vΩ4.0-organic',
+        governance_version: 'vΩ4.3-modular',
+        governance_domain: domain,
         response_length: answer.length,
         model: model,
-        cries_scores: criesAnalysis.scores,
-        cries_evidence: criesAnalysis.evidence,
-        cries_overall: criesAnalysis.overall
+        two_pass: !!refinementPrompt,
+        cries_v4: {
+          pillars: { C: criesResult.C, R: criesResult.R, I: criesResult.I, E: criesResult.E, S: criesResult.S },
+          signals: criesResult.signals,
+          omega: criesResult.Omega,
+          domain: criesResult.domain
+        }
       },
       prev_hash: chainData.last_hash || '0'.repeat(64)
     }, { skipWrite: true }); // Cache only
     console.log(`Δ-cache Δ-RESPONSE lamport=${context.lamport} id=${receiptCache.response.id}`);
-    console.log(`   📊 CRIES Scores: C=${criesAnalysis.scores.coherence.toFixed(2)} R=${criesAnalysis.scores.rigor.toFixed(2)} I=${criesAnalysis.scores.integration.toFixed(2)} E=${criesAnalysis.scores.empathy.toFixed(2)} S=${criesAnalysis.scores.strictness.toFixed(2)} | Overall=${criesAnalysis.overall.toFixed(2)}`);
-    console.log(`   🔍 Evidence: ${criesAnalysis.evidence.mechanisms_count} mechanisms, ${criesAnalysis.evidence.standards_cited.length} standards, ${criesAnalysis.evidence.quantitative_anchors} quantitative anchors`);
+    console.log(`   🔍 Signals: RQS=${(criesResult.signals.rqs * 100).toFixed(1)}%, ALD=${(criesResult.signals.ald * 100).toFixed(1)}%, LCB=${(criesResult.signals.lcb * 100).toFixed(1)}%, OverRefusal=${(criesResult.signals.overRefusal * 100).toFixed(1)}%`);
   } catch (e) {
     console.error('Failed to cache Δ-RESPONSE receipt:', e?.message ?? e);
   }
@@ -1079,12 +2037,13 @@ export async function checkAPIAvailability() {
  * Get Rosetta governance context
  */
 export function getRosettaGovernanceContext(opts = {}) {
-  // Return basic governance context structure
+  // Return basic governance context structure with domain
   return {
     governanceEnabled: true,
     maxChars: opts.maxChars || 4000,
     timestamp: new Date().toISOString(),
-    version: 'v1.0'
+    version: 'v1.0',
+    domain: opts.domain || 'GENERAL'  // Domain-adaptive governance support
   };
 }
 
@@ -1123,6 +2082,9 @@ export default {
   callGPT4,
   callClaude,
   callGPT4WithRosetta,
+  callGPT4WithStructuredGovernance,
+  callGPT4WithContextAnchoredGovernance, // Context-aware, scenario-specific reasoning
+  callGPT4WithSelfVerifyingGovernance,  // NEW: Forces LLM to validate its own constraints compliance
   callClaudeWithRosetta,
   callLLM,
   checkAPIAvailability,
