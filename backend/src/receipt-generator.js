@@ -11,13 +11,13 @@ const prisma = await createOptimizedPrismaClient();
  * Implements delta-analysis (Δ-ANALYSIS) receipts with:
  * - Lamport clock for total ordering
  * - Receipt chain (prev_digest → curr_digest)
- * - CRIES metrics integration
+ * - FORGE metrics integration
  * - Policy violation tracking
  * - Merkle seal linkage
  * - Conversation-scoped traces
  * 
  * Receipt Formula:
- *   curr_digest = H(lamport || prev_digest || inputs_hash || outputs_hash || cries_overall || timestamp)
+ *   curr_digest = H(lamport || prev_digest || inputs_hash || outputs_hash || forge_overall || timestamp)
  * 
  * Part of Speechcraft v2.1 + Merkle Sealer v2.1 Integration
  */
@@ -52,18 +52,22 @@ function generateTraceId() {
 /**
  * Compute receipt digest (curr_digest)
  * 
- * Formula: H(lamport || prev_digest || inputs_hash || outputs_hash || cries_overall || timestamp)
+ * Formula: H(lamport || prev_digest || inputs_hash || outputs_hash || forge_overall || timestamp)
  * 
  * @param {Object} receiptData - Receipt data
  * @returns {string} 64-char hex digest
  */
 function computeReceiptDigest(receiptData) {
+  const overall = (receiptData.forge && typeof receiptData.forge.overall === 'number')
+    ? receiptData.forge.overall
+    : 0;
+
   const components = [
     receiptData.lamport.toString(),
     receiptData.prev_digest || 'genesis',
     receiptData.inputs.prompt_hash,
     receiptData.outputs.response_hash,
-    receiptData.cries.overall.toFixed(6),
+    (overall || 0).toFixed(6),
     receiptData.issued_at
   ].join('||');
   
@@ -107,7 +111,7 @@ async function getPreviousReceipt(conversationId) {
  * @param {string} params.model - Model identifier
  * @param {string} params.prompt - User prompt
  * @param {string} params.response - Model response
- * @param {Object} params.cries - CRIES metrics {C, R, I, E, S, overall}
+ * @param {Object} params.forge - FORGE metrics {F, O, R, G, E, overall}
  * @param {Object} params.policy - Policy data {violations, flags}
  * @param {Object} params.tokens - Token counts {in, out}
  * @param {string} params.persona - Governance persona
@@ -121,7 +125,7 @@ export async function generateLamportReceipt(params) {
     model,
     prompt,
     response,
-    cries,
+    forge,
     policy = { violations: [], flags: [] },
     tokens = { in: 0, out: 0 },
     persona = 'default',
@@ -160,13 +164,13 @@ export async function generateLamportReceipt(params) {
       response_hash: responseHash,
       tokens_out: tokens.out
     },
-    cries: {
-      C: cries.C || cries.Coherence || 0,
-      R: cries.R || cries.Rigor || 0,
-      I: cries.I || cries.Integrity || 0,
-      E: cries.E || cries.Empathy || 0,
-      S: cries.S || cries.Strictness || 0,
-      overall: cries.overall || cries.Omega || 0
+    forge: {
+      F: forge?.F ?? forge?.fabrication ?? 0,
+      O: forge?.O ?? forge?.oversight ?? 0,
+      R: forge?.R ?? forge?.refusal ?? 0,
+      G: forge?.G ?? forge?.guidance ?? 0,
+      E: forge?.E ?? forge?.evidence ?? 0,
+      overall: forge?.overall ?? forge?.Φ ?? 0
     },
     policy: {
       violations: policy.violations || [],
@@ -191,14 +195,13 @@ export async function generateLamportReceipt(params) {
       timestamp: new Date(issuedAt),
       version: '2.1',
       userId: userId,
-      
-      // CRIES metrics
-      criesOmega: receiptData.cries.overall,
-      criesCoherence: receiptData.cries.C,
-      criesRigor: receiptData.cries.R,
-      criesIntegrity: receiptData.cries.I,
-      criesEmpathy: receiptData.cries.E,
-      criesStrictness: receiptData.cries.S,
+      // New FORGE columns (if schema has them)
+      forgeOverall: receiptData.forge?.overall ?? null,
+      forgeF: receiptData.forge?.F ?? null,
+      forgeO: receiptData.forge?.O ?? null,
+      forgeR: receiptData.forge?.R ?? null,
+      forgeG: receiptData.forge?.G ?? null,
+      forgeE: receiptData.forge?.E ?? null,
       
       // Full data
       prompt: prompt,
@@ -211,7 +214,7 @@ export async function generateLamportReceipt(params) {
   
   console.log(`📋 Receipt generated: ${receiptId}`);
   console.log(`   Lamport: ${lamport}`);
-  console.log(`   CRIES Ω: ${receiptData.cries.overall.toFixed(3)}`);
+  console.log(`   FORGE Φ: ${Number((receiptData.forge?.overall ?? 0).toFixed(3))}`);
   console.log(`   Digest: ${currDigest.substring(0, 16)}...`);
   if (prevDigest) {
     console.log(`   Chain: ${prevDigest.substring(0, 8)}... → ${currDigest.substring(0, 8)}...`);
@@ -295,7 +298,6 @@ export async function verifyReceiptChain(conversationId) {
       lamport: true,
       promptHash: true,
       outputHash: true,
-      criesOmega: true,
       timestamp: true
     }
   });
@@ -381,13 +383,14 @@ export async function exportReceipt(dbId) {
       response_hash: dbReceipt.outputHash,
       tokens_out: 0
     },
-    cries: {
-      C: dbReceipt.criesCoherence || 0,
-      R: dbReceipt.criesRigor || 0,
-      I: dbReceipt.criesIntegrity || 0,
-      E: dbReceipt.criesEmpathy || 0,
-      S: dbReceipt.criesStrictness || 0,
-      overall: dbReceipt.criesOmega || 0
+    // Primary: expose FORGE metrics in exports. Legacy fields retained only temporarily for compatibility.
+    forge: {
+      F: dbReceipt.forgeF ?? 0,
+      O: dbReceipt.forgeO ?? 0,
+      R: dbReceipt.forgeR ?? 0,
+      G: dbReceipt.forgeG ?? 0,
+      E: dbReceipt.forgeE ?? 0,
+      overall: dbReceipt.forgeOverall ?? 0
     },
     policy: {
       violations: dbReceipt.violations || [],
@@ -434,13 +437,13 @@ export async function getConversationReceipts(conversationId) {
  * @returns {Promise<Object>} Statistics
  */
 export async function getReceiptStats() {
-  const [total, sealed, avgCries, recentViolations] = await Promise.all([
+  const [total, sealed, avgForge, recentViolations] = await Promise.all([
     prisma.governanceReceipts.count(),
     prisma.governanceReceipts.count({
       where: { merkleSealId: { not: null } }
     }),
     prisma.governanceReceipts.aggregate({
-      _avg: { criesOmega: true }
+      _avg: { forgeOverall: true }
     }),
     prisma.governanceReceipts.count({
       where: {
@@ -453,7 +456,7 @@ export async function getReceiptStats() {
     totalReceipts: total,
     sealedReceipts: sealed,
     unsealedReceipts: total - sealed,
-    avgCriesOmega: avgCries._avg.criesOmega || 0,
+    avgForgeOverall: avgForge._avg.forgeOverall || 0,
     receiptsWithViolations: recentViolations,
     sealPercentage: total > 0 ? ((sealed / total) * 100).toFixed(1) : 0
   };

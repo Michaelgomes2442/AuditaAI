@@ -513,20 +513,22 @@ model GovernanceReceipt {
   version             String       // speechcraft-v2
   userId              Int?
   
-  // CRIES metrics
-  criesOmega          Float?
-  criesCoherence      Float?
-  criesRigor          Float?
-  criesIntegrity      Float?
-  criesEmpathy        Float?
-  criesStrictness     Float?
-  
-  // CRIES v3 additions (hybrid semantic + heuristic)
-  criesSubMetrics     Json?        // Sub-metric scores per pillar
-  criesEvidence       Json?        // Evidence objects for auditability
-  criesCalculation    Json?        // Calculation details and weights
-  criesBaseline       Json?        // Baseline comparison data
-  criesDeterminism    Json?        // Determinism info (seed, hash, version)
+  // FORGE metrics — strict FORGE fields (no legacy CRIES mapping)
+  // NOTE: This change requires a Prisma migration to rename legacy
+  // cries_* DB columns into new forge_* columns. See migration plan.
+  forgeF              Float?
+  forgeO              Float?
+  forgeR              Float?
+  forgeG              Float?
+  forgeE              Float?
+  forgeOverall        Float?
+
+  // FORGE v3 additions (hybrid semantic + heuristic)
+  forgeSubMetrics     Json?        // Sub-metric scores per pillar
+  forgeEvidence       Json?        // Evidence objects for auditability
+  forgeCalculation    Json?        // Calculation details and weights
+  forgeBaseline       Json?        // Baseline comparison data
+  forgeDeterminism    Json?        // Determinism info (seed, hash, version)
   governanceMode      String?      // STRICT/BALANCED/PERMISSIVE/REGULATORY_AUDIT
   
   // Full data (for audit)
@@ -539,7 +541,7 @@ model GovernanceReceipt {
   exchangeId          String?      // Turn within conversation
   traceId             String?      // Format: TRACE-<timestamp>-<random>
   prevDigest          String?      // Previous receipt's curr_digest (chain linkage)
-  currDigest          String?      // H(lamport||prev_digest||inputs||outputs||cries||timestamp)
+  currDigest          String?      // H(lamport||prev_digest||inputs||outputs||forge||timestamp)
   model               String?      // Model identifier (gpt-4, claude-3, etc.)
   tokensIn            Int?         // Input token count
   tokensOut           Int?         // Output token count

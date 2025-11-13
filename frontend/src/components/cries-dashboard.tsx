@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertCircle, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
 
-interface CRIESScore {
+interface FORGEScore {
   composite: number;
   sigma: number;
   tau: number;
@@ -24,16 +24,16 @@ interface CRIESScore {
   };
 }
 
-interface CRIESComputation {
+interface FORGEComputation {
   id: number;
-  criesScore: number;
+  forgeScore: number;
   lamportClock: number;
   receiptId: string;
   computedAt: string;
   analysisData: any;
 }
 
-interface CRIESStats {
+interface FORGEStats {
   totalComputations: number;
   averageScore: number;
   distribution: {
@@ -50,14 +50,14 @@ interface CRIESStats {
   };
 }
 
-export default function CRIESDashboard() {
+export default function FORGEDashboard() {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [citations, setCitations] = useState('');
-  const [score, setScore] = useState<CRIESScore | null>(null);
+  const [score, setScore] = useState<FORGEScore | null>(null);
   const [computing, setComputing] = useState(false);
-  const [history, setHistory] = useState<CRIESComputation[]>([]);
-  const [stats, setStats] = useState<CRIESStats | null>(null);
+  const [history, setHistory] = useState<FORGEComputation[]>([]);
+  const [stats, setStats] = useState<FORGEStats | null>(null);
 
   useEffect(() => {
     loadHistory();
@@ -66,25 +66,25 @@ export default function CRIESDashboard() {
 
   const loadHistory = async () => {
     try {
-      const res = await fetch('/api/cries/compute?limit=10');
+      const res = await fetch('/api/forge/compute?limit=10');
       const data = await res.json();
       setHistory(data.history || []);
     } catch (error) {
-      console.error('Failed to load CRIES history:', error);
+      console.error('Failed to load FORGE history:', error);
     }
   };
 
   const loadStats = async () => {
     try {
-      const res = await fetch('/api/cries/compute?stats=true');
+      const res = await fetch('/api/forge/compute?stats=true');
       const data = await res.json();
       setStats(data);
     } catch (error) {
-      console.error('Failed to load CRIES stats:', error);
+      console.error('Failed to load FORGE stats:', error);
     }
   };
 
-  const computeCRIES = async (store = false) => {
+  const computeFORGE = async (store = false) => {
     setComputing(true);
     try {
       const citationArray = citations
@@ -92,7 +92,7 @@ export default function CRIESDashboard() {
         .filter(c => c.trim())
         .map(c => ({ url: c.trim() }));
 
-      const res = await fetch('/api/cries/compute', {
+      const res = await fetch('/api/forge/compute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +112,7 @@ export default function CRIESDashboard() {
         setScore(data.score);
       }
     } catch (error) {
-      console.error('CRIES computation failed:', error);
+      console.error('FORGE computation failed:', error);
     } finally {
       setComputing(false);
     }
@@ -207,7 +207,7 @@ export default function CRIESDashboard() {
       {/* Compute Interface */}
       <Card>
         <CardHeader>
-          <CardTitle>Compute CRIES Score</CardTitle>
+              <CardTitle>Compute FORGE Score</CardTitle>
           <CardDescription>
             Evaluate prompt/response quality with σ-window, τ-threshold, Π-policy, and citation analysis
           </CardDescription>
@@ -242,13 +242,13 @@ export default function CRIESDashboard() {
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => computeCRIES(false)}
+              onClick={() => computeFORGE(false)}
               disabled={computing || !prompt || !response}
             >
               {computing ? 'Computing...' : 'Compute (Preview)'}
             </Button>
             <Button
-              onClick={() => computeCRIES(true)}
+              onClick={() => computeFORGE(true)}
               disabled={computing || !prompt || !response}
               variant="outline"
             >
@@ -263,7 +263,7 @@ export default function CRIESDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>CRIES Score</span>
+              <span>FORGE Score</span>
               {getScoreBadge(score.composite)}
             </CardTitle>
           </CardHeader>
@@ -395,10 +395,10 @@ export default function CRIESDashboard() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className={`text-xl font-bold ${getScoreColor(comp.criesScore)}`}>
-                      {comp.criesScore.toFixed(1)}
+                    <div className={`text-xl font-bold ${getScoreColor(comp.forgeScore)}`}>
+                        {comp.forgeScore.toFixed(1)}
                     </div>
-                    {getScoreBadge(comp.criesScore)}
+                        {getScoreBadge(comp.forgeScore)}
                   </div>
                 </div>
               ))}

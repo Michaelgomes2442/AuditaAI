@@ -51,7 +51,8 @@ export async function notifyTestComplete(
     to: email,
     subject: `Test Complete: ${model}`,
     type: 'test-complete',
-    data: { model, criesScore, duration, prompt },
+    // Include both legacy and FORGE-named fields for compatibility
+    data: { model, criesScore, forgeScore: criesScore, duration, prompt },
   });
 }
 

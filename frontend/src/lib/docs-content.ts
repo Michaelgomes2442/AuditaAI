@@ -97,7 +97,7 @@ GOOGLE_API_KEY=AIza...
 2. Choose a model from the dropdown
 3. Enter your prompt
 4. Click "Test Model"
-5. View CRIES analysis results
+5. View FORGE analysis results
 
 ## Step 4: View Results
 
@@ -333,9 +333,9 @@ Expected improvement: +120-140% with proper governance.
 - **60-69**: Fair
 - **Below 60**: Needs Improvement
 
-## Using CRIES in Tests
+## Using FORGE in Tests
 
-CRIES scores are automatically calculated for all tests and displayed in:
+FORGE scores are automatically calculated for all tests and displayed in:
 - Test result details
 - Dashboard analytics
 - Heatmap visualizations
@@ -448,7 +448,7 @@ Each baseline tracks five key metrics:
 
 1. **Response Time**: Average milliseconds
 2. **Cost**: Average per request
-3. **Quality Score**: Average CRIES score
+3. **Quality Score**: Average FORGE score
 4. **Accuracy**: Average accuracy percentage
 5. **Success Rate**: Percentage of completed tests
 
@@ -666,7 +666,7 @@ All webhook deliveries include:
     "testId": 123,
     "modelName": "gpt-4",
     "status": "completed",
-    "criesScore": 0.85,
+    "forgeScore": 0.85,
     "responseTime": 1234,
     "cost": 0.002
   },

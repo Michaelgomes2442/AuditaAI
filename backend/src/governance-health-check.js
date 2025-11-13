@@ -183,11 +183,11 @@ export async function runGovernanceHealthCheck() {
       console.log('⚠️  WARNING: Missing compliance_level field');
     }
     
-    if (frontierMeta.expected_cries_improvement) {
-      console.log('✅ CRIES improvement target:', frontierMeta.expected_cries_improvement);
+    if (frontierMeta.expected_forge_improvement) {
+      console.log('✅ FORGE improvement target:', frontierMeta.expected_forge_improvement);
     } else {
-      results.warnings.push('Missing CRIES improvement target');
-      console.log('⚠️  WARNING: Missing CRIES improvement target');
+      results.warnings.push('Missing FORGE improvement target');
+      console.log('⚠️  WARNING: Missing FORGE improvement target');
     }
     
     if (frontierMeta.prompt_hash) {

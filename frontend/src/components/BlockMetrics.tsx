@@ -26,7 +26,7 @@ export function BlockMetrics({ orgId }: { orgId: string }) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>CRIES Metrics</CardTitle>
+          <CardTitle>FORGE Metrics</CardTitle>
           <CardDescription>Waiting for block creation...</CardDescription>
         </CardHeader>
       </Card>
@@ -36,7 +36,7 @@ export function BlockMetrics({ orgId }: { orgId: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>CRIES Metrics</CardTitle>
+        <CardTitle>FORGE Metrics</CardTitle>
         <CardDescription>
           Last updated: {new Date(metrics.timestamp).toLocaleString()}
         </CardDescription>

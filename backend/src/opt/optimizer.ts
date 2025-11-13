@@ -145,9 +145,9 @@ export class ParameterOptimizer extends EventEmitter {
     
     console.log(`Baseline deltas:`);
     console.log(`  ΔΩ: ${baselineResult.delta.overall >= 0 ? '+' : ''}${baselineResult.delta.overall.toFixed(4)}`);
-    console.log(`  ΔR: ${baselineResult.delta.rigor >= 0 ? '+' : ''}${baselineResult.delta.rigor.toFixed(4)}`);
-    console.log(`  ΔI: ${baselineResult.delta.integration >= 0 ? '+' : ''}${baselineResult.delta.integration.toFixed(4)}`);
-    console.log(`  ΔC: ${baselineResult.delta.coherence >= 0 ? '+' : ''}${baselineResult.delta.coherence.toFixed(4)}`);
+    console.log(`  ΔR: ${baselineResult.delta.R >= 0 ? '+' : ''}${baselineResult.delta.R.toFixed(4)}`);
+    console.log(`  ΔO: ${baselineResult.delta.O >= 0 ? '+' : ''}${baselineResult.delta.O.toFixed(4)}`);
+    console.log(`  ΔF: ${baselineResult.delta.F >= 0 ? '+' : ''}${baselineResult.delta.F.toFixed(4)}`);
     console.log(`  Variance: ${baselineResult.variance.toFixed(4)}`);
     
     const baselineReward = computeReward(
@@ -240,9 +240,9 @@ export class ParameterOptimizer extends EventEmitter {
       
       console.log(`\nResults:`);
       console.log(`  ΔΩ: ${result.delta.overall >= 0 ? '+' : ''}${result.delta.overall.toFixed(4)} (best: ${this.bestDelta.overall >= 0 ? '+' : ''}${this.bestDelta.overall.toFixed(4)})`);
-      console.log(`  ΔR: ${result.delta.rigor >= 0 ? '+' : ''}${result.delta.rigor.toFixed(4)} (best: ${this.bestDelta.rigor >= 0 ? '+' : ''}${this.bestDelta.rigor.toFixed(4)})`);
-      console.log(`  ΔI: ${result.delta.integration >= 0 ? '+' : ''}${result.delta.integration.toFixed(4)} (best: ${this.bestDelta.integration >= 0 ? '+' : ''}${this.bestDelta.integration.toFixed(4)})`);
-      console.log(`  ΔC: ${result.delta.coherence >= 0 ? '+' : ''}${result.delta.coherence.toFixed(4)}`);
+      console.log(`  ΔR: ${result.delta.R >= 0 ? '+' : ''}${result.delta.R.toFixed(4)} (best: ${this.bestDelta.R >= 0 ? '+' : ''}${this.bestDelta.R.toFixed(4)})`);
+      console.log(`  ΔO: ${result.delta.O >= 0 ? '+' : ''}${result.delta.O.toFixed(4)} (best: ${this.bestDelta.O >= 0 ? '+' : ''}${this.bestDelta.O.toFixed(4)})`);
+      console.log(`  ΔF: ${result.delta.F >= 0 ? '+' : ''}${result.delta.F.toFixed(4)}`);
       console.log(`  Variance: ${result.variance.toFixed(4)}`);
       
       // Compute reward
@@ -405,8 +405,8 @@ export class ParameterOptimizer extends EventEmitter {
     console.log(`  ${formatParams(this.bestParams)}`);
     console.log(`  Reward: ${this.bestReward >= 0 ? '+' : ''}${this.bestReward.toFixed(4)}`);
     console.log(`  ΔΩ: ${this.bestDelta.overall >= 0 ? '+' : ''}${this.bestDelta.overall.toFixed(4)}`);
-    console.log(`  ΔR: ${this.bestDelta.rigor >= 0 ? '+' : ''}${this.bestDelta.rigor.toFixed(4)}`);
-    console.log(`  ΔI: ${this.bestDelta.integration >= 0 ? '+' : ''}${this.bestDelta.integration.toFixed(4)}`);
+    console.log(`  ΔR: ${this.bestDelta.R >= 0 ? '+' : ''}${this.bestDelta.R.toFixed(4)}`);
+    console.log(`  ΔO: ${this.bestDelta.O >= 0 ? '+' : ''}${this.bestDelta.O.toFixed(4)}`);
     console.log();
     
     console.log(`Dimension Statistics (learned means):`);

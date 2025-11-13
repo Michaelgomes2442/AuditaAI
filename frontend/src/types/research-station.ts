@@ -35,7 +35,7 @@ export interface AIModelProfile {
 export interface MonitoringConfig {
   auditFrequency: number; // minutes
   alertThresholds: {
-    cries: number; // 0-1
+    forge: number; // 0-1
     driftTolerance: number; // 0-1
     ethicsScore: number; // 0-1
   };

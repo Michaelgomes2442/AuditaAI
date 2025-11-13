@@ -6,7 +6,7 @@
  * 
  * Receipt Types:
  * - Δ-BOOTCONFIRM: System initialization
- * - Δ-ANALYSIS: BEN Core computations (CRIES, σ-windows, τ-thresholds)
+ * - Δ-ANALYSIS: BEN Core computations (FORGE, σ-windows, τ-thresholds)
  * - Δ-DIRECTIVE: Governance commands from AuditaAI to humans
  * - Δ-RESULT: Execution outcomes from humans back to system
  * - Δ-APPEND: State mutations with integrity proofs
@@ -240,10 +240,12 @@ export async function emitAnalysis(
     sigmaWindow?: number;
     tauThreshold?: number;
     piPolicy?: number;
-    criesScore?: number;
+    forgeScore?: number;
     [key: string]: any;
   }
 ): Promise<EmittedReceipt> {
+  // Analysis payloads should provide `forgeScore`.
+
   return emitReceipt({
     type: 'ANALYSIS',
     persona: 'ANALYST',

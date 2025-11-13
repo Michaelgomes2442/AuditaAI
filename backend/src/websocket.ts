@@ -10,9 +10,9 @@ import {
   AuditUpdatePayload,
   MetricsUpdatePayload,
   VerificationResultPayload,
-  CRIESMetrics
+  FORGEMetrics
 } from "./types/audit";
-import { generateBlockHash, calculateCRIESMetrics } from "./lib/governance";
+import { generateBlockHash, calculateFORGEMetrics } from "./lib/governance";
 import Redis from 'ioredis';
 import { randomBytes } from 'crypto';
 
@@ -169,7 +169,7 @@ export function setupWebSocket(server: HttpServer, prisma: PrismaClient) {
                 // issues with updateMany inside certain transaction contexts.
                 await Promise.all(pendingRecords.map((r: any) => tx.auditRecord.update({ where: { id: r.id }, data: { blockHash } })));
 
-                const metrics: CRIESMetrics = calculateCRIESMetrics(pendingRecords as any);
+                const metrics: any = calculateFORGEMetrics(pendingRecords as any);
                 const metricsJson: Prisma.InputJsonValue = {
                   consistency: metrics.consistency,
                   reproducibility: metrics.reproducibility,
@@ -208,7 +208,7 @@ export function setupWebSocket(server: HttpServer, prisma: PrismaClient) {
               // issues with updateMany inside certain transaction contexts.
               await Promise.all(pendingRecords.map((r: any) => tx.auditRecord.update({ where: { id: r.id }, data: { blockHash } })));
 
-              const metrics: CRIESMetrics = calculateCRIESMetrics(pendingRecords as any);
+              const metrics: any = calculateFORGEMetrics(pendingRecords as any);
               const metricsJson: Prisma.InputJsonValue = { consistency: metrics.consistency, reproducibility: metrics.reproducibility, integrity: metrics.integrity, explainability: metrics.explainability, security: metrics.security, timestamp: metrics.timestamp.toISOString(), recordsAnalyzed: metrics.recordsAnalyzed };
 
               createdBlock = await tx.block.create({ data: { hash: blockHash, previousHash, organizationId: orgId, lamportClock: blockData.lamportClock, metricsData: metricsJson } });

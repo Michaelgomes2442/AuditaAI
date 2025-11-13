@@ -6,7 +6,7 @@
  * - Chain continuity breaks (missing receipts, hash mismatches)
  * - Lamport monotonicity violations
  * - Latency breaches (>60s)
- * - CRIES score anomalies (sudden drops)
+ * - FORGE score anomalies (sudden drops)
  * - Policy violations
  * - Consensus failures
  */
@@ -26,6 +26,7 @@ export type ScanRuleType =
   | 'LAMPORT_MONOTONICITY'
   | 'LATENCY_BREACH'
   | 'CRIES_ANOMALY'
+  | 'FORGE_ANOMALY'
   | 'POLICY_VIOLATION'
   | 'CONSENSUS_FAILURE'
   | 'HASH_INTEGRITY';
@@ -51,9 +52,12 @@ export interface ZScanConfig {
   verifyLamportMonotonicity: boolean;
   latencyThresholdSeconds: number;
   
-  // Quality verification
+  // Quality verification (legacy CRIES keys remain for backward compatibility)
   criesMinScore: number;
   criesDropThreshold: number; // e.g., 20 = alert if score drops >20 points
+  // New FORGE aliases (optional override)
+  forgeMinScore?: number;
+  forgeDropThreshold?: number;
   
   // Governance verification
   verifyPolicyCompliance: boolean;
@@ -73,6 +77,8 @@ export const DEFAULT_ZSCAN_CONFIG: ZScanConfig = {
   latencyThresholdSeconds: 60,
   criesMinScore: 40,
   criesDropThreshold: 20,
+  forgeMinScore: 40,
+  forgeDropThreshold: 20,
   verifyPolicyCompliance: true,
   verifyConsensus: true,
   consensusMinWitnesses: 2,
@@ -350,7 +356,7 @@ async function verifyLatencyCompliance(
 }
 
 /**
- * Verify CRIES scores - detect anomalies and low scores
+ * Verify FORGE/CRIES scores - detect anomalies and low scores
  */
 async function verifyCRIESScores(
   minScore: number = 40,
@@ -371,7 +377,7 @@ async function verifyCRIESScores(
       ruleType: 'CRIES_ANOMALY',
       severity: 'INFO',
       passed: true,
-      message: 'No CRIES computations found to verify',
+      message: 'No FORGE computations found to verify',
     }];
   }
 
@@ -379,13 +385,15 @@ async function verifyCRIESScores(
   for (const comp of computations) {
     if (comp.criesScore < minScore) {
       results.push({
-        ruleType: 'CRIES_ANOMALY',
+        // Prefer new FORGE rule type; keep legacy info in details for compatibility
+        ruleType: 'FORGE_ANOMALY',
         severity: comp.criesScore < minScore / 2 ? 'CRITICAL' : 'WARNING',
         passed: false,
-        message: `Low CRIES score: ${comp.criesScore.toFixed(1)} (min: ${minScore})`,
+        message: `Low FORGE score: ${comp.criesScore.toFixed(1)} (min: ${minScore})`,
         affectedReceiptId: comp.receiptId?.toString(),
         affectedLamportClock: comp.lamportClock,
         details: {
+          legacyRuleType: 'CRIES_ANOMALY',
           criesScore: comp.criesScore,
           minScore,
           computationId: comp.id,
@@ -402,13 +410,14 @@ async function verifyCRIESScores(
 
     if (drop > dropThreshold) {
       results.push({
-        ruleType: 'CRIES_ANOMALY',
+        ruleType: 'FORGE_ANOMALY',
         severity: drop > dropThreshold * 2 ? 'CRITICAL' : 'WARNING',
         passed: false,
-        message: `CRIES score drop: ${prev.criesScore.toFixed(1)} → ${curr.criesScore.toFixed(1)} (-${drop.toFixed(1)})`,
+        message: `FORGE score drop: ${prev.criesScore.toFixed(1)} → ${curr.criesScore.toFixed(1)} (-${drop.toFixed(1)})`,
         affectedReceiptId: curr.receiptId?.toString(),
         affectedLamportClock: curr.lamportClock,
         details: {
+          legacyRuleType: 'CRIES_ANOMALY',
           previousScore: prev.criesScore,
           currentScore: curr.criesScore,
           drop,
@@ -422,10 +431,11 @@ async function verifyCRIESScores(
 
   if (results.length === 0) {
     results.push({
-      ruleType: 'CRIES_ANOMALY',
+      ruleType: 'FORGE_ANOMALY',
       severity: 'INFO',
       passed: true,
-      message: `CRIES scores verified for ${computations.length} computations`,
+      message: `FORGE scores verified for ${computations.length} computations`,
+      details: { legacyRuleType: 'CRIES_ANOMALY' }
     });
   }
 

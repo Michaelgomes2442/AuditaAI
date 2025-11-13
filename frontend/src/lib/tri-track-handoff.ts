@@ -2,7 +2,7 @@
  * Tri-Track Handoff Service
  * 
  * Orchestrates deterministic handoffs between three cognitive tracks:
- * - Track-A (BEN_CORE): Analyst role, enforces Π/τ, computes σ windows & CRIES
+ * - Track-A (BEN_CORE): Analyst role, enforces Π/τ, computes σ windows & governance metrics
  * - Track-B (AUDITAAI): Governor/Verifier, applies policies, Z-Scan, consent/trace_id
  * - Track-C (HUMAN): Executor, receives directives, returns results
  * 

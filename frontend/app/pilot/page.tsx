@@ -379,7 +379,7 @@ export default function PilotPageNew() {
     }
   };
 
-  const sealReceipt = async (receiptId: string) => {
+  const sealReceipt = async (receiptId: string | number) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/pilot/receipt/${receiptId}/seal`, {
         method: 'POST',
@@ -401,7 +401,7 @@ export default function PilotPageNew() {
     }
   };
 
-  const promoteReceipt = async (receiptId: string) => {
+  const promoteReceipt = async (receiptId: string | number) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/pilot/receipt/${receiptId}/promote`, {
         method: 'POST',

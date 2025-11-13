@@ -10,6 +10,8 @@ export interface SaveTestResultParams {
   prompt: string;
   response?: string;
   criesScore?: number;
+  // Optional FORGE-shaped score during migration
+  forgeScore?: number;
   responseTime?: number;
   tokenCount?: number;
   cost?: number;
@@ -50,6 +52,8 @@ export async function saveSuccessfulTest(
   response: string,
   criesScore: number,
   responseTime: number,
+  // forgeScore kept for migration compatibility
+  forgeScore?: number,
   tokenCount?: number,
   cost?: number,
   metadata?: Record<string, any>
@@ -61,6 +65,7 @@ export async function saveSuccessfulTest(
     prompt,
     response,
     criesScore,
+    forgeScore: forgeScore ?? criesScore,
     responseTime,
     tokenCount,
     cost,

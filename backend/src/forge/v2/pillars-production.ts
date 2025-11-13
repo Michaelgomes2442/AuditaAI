@@ -54,6 +54,8 @@ function requireFactNouns(
   factNouns: string[] = ['study', 'data', 'protocol', 'claim', 'statistic', 'source', 'reference', 'report', 'publication', 'research', 'event', 'presentation', 'keynote', 'account', 'conference', 'talk', 'paper', 'speech'],
   proximity: number = 27  // Optimized value
 ): boolean {
+  // Defensive: if response is missing or not a string, gating cannot be satisfied
+  if (!response || typeof response !== 'string') return false;
   const matches = Array.from(response.matchAll(pattern));
   
   for (const match of matches) {
@@ -395,7 +397,7 @@ export function computeForge(
   R: number;
   G: number;
   E: number;
-  Φ: number;
+  overall: number;
   components: ForgeComponents;
 } {
   const fabrication = scoreFabrication(prompt, response);
@@ -432,6 +434,7 @@ export function computeForge(
   }
   
   Φ = Number(Math.max(0, Math.min(1, Φ)).toFixed(4));
+  const overall = Φ;
   
   return {
     F: Number(F.toFixed(4)),
@@ -439,7 +442,7 @@ export function computeForge(
     R: Number(R.toFixed(4)),
     G: Number(G.toFixed(4)),
     E: Number(E.toFixed(4)),
-    Φ,
+    overall,
     components: {
       fabrication: fabrication.components,
       oversight: oversight.components,

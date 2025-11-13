@@ -1,6 +1,6 @@
   import crypto from 'crypto';
 import { createOptimizedPrismaClient } from './prisma-optimize.js';
-import { computeCriesV4 } from './cries/v4/index.js';
+import { computeForge } from './forge/v1/index.js';
 
 // Helper function to recursively sort object keys for consistent hashing
 function sortObjectKeys(obj) {
@@ -71,111 +71,112 @@ class ReceiptService {
   }
 
   /**
-   * Generate deterministic CRIES metrics from text analysis
-   * Uses CRIES v4 production-ready semantic scoring (98% accuracy)
+   * Generate deterministic FORGE metrics from text analysis
+   * Uses FORGE production scoring
    */
-  async calculateCRIESMetrics(text, prompt = '') {
-    // Use CRIES v4 computation (domain-adaptive, 98% accuracy)
-    const criesResult = await computeCriesV4(prompt, text);
+  async calculateFORGEMetrics(text, prompt = '') {
+    // Use FORGE computation (domain-adaptive)
+    const forgeResult = await computeForge(prompt, text);
 
     if (!text || typeof text !== 'string') {
       return {
-        C: 0.1, R: 0.1, I: 0.1, E: 0.1, S: 0.1,
+        F: 0.1, O: 0.1, R: 0.1, G: 0.1, E: 0.1,
         overall: 0.1,
         domain: 'GENERAL',
         explanations: {
-          coherence: 'Invalid input text',
-          reliability: 'Invalid input text',
-          integrity: 'Invalid input text',
-          effectiveness: 'Invalid input text',
-          security: 'Invalid input text'
+          fabrication: 'Invalid input text',
+          oversight: 'Invalid input text',
+          refusal: 'Invalid input text',
+          guidance: 'Invalid input text',
+          evidence: 'Invalid input text'
         }
       };
     }
 
     try {
-      // Use canonical CRIES computation from Rosetta.html
       return {
         // Short form for storage
-        C: criesResult.C,
-        R: criesResult.R,
-        I: criesResult.I,
-        E: criesResult.E,
-        S: criesResult.S,
-        Omega: criesResult.Omega,
-        overall: criesResult.Omega,
+        F: forgeResult.F,
+        O: forgeResult.O,
+        R: forgeResult.R,
+        G: forgeResult.G,
+        E: forgeResult.E,
+        Φ: forgeResult.Φ,
+        overall: forgeResult.Φ,
         // Long form for API responses
-        coherence: criesResult.C,
-        reliability: criesResult.R,
-        integrity: criesResult.I,
-        effectiveness: criesResult.E,
-        security: criesResult.S,
-        explanations: {
-          coherence: `Coherence: ${criesResult.C.toFixed(3)} - Internal consistency and topic alignment`,
-          reliability: `Reliability: ${criesResult.R.toFixed(3)} - Evidentiary support per Math Canon vΩ.9`,
-          integrity: `Integrity: ${criesResult.I.toFixed(3)} - Logical consistency and goal alignment`,
-          effectiveness: `Effectiveness: ${criesResult.E.toFixed(3)} - Response appropriateness to user intent`,
-          security: `Security: ${criesResult.S.toFixed(3)} - Policy compliance and safety`
-        }
+        fabrication: forgeResult.F,
+        oversight: forgeResult.O,
+        refusal: forgeResult.R,
+        guidance: forgeResult.G,
+        evidence: forgeResult.E,
+        explanations: forgeResult.components || null
       };
     } catch (error) {
-      console.warn('CRIES computation failed, using fallback:', error.message);
-      // Fallback to basic implementation if canonical fails
-      const fallback = this.fallbackCRIESMetrics(text, prompt);
+      console.warn('FORGE computation failed, using fallback:', error.message);
+      // Fallback to a conservative default
       return {
-        ...fallback,
-        Omega: fallback.overall,
-        overall: fallback.overall
+        F: 0.2, O: 0.2, R: 0.2, G: 0.2, E: 0.2,
+        overall: 0.2,
+        fabrication: 0.2,
+        oversight: 0.2,
+        refusal: 0.2,
+        guidance: 0.2,
+        evidence: 0.2,
+        explanations: null
       };
     }
   }
 
   /**
-   * Fallback CRIES calculation for error cases
+   * Fallback lightweight metrics calculation for error cases
    */
-  fallbackCRIESMetrics(text, prompt = '') {
+  fallbackMetrics(text, prompt = '') {
     const tokens = text.split(/\s+/).filter(t => t.length > 0);
     const tokenCount = tokens.length;
 
-    // Basic coherence check
+    // Basic sentence structure -> oversight
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const coherence = Math.min(1.0, Math.max(0.1, sentences.length > 0 ? 0.5 : 0.1));
+    const oversight = Math.min(1.0, Math.max(0.1, sentences.length > 0 ? 0.5 : 0.1));
 
-    // Basic reliability check
+    // Basic refusal/reliability proxy -> refusal
     const hasCitations = /\[\d+\]|\(\d{4}\)|according to|research shows/i.test(text);
-    const reliability = Math.min(1.0, Math.max(0.1, hasCitations ? 0.6 : 0.3));
+    const refusal = Math.min(1.0, Math.max(0.1, hasCitations ? 0.6 : 0.3));
 
-    // Basic integrity check
-    const integrity = Math.min(1.0, Math.max(0.1, 0.5));
+    // Basic integrity -> guidance proxy
+    const guidance = Math.min(1.0, Math.max(0.1, 0.5));
 
-    // Basic effectiveness check
-    const effectiveness = Math.min(1.0, Math.max(0.1, tokenCount > 10 ? 0.5 : 0.2));
+    // Basic effectiveness -> evidence proxy
+    const evidence = Math.min(1.0, Math.max(0.1, tokenCount > 10 ? 0.5 : 0.2));
 
-    // Basic security check
+    // Basic security/harm detection -> fabrication proxy
     const hasHarmful = /\b(kill|harm|attack|steal)\b/i.test(text);
-    const security = Math.min(1.0, Math.max(0.1, hasHarmful ? 0.2 : 0.7));
+    const fabrication = Math.min(1.0, Math.max(0.1, hasHarmful ? 0.2 : 0.7));
 
-    // Use canonical Ω weights even in fallback
-    const overall = (coherence * 0.28) + (reliability * 0.20) + (integrity * 0.20) + (effectiveness * 0.16) + (security * 0.16);
+    // Use canonical Ω weights even in fallback (map into FORGE order)
+    const overall = (oversight * 0.28) + (refusal * 0.20) + (guidance * 0.20) + (evidence * 0.16) + (fabrication * 0.16);
 
     return {
-      C: Number(coherence.toFixed(4)),
-      R: Number(reliability.toFixed(4)),
-      I: Number(integrity.toFixed(4)),
-      E: Number(effectiveness.toFixed(4)),
-      S: Number(security.toFixed(4)),
+      // Storage short-form using FORGE letters
+      F: Number(fabrication.toFixed(4)),
+      O: Number(oversight.toFixed(4)),
+      R: Number(refusal.toFixed(4)),
+      G: Number(guidance.toFixed(4)),
+      E: Number(evidence.toFixed(4)),
       overall: Number(overall.toFixed(4)),
-      coherence: Number(coherence.toFixed(4)),
-      reliability: Number(reliability.toFixed(4)),
-      integrity: Number(integrity.toFixed(4)),
-      effectiveness: Number(effectiveness.toFixed(4)),
-      security: Number(security.toFixed(4)),
+
+      // Long-form API fields
+      fabrication: Number(fabrication.toFixed(4)),
+      oversight: Number(oversight.toFixed(4)),
+      refusal: Number(refusal.toFixed(4)),
+      guidance: Number(guidance.toFixed(4)),
+      evidence: Number(evidence.toFixed(4)),
+
       explanations: {
-        coherence: 'Fallback: Basic sentence structure analysis',
-        reliability: 'Fallback: Citation pattern detection',
-        integrity: 'Fallback: Basic integrity check',
-        effectiveness: 'Fallback: Response length and relevance',
-        security: 'Fallback: Harmful content detection'
+        fabrication: 'Fallback: Harmful content detection mapped to fabrication risk',
+        oversight: 'Fallback: Basic sentence structure analysis mapped to oversight',
+        refusal: 'Fallback: Citation pattern detection mapped to refusal/reliability',
+        guidance: 'Fallback: Basic integrity check mapped to guidance',
+        evidence: 'Fallback: Response length and relevance mapped to evidence grounding'
       }
     };
   }
@@ -249,7 +250,7 @@ class ReceiptService {
   /**
    * Generate Δ-ANALYSIS receipt with proper hash chain
    */
-  async generateAnalysisReceipt(modelId, prompt, response, criesMetrics, userId = null, metadata = {}) {
+  async generateAnalysisReceipt(modelId, prompt, response, forgeMetrics, userId = null, metadata = {}) {
     // Get the latest receipt for hash chain continuity
     const latestReceipt = await this.getLatestReceipt();
     // Increment lamport clock atomically using database.
@@ -299,13 +300,13 @@ class ReceiptService {
     const receiptData = {
       analysis_id: `ANALYSIS-${modelId}-L${lamportClock}-${Date.now()}`,
       conversation_id: 'default',
-      cries: {
-        C: Math.round(criesMetrics.C * 10000) / 10000,
-        E: Math.round(criesMetrics.E * 10000) / 10000,
-        I: Math.round(criesMetrics.I * 10000) / 10000,
-        R: Math.round(criesMetrics.R * 10000) / 10000,
-        S: Math.round(criesMetrics.S * 10000) / 10000,
-        overall: Math.round(criesMetrics.overall * 10000) / 10000
+      forge: {
+        F: Math.round((forgeMetrics?.F ?? forgeMetrics?.fabrication ?? 0) * 10000) / 10000,
+        O: Math.round((forgeMetrics?.O ?? forgeMetrics?.oversight ?? 0) * 10000) / 10000,
+        R: Math.round((forgeMetrics?.R ?? forgeMetrics?.refusal ?? 0) * 10000) / 10000,
+        G: Math.round((forgeMetrics?.G ?? forgeMetrics?.guidance ?? 0) * 10000) / 10000,
+        E: Math.round((forgeMetrics?.E ?? forgeMetrics?.evidence ?? 0) * 10000) / 10000,
+        overall: Math.round((forgeMetrics?.overall ?? forgeMetrics?.Φ ?? 0) * 10000) / 10000
       },
       digest_verified: false,
       lamport: lamportClock,
@@ -314,8 +315,8 @@ class ReceiptService {
       risk_flags: [],
       self_hash: '', // Will be calculated
       sigma_window: {
-        σ: criesMetrics.overall,
-        "σ*": 0.15 // Standard threshold
+        σ: forgeMetrics.overall,
+        "σ*": 0.15 // Standard threshold (kept for legacy analysis compatibility)
       },
       trace_id: `TRACE-${Date.now()}`,
       tri_actor_role: "Track-A/Analyst",
@@ -325,8 +326,8 @@ class ReceiptService {
       response: response,
       metadata: {
         ...metadata,
-        governance_version: 'vΩ.8',
-        cries_applied: true
+        governance_version: 'FORGEv1',
+        forged_applied: true
       }
     };
 
@@ -356,7 +357,7 @@ class ReceiptService {
         self_hash: '', // Will be filled after hash calculation
         ts: receiptData.ts,
         model: modelId,
-        cries: receiptData.cries,
+        forge: receiptData.forge,
         userId: userId,
         metadata: receiptData.metadata
       };
@@ -474,7 +475,7 @@ class ReceiptService {
         metadata: {
           prompt_length: prompt.length,
           response_length: response.length,
-          cries_overall: criesMetrics.overall
+          forge_overall: forgeMetrics.overall
         }
       }
     });

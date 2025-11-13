@@ -43,7 +43,7 @@ export default function ConversationSelector({
             conversationId: c.conversationId,
             modelName: c.modelName || 'Unknown',
             timestamp: c.timestamp,
-            sigma: c.cries?.sigma || 0,
+            sigma: c.forge?.sigma || 0,
             lamport: c.lamport || 0,
             receiptCount: c.receiptCount || 0
           }));

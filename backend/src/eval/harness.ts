@@ -11,25 +11,26 @@
  * - Seeded prompt selection
  */
 
-interface CRIESScore {
-  Omega: number;
-  C: number;
-  R: number;
-  I: number;
-  E: number;
-  S: number;
+// FORGE-native score shape
+interface FORGEScore {
+  overall: number; // aggregate Φ or overall
+  F: number; // Fabrication / Fidelity
+  O: number; // Oversight / Openness
+  R: number; // Refusal / Rigor
+  G: number; // Guidance / Explainability
+  E: number; // Evidence / Empathy
 }
 
 interface EvalResult {
-  governed: CRIESScore;
-  baseline: CRIESScore;
+  governed: FORGEScore;
+  baseline: FORGEScore;
   delta: {
     overall: number;
-    coherence: number;
-    rigor: number;
-    integration: number;
-    empathy: number;
-    strictness: number;
+    F: number;
+    O: number;
+    R: number;
+    G: number;
+    E: number;
   };
   variance: number;
 }
@@ -62,11 +63,11 @@ export async function evaluate(
   const cfg = { ...DEFAULT_CONFIG, ...config };
   const trials = cfg.trials ?? cfg.trialsPerPrompt;  // Use adaptive trials if provided
   
-  const results: Array<{ governed: CRIESScore; baseline: CRIESScore }> = [];
+  const results: Array<{ governed: FORGEScore; baseline: FORGEScore }> = [];
   
   for (const prompt of prompts) {
     // Tri-trial averaging for each prompt (or fewer if adaptive)
-    const trialResults: Array<{ governed: CRIESScore; baseline: CRIESScore }> = [];
+    const trialResults: Array<{ governed: FORGEScore; baseline: FORGEScore }> = [];
     
     for (let trial = 0; trial < trials; trial++) {
       const governed = await callBackend(prompt, wrapper, true, cfg);
@@ -86,20 +87,20 @@ export async function evaluate(
   const finalGoverned = averageScores(results.map(r => r.governed));
   const finalBaseline = averageScores(results.map(r => r.baseline));
   
-  // Compute deltas
+  // Compute deltas (FORGE-native)
   const delta = {
-    overall: finalGoverned.Omega - finalBaseline.Omega,
-    coherence: finalGoverned.C - finalBaseline.C,
-    rigor: finalGoverned.R - finalBaseline.R,
-    integration: finalGoverned.I - finalBaseline.I,
-    empathy: finalGoverned.E - finalBaseline.E,
-    strictness: finalGoverned.S - finalBaseline.S
+    overall: finalGoverned.overall - finalBaseline.overall,
+    F: finalGoverned.F - finalBaseline.F,
+    O: finalGoverned.O - finalBaseline.O,
+    R: finalGoverned.R - finalBaseline.R,
+    G: finalGoverned.G - finalBaseline.G,
+    E: finalGoverned.E - finalBaseline.E
   };
   
   // Compute variance across prompts
   const variances = results.map(r => {
-    const dOmega = r.governed.Omega - r.baseline.Omega;
-    return Math.pow(dOmega - delta.overall, 2);
+    const dOverall = r.governed.overall - r.baseline.overall;
+    return Math.pow(dOverall - delta.overall, 2);
   });
   const variance = variances.reduce((a, b) => a + b, 0) / variances.length;
   
@@ -119,7 +120,7 @@ async function callBackend(
   wrapper: string,
   useGovernance: boolean,
   config: EvalConfig
-): Promise<CRIESScore> {
+): Promise<FORGEScore> {
   const url = `${config.backendUrl}/api/pilot/run-prompt`;
   
   const response = await fetch(url, {
@@ -142,32 +143,34 @@ async function callBackend(
   
   const data = await response.json();
   
-  if (!data.cries) {
-    throw new Error('Backend response missing CRIES scores');
+  if (!data.forge) {
+    throw new Error('Backend response missing FORGE scores');
   }
-  
-  return {
-    Omega: data.cries.Omega ?? data.cries.omega ?? data.cries['Ω'] ?? 0,
-    C: data.cries.C ?? data.cries.coherence ?? 0,
-    R: data.cries.R ?? data.cries.rigor ?? 0,
-    I: data.cries.I ?? data.cries.integration ?? 0,
-    E: data.cries.E ?? data.cries.empathy ?? 0,
-    S: data.cries.S ?? data.cries.strictness ?? 0
-  };
+
+  // Normalize various possible shapes to the FORGE canonical shape
+  const forge = data.forge;
+  const overall = (forge.forgeOverall ?? forge.overall ?? forge['Φ'] ?? forge.phi ?? 0) as number;
+  const F = (forge.forgeF ?? forge.F ?? forge.fabrication ?? 0) as number;
+  const O = (forge.forgeO ?? forge.O ?? forge.oversight ?? 0) as number;
+  const R = (forge.forgeR ?? forge.R ?? forge.refusal ?? 0) as number;
+  const G = (forge.forgeG ?? forge.G ?? forge.guidance ?? 0) as number;
+  const E = (forge.forgeE ?? forge.E ?? forge.evidence ?? 0) as number;
+
+  return { overall, F, O, R, G, E };
 }
 
 /**
- * Average CRIES scores across multiple trials
+ * Average FORGE scores across multiple trials
  */
-function averageScores(scores: CRIESScore[]): CRIESScore {
-  const n = scores.length;
+function averageScores(scores: FORGEScore[]): FORGEScore {
+  const n = scores.length || 1;
   return {
-    Omega: scores.reduce((sum, s) => sum + s.Omega, 0) / n,
-    C: scores.reduce((sum, s) => sum + s.C, 0) / n,
+    overall: scores.reduce((sum, s) => sum + s.overall, 0) / n,
+    F: scores.reduce((sum, s) => sum + s.F, 0) / n,
+    O: scores.reduce((sum, s) => sum + s.O, 0) / n,
     R: scores.reduce((sum, s) => sum + s.R, 0) / n,
-    I: scores.reduce((sum, s) => sum + s.I, 0) / n,
-    E: scores.reduce((sum, s) => sum + s.E, 0) / n,
-    S: scores.reduce((sum, s) => sum + s.S, 0) / n
+    G: scores.reduce((sum, s) => sum + s.G, 0) / n,
+    E: scores.reduce((sum, s) => sum + s.E, 0) / n
   };
 }
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateBlockHash, calculateCRIESMetrics } from './governance';
+import { generateBlockHash, calculateFORGEMetrics } from './governance';
 import type { AuditRecord } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 
@@ -71,7 +71,7 @@ describe('Governance Module', () => {
     });
   });
 
-  describe('calculateCRIESMetrics', () => {
+  describe('calculateFORGEMetrics (was calculateCRIESMetrics)', () => {
     const now = new Date('2024-01-01T00:00:00Z');
     const validRecord: AuditRecord = createTestRecord({
       details: { test: true } as Prisma.JsonValue,
@@ -93,7 +93,7 @@ describe('Governance Module', () => {
         }
       ];
 
-      const metrics = calculateCRIESMetrics(records);
+      const metrics = calculateFORGEMetrics(records);
       expect(metrics.consistency).to.equal(1);
       expect(metrics.reproducibility).to.equal(1);
       expect(metrics.integrity).to.equal(1);
@@ -115,7 +115,7 @@ describe('Governance Module', () => {
         }
       ];
 
-      const metrics = calculateCRIESMetrics(records);
+      const metrics = calculateFORGEMetrics(records);
       expect(metrics.consistency).to.be.lessThan(1);
       expect(metrics.reproducibility).to.equal(1);
       expect(metrics.integrity).to.equal(1);
@@ -128,7 +128,7 @@ describe('Governance Module', () => {
         { ...validRecord, metadata: null }
       ];
 
-      const metrics = calculateCRIESMetrics(records);
+      const metrics = calculateFORGEMetrics(records);
       expect(metrics.consistency).to.equal(1);
       expect(metrics.reproducibility).to.equal(0);
       expect(metrics.integrity).to.equal(1);
@@ -141,7 +141,7 @@ describe('Governance Module', () => {
         { ...validRecord, userId: undefined as unknown as number }
       ];
 
-      const metrics = calculateCRIESMetrics(records);
+      const metrics = calculateFORGEMetrics(records);
       expect(metrics.consistency).to.equal(1);
       expect(metrics.reproducibility).to.equal(1);
       expect(metrics.integrity).to.equal(1);
@@ -154,7 +154,7 @@ describe('Governance Module', () => {
         { ...validRecord, category: '' }
       ];
 
-      const metrics = calculateCRIESMetrics(records);
+      const metrics = calculateFORGEMetrics(records);
       expect(metrics.consistency).to.equal(1);
       expect(metrics.reproducibility).to.equal(1);
       expect(metrics.integrity).to.equal(1);
@@ -163,7 +163,7 @@ describe('Governance Module', () => {
     });
 
     it('should handle empty record list', () => {
-      const metrics = calculateCRIESMetrics([]);
+      const metrics = calculateFORGEMetrics([]);
       expect(metrics.consistency).to.equal(1);
       expect(metrics.reproducibility).to.equal(1);
       expect(metrics.integrity).to.equal(1);

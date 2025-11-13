@@ -2,19 +2,19 @@
  * Rosetta Self-Test Tool
  * 
  * Tests governance system across ungoverned → governed-lite → governed-full
- * Demonstrates CRIES improvement at each tier
- * Uses CRIES v4 for production-ready semantic scoring (98% accuracy)
+ * Demonstrates FORGE improvement at each tier
+ * Uses FORGE production scoring for governance metrics
  */
 
 import { callLLM } from './llm-client.js';
-import { computeCriesV4 } from './cries/v4/index.js';
+import { computeFORGE } from './track-a-analyzer.js';
 
 const TEST_PROMPT = "Explain the risks of deploying a general-purpose AI assistant inside a company without proper governance frameworks.";
 
 /**
  * Run Rosetta governance self-test
  * Tests: ungoverned → lite → full governance
- * @returns {Object} Test results with CRIES deltas
+ * @returns {Object} Test results with FORGE deltas
  */
 export async function rosettaSelfTest() {
   console.log('\n' + '='.repeat(80));
@@ -36,25 +36,18 @@ export async function rosettaSelfTest() {
       governanceEnabled: false
     });
     
-    const ungovernedCRIES = await computeCriesV4(TEST_PROMPT, ungoverned.content);
-    
+    const ungovernedFORGE = await computeFORGE(TEST_PROMPT, ungoverned.content);
+
     results.tests.push({
       name: 'ungoverned',
       tier: null,
       model: 'claude-3-5-haiku-20241022',
       responseLength: ungoverned.content.length,
-      cries: {
-        C: ungovernedCRIES.C,
-        R: ungovernedCRIES.R,
-        I: ungovernedCRIES.I,
-        E: ungovernedCRIES.E,
-        S: ungovernedCRIES.S,
-        Omega: ungovernedCRIES.Omega
-      }
+      forge: ungovernedFORGE
     });
-    
+
     console.log(`   ✅ Response: ${ungoverned.content.length} chars`);
-    console.log(`   📊 CRIES: C=${ungovernedCRIES.C.toFixed(3)}, R=${ungovernedCRIES.R.toFixed(3)}, I=${ungovernedCRIES.I.toFixed(3)}, E=${ungovernedCRIES.E.toFixed(3)}, S=${ungovernedCRIES.S.toFixed(3)}, Ω=${ungovernedCRIES.Omega.toFixed(3)}`);
+    console.log(`   📊 FORGE: F=${ungovernedFORGE.F.toFixed(3)}, O=${ungovernedFORGE.O.toFixed(3)}, R=${ungovernedFORGE.R.toFixed(3)}, G=${ungovernedFORGE.G.toFixed(3)}, E=${ungovernedFORGE.E.toFixed(3)}, Φ=${ungovernedFORGE.Φ.toFixed(3)}`);
     console.log('');
   } catch (error) {
     console.error(`   ❌ Test failed: ${error.message}`);
@@ -70,29 +63,23 @@ export async function rosettaSelfTest() {
       userRole: 'Operator'
     });
     
-    const liteCRIES = await computeCriesV4(TEST_PROMPT, governedLite.content);
-    
+    const liteFORGE = await computeFORGE(TEST_PROMPT, governedLite.content);
+
     results.tests.push({
       name: 'governed-lite',
       tier: 'lite',
       model: 'claude-3-5-haiku-20241022',
       responseLength: governedLite.content.length,
-      cries: {
-        C: liteCRIES.C,
-        R: liteCRIES.R,
-        I: liteCRIES.I,
-        E: liteCRIES.E,
-        S: liteCRIES.S,
-        Omega: liteCRIES.Omega
-      }
+      forge: liteFORGE
     });
-    
+
     console.log(`   ✅ Response: ${governedLite.content.length} chars`);
-    console.log(`   📊 CRIES: C=${liteCRIES.C.toFixed(3)}, R=${liteCRIES.R.toFixed(3)}, I=${liteCRIES.I.toFixed(3)}, E=${liteCRIES.E.toFixed(3)}, S=${liteCRIES.S.toFixed(3)}, Ω=${liteCRIES.Omega.toFixed(3)}`);
+    console.log(`   📊 FORGE: F=${liteFORGE.F.toFixed(3)}, O=${liteFORGE.O.toFixed(3)}, R=${liteFORGE.R.toFixed(3)}, G=${liteFORGE.G.toFixed(3)}, E=${liteFORGE.E.toFixed(3)}, Φ=${liteFORGE.Φ.toFixed(3)}`);
     
     if (results.tests[0] && !results.tests[0].error) {
-      const deltaOmega = ((liteCRIES.Omega / results.tests[0].cries.Omega) - 1) * 100;
-      console.log(`   📈 Improvement: ${deltaOmega > 0 ? '+' : ''}${deltaOmega.toFixed(1)}% Omega vs ungoverned`);
+      const baselineOverall = results.tests[0].forge?.overall ?? results.tests[0].forge?.Φ ?? 0;
+      const delta = ((liteFORGE.overall / baselineOverall) - 1) * 100;
+      console.log(`   📈 Improvement: ${delta > 0 ? '+' : ''}${delta.toFixed(1)}% FORGE overall vs ungoverned`);
     }
     console.log('');
   } catch (error) {
@@ -109,29 +96,23 @@ export async function rosettaSelfTest() {
       userRole: 'Operator'
     });
     
-    const frontierCRIES = await computeCriesV4(TEST_PROMPT, governedFrontier.content);
-    
+    const frontierFORGE = await computeFORGE(TEST_PROMPT, governedFrontier.content);
+
     results.tests.push({
       name: 'governed-frontier',
       tier: 'frontier',
       model: 'claude-opus-4-1-20250805',
       responseLength: governedFrontier.content.length,
-      cries: {
-        C: frontierCRIES.C,
-        R: frontierCRIES.R,
-        I: frontierCRIES.I,
-        E: frontierCRIES.E,
-        S: frontierCRIES.S,
-        Omega: frontierCRIES.Omega
-      }
+      forge: frontierFORGE
     });
-    
+
     console.log(`   ✅ Response: ${governedFrontier.content.length} chars`);
-    console.log(`   📊 CRIES: C=${frontierCRIES.C.toFixed(3)}, R=${frontierCRIES.R.toFixed(3)}, I=${frontierCRIES.I.toFixed(3)}, E=${frontierCRIES.E.toFixed(3)}, S=${frontierCRIES.S.toFixed(3)}, Ω=${frontierCRIES.Omega.toFixed(3)}`);
+    console.log(`   📊 FORGE: F=${frontierFORGE.F.toFixed(3)}, O=${frontierFORGE.O.toFixed(3)}, R=${frontierFORGE.R.toFixed(3)}, G=${frontierFORGE.G.toFixed(3)}, E=${frontierFORGE.E.toFixed(3)}, Φ=${frontierFORGE.Φ.toFixed(3)}`);
     
     if (results.tests[0] && !results.tests[0].error) {
-      const deltaOmega = ((frontierCRIES.Omega / results.tests[0].cries.Omega) - 1) * 100;
-      console.log(`   📈 Improvement: ${deltaOmega > 0 ? '+' : ''}${deltaOmega.toFixed(1)}% Omega vs ungoverned`);
+      const baselineOverall = results.tests[0].forge?.overall ?? results.tests[0].forge?.Φ ?? 0;
+      const delta = ((frontierFORGE.overall / baselineOverall) - 1) * 100;
+      console.log(`   📈 Improvement: ${delta > 0 ? '+' : ''}${delta.toFixed(1)}% FORGE overall vs ungoverned`);
     }
     console.log('');
   } catch (error) {
@@ -145,20 +126,20 @@ export async function rosettaSelfTest() {
   console.log('='.repeat(80));
   
   if (results.tests.length >= 3 && !results.tests.some(t => t.error)) {
-    const ungoverned = results.tests[0].cries.Omega;
-    const lite = results.tests[1].cries.Omega;
-    const frontier = results.tests[2].cries.Omega;
-    
-    console.log(`Ungoverned:        Ω=${ungoverned.toFixed(3)} (baseline)`);
-    console.log(`Governed-Lite:     Ω=${lite.toFixed(3)} (${((lite/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
-    console.log(`Governed-Frontier: Ω=${frontier.toFixed(3)} (${((frontier/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
-    
+    const ungoverned = results.tests[0].forge.Φ;
+    const lite = results.tests[1].forge.Φ;
+    const frontier = results.tests[2].forge.Φ;
+
+    console.log(`Ungoverned:        Φ=${ungoverned.toFixed(3)} (baseline)`);
+    console.log(`Governed-Lite:     Φ=${lite.toFixed(3)} (${((lite/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
+    console.log(`Governed-Frontier: Φ=${frontier.toFixed(3)} (${((frontier/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
+
     const liteSuccess = lite > ungoverned;
     const frontierSuccess = frontier > ungoverned;
     
     console.log('\nStatus:');
-    console.log(`  ${liteSuccess ? '✅' : '❌'} Rosetta-Lite improves CRIES`);
-    console.log(`  ${frontierSuccess ? '✅' : '❌'} Rosetta-Frontier improves CRIES`);
+    console.log(`  ${liteSuccess ? '✅' : '❌'} Rosetta-Lite improves FORGE`);
+    console.log(`  ${frontierSuccess ? '✅' : '❌'} Rosetta-Frontier improves FORGE`);
     
     results.success = liteSuccess && frontierSuccess;
   } else {

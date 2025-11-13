@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { Download, FileText, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { exportAuditPDF, exportComparisonPDF } from '@/lib/pdf-export';
+import type { AuditData } from '@/lib/pdf-export';
 
 /**
  * Export PDF Button Component
@@ -31,42 +32,7 @@ import { exportAuditPDF, exportComparisonPDF } from '@/lib/pdf-export';
  * />
  */
 
-interface CRIESScore {
-  completeness: number;
-  reliability: number;
-  integrity: number;
-  effectiveness: number;
-  security: number;
-  overall: number;
-}
-
-interface WitnessResult {
-  modelName: string;
-  output: string;
-  criesScore: CRIESScore;
-  timestamp: string;
-  consensusAchieved?: boolean;
-}
-
-interface ReceiptData {
-  hash: string;
-  lamportClock: number;
-  event: string;
-  timestamp: string;
-  previousHash?: string;
-}
-
-interface AuditData {
-  id: string;
-  prompt: string;
-  criesScore: CRIESScore;
-  witnessResults?: WitnessResult[];
-  receipt?: ReceiptData;
-  modelName?: string;
-  timestamp: string;
-  consensusRate?: number;
-  userEmail?: string;
-}
+// Use shared `AuditData` type exported from `pdf-export` to avoid duplicate-type conflicts
 
 interface ExportPDFButtonProps {
   auditData?: AuditData;

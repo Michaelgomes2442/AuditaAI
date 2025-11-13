@@ -202,7 +202,7 @@ export const test = base.extend<{
   prisma: any;
 }>({
   // Setup Prisma client with Optimize for each test
-  prisma: async ({}, use) => {
+  prisma: async ({}, use: (client: any) => Promise<void>) => {
   const prisma = await createOptimizedPrismaClient();
 
     await use(prisma);

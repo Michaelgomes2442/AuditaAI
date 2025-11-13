@@ -206,27 +206,27 @@ export default function WalkthroughPage() {
       exportAuditPDF({
         id: auditReport.receiptHash || 'demo-audit-' + Date.now(),
         prompt: 'Demo walkthrough audit: Analyze the following customer support interaction for quality and compliance...',
-        criesScore: {
-          completeness: criesResults.completeness,
-          reliability: criesResults.reliability,
-          integrity: criesResults.integrity,
-          effectiveness: criesResults.effectiveness,
-          security: criesResults.security,
+        forgeScore: {
+          fabrication: criesResults.completeness,
+          oversight: criesResults.reliability,
+          refusal: criesResults.integrity,
+          guidance: criesResults.effectiveness,
+          evidence: criesResults.security,
           overall: criesResults.overall
         },
-        witnessResults: witnessData.models.map((model: any) => ({
-          modelName: model.name,
-          output: model.output,
-          criesScore: {
-            completeness: criesResults.completeness + (Math.random() * 0.1 - 0.05),
-            reliability: criesResults.reliability + (Math.random() * 0.1 - 0.05),
-            integrity: criesResults.integrity + (Math.random() * 0.1 - 0.05),
-            effectiveness: criesResults.effectiveness + (Math.random() * 0.1 - 0.05),
-            security: criesResults.security + (Math.random() * 0.1 - 0.05),
+        witnessResults: (witnessData.models || []).map((model: any) => ({
+          modelName: typeof model === 'string' ? model : model.name,
+          output: typeof model === 'string' ? '' : model.output || '',
+          forgeScore: {
+            fabrication: criesResults.completeness + (Math.random() * 0.1 - 0.05),
+            oversight: criesResults.reliability + (Math.random() * 0.1 - 0.05),
+            refusal: criesResults.integrity + (Math.random() * 0.1 - 0.05),
+            guidance: criesResults.effectiveness + (Math.random() * 0.1 - 0.05),
+            evidence: criesResults.security + (Math.random() * 0.1 - 0.05),
             overall: criesResults.overall + (Math.random() * 0.1 - 0.05)
           },
           timestamp: new Date().toISOString(),
-          consensusAchieved: witnessData.consensusAchieved
+          consensusAchieved: witnessData.consensus === 'ACHIEVED' || witnessData.consensusAchieved
         })),
         receipt: {
           hash: auditReport.receiptHash,
@@ -236,7 +236,7 @@ export default function WalkthroughPage() {
           previousHash: 'c4ca4238a0b923820dcc509a6f75849b' // Demo previous hash
         },
         timestamp: new Date().toISOString(),
-        consensusRate: witnessData.consensusRate,
+        consensusRate: witnessData.confidence ?? witnessData.consensusRate,
         userEmail: session?.user?.email || undefined
       });
     }

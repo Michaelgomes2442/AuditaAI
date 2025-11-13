@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useSocket } from '@/hooks/use-socket';
 import { ResearchStation } from '@/types/research-station';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CRIESMetricsPanel } from './CRIESMetricsPanel';
+import { FORGEMetricsPanel } from './FORGEMetricsPanel';
 import { ModelAnalysisPanel } from './ModelAnalysisPanel';
 import { GovernancePanel } from './GovernancePanel';
 import { useEffect, useState } from 'react';
@@ -49,7 +49,7 @@ export function ResearchStationDashboard({ station }: { station: ResearchStation
 
       <Tabs defaultValue="metrics">
         <TabsList>
-          <TabsTrigger value="metrics">CRIES Metrics</TabsTrigger>
+          <TabsTrigger value="metrics">FORGE Metrics</TabsTrigger>
           <TabsTrigger value="models">Model Analysis</TabsTrigger>
           <TabsTrigger value="governance">Governance</TabsTrigger>
           {station.type !== 'BASIC' && (
@@ -57,7 +57,7 @@ export function ResearchStationDashboard({ station }: { station: ResearchStation
           )}
         </TabsList>
         <TabsContent value="metrics">
-          <CRIESMetricsPanel station={station} />
+          <FORGEMetricsPanel station={station} />
         </TabsContent>
         <TabsContent value="models">
           <ModelAnalysisPanel station={station} />

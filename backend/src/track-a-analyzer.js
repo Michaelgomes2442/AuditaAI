@@ -16,55 +16,9 @@
 
 import { computeForge } from './forge/v2/pillars-production.js';
 
-// Legacy compatibility (FORGE→CRIES mapping) layer (for migration period)
-// Will be removed after full frontend migration to FORGE
-function criesCompatibilityShim(forgeResult) {
-  // Map FORGE v2 metrics to legacy format for legacy endpoints
-  return {
-    // Primary CRIES metrics (mapped from FORGE)
-    C: forgeResult.O,  // Coherence ≈ Oversight (self-awareness)
-    R: forgeResult.E,  // Rigor ≈ Evidence (sourcing)
-    I: 0.00,           // Integration REMOVED (was policy engine's job)
-    E: forgeResult.G,  // Empathy ≈ Guidance (helpfulness)
-    S: forgeResult.F,  // Strictness ≈ Fabrication Detection (safety)
-    
-    // Overall scores
-    Omega: forgeResult.Φ,  // FORGE overall
-    overall: forgeResult.Φ,
-    cries_score: forgeResult.Φ,
-    
-    // FORGE native metrics (preferred)
-    F: forgeResult.F,
-    O: forgeResult.O,
-    R: forgeResult.R,
-    G: forgeResult.G,
-    E: forgeResult.E,
-    Φ: forgeResult.Φ,
-    
-    // Metadata
-    system: 'FORGE-v2',
-    optimization: 'bayesian-100-iterations',
-    weights: { F: 0.4368, O: 0.1638, R: 0.2134, G: 0.0623, E: 0.1237 },
-    improvement: '+163.3%',
-    components: forgeResult.components,
-    
-    // Legacy support
-    sub_metrics: {
-      C: { oversight: forgeResult.O },
-      R: { evidence: forgeResult.E },
-      I: { deprecated: 0 },
-      E: { guidance: forgeResult.G },
-      S: { fabrication: forgeResult.F }
-    },
-    calculation_details: {
-      F: `Fabrication Detection: ${(forgeResult.F * 100).toFixed(1)}%`,
-      O: `Oversight Quality: ${(forgeResult.O * 100).toFixed(1)}%`,
-      R: `Refusal Accuracy: ${(forgeResult.R * 100).toFixed(1)}%`,
-      G: `Guidance Quality: ${(forgeResult.G * 100).toFixed(1)}%`,
-      E: `Evidence Grounding: ${(forgeResult.E * 100).toFixed(1)}%`
-    }
-  };
-}
+// Migration notes: this module returns FORGE-native metrics.
+// Runtime compatibility shims have been removed; this module provides
+// FORGE-shaped outputs only.
 
 /**
  * Compute FORGE metrics for an LLM response
@@ -72,30 +26,28 @@ function criesCompatibilityShim(forgeResult) {
  * @param {string} response - LLM's response text
  * @param {Object} context - Additional context (optional, unused)
  * @param {string} governanceMode - Governance mode override (optional, unused)
- * @returns {Object} FORGE metrics in CRIES-compatible format
+ * @returns {Object} FORGE metrics (FORGE-native shape)
  */
-export function computeCRIES(prompt, response, context = {}, governanceMode = null) {
-  // Compute pure FORGE metrics
+export function computeFORGE(prompt, response, context = {}, governanceMode = null) {
+  // Compute pure FORGE metrics and return FORGE-native object
   const forgeResult = computeForge(prompt, response);
-  
-  // Return in CRIES-compatible format for legacy support
-  return criesCompatibilityShim(forgeResult);
+  return forgeResult;
 }
 
 /**
  * Generate analysis receipt (legacy compatibility)
  */
-export function generateAnalysisReceipt(cries, governanceMode = 'default') {
+export function generateAnalysisReceipt(forgeMetrics, governanceMode = 'default') {
   return {
     timestamp: new Date().toISOString(),
-    system: 'FORGE-v1',
-    metrics: cries,
+    system: 'FORGE-v2',
+    metrics: forgeMetrics,
     governanceMode,
     hash: `forge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   };
 }
 
 export default {
-  computeCRIES,
+  computeFORGE,
   generateAnalysisReceipt
 };

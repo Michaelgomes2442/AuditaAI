@@ -15,10 +15,12 @@ export default function ModelComparisonPanel({ comparisonResult, liveTestResult 
     left = comparisonResult.baseLLM;
     right = comparisonResult.governedLLM;
   } else if (liveTestResult && Array.isArray(liveTestResult.results)) {
-    const sorted = [...liveTestResult.results].sort((a: any, b: any) => (b?.cries?.Omega || 0) - (a?.cries?.Omega || 0));
+    const sorted = [...liveTestResult.results].sort((a: any, b: any) => (b?.forge?.Φ || b?.forge?.overall || 0) - (a?.forge?.Φ || a?.forge?.overall || 0));
     left = sorted[0] || null;
     right = sorted[1] || null;
   }
+
+  const getOverall = (item: any) => (item?.forge?.overall ?? item?.forge?.Φ ?? 0);
 
   return (
     <div className="bg-slate-900/40 border border-gray-800 rounded-lg p-4 shadow">
@@ -35,9 +37,9 @@ export default function ModelComparisonPanel({ comparisonResult, liveTestResult 
           </div>
           <div className="bg-slate-900/50 p-3 rounded text-sm text-slate-300 max-h-44 overflow-y-auto whitespace-pre-wrap">{left?.response || 'No output yet.'}</div>
           <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-gray-400">
-            <div className="bg-slate-800/20 p-2 rounded text-center">CRIES Ω<div className="text-sm font-bold text-white mt-1">{left?.cries?.Omega?.toFixed ? left.cries.Omega.toFixed(2) : 'N/A'}</div></div>
-            <div className="bg-slate-800/20 p-2 rounded text-center">Integrity<div className="text-sm font-bold text-white mt-1">{left?.cries?.I?.toFixed ? left.cries.I.toFixed(2) : 'N/A'}</div></div>
-            <div className="bg-slate-800/20 p-2 rounded text-center">Security<div className="text-sm font-bold text-white mt-1">{left?.cries?.S?.toFixed ? left.cries.S.toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">FORGE Φ<div className="text-sm font-bold text-white mt-1">{getOverall(left) ? getOverall(left).toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">Fabrication (F)<div className="text-sm font-bold text-white mt-1">{left?.forge?.F?.toFixed ? left.forge.F.toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">Oversight (O)<div className="text-sm font-bold text-white mt-1">{left?.forge?.O?.toFixed ? left.forge.O.toFixed(2) : 'N/A'}</div></div>
           </div>
         </div>
 
@@ -48,16 +50,16 @@ export default function ModelComparisonPanel({ comparisonResult, liveTestResult 
           </div>
           <div className="bg-slate-900/50 p-3 rounded text-sm text-slate-300 max-h-44 overflow-y-auto whitespace-pre-wrap">{right?.response || 'No output yet.'}</div>
           <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-gray-400">
-            <div className="bg-slate-800/20 p-2 rounded text-center">CRIES Ω<div className="text-sm font-bold text-white mt-1">{right?.cries?.Omega?.toFixed ? right.cries.Omega.toFixed(2) : 'N/A'}</div></div>
-            <div className="bg-slate-800/20 p-2 rounded text-center">Integrity<div className="text-sm font-bold text-white mt-1">{right?.cries?.I?.toFixed ? right.cries.I.toFixed(2) : 'N/A'}</div></div>
-            <div className="bg-slate-800/20 p-2 rounded text-center">Security<div className="text-sm font-bold text-white mt-1">{right?.cries?.S?.toFixed ? right.cries.S.toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">FORGE Φ<div className="text-sm font-bold text-white mt-1">{getOverall(right) ? getOverall(right).toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">Fabrication (F)<div className="text-sm font-bold text-white mt-1">{right?.forge?.F?.toFixed ? right.forge.F.toFixed(2) : 'N/A'}</div></div>
+            <div className="bg-slate-800/20 p-2 rounded text-center">Oversight (O)<div className="text-sm font-bold text-white mt-1">{right?.forge?.O?.toFixed ? right.forge.O.toFixed(2) : 'N/A'}</div></div>
           </div>
 
           <div className="mt-3 flex items-center justify-between">
-            <div className={`px-2 py-1 rounded text-xs ${right && right.cries && (right.cries.Omega >= (left?.cries?.Omega || 0)) ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'}`}>
-              {right && left ? ( (right.cries?.Omega || 0) >= (left.cries?.Omega || 0) ? 'Audit Passed' : 'Audit Delta' ) : 'No Audit'}
+            <div className={`px-2 py-1 rounded text-xs ${right && getOverall(right) >= (getOverall(left) || 0) ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'}`}>
+              {right && left ? ( (getOverall(right) || 0) >= (getOverall(left) || 0) ? 'Audit Passed' : 'Audit Delta' ) : 'No Audit'}
             </div>
-            <div className="text-xs text-gray-400">Δ-Integrity: {right && left ? ((right.cries?.I || 0) - (left.cries?.I || 0)).toFixed(2) : 'N/A'}</div>
+            <div className="text-xs text-gray-400">Δ-Fabrication: {right && left ? ((right.forge?.F || 0) - (left.forge?.F || 0)).toFixed(2) : 'N/A'}</div>
           </div>
         </div>
       </div>

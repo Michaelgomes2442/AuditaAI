@@ -5,15 +5,15 @@ import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
 import { Activity, TrendingUp, Shield, Zap } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
-interface CRIESData {
+interface FORGEData {
   F: number; // Fabrication Detection
   O: number; // Oversight Quality
   R: number; // Refusal Accuracy
   G: number; // Guidance Quality
   E: number; // Evidence Grounding
-  // Legacy CRIES mapping (for backward compatibility)
+  // Legacy backward-compat mapping (for older clients) — migrating to FORGE
   C?: number; // Mapped from O (Oversight)
-  I?: number; // Deprecated (was Integration)
+  I?: number; // Deprecated (mapped to FORGE 'G' guidance)
   S?: number; // Mapped from F (Fabrication)
   avg: number; // Average score
   sub_metrics?: {
@@ -27,25 +27,24 @@ interface CRIESData {
     I?: Record<string, number>;
     S?: Record<string, number>;
   };
-// End CRIESData interface
 }
 
-interface CRIESUpdate {
-  standard: CRIESData;
-  governed: CRIESData;
+interface FORGEUpdate {
+  standard: FORGEData;
+  governed: FORGEData;
   improvement: number;
   timestamp: string;
   model?: string;
 }
 
-interface CRIESMetricsProps {
+interface FORGEMetricsProps {
   showComparison?: boolean;
   title?: string;
 }
 
-export default function CRIESMetrics({ showComparison = false, title = "Live FORGE Metrics" }: CRIESMetricsProps) {
+export default function FORGEMetrics({ showComparison = false, title = "Live FORGE Metrics" }: FORGEMetricsProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [latestMetrics, setLatestMetrics] = useState<CRIESUpdate | null>(null);
+  const [latestMetrics, setLatestMetrics] = useState<FORGEUpdate | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [animatePulse, setAnimatePulse] = useState(false);
 
@@ -70,7 +69,7 @@ export default function CRIESMetrics({ showComparison = false, title = "Live FOR
       setIsConnected(false);
     });
 
-    socketInstance.on('forge-update', (data: CRIESUpdate) => {
+    socketInstance.on('forge-update', (data: FORGEUpdate) => {
       console.log('📊 FORGE Update received:', data);
       setLatestMetrics(data);
       
@@ -152,7 +151,7 @@ export default function CRIESMetrics({ showComparison = false, title = "Live FOR
     );
   };
 
-  const renderComparisonView = (metrics: CRIESUpdate) => {
+  const renderComparisonView = (metrics: FORGEUpdate) => {
     const metricLabels = [
       { key: 'fabrication', label: 'Fabrication', icon: '🎭' },
       { key: 'oversight', label: 'Oversight', icon: '👁️' },
@@ -174,8 +173,8 @@ export default function CRIESMetrics({ showComparison = false, title = "Live FOR
               {metricLabels.map(({ key, label, icon }) => (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">{icon} {label}</span>
-                  <span className={`text-sm font-bold ${getColorClass(metrics.standard[key as keyof CRIESData] as number)}`}>
-                    {Math.round((metrics.standard[key as keyof CRIESData] as number) * 100)}%
+                    <span className={`text-sm font-bold ${getColorClass(metrics.standard[key as keyof FORGEData] as number)}`}>
+                    {Math.round((metrics.standard[key as keyof FORGEData] as number) * 100)}%
                   </span>
                 </div>
               ))}
@@ -192,8 +191,8 @@ export default function CRIESMetrics({ showComparison = false, title = "Live FOR
               {metricLabels.map(({ key, label, icon }) => (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">{icon} {label}</span>
-                  <span className={`text-sm font-bold ${getColorClass(metrics.governed[key as keyof CRIESData] as number)}`}>
-                    {Math.round((metrics.governed[key as keyof CRIESData] as number) * 100)}%
+                  <span className={`text-sm font-bold ${getColorClass(metrics.governed[key as keyof FORGEData] as number)}`}>
+                    {Math.round((metrics.governed[key as keyof FORGEData] as number) * 100)}%
                   </span>
                 </div>
               ))}
@@ -220,7 +219,7 @@ export default function CRIESMetrics({ showComparison = false, title = "Live FOR
     );
   };
 
-  const renderSingleMetrics = (metrics: CRIESData) => {
+  const renderSingleMetrics = (metrics: FORGEData) => {
     return (
       <div className="space-y-4">
         {renderMetricBar('Fabrication', metrics.F, '🎭', metrics.sub_metrics?.F)}

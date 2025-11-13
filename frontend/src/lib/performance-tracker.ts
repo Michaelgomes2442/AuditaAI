@@ -1,13 +1,13 @@
 /**
  * Performance Tracking Utility
  * 
- * Tracks API response times, CRIES calculation durations, and witness consensus latency.
+ * Tracks API response times, FORGE calculation durations, and witness consensus latency.
  * Sends metrics to /api/performance endpoint for aggregation and monitoring.
  */
 
 export interface PerformanceTiming {
   apiResponseTime?: number;
-  criesCalculationTime?: number;
+  forgeCalculationTime?: number;
   witnessLatency?: number;
   operation: string;
 }
@@ -90,7 +90,7 @@ export async function trackAPICall<T>(
 /**
  * Track CRIES calculation performance
  */
-export async function trackCRIESCalculation<T>(
+export async function trackFORGECalculation<T>(
   operation: string,
   calculation: () => Promise<T>
 ): Promise<T> {
@@ -98,18 +98,18 @@ export async function trackCRIESCalculation<T>(
   
   try {
     const result = await calculation();
-    const criesCalculationTime = tracker.elapsed();
+    const forgeCalculationTime = tracker.elapsed();
     
     await tracker.complete({
-      criesCalculationTime: Math.round(criesCalculationTime),
+      forgeCalculationTime: Math.round(forgeCalculationTime),
       operation,
     });
     
     return result;
   } catch (error) {
-    const criesCalculationTime = tracker.elapsed();
+    const forgeCalculationTime = tracker.elapsed();
     await tracker.complete({
-      criesCalculationTime: Math.round(criesCalculationTime),
+      forgeCalculationTime: Math.round(forgeCalculationTime),
       operation: `${operation}_error`,
     });
     throw error;
@@ -146,16 +146,16 @@ export async function trackWitnessConsensus<T>(
 }
 
 /**
- * Track full audit operation (API + CRIES + Witness)
+ * Track full audit operation (API + FORGE + Witness)
  */
 export async function trackFullAudit(
   operation: string,
   stages: {
     api: () => Promise<any>;
-    cries: () => Promise<any>;
+    forge: () => Promise<any>;
     witness: () => Promise<any>;
   }
-): Promise<{ api: any; cries: any; witness: any }> {
+): Promise<{ api: any; forge: any; witness: any }> {
   const tracker = new PerformanceTracker();
   
   // Execute stages sequentially
@@ -163,9 +163,9 @@ export async function trackFullAudit(
   const apiResult = await stages.api();
   const apiTime = tracker.elapsed('api_start');
   
-  tracker.checkpoint('cries_start');
-  const criesResult = await stages.cries();
-  const criesTime = tracker.elapsed('cries_start');
+  tracker.checkpoint('forge_start');
+  const forgeResult = await stages.forge();
+  const forgeTime = tracker.elapsed('forge_start');
   
   tracker.checkpoint('witness_start');
   const witnessResult = await stages.witness();
@@ -173,14 +173,14 @@ export async function trackFullAudit(
   
   await tracker.complete({
     apiResponseTime: Math.round(apiTime),
-    criesCalculationTime: Math.round(criesTime),
+    forgeCalculationTime: Math.round(forgeTime),
     witnessLatency: Math.round(witnessTime),
     operation,
   });
   
   return {
     api: apiResult,
-    cries: criesResult,
+    forge: forgeResult,
     witness: witnessResult,
   };
 }
@@ -193,9 +193,9 @@ export async function trackFullAudit(
  *   fetch('/api/models').then(r => r.json())
  * );
  * 
- * // Track CRIES calculation
- * const score = await trackCRIESCalculation('calculate_score', () =>
- *   calculateCRIESScore(modelOutput)
+ * // Track FORGE calculation
+ * const score = await trackFORGECalculation('calculate_score', () =>
+ *   calculateFORGEScore(modelOutput)
  * );
  * 
  * // Track witness consensus
@@ -206,7 +206,7 @@ export async function trackFullAudit(
  * // Track full audit pipeline
  * const results = await trackFullAudit('full_audit_gpt4', {
  *   api: () => callLLMAPI('gpt-4', prompt),
- *   cries: () => analyzeCRIES(response),
+ *   forge: () => analyzeFORGE(response),
  *   witness: () => verifyWithWitnesses(response),
  * });
  */

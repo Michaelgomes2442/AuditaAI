@@ -1,23 +1,23 @@
 import { jsPDF } from 'jspdf';
 
-interface CRIESScore {
-  completeness: number;
-  reliability: number;
-  integrity: number;
-  effectiveness: number;
-  security: number;
+export interface FORGEScore {
+  fabrication: number;
+  oversight: number;
+  refusal: number;
+  guidance: number;
+  evidence: number;
   overall: number;
 }
 
-interface WitnessResult {
+export interface WitnessResult {
   modelName: string;
   output: string;
-  criesScore: CRIESScore;
+  forgeScore: FORGEScore;
   timestamp: string;
   consensusAchieved?: boolean;
 }
 
-interface ReceiptData {
+export interface ReceiptData {
   hash: string;
   lamportClock: number;
   event: string;
@@ -25,10 +25,10 @@ interface ReceiptData {
   previousHash?: string;
 }
 
-interface AuditData {
+export interface AuditData {
   id: string;
   prompt: string;
-  criesScore: CRIESScore;
+  forgeScore: FORGEScore;
   witnessResults?: WitnessResult[];
   receipt?: ReceiptData;
   modelName?: string;
@@ -39,7 +39,7 @@ interface AuditData {
 
 /**
  * Export audit report as branded PDF
- * @param auditData - Complete audit data including CRIES scores and witness results
+ * @param auditData - Complete audit data including FORGE (or legacy) scores and witness results
  * @param filename - Optional custom filename (defaults to audit_report_[timestamp].pdf)
  */
 export function exportAuditPDF(auditData: AuditData, filename?: string): void {
@@ -119,12 +119,12 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
 
-  // Overall CRIES Score Box
+  // Overall FORGE Score Box
   const boxHeight = 25;
   const boxWidth = 60;
-  
+
   // Determine color based on score
-  const overallScore = auditData.criesScore.overall * 100;
+  const overallScore = auditData.forgeScore.overall * 100;
   let scoreColor: [number, number, number];
   if (overallScore >= 85) {
     scoreColor = [74, 222, 128]; // green-400
@@ -140,7 +140,7 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(12);
-  doc.text('Overall CRIES Score', margin + 5, yPosition + 8);
+  doc.text('Overall FORGE Score', margin + 5, yPosition + 8);
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
   doc.text(`${overallScore.toFixed(1)}%`, margin + 5, yPosition + 20);
@@ -191,12 +191,12 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
   yPosition += promptHeight + lineHeight;
 
   // ==========================================
-  // CRIES SCORES TABLE
+  // FORGE SCORES TABLE
   // ==========================================
   checkPageBreak(50);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
-  doc.text('CRIES Dimension Scores', margin, yPosition);
+  doc.text('FORGE Dimension Scores', margin, yPosition);
   yPosition += lineHeight + 3;
 
   // Table headers
@@ -217,11 +217,11 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
 
   // Table rows
   const dimensions = [
-    { name: 'Completeness', score: auditData.criesScore.completeness, description: 'Coverage & depth' },
-    { name: 'Reliability', score: auditData.criesScore.reliability, description: 'Consistency & errors' },
-    { name: 'Integrity', score: auditData.criesScore.integrity, description: 'Bias & alignment' },
-    { name: 'Effectiveness', score: auditData.criesScore.effectiveness, description: 'Task completion' },
-    { name: 'Security', score: auditData.criesScore.security, description: 'Adversarial resistance' }
+    { name: 'Fabrication', score: auditData.forgeScore.fabrication, description: 'Detects hallucinations and false claims' },
+    { name: 'Oversight', score: auditData.forgeScore.oversight, description: 'Alignment and human oversight signals' },
+    { name: 'Refusal', score: auditData.forgeScore.refusal, description: 'Correct refusal on disallowed requests' },
+    { name: 'Guidance', score: auditData.forgeScore.guidance, description: 'Safety and clarity of guidance' },
+    { name: 'Evidence', score: auditData.forgeScore.evidence, description: 'Grounding and citations' }
   ];
 
   doc.setFont('helvetica', 'normal');
@@ -274,7 +274,7 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
-      doc.text(`CRIES: ${(witness.criesScore.overall * 100).toFixed(1)}%`, margin + 5, yPosition);
+      doc.text(`FORGE: ${(witness.forgeScore.overall * 100).toFixed(1)}%`, margin + 5, yPosition);
       doc.text(`Time: ${new Date(witness.timestamp).toLocaleTimeString()}`, margin + 60, yPosition);
       yPosition += lineHeight;
 
@@ -343,8 +343,8 @@ export function exportAuditPDF(auditData: AuditData, filename?: string): void {
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(107, 114, 128); // gray-500
   doc.text('This audit report was generated by AuditaAI and cryptographically verified using Lamport chains.', margin, footerY + 7);
-  doc.text('All CRIES scores are calculated using our proprietary methodology combining completeness, reliability,', margin, footerY + 12);
-  doc.text('integrity, effectiveness, and security metrics. For compliance inquiries, contact compliance@auditaai.com', margin, footerY + 17);
+  doc.text('All FORGE scores are calculated using our governance-first methodology combining Fabrication, Oversight,', margin, footerY + 12);
+  doc.text('Refusal, Guidance, and Evidence metrics. For compliance inquiries, contact compliance@auditaai.com', margin, footerY + 17);
 
   // Watermark on last page
   doc.setTextColor(229, 231, 235, 0.3); // gray-200 with transparency
@@ -407,7 +407,7 @@ export function exportComparisonPDF(audits: AuditData[], filename?: string): voi
     doc.setFont('helvetica', 'normal');
     doc.text(`ID: ${audit.id}`, margin + 5, yPosition);
     yPosition += lineHeight;
-    doc.text(`Overall Score: ${(audit.criesScore.overall * 100).toFixed(1)}%`, margin + 5, yPosition);
+    doc.text(`Overall Score: ${(audit.forgeScore.overall * 100).toFixed(1)}%`, margin + 5, yPosition);
     yPosition += lineHeight;
     doc.text(`Timestamp: ${new Date(audit.timestamp).toLocaleString()}`, margin + 5, yPosition);
     yPosition += lineHeight * 2;

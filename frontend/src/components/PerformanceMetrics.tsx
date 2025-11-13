@@ -8,21 +8,21 @@ import { Clock, Zap, Activity, AlertTriangle, TrendingUp } from 'lucide-react';
 interface PerformanceData {
   timestamp: string;
   apiResponseTime: number;
-  criesCalculationTime: number;
+  forgeCalculationTime: number;
   witnessLatency: number;
 }
 
 interface PerformanceMetrics {
   avgApiTime: number;
-  avgCriesTime: number;
+  avgForgeTime: number;
   avgWitnessTime: number;
   p95ApiTime: number;
-  p95CriesTime: number;
+  p95ForgeTime: number;
   p95WitnessTime: number;
 }
 
 interface PerformanceAlert {
-  type: 'api' | 'cries' | 'witness';
+  type: 'api' | 'forge' | 'witness';
   severity: 'warning' | 'critical';
   message: string;
   timestamp: string;
@@ -32,10 +32,10 @@ export default function PerformanceMetrics() {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     avgApiTime: 0,
-    avgCriesTime: 0,
+    avgForgeTime: 0,
     avgWitnessTime: 0,
     p95ApiTime: 0,
-    p95CriesTime: 0,
+    p95ForgeTime: 0,
     p95WitnessTime: 0,
   });
   const [alerts, setAlerts] = useState<PerformanceAlert[]>([]);
@@ -43,7 +43,7 @@ export default function PerformanceMetrics() {
   // Alert thresholds (in milliseconds)
   const THRESHOLDS = {
     api: { warning: 1500, critical: 2000 },
-    cries: { warning: 4000, critical: 5000 },
+    forge: { warning: 4000, critical: 5000 },
     witness: { warning: 8000, critical: 10000 },
   };
 
@@ -54,9 +54,9 @@ export default function PerformanceMetrics() {
       const apiBase = 800 + Math.random() * 1200;
       const apiSpike = Math.random() > 0.9 ? 500 : 0; // 10% chance of spike
       
-      // CRIES calculation depends on complexity (1000-6000ms)
-      const criesBase = 2000 + Math.random() * 2500;
-      const criesSpike = Math.random() > 0.85 ? 1000 : 0; // 15% chance of spike
+      // FORGE calculation depends on complexity (1000-6000ms)
+      const forgeBase = 2000 + Math.random() * 2500;
+      const forgeSpike = Math.random() > 0.85 ? 1000 : 0; // 15% chance of spike
       
       // Witness consensus varies by network (3000-12000ms)
       const witnessBase = 5000 + Math.random() * 4000;
@@ -65,7 +65,7 @@ export default function PerformanceMetrics() {
       return {
         timestamp: new Date().toLocaleTimeString(),
         apiResponseTime: Math.round(apiBase + apiSpike),
-        criesCalculationTime: Math.round(criesBase + criesSpike),
+        forgeCalculationTime: Math.round(forgeBase + forgeSpike),
         witnessLatency: Math.round(witnessBase + witnessSpike),
       };
     };
@@ -106,7 +106,7 @@ export default function PerformanceMetrics() {
     if (performanceData.length === 0) return;
 
     const apiTimes = performanceData.map(d => d.apiResponseTime);
-    const criesTimes = performanceData.map(d => d.criesCalculationTime);
+    const criesTimes = performanceData.map(d => d.forgeCalculationTime);
     const witnessTimes = performanceData.map(d => d.witnessLatency);
 
     const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -118,10 +118,10 @@ export default function PerformanceMetrics() {
 
     setMetrics({
       avgApiTime: Math.round(avg(apiTimes)),
-      avgCriesTime: Math.round(avg(criesTimes)),
+      avgForgeTime: Math.round(avg(criesTimes)),
       avgWitnessTime: Math.round(avg(witnessTimes)),
       p95ApiTime: Math.round(p95(apiTimes)),
-      p95CriesTime: Math.round(p95(criesTimes)),
+      p95ForgeTime: Math.round(p95(criesTimes)),
       p95WitnessTime: Math.round(p95(witnessTimes)),
     });
   }, [performanceData]);
@@ -146,19 +146,19 @@ export default function PerformanceMetrics() {
       });
     }
 
-    // Check CRIES calculation time
-    if (data.criesCalculationTime > THRESHOLDS.cries.critical) {
+    // Check FORGE calculation time
+    if (data.forgeCalculationTime > THRESHOLDS.forge.critical) {
       newAlerts.push({
-        type: 'cries',
+        type: 'forge',
         severity: 'critical',
-        message: `CRIES calculation critical: ${data.criesCalculationTime}ms (threshold: ${THRESHOLDS.cries.critical}ms)`,
+        message: `FORGE calculation critical: ${data.forgeCalculationTime}ms (threshold: ${THRESHOLDS.forge.critical}ms)`,
         timestamp: data.timestamp,
       });
-    } else if (data.criesCalculationTime > THRESHOLDS.cries.warning) {
+    } else if (data.forgeCalculationTime > THRESHOLDS.forge.warning) {
       newAlerts.push({
-        type: 'cries',
+        type: 'forge',
         severity: 'warning',
-        message: `CRIES calculation slow: ${data.criesCalculationTime}ms`,
+        message: `FORGE calculation slow: ${data.forgeCalculationTime}ms`,
         timestamp: data.timestamp,
       });
     }
@@ -189,14 +189,14 @@ export default function PerformanceMetrics() {
     }
   };
 
-  const getStatusColor = (value: number, type: 'api' | 'cries' | 'witness') => {
+  const getStatusColor = (value: number, type: 'api' | 'forge' | 'witness') => {
     const threshold = THRESHOLDS[type];
     if (value > threshold.critical) return 'text-red-400';
     if (value > threshold.warning) return 'text-yellow-400';
     return 'text-green-400';
   };
 
-  const getStatusBadge = (value: number, type: 'api' | 'cries' | 'witness') => {
+  const getStatusBadge = (value: number, type: 'api' | 'forge' | 'witness') => {
     const threshold = THRESHOLDS[type];
     if (value > threshold.critical) {
       return <span className="px-2 py-1 text-xs rounded-full bg-red-500/20 text-red-400">Critical</span>;
@@ -243,27 +243,27 @@ export default function PerformanceMetrics() {
           </CardContent>
         </Card>
 
-        {/* CRIES Calculation Time */}
+        {/* FORGE Calculation Time */}
         <Card className="bg-gray-900/50 border-gray-800">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-gray-400 flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Activity className="w-4 h-4" />
-                CRIES Calc
+                FORGE Calc
               </span>
-              {getStatusBadge(metrics.avgCriesTime, 'cries')}
+              {getStatusBadge(metrics.avgForgeTime, 'forge')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`text-3xl font-bold ${getStatusColor(metrics.avgCriesTime, 'cries')}`}>
-              {formatTime(metrics.avgCriesTime)}
+            <div className={`text-3xl font-bold ${getStatusColor(metrics.avgForgeTime, 'forge')}`}>
+              {formatTime(metrics.avgForgeTime)}
             </div>
             <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
               <span>Avg</span>
-              <span>P95: {formatTime(metrics.p95CriesTime)}</span>
+              <span>P95: {formatTime(metrics.p95ForgeTime)}</span>
             </div>
             <div className="mt-2 text-xs text-gray-600">
-              Threshold: {formatTime(THRESHOLDS.cries.critical)}
+              Threshold: {formatTime(THRESHOLDS.forge.critical)}
             </div>
           </CardContent>
         </Card>
@@ -339,8 +339,8 @@ export default function PerformanceMetrics() {
               />
               <Area
                 type="monotone"
-                dataKey="criesCalculationTime"
-                name="CRIES Calc"
+                dataKey="forgeCalculationTime"
+                name="FORGE Calc"
                 stroke="#A855F7"
                 fill="#A855F7"
                 fillOpacity={0.3}

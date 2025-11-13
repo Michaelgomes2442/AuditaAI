@@ -20,7 +20,7 @@ export default function UpgradeModal({ isOpen, onClose, currentTier = 'FREE' }: 
       description: 'Perfect for exploring AuditaAI',
       features: [
         { name: 'Preselected demo prompts', included: true },
-        { name: 'View sample CRIES scores', included: true },
+        { name: 'View sample FORGE scores', included: true },
         { name: 'Basic audit reports', included: true },
         { name: 'Live model testing', included: false },
         { name: 'Business integrations', included: false },

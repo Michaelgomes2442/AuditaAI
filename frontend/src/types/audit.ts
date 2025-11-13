@@ -47,7 +47,7 @@ export interface ServerToClientEvents {
   }) => void;
   'metrics-update': (event: {
     blockHash: string;
-    metrics: CRIESMetrics;
+    metrics: FORGEMetrics;
     timestamp: Date;
   }) => void;
   'verification-result': (result: VerificationResult) => void;
@@ -68,7 +68,7 @@ export interface VerificationResult {
 }
 
 // Governance Types
-export interface CRIESMetrics {
+export interface FORGEMetrics {
   consistency: number;
   reproducibility: number;
   integrity: number;

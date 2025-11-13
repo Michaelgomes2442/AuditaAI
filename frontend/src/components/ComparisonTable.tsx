@@ -22,7 +22,7 @@ import {
   Minus
 } from 'lucide-react';
 
-interface CRIESScore {
+interface FORGEScore {
   completeness: number;
   reliability: number;
   integrity: number;
@@ -37,17 +37,17 @@ interface ModelComparison {
   modelA: {
     name: string;
     output: string;
-    cries: CRIESScore;
+    forge: FORGEScore;
   };
   modelB: {
     name: string;
     output: string;
-    cries: CRIESScore;
+    forge: FORGEScore;
   };
   modelC: {
     name: string;
     output: string;
-    cries: CRIESScore;
+    forge: FORGEScore;
   };
   consensus: 'ACHIEVED' | 'DIVERGENCE' | 'PARTIAL';
   timestamp: string;
@@ -97,20 +97,20 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
 
   // Export to CSV
   const exportToCSV = () => {
-    const headers = [
+      const headers = [
       'Timestamp',
       'Lamport Clock',
       'Prompt',
       'Consensus',
       'Model A',
       'Model A Output',
-      'Model A CRIES',
+      'Model A FORGE',
       'Model B',
       'Model B Output',
-      'Model B CRIES',
+      'Model B FORGE',
       'Model C',
       'Model C Output',
-      'Model C CRIES'
+      'Model C FORGE'
     ];
 
     const rows = sortedComparisons.map(comp => [
@@ -120,13 +120,13 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
       comp.consensus,
       comp.modelA.name,
       comp.modelA.output.replace(/,/g, ';').substring(0, 200),
-      comp.modelA.cries.overall.toFixed(3),
+      comp.modelA.forge.overall.toFixed(3),
       comp.modelB.name,
       comp.modelB.output.replace(/,/g, ';').substring(0, 200),
-      comp.modelB.cries.overall.toFixed(3),
+      comp.modelB.forge.overall.toFixed(3),
       comp.modelC.name,
       comp.modelC.output.replace(/,/g, ';').substring(0, 200),
-      comp.modelC.cries.overall.toFixed(3)
+      comp.modelC.forge.overall.toFixed(3)
     ]);
 
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
@@ -322,9 +322,9 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
                 {/* Expanded Content */}
                 {isExpanded && (
                   <div className="border-t border-gray-800">
-                    {/* CRIES Scores Comparison */}
+                    {/* FORGE Scores Comparison */}
                     <div className="p-4 bg-gray-950/50">
-                      <h4 className="text-sm font-medium text-gray-400 mb-3">CRIES Scores</h4>
+                      <h4 className="text-sm font-medium text-gray-400 mb-3">FORGE Scores</h4>
                       <div className="grid grid-cols-3 gap-4">
                         {/* Model A */}
                         <div className="space-y-2">
@@ -332,38 +332,38 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
                           <div className="space-y-1">
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">C</span>
-                              <span className={getScoreColor(comparison.modelA.cries.completeness)}>
-                                {(comparison.modelA.cries.completeness * 100).toFixed(0)}%
+                              <span className={getScoreColor(comparison.modelA.forge.completeness)}>
+                                {(comparison.modelA.forge.completeness * 100).toFixed(0)}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">R</span>
-                              <span className={getScoreColor(comparison.modelA.cries.reliability)}>
-                                {(comparison.modelA.cries.reliability * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelA.forge.reliability)}>
+                                {(comparison.modelA.forge.reliability * 100).toFixed(0)}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">I</span>
-                              <span className={getScoreColor(comparison.modelA.cries.integrity)}>
-                                {(comparison.modelA.cries.integrity * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelA.forge.integrity)}>
+                                {(comparison.modelA.forge.integrity * 100).toFixed(0)}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">E</span>
-                              <span className={getScoreColor(comparison.modelA.cries.effectiveness)}>
-                                {(comparison.modelA.cries.effectiveness * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelA.forge.effectiveness)}>
+                                {(comparison.modelA.forge.effectiveness * 100).toFixed(0)}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">S</span>
-                              <span className={getScoreColor(comparison.modelA.cries.security)}>
-                                {(comparison.modelA.cries.security * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelA.forge.security)}>
+                                {(comparison.modelA.forge.security * 100).toFixed(0)}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-gray-800">
                               <span className="text-gray-400">Overall</span>
-                              <span className={getScoreColor(comparison.modelA.cries.overall)}>
-                                {(comparison.modelA.cries.overall * 100).toFixed(1)}%
+                              <span className={getScoreColor(comparison.modelA.forge.overall)}>
+                                {(comparison.modelA.forge.overall * 100).toFixed(1)}%
                               </span>
                             </div>
                           </div>
@@ -376,55 +376,55 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">C</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.completeness)}>
-                                  {(comparison.modelB.cries.completeness * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelB.forge.completeness)}>
+                                  {(comparison.modelB.forge.completeness * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.completeness, comparison.modelA.cries.completeness)}
+                                {getScoreDiff(comparison.modelB.forge.completeness, comparison.modelA.forge.completeness)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">R</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.reliability)}>
-                                  {(comparison.modelB.cries.reliability * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelB.forge.reliability)}>
+                                  {(comparison.modelB.forge.reliability * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.reliability, comparison.modelA.cries.reliability)}
+                                {getScoreDiff(comparison.modelB.forge.reliability, comparison.modelA.forge.reliability)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">I</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.integrity)}>
-                                  {(comparison.modelB.cries.integrity * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelB.forge.integrity)}>
+                                  {(comparison.modelB.forge.integrity * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.integrity, comparison.modelA.cries.integrity)}
+                                {getScoreDiff(comparison.modelB.forge.integrity, comparison.modelA.forge.integrity)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">E</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.effectiveness)}>
-                                  {(comparison.modelB.cries.effectiveness * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelB.forge.effectiveness)}>
+                                  {(comparison.modelB.forge.effectiveness * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.effectiveness, comparison.modelA.cries.effectiveness)}
+                                {getScoreDiff(comparison.modelB.forge.effectiveness, comparison.modelA.forge.effectiveness)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">S</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.security)}>
-                                  {(comparison.modelB.cries.security * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelB.forge.security)}>
+                                  {(comparison.modelB.forge.security * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.security, comparison.modelA.cries.security)}
+                                {getScoreDiff(comparison.modelB.forge.security, comparison.modelA.forge.security)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-gray-800">
                               <span className="text-gray-400">Overall</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelB.cries.overall)}>
-                                  {(comparison.modelB.cries.overall * 100).toFixed(1)}%
+                                  <span className={getScoreColor(comparison.modelB.forge.overall)}>
+                                  {(comparison.modelB.forge.overall * 100).toFixed(1)}%
                                 </span>
-                                {getScoreDiff(comparison.modelB.cries.overall, comparison.modelA.cries.overall)}
+                                {getScoreDiff(comparison.modelB.forge.overall, comparison.modelA.forge.overall)}
                               </div>
                             </div>
                           </div>
@@ -437,55 +437,55 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">C</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.completeness)}>
-                                  {(comparison.modelC.cries.completeness * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelC.forge.completeness)}>
+                                  {(comparison.modelC.forge.completeness * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.completeness, comparison.modelA.cries.completeness)}
+                                {getScoreDiff(comparison.modelC.forge.completeness, comparison.modelA.forge.completeness)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">R</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.reliability)}>
-                                  {(comparison.modelC.cries.reliability * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelC.forge.reliability)}>
+                                  {(comparison.modelC.forge.reliability * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.reliability, comparison.modelA.cries.reliability)}
+                                {getScoreDiff(comparison.modelC.forge.reliability, comparison.modelA.forge.reliability)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">I</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.integrity)}>
-                                  {(comparison.modelC.cries.integrity * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelC.forge.integrity)}>
+                                  {(comparison.modelC.forge.integrity * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.integrity, comparison.modelA.cries.integrity)}
+                                {getScoreDiff(comparison.modelC.forge.integrity, comparison.modelA.forge.integrity)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">E</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.effectiveness)}>
-                                  {(comparison.modelC.cries.effectiveness * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelC.forge.effectiveness)}>
+                                  {(comparison.modelC.forge.effectiveness * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.effectiveness, comparison.modelA.cries.effectiveness)}
+                                {getScoreDiff(comparison.modelC.forge.effectiveness, comparison.modelA.forge.effectiveness)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">S</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.security)}>
-                                  {(comparison.modelC.cries.security * 100).toFixed(0)}%
+                                <span className={getScoreColor(comparison.modelC.forge.security)}>
+                                  {(comparison.modelC.forge.security * 100).toFixed(0)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.security, comparison.modelA.cries.security)}
+                                {getScoreDiff(comparison.modelC.forge.security, comparison.modelA.forge.security)}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-gray-800">
                               <span className="text-gray-400">Overall</span>
                               <div className="flex items-center gap-2">
-                                <span className={getScoreColor(comparison.modelC.cries.overall)}>
-                                  {(comparison.modelC.cries.overall * 100).toFixed(1)}%
+                                <span className={getScoreColor(comparison.modelC.forge.overall)}>
+                                  {(comparison.modelC.forge.overall * 100).toFixed(1)}%
                                 </span>
-                                {getScoreDiff(comparison.modelC.cries.overall, comparison.modelA.cries.overall)}
+                                {getScoreDiff(comparison.modelC.forge.overall, comparison.modelA.forge.overall)}
                               </div>
                             </div>
                           </div>
@@ -532,8 +532,8 @@ export default function ComparisonTable({ comparisons, onRefresh }: ComparisonTa
                             <p className="text-sm font-medium text-red-400 mb-1">
                               Divergence Detected
                             </p>
-                            <p className="text-xs text-gray-400">
-                              Models produced significantly different outputs or CRIES scores. 
+                              <p className="text-xs text-gray-400">
+                              Models produced significantly different outputs or FORGE scores. 
                               Review responses carefully for consensus issues.
                             </p>
                           </div>

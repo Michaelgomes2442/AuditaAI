@@ -147,22 +147,22 @@ export default function OnboardingTour({ page = 'pilot', forceShow = false }: On
           placement: 'bottom'
         },
         {
-          target: '[data-tour="cries-scores"]',
+          target: '[data-tour="forge-scores"]',
           content: (
             <>
               <p className="mb-3">
-                <strong>CRIES scores</strong> measure your AI model across 5 critical dimensions:
+                <strong>FORGE scores</strong> measure your AI model across 5 governance dimensions:
               </p>
               <ul className="space-y-1 text-sm">
-                <li>• <strong>C</strong>ompleteness - Coverage & depth</li>
-                <li>• <strong>R</strong>eliability - Consistency & errors</li>
-                <li>• <strong>I</strong>ntegrity - Bias & alignment</li>
-                <li>• <strong>E</strong>ffectiveness - Task completion</li>
-                <li>• <strong>S</strong>ecurity - Adversarial resistance</li>
+                <li>• <strong>F</strong>abrication detection - Identifies hallucinations and false statements</li>
+                <li>• <strong>O</strong>versight - Model alignment with human policy and review</li>
+                <li>• <strong>R</strong>efusal accuracy - Correctly refuses disallowed requests</li>
+                <li>• <strong>G</strong>uidance - Quality and safety of guidance provided</li>
+                <li>• <strong>E</strong>vidence - Traceability and grounding of claims</li>
               </ul>
             </>
           ),
-          title: '📊 CRIES Methodology',
+          title: '📊 FORGE Methodology',
           placement: 'right'
         },
         {
@@ -286,7 +286,7 @@ export default function OnboardingTour({ page = 'pilot', forceShow = false }: On
                 Choose the plan that fits your needs - from free exploration to enterprise-scale compliance.
               </p>
               <p className="text-sm text-gray-400">
-                All tiers include CRIES scoring, receipts, and cryptographic verification.
+                All tiers include FORGE scoring, receipts, and cryptographic verification.
               </p>
             </>
           ),

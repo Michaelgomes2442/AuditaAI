@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ResearchStation } from '@/types/research-station';
 import { useEffect, useState } from 'react';
 
-interface CRIESData {
+interface FORGEData {
   F: number; // Fabrication Detection
   O: number; // Oversight Quality
   R: number; // Refusal Accuracy
@@ -11,7 +11,7 @@ interface CRIESData {
   avg: number;
 }
 
-interface CRIESDistribution {
+interface FORGEDistribution {
   excellent: number;
   good: number;
   fair: number;
@@ -20,16 +20,17 @@ interface CRIESDistribution {
 }
 
 export function GovernancePanel({ station }: { station: ResearchStation }) {
-  const [criesData, setCriesData] = useState<CRIESData | null>(null);
-  const [distribution, setDistribution] = useState<CRIESDistribution | null>(null);
+  const [forgeData, setForgeData] = useState<FORGEData | null>(null);
+  const [distribution, setDistribution] = useState<FORGEDistribution | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCriesData = async () => {
+    const fetchForgeData = async () => {
       try {
         const response = await fetch('/api/dashboard/forge-distribution');
         const data = await response.json();
-        setDistribution(data.cries_distribution);
+        // Use new `forge_distribution` key only.
+        setDistribution(data.forge_distribution);
       } catch (error) {
         console.error('Failed to fetch FORGE data:', error);
       } finally {
@@ -37,7 +38,7 @@ export function GovernancePanel({ station }: { station: ResearchStation }) {
       }
     };
 
-    fetchCriesData();
+    fetchForgeData();
   }, []);
 
   const renderMetricBar = (label: string, value: number, emoji: string) => (

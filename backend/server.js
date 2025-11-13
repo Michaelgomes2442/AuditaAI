@@ -140,7 +140,7 @@ function computeMerkleRoot(leaves) {
 }
 
 // =============================================================================
-// PRODUCTION READY: CRIES v5 + Domain-Adaptive Governance Integration
+// PRODUCTION READY: FORGE v2 + Domain-Adaptive Governance Integration
 // =============================================================================
 // Load production-ready modules defensively with fallbacks
 
@@ -151,17 +151,34 @@ let clearBootSessions = async () => {};
 let getBootSessionInfo = async () => ({});
 
 // FORGE v1: Governance quality measurement (C-R-E-S: 5 pillars + fabrication detection)
-let computeCRIES = null;  // Renamed from v4
 let classifyDomain = null;
+let computeForge = null;
 
 // Audit Orchestrator: Production integration layer for governed LLM calls
 let executeGovernedLLMCall = null;
 let loadDomainGovernance = null;
 
+// Helper: Normalize analysis objects so callers can consume both legacy CRIES and FORGE-native shapes
+function normalizeAnalysis(raw) {
+  // Strict FORGE normalization — do not map legacy CRIES fields here.
+  const r = raw || {};
+  const forge = {
+    F: Number(r.F ?? 0) || 0,
+    O: Number(r.O ?? 0) || 0,
+    R: Number(r.R ?? 0) || 0,
+    G: Number(r.G ?? 0) || 0,
+    E: Number(r.E ?? 0) || 0,
+    overall: Number(r.overall ?? r.Φ ?? 0) || 0,
+    components: r.components || r.sub_metrics || {}
+  };
+  return { raw: r, forge, triTrackAudit: r.triTrackAudit || null };
+}
+
 // LLM Client: API wrappers for OpenAI and Anthropic
 let callLLM = async () => { throw new Error('llm client not available'); };
 let callGPT4WithRosetta = async () => { throw new Error('gpt4 rosetta not available'); };
 let callClaudeWithRosetta = async () => { throw new Error('claude rosetta not available'); };
+let callGPT4WithSelfVerifyingGovernance = async () => { throw new Error('gpt4 self-verifying governance not available'); };
 let getRosettaGovernanceContext = async () => ({});
 
 // Load WebSocket support
@@ -183,18 +200,29 @@ try {
 // Load FORGE v2: Bayesian-optimized governance quality measurement
 try {
   const forgeModule = await import('./src/track-a-analyzer.js');
-  
-  if (forgeModule && forgeModule.computeCRIES) {
-    computeCRIES = forgeModule.computeCRIES;  // Returns CRIES-compatible format with v2 scoring
-    classifyDomain = forgeModule.classifyDomain;
-    console.log('✅ FORGE v2 loaded successfully (Bayesian optimized: +163.3% improvement, F=43.7%)');
+  if (forgeModule) {
+    if (forgeModule.computeForge) computeForge = forgeModule.computeForge;
+    classifyDomain = forgeModule.classifyDomain || classifyDomain;
+    console.log('✅ FORGE v2 loaded successfully (native computeForge available)');
   } else {
-    console.error('❌ FORGE v2 module loaded but missing computeCRIES function');
+    console.error('❌ FORGE v2 module loaded but missing expected exports');
   }
 } catch (e) {
   console.error('❌ CRITICAL: FORGE v2 failed to load:', e.message);
   console.error('Stack:', e.stack);
-  console.error('Production API endpoints will not function correctly');
+}
+
+// Also load low-level FORGE core (computeForge) for native FORGE output
+try {
+  const forgeCore = await import('./src/forge/v2/pillars-production.js');
+  if (forgeCore && typeof forgeCore.computeForge === 'function') {
+    computeForge = forgeCore.computeForge;
+    console.log('✅ FORGE core (computeForge) loaded for native metrics');
+  } else {
+    console.warn('⚠️ FORGE core loaded but missing computeForge export');
+  }
+} catch (e) {
+  console.warn('⚠️ Optional: computeForge not available as a direct import:', e.message);
 }
 
 // Load Audit Orchestrator: Production integration layer
@@ -216,6 +244,7 @@ try {
   if (llm) {
     callLLM = llm.callLLM || callLLM;
     callGPT4WithRosetta = llm.callGPT4WithRosetta || callGPT4WithRosetta;
+    callGPT4WithSelfVerifyingGovernance = llm.callGPT4WithSelfVerifyingGovernance || callGPT4WithSelfVerifyingGovernance;
     callClaudeWithRosetta = llm.callClaudeWithRosetta || callClaudeWithRosetta;
     getRosettaGovernanceContext = llm.getRosettaGovernanceContext || getRosettaGovernanceContext;
     checkAPIAvailability = llm.checkAPIAvailability || checkAPIAvailability;
@@ -228,13 +257,12 @@ try {
 }
 
 // =============================================================================
-// DEPRECATED CODE REMOVED (v1, v2, v3)
+// FORGE v2 (production): strict FORGE semantics and domain-adaptive governance
 // =============================================================================
-// The following have been removed and replaced with FORGE v1:
-// - track-a-analyzer.js (v1)
-// - cries/compute-cries.ts (v3)
-// - cries/v2_legacy/ (v2)
-// All endpoints now use computeCRIES and executeGovernedLLMCall
+// This codebase now strictly uses FORGE v2 scoring (F,O,R,G,E + overall)
+// and no longer exposes or relies on legacy CRIES runtime shapes. Callers
+// and persistence should use the `forge` object shape with fields:
+// { F, O, R, G, E, overall, components }
 // =============================================================================
 
 let policyEngine = { evaluate: async () => ({ allowed: true, actions: [] }) };
@@ -260,19 +288,13 @@ let prisma;
 let receiptService, auditLogsService, dashboardService;
 
 receiptService = {
-  calculateCRIESMetrics: async (response, prompt) => {
+  calculateFORGEMetrics: async (response, prompt) => {
     try {
-      // Use MCP CRIES tool for deterministic scoring
-      const criesResult = await mcp('rosetta.cries.score', { text: response || prompt });
-      return criesResult;
+      const forgeResult = await calculateResponseFORGE(prompt, response, false, null);
+      return forgeResult;
     } catch (e) {
-      console.warn('MCP CRIES failed, using fallback:', e.message);
-      return {
-        C: 0.5, R: 0.5, I: 0.5, E: 0.5, S: 0.5,
-        cries_score: 0.5,
-        weights: { C: 0.2, R: 0.25, I: 0.25, E: 0.15, S: 0.15 },
-        sub_metrics: {}
-      };
+      console.warn('calculateFORGEMetrics (FORGE) failed, returning conservative fallback:', e.message);
+      return { F: 0.5, O: 0.5, R: 0.5, G: 0.5, E: 0.5, Φ: 0.5, sub_metrics: {} };
     }
   },
   generateAnalysisReceipt: async () => ({ id: 'fallback', digest: 'fallback', receipt_type: 'Δ-ANALYSIS' }),
@@ -291,14 +313,14 @@ auditLogsService = {
 };
 
 dashboardService = {
-  getDashboardOverview: async () => ({ total_evaluations: 0, cries_distribution: {}, system_health: {} }),
+  getDashboardOverview: async () => ({ total_evaluations: 0, forge_distribution: {}, system_health: {} }),
   getRealtimeMetrics: async () => ({}),
-  getCRIESDistribution: async () => ({}),
+  getFORGEDistribution: async () => ({}),
   getSystemHealthMetrics: async () => ({ status: 'degraded' }),
   getPolicyEnforcementStats: async () => ({}),
   getGovernanceAlerts: async () => ({ alerts: [] }),
   getCustomMetrics: async () => ({}),
-  getPerformanceBenchmarks: async () => ({ compliance_score: 0, cries_averages: {}, period: 'none' }),
+  getPerformanceBenchmarks: async () => ({ compliance_score: 0, forge_averages: {}, period: 'none' }),
   getGovernanceAlerts: async () => ({ alerts: [] })
 };
 if (!process.env.DATABASE_URL || process.env.DATABASE_URL === "") {
@@ -744,13 +766,14 @@ app.get('/api/logs', async (req, res) => {
         },
         evaluation_type: 'content_analysis',
         governance_decision: 'rejected',
-        cries_metrics: {
-          coherence: 0.9,
-          reliability: 0.8,
-          integrity: 0.85,
-          effectiveness: 0.7,
-          security: 0.95,
-          overall: 0.84
+        forge_metrics: {
+          F: 0.9,
+          R: 0.8,
+          // Integrity mapped to R for legacy display
+          I: 0.85,
+          E: 0.7,
+          G: 0.95,
+          Φ: 0.84
         },
         receipt_id: 123,
         receipt_hash: 'abc123',
@@ -832,12 +855,12 @@ app.post('/api/analyze', async (req, res) => {
 
     if (!policyResult.allowed) {
       // Generate receipt for blocked request
-      const blockCries = receiptService.calculateCRIESMetrics('', prompt);
+      const blockForge = await receiptService.calculateFORGEMetrics('', prompt);
       const receipt = await receiptService.generateAnalysisReceipt(
         model,
         prompt,
         'BLOCKED: ' + policyResult.actions.map(a => a.reason).join(', '),
-        blockCries,
+        blockForge,
         context.userId ? parseInt(context.userId) : null,
         metadata
       );
@@ -854,17 +877,17 @@ app.post('/api/analyze', async (req, res) => {
 
     // Call LLM (placeholder - would integrate with actual LLM)
     let response = '';
-    let cries = receiptService.calculateCRIESMetrics('', prompt);
+    let forge = await receiptService.calculateFORGEMetrics('', prompt);
 
     // Use provided model_output for testing, otherwise generate mock response
     if (req.body.model_output) {
       response = req.body.model_output;
-      cries = receiptService.calculateCRIESMetrics(response, prompt);
+      forge = await receiptService.calculateFORGEMetrics(response, prompt);
     } else {
       try {
         // This would be replaced with actual LLM call
         response = `Analysis of: "${prompt.substring(0, 50)}..." - Response would be generated here.`;
-        cries = receiptService.calculateCRIESMetrics(response, prompt);
+        forge = await receiptService.calculateFORGEMetrics(response, prompt);
       } catch (llmError) {
         console.warn('LLM call failed, using mock response:', llmError.message);
       }
@@ -875,44 +898,42 @@ app.post('/api/analyze', async (req, res) => {
       model,
       policyResult.redactedContent,
       response,
-      cries,
+      forge,
       context.userId ? parseInt(context.userId) : null,
       metadata
     );
 
     // Build response based on policy actions
-    const apiResponse = {
-      analysis: {
-        prompt: req.body.prompt,
-        model: req.body.model,
-        approved: true,
-        confidence_score: 0.85,
-        cries: {
-          C: cries.C,
-          R: cries.R,
-          I: cries.I,
-          E: cries.E,
-          S: cries.S,
-          Omega: cries.overall // Add Omega for test compatibility
-        }
+      standardResponse: {
+        content: standardResponse.content,
+        forge: {
+          F: standardResponse.forge?.F,
+          O: standardResponse.forge?.O,
+          R: standardResponse.forge?.R,
+          G: standardResponse.forge?.G,
+          E: standardResponse.forge?.E,
+          overall: standardResponse.forge?.overall || 0
+        },
+        audit: standardResponse.forge?.triTrackAudit || null,
+        receipt: standardReceiptData,
+        governanceApplied: standardResponse.governanceApplied || false,
+        governanceMetadata: standardResponse.governanceMetadata || null
       },
-      cries_metrics: cries,
-      explanations: {
-        coherence_explanation: "Coherence: " + cries.C.toFixed(4) + " - Internal consistency and topic alignment",
-        reliability_explanation: "Reliability: " + cries.R.toFixed(4) + " - Evidentiary support per Math Canon vΩ.9",
-        governance_decision: "Approved - All governance checks passed"
-      },
-      policy_result: {
-        rules_applied: policyResult.appliedPolicies,
-        actions_taken: policyResult.actions.map(a => a.type)
-      },
-      governance_delta: {
-        coherence_delta: cries.C - 0.5, // Delta from baseline
-        reliability_delta: cries.R - 0.5,
-        overall_change: (cries.C + cries.R) / 2 - 0.5
-      },
-      receipt: {
-        id: receipt.id || receipt.receipt_id || 'receipt_' + Date.now(),
+      rosettaResponse: {
+        content: rosettaResponse.content,
+        forge: {
+          F: rosettaResponse.forge?.F,
+          O: rosettaResponse.forge?.O,
+          R: rosettaResponse.forge?.R,
+          G: rosettaResponse.forge?.G,
+          E: rosettaResponse.forge?.E,
+          overall: rosettaResponse.forge?.overall || 0
+        },
+        audit: rosettaResponse.forge?.triTrackAudit || null,
+        receipt: rosettaReceiptData,
+        governanceApplied: rosettaResponse.governanceApplied || false,
+        governanceMetadata: rosettaResponse.governanceMetadata || null
+      }
         hash: receipt.hash || receipt.self_hash || receipt.digest || 'hash_' + Date.now(),
         previous_hash: receipt.previous_hash || receipt.previousDigest || null,
         timestamp: receipt.timestamp || receipt.ts || new Date().toISOString(),
@@ -993,20 +1014,22 @@ app.post('/api/compare', async (req, res) => {
       // Apply policy engine
       const policyResult = await policyEngine.evaluate({ prompt }, { ...context, model });
 
-      // Calculate CRIES for this output
-      const cries = receiptService.calculateCRIESMetrics(response, prompt);
+      // Calculate analysis (strict FORGE-native) for this output and normalize
+      const rawAnalysis = await receiptService.calculateFORGEMetrics(response, prompt);
+      const analysis = normalizeAnalysis(rawAnalysis);
 
       const modelResult = {
         model,
         response,
-        cries: {
-          C: cries.C,
-          R: cries.R,
-          I: cries.I,
-          E: cries.E,
-          S: cries.S,
-          Omega: cries.overall // Add Omega for test compatibility
+        forge: {
+          F: analysis.forge.F,
+          O: analysis.forge.O,
+          R: analysis.forge.R,
+          G: analysis.forge.G,
+          E: analysis.forge.E,
+          overall: analysis.forge.overall
         },
+        triTrackAudit: analysis.triTrackAudit,
         policies: policyResult.appliedPolicies,
         actions: policyResult.actions,
         allowed: policyResult.allowed,
@@ -1020,7 +1043,7 @@ app.post('/api/compare', async (req, res) => {
         model,
         prompt,
         response,
-        cries,
+        analysis.forge,
         context.userId ? parseInt(context.userId) : null,
         metadata
       );
@@ -1033,32 +1056,31 @@ app.post('/api/compare', async (req, res) => {
       const base = results[0];
       const compare = results[1];
 
-      governanceDifferential.cries = {
-        C: compare.cries.C - base.cries.C,
-        R: compare.cries.R - base.cries.R,
-        I: compare.cries.I - base.cries.I,
-        E: compare.cries.E - base.cries.E,
-        S: compare.cries.S - base.cries.S,
-        overall: (compare.cries.overall || 0) - (base.cries.overall || 0)
+      governanceDifferential.forge = {
+        F: (compare.forge?.F || 0) - (base.forge?.F || 0),
+        O: (compare.forge?.O || 0) - (base.forge?.O || 0),
+        R: (compare.forge?.R || 0) - (base.forge?.R || 0),
+        G: (compare.forge?.G || 0) - (base.forge?.G || 0),
+        E: (compare.forge?.E || 0) - (base.forge?.E || 0),
+        Φ: (compare.forge?.Φ || 0) - (base.forge?.Φ || 0)
       };
       governanceDifferential.governance = {
         actionDifference: compare.actions.length - base.actions.length,
         policyDifference: compare.policies.length - base.policies.length
       };
     }
-
-    res.json({
-      comparison: {
-        models: results, // Add models array for test compatibility
-        governance_differential: governanceDifferential,
-        governance_delta: governanceDifferential, // Alias for compatibility
-        cries_differential: governanceDifferential, // Alias for test compatibility
-        recommended_model: results[0]?.model || 'model1',
-        confidence_comparison: 0.75
-      },
-      receipts: receipts,
-      receipt: receipts[0] // Add singular receipt for test compatibility
-    });
+      res.json({
+        comparison: {
+          models: results, // Add models array for test compatibility
+          governance_differential: governanceDifferential,
+          governance_delta: governanceDifferential, // Alias for compatibility
+          forge_differential: governanceDifferential, // Alias for test compatibility
+          recommended_model: results[0]?.model || 'model1',
+          confidence_comparison: 0.75
+        },
+        receipts: receipts,
+        receipt: receipts[0] // Add singular receipt for test compatibility
+      });
 
   } catch (error) {
     console.error('Comparison failed:', error);
@@ -1224,7 +1246,7 @@ app.post('/api/pilot/run-prompt',
     });
     const prevDigest = lastReceipt?.digest || '0'.repeat(64);
     
-    // 3. Classify domain BEFORE calling LLM (for domain-adaptive governance) - CRIES v5
+    // 3. Classify domain BEFORE calling LLM (for domain-adaptive governance)
     const domain = classifyDomain ? classifyDomain(prompt) : 'GENERAL';
     console.log(`📍 Domain classified: ${domain} (FORGE v1)`);
     
@@ -1243,21 +1265,18 @@ app.post('/api/pilot/run-prompt',
       response = await callLLM(model, prompt, { apiKeys });
     }
     
-    // 5. Compute CRIES v5 metrics (domain-adaptive scoring)
-    if (!computeCRIES) {
-      throw new Error('CRIES v5 not loaded - cannot compute metrics');
-    }
-    const criesResult = await computeCRIES(prompt, response.content);
-    console.log(`✅ FORGE v1: domain=${criesResult.domain}, Ω=${criesResult.Omega.toFixed(3)}`);
+    // 5. Compute FORGE-native metrics
+    const forgeResult = await calculateResponseFORGE(prompt, response.content, governanceEnabled, null);
+    console.log(`✅ FORGE native: domain=${forgeResult.sub_metrics?.domain || forgeResult.components?.domain || 'unknown'}, Φ=${Number(forgeResult.Φ || forgeResult.O || 0).toFixed(3)}`);
     
-    // 6. Generate Δ-ANALYSIS receipt (Track-A) with v4 data
+    // 6. Generate Δ-ANALYSIS receipt (Track-A) with FORGE-native data
     const analysisData = {
       prompt,
       response: response.content,
-      cries: criesResult,
+      forge: forgeResult,
       model,
       governanceEnabled,
-      version: 'CRIESv5'
+      version: 'FORGE-v2'
     };
     const analysisDigest = sha256Hex(JSON.stringify(analysisData));
     const promptHashValue = sha256Hex(prompt);
@@ -1267,7 +1286,7 @@ app.post('/api/pilot/run-prompt',
       data: {
         lamport: BigInt(currentLamport),
         persona: 'Witness',
-        obligationsApplied: governanceEnabled ? ['CRIES_v4', 'Rosetta', `DOMAIN:${criesResult.domain}`] : [],
+        obligationsApplied: governanceEnabled ? ['FORGE_v2', 'Rosetta', `DOMAIN:${forgeResult.sub_metrics?.domain || 'unknown'}`] : [],
         promptHash: promptHashValue,
         outputHash: outputHashValue,
         violations: [],
@@ -1280,19 +1299,20 @@ app.post('/api/pilot/run-prompt',
         currDigest: analysisDigest,
         prevDigest: prevDigest,
         model: model,
-        criesCoherence: criesResult.C,
-        criesRigor: criesResult.R,
-        criesIntegrity: criesResult.I,
-        criesEmpathy: criesResult.E,
-        criesStrictness: criesResult.S,
-        criesOmega: criesResult.Omega,
-        criesSubMetrics: {
-          domain: criesResult.domain,
-          weights: criesResult.weights,
-          signals: criesResult.signals,
-          components: criesResult.components,
-          version: 'v4',
-          timestamp: criesResult.timestamp
+        // Persist FORGE-native values into FORGE DB columns (CRIES removed)
+        forgeF: forgeResult.F,
+        forgeR: forgeResult.R,
+        forgeG: forgeResult.G,
+        forgeE: forgeResult.E,
+        forgeO: forgeResult.O,
+        forgeOverall: forgeResult.Φ ?? forgeResult.overall ?? forgeResult.O,
+        forgeSubMetrics: {
+          domain: forgeResult.sub_metrics?.domain || forgeResult.components?.domain,
+          weights: forgeResult.sub_metrics?.weights || forgeResult.components?.weights,
+          signals: forgeResult.sub_metrics?.signals || forgeResult.components?.signals,
+          components: forgeResult.sub_metrics || forgeResult.components || {},
+          version: forgeResult.sub_metrics?.version || forgeResult.components?.version || 'forge-v2',
+          timestamp: forgeResult.sub_metrics?.timestamp || new Date().toISOString()
         }
       }
     });
@@ -1314,8 +1334,8 @@ app.post('/api/pilot/run-prompt',
           lamport: Number(r.lamport),
           timestamp: r.timestamp,
           currDigest: r.currDigest,
-          criesOmega: r.criesOmega,
-          domain: criesResult.domain
+          forgeOverall: r.forgeOverall,
+          domain: forgeResult.sub_metrics?.domain || forgeResult.components?.domain
         }))
       });
     }
@@ -1325,24 +1345,24 @@ app.post('/api/pilot/run-prompt',
     res.json({
       success: true,
       response: response.content,
-      cries: {
-        C: criesResult.C,
-        R: criesResult.R,
-        I: criesResult.I,
-        E: criesResult.E,
-        S: criesResult.S,
-        Omega: criesResult.Omega,
-        domain: criesResult.domain,
-        weights: criesResult.weights,
-        signals: criesResult.signals,
-        version: 'v4'
+      forge: {
+        F: forgeResult.F,
+        O: forgeResult.O,
+        R: forgeResult.R,
+        G: forgeResult.G,
+        E: forgeResult.E,
+        Φ: forgeResult.Φ,
+        domain: forgeResult.sub_metrics?.domain || forgeResult.components?.domain,
+        weights: forgeResult.sub_metrics?.weights || forgeResult.components?.weights,
+        signals: forgeResult.sub_metrics?.signals || forgeResult.components?.signals,
+        version: forgeResult.sub_metrics?.version || forgeResult.components?.version || 'forge-v2'
       },
       receipts: receipts.map(r => ({
         id: r.id,
         lamport: Number(r.lamport),
         currDigest: r.currDigest,
         timestamp: r.timestamp,
-        domain: criesResult.domain
+        domain: forgeResult.sub_metrics?.domain || forgeResult.components?.domain
       })),
       executionTime: Date.now() - startTime
     });
@@ -1374,17 +1394,15 @@ app.post('/api/pilot/run-audit',
     try {
       console.log(`🔍 Audit started: standard=${standardModelId}, rosetta=${rosettaModelId}`);
 
-      // Classify domain BEFORE calling LLMs (CRIES v5 domain classification)
+      // Classify domain BEFORE calling LLMs (domain classification)
       const domain = classifyDomain ? classifyDomain(prompt) : 'GENERAL';
       console.log(`📍 Domain classified: ${domain} (FORGE v1)`);
 
-      // Run standard LLM (no governance) with CRIES v5 scoring
+      // Run standard LLM (no governance) and compute FORGE-native analysis
       const standardResponse = await callLLM(standardModelId, prompt, { apiKeys });
-      if (!computeCRIES) {
-        throw new Error('CRIES v5 not loaded - cannot compute metrics');
-      }
-      const standardCries = await computeCRIES(prompt, standardResponse.content);
-      console.log(`✅ Standard FORGE v1: domain=${standardCries.domain}, Ω=${standardCries.Omega.toFixed(3)}`);
+      const rawStandard = await calculateResponseFORGE(prompt, standardResponse.content, false, null);
+      const standardAnalysis = normalizeAnalysis(rawStandard);
+      console.log(`✅ Standard Analysis: domain=${standardAnalysis.raw?.domain || 'unknown'}, Φ=${Number(standardAnalysis.forge.Φ || 0).toFixed(3)}`);
 
       // Run Rosetta-governed LLM with domain-adaptive governance using executeGovernedLLMCall
       let rosettaResponse;
@@ -1403,9 +1421,10 @@ app.post('/api/pilot/run-audit',
         });
         
         rosettaResponse = { content: governedResult.response };
-        rosettaCries = governedResult.cries;
         rosettaReceipt = governedResult.receipt;
-        console.log(`✅ Rosetta (executeGovernedLLMCall): domain=${rosettaCries.domain}, Ω=${rosettaCries.Omega.toFixed(3)}`);
+        // Normalize if the orchestrator returned analysis (expect FORGE-native)
+        var rosettaAnalysis = governedResult.analysis ? normalizeAnalysis(governedResult.analysis) : (governedResult.forge ? normalizeAnalysis(governedResult.forge) : null);
+        console.log(`✅ Rosetta (executeGovernedLLMCall): domain=${rosettaAnalysis?.raw?.domain || 'unknown'}, Φ=${Number(rosettaAnalysis?.forge?.Φ || 0).toFixed(3)}`);
       } else {
         // Fallback to manual governance (legacy path)
         console.warn('⚠️  executeGovernedLLMCall not available, using legacy path');
@@ -1417,7 +1436,8 @@ app.post('/api/pilot/run-audit',
         } else {
           throw new Error('Unsupported Rosetta model. Use GPT-4 or Claude.');
         }
-        rosettaCries = await computeCRIES(prompt, rosettaResponse.content);
+        const rawRosetta = await calculateResponseFORGE(prompt, rosettaResponse.content, true, null);
+        var rosettaAnalysis = normalizeAnalysis(rawRosetta);
       }
 
       // Generate receipts for both (standard only, rosetta already has one from executeGovernedLLMCall)
@@ -1426,14 +1446,14 @@ app.post('/api/pilot/run-audit',
       const lastReceipt = await prisma.governanceReceipt.findFirst({ orderBy: { lamport: 'desc' } });
       const prevDigest = lastReceipt?.currDigest || '0'.repeat(64);
 
-      // Standard receipt (v4 format)
-      const standardData = { 
-        prompt, 
-        response: standardResponse.content, 
-        cries: standardCries, 
-        model: standardModelId, 
+      // Standard receipt (FORGE-native format)
+      const standardData = {
+        prompt,
+        response: standardResponse.content,
+        forge: standardAnalysis.forge,
+        model: standardModelId,
         governanceEnabled: false,
-        version: 'CRIESv5'
+        version: 'FORGE-v2'
       };
       const standardDigest = sha256Hex(JSON.stringify(standardData));
       const standardPromptHash = sha256Hex(prompt);
@@ -1456,19 +1476,20 @@ app.post('/api/pilot/run-audit',
           currDigest: standardDigest,
           prevDigest: prevDigest,
           model: standardModelId,
-          criesCoherence: standardCries.C,
-          criesRigor: standardCries.R,
-          criesIntegrity: standardCries.I,
-          criesEmpathy: standardCries.E,
-          criesStrictness: standardCries.S,
-          criesOmega: standardCries.Omega,
-          criesSubMetrics: {
-            domain: standardCries.domain,
-            weights: standardCries.weights,
-            signals: standardCries.signals,
-            components: standardCries.components,
-            version: 'v4',
-            timestamp: standardCries.timestamp
+          // Persist FORGE values into FORGE DB columns (CRIES removed)
+          forgeF: standardAnalysis.forge.F,
+          forgeR: standardAnalysis.forge.R,
+          forgeG: standardAnalysis.forge.G,
+          forgeE: standardAnalysis.forge.E,
+          forgeO: standardAnalysis.forge.O,
+          forgeOverall: standardAnalysis.forge.Φ ?? standardAnalysis.forge.overall ?? standardAnalysis.forge.O,
+          forgeSubMetrics: {
+            domain: standardAnalysis.raw?.domain,
+            weights: standardAnalysis.raw?.weights,
+            signals: standardAnalysis.raw?.signals,
+            components: standardAnalysis.forge?.components || standardAnalysis.raw?.components,
+            version: standardAnalysis.raw?.version || 'forge-v2',
+            timestamp: standardAnalysis.raw?.timestamp || new Date().toISOString()
           }
         }
       });
@@ -1483,13 +1504,13 @@ app.post('/api/pilot/run-audit',
         };
       } else {
         // Create receipt manually (fallback)
-        const rosettaData = { 
-          prompt, 
-          response: rosettaResponse.content, 
-          cries: rosettaCries, 
-          model: rosettaModelId, 
+        const rosettaData = {
+          prompt,
+          response: rosettaResponse.content,
+          forge: rosettaAnalysis ? rosettaAnalysis.forge : {},
+          model: rosettaModelId,
           governanceEnabled: true,
-          version: 'CRIESv5'
+          version: 'FORGE-v2'
         };
         const rosettaDigest = sha256Hex(JSON.stringify(rosettaData));
         const rosettaPromptHash = sha256Hex(prompt);
@@ -1499,7 +1520,7 @@ app.post('/api/pilot/run-audit',
           data: {
             lamport: BigInt(currentLamport + 1),
             persona: 'Witness',
-            obligationsApplied: ['CRIES_v4', 'Rosetta', `DOMAIN:${rosettaCries.domain}`],
+            obligationsApplied: ['FORGE_v2', 'Rosetta', `DOMAIN:${rosettaAnalysis?.raw?.domain || 'unknown'}`],
             promptHash: rosettaPromptHash,
             outputHash: rosettaOutputHash,
             violations: [],
@@ -1512,19 +1533,19 @@ app.post('/api/pilot/run-audit',
             currDigest: rosettaDigest,
             prevDigest: standardDigest,
             model: rosettaModelId,
-            criesCoherence: rosettaCries.C,
-            criesRigor: rosettaCries.R,
-            criesIntegrity: rosettaCries.I,
-            criesEmpathy: rosettaCries.E,
-            criesStrictness: rosettaCries.S,
-            criesOmega: rosettaCries.Omega,
-            criesSubMetrics: {
-              domain: rosettaCries.domain,
-              weights: rosettaCries.weights,
-              signals: rosettaCries.signals,
-              components: rosettaCries.components,
-              version: 'v4',
-              timestamp: rosettaCries.timestamp
+            forgeF: rosettaAnalysis?.forge?.F,
+            forgeR: rosettaAnalysis?.forge?.R,
+            forgeG: rosettaAnalysis?.forge?.G,
+            forgeE: rosettaAnalysis?.forge?.E,
+            forgeO: rosettaAnalysis?.forge?.O,
+            forgeOverall: rosettaAnalysis?.forge?.Φ ?? rosettaAnalysis?.forge?.overall ?? rosettaAnalysis?.forge?.O,
+            forgeSubMetrics: {
+              domain: rosettaAnalysis?.raw?.domain,
+              weights: rosettaAnalysis?.raw?.weights,
+              signals: rosettaAnalysis?.raw?.signals,
+              components: rosettaAnalysis?.forge?.components || rosettaAnalysis?.raw?.components,
+              version: rosettaAnalysis?.raw?.version || 'forge-v2',
+              timestamp: rosettaAnalysis?.raw?.timestamp || new Date().toISOString()
             }
           }
         });
@@ -1556,39 +1577,39 @@ app.post('/api/pilot/run-audit',
         prompt,
         standardResponse: {
           content: standardResponse.content,
-          cries: {
-            C: standardCries.C,
-            R: standardCries.R,
-            I: standardCries.I,
-            E: standardCries.E,
-            S: standardCries.S,
-            Omega: standardCries.Omega,
-            domain: standardCries.domain,
-            weights: standardCries.weights,
-            signals: standardCries.signals,
-            version: 'v4'
+          forge: {
+            F: standardAnalysis.forge.F,
+            O: standardAnalysis.forge.O,
+            R: standardAnalysis.forge.R,
+            G: standardAnalysis.forge.G,
+            E: standardAnalysis.forge.E,
+            Φ: standardAnalysis.forge.Φ,
+            domain: standardAnalysis.raw?.domain,
+            weights: standardAnalysis.raw?.weights,
+            signals: standardAnalysis.raw?.signals,
+            version: standardAnalysis.raw?.version || 'forge-v2'
           }
         },
         rosettaResponse: {
           content: rosettaResponse.content,
-          cries: {
-            C: rosettaCries.C,
-            R: rosettaCries.R,
-            I: rosettaCries.I,
-            E: rosettaCries.E,
-            S: rosettaCries.S,
-            Omega: rosettaCries.Omega,
-            domain: rosettaCries.domain,
-            weights: rosettaCries.weights,
-            signals: rosettaCries.signals,
-            version: 'v4'
+          forge: {
+            F: rosettaAnalysis?.forge?.F,
+            O: rosettaAnalysis?.forge?.O,
+            R: rosettaAnalysis?.forge?.R,
+            G: rosettaAnalysis?.forge?.G,
+            E: rosettaAnalysis?.forge?.E,
+            Φ: rosettaAnalysis?.forge?.Φ,
+            domain: rosettaAnalysis?.raw?.domain,
+            weights: rosettaAnalysis?.raw?.weights,
+            signals: rosettaAnalysis?.raw?.signals,
+            version: rosettaAnalysis?.raw?.version || 'forge-v2'
           }
         },
         standardReceipt: {
           id: standardReceipt.id,
           lamport: Number(standardReceipt.lamport),
           currDigest: standardReceipt.currDigest,
-          domain: standardCries.domain
+          domain: standardAnalysis.raw?.domain
         },
         rosettaReceipt: finalRosettaReceipt
       });
@@ -1642,19 +1663,19 @@ app.get('/api/pilot/receipts',
         session_id: r.conversationId, // Map back to expected format
         run_id: r.traceId,
         source: 'pilot', // Always pilot for now
-        cries: r.criesOmega ? {
-          C: r.criesCoherence || 0,
-          R: r.criesRigor || 0,
-          I: r.criesIntegrity || 0,
-          E: r.criesEmpathy || 0,
-          S: r.criesStrictness || 0,
-          Omega: r.criesOmega
+        forge: r.forgeOverall != null ? {
+          F: r.forgeF || 0,
+          O: r.forgeO || 0,
+          R: r.forgeR || 0,
+          G: r.forgeG || 0,
+          E: r.forgeE || 0,
+          Φ: r.forgeOverall || 0
         } : null,
         payload: {
           prompt: r.prompt?.substring(0, 200), // Truncate for performance
           text: r.output?.substring(0, 200),
           model: r.model,
-          cries: r.criesSubMetrics
+          forgeSubMetrics: r.forgeSubMetrics
         }
       })),
       count: receipts.length,
@@ -2013,13 +2034,13 @@ app.get('/api/pilot/export-receipts', async (req, res) => {
         session_id: r.session_id,
         run_id: r.run_id,
         source: r.source,
-        cries: r.type === 'Δ-ANALYSIS' ? {
-          C: r.cries_c,
-          R: r.cries_r,
-          I: r.cries_i,
-          E: r.cries_e,
-          S: r.cries_s,
-          Omega: r.cries_overall
+        forge: r.type === 'Δ-ANALYSIS' ? {
+          F: r.forgeF,
+          O: r.forgeO,
+          R: r.forgeR,
+          G: r.forgeG,
+          E: r.forgeE,
+          Φ: r.forgeOverall
         } : null,
         payload: r.payload
       })),
@@ -2116,7 +2137,7 @@ app.get('/api/pilot/export-csv', readOnlyRateLimiter, async (req, res) => {
     ];
     
     if (includeDetailsCols) {
-      headers.push('CRIES_C', 'CRIES_R', 'CRIES_I', 'CRIES_E', 'CRIES_S', 'CRIES_Omega', 'GovernanceMode');
+      headers.push('FORGE_F', 'FORGE_O', 'FORGE_R', 'FORGE_G', 'FORGE_E', 'FORGE_OVERALL', 'GovernanceMode');
     }
     
     csv += headers.join(',') + '\n';
@@ -2140,12 +2161,12 @@ app.get('/api/pilot/export-csv', readOnlyRateLimiter, async (req, res) => {
       
       if (includeDetailsCols) {
         row.push(
-          r.cries_c || '',
-          r.cries_r || '',
-          r.cries_i || '',
-          r.cries_e || '',
-          r.cries_s || '',
-          r.cries_overall || '',
+          r.forgeF || '',
+            r.forgeR || '',
+            r.forgeG || '',
+            r.forgeE || '',
+            r.forgeO || '',
+            r.forgeOverall || '',
           r.governanceMode || ''
         );
       }
@@ -2211,17 +2232,17 @@ app.get('/api/pilot/audit-report', readOnlyRateLimiter, async (req, res) => {
       }
     }
     
-    // Calculate CRIES statistics
+    // Calculate FORGE statistics (derived from stored compatibility columns)
     const analysisReceipts = receipts.filter(r => r.type === 'Δ-ANALYSIS');
-    const criesStats = {
+    const forgeStats = {
       count: analysisReceipts.length,
       averages: {
-        coherence: analysisReceipts.reduce((sum, r) => sum + (r.cries_c || 0), 0) / analysisReceipts.length,
-        rigor: analysisReceipts.reduce((sum, r) => sum + (r.cries_r || 0), 0) / analysisReceipts.length,
-        integration: analysisReceipts.reduce((sum, r) => sum + (r.cries_i || 0), 0) / analysisReceipts.length,
-        empathy: analysisReceipts.reduce((sum, r) => sum + (r.cries_e || 0), 0) / analysisReceipts.length,
-        strictness: analysisReceipts.reduce((sum, r) => sum + (r.cries_s || 0), 0) / analysisReceipts.length,
-        overall: analysisReceipts.reduce((sum, r) => sum + (r.cries_overall || 0), 0) / analysisReceipts.length
+        F: analysisReceipts.reduce((sum, r) => sum + (r.forgeF || 0), 0) / Math.max(1, analysisReceipts.length),
+        O: analysisReceipts.reduce((sum, r) => sum + (r.forgeO || 0), 0) / Math.max(1, analysisReceipts.length),
+        R: analysisReceipts.reduce((sum, r) => sum + (r.forgeR || 0), 0) / Math.max(1, analysisReceipts.length),
+        G: analysisReceipts.reduce((sum, r) => sum + (r.forgeG || 0), 0) / Math.max(1, analysisReceipts.length),
+        E: analysisReceipts.reduce((sum, r) => sum + (r.forgeE || 0), 0) / Math.max(1, analysisReceipts.length),
+        overall: analysisReceipts.reduce((sum, r) => sum + (r.forgeOverall || 0), 0) / Math.max(1, analysisReceipts.length)
       }
     };
     
@@ -2242,7 +2263,7 @@ app.get('/api/pilot/audit-report', readOnlyRateLimiter, async (req, res) => {
           max: Number(receipts[receipts.length - 1]?.lamport || 0)
         }
       },
-      criesAnalysis: criesStats,
+      forgeAnalysis: forgeStats,
       chainVerification: {
         intact: chainIntact,
         breaks: chainBreaks,
@@ -2305,15 +2326,15 @@ app.get('/api/pilot/audit-report', readOnlyRateLimiter, async (req, res) => {
     <tr><td>Lamport Range</td><td>${report.summary.lamportRange.min} - ${report.summary.lamportRange.max}</td></tr>
   </table>
   
-  <h2>CRIES Governance Analysis</h2>
+  <h2>FORGE Governance Analysis</h2>
   <table>
     <tr><th>Metric</th><th>Average Score</th></tr>
-    <tr><td>Coherence</td><td>${criesStats.averages.coherence.toFixed(3)}</td></tr>
-    <tr><td>Rigor</td><td>${criesStats.averages.rigor.toFixed(3)}</td></tr>
-    <tr><td>Integration</td><td>${criesStats.averages.integration.toFixed(3)}</td></tr>
-    <tr><td>Empathy</td><td>${criesStats.averages.empathy.toFixed(3)}</td></tr>
-    <tr><td>Strictness</td><td>${criesStats.averages.strictness.toFixed(3)}</td></tr>
-    <tr><td><strong>Overall</strong></td><td><strong>${criesStats.averages.overall.toFixed(3)}</strong></td></tr>
+    <tr><td>Coherence</td><td>${forgeStats.averages.coherence.toFixed(3)}</td></tr>
+    <tr><td>Rigor</td><td>${forgeStats.averages.rigor.toFixed(3)}</td></tr>
+    <tr><td>Integration</td><td>${forgeStats.averages.integration.toFixed(3)}</td></tr>
+    <tr><td>Empathy</td><td>${forgeStats.averages.empathy.toFixed(3)}</td></tr>
+    <tr><td>Strictness</td><td>${forgeStats.averages.strictness.toFixed(3)}</td></tr>
+    <tr><td><strong>Overall</strong></td><td><strong>${forgeStats.averages.overall.toFixed(3)}</strong></td></tr>
   </table>
   
   <h2>Verification Instructions</h2>
@@ -2368,17 +2389,17 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
     }
     
     const originalReceipt = originalReceipts[0];
-    const originalCRIES = {
-      C: originalReceipt.criesCoherence || 0,
-      R: originalReceipt.criesRigor || 0,
-      I: originalReceipt.criesIntegrity || 0,
-      E: originalReceipt.criesEmpathy || 0,
-      S: originalReceipt.criesStrictness || 0,
-      Omega: originalReceipt.criesOmega || 0,
-      domain: originalReceipt.criesSubMetrics?.domain || 'GENERAL'
+    const originalForge = {
+      F: originalReceipt.forgeF || 0,
+      O: originalReceipt.forgeO || 0,
+      R: originalReceipt.forgeR || 0,
+      G: originalReceipt.forgeG || 0,
+      E: originalReceipt.forgeE || 0,
+      Φ: originalReceipt.forgeOverall || 0,
+      domain: originalReceipt.forgeSubMetrics?.domain || 'GENERAL'
     };
-    
-    // Execute re-run with same parameters using CRIES v5
+
+    // Execute re-run with same parameters using FORGE
     const startTime = Date.now();
     const newSessionId = `rerun-${Date.now()}`;
     const newRunId = `rerun-${originalRunId}-${Date.now()}`;
@@ -2401,12 +2422,14 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
       response = await callLLM(model, prompt, { apiKeys });
     }
     
-    // Compute CRIES v5 for new run
-    if (!computeCRIES) {
-      throw new Error('CRIES v5 not loaded - cannot compute metrics');
+    // Compute FORGE metrics for new run (FORGE-only: no CRIES compatibility)
+    let newForge;
+    if (typeof computeForge === 'function') {
+      newForge = await computeForge(prompt, response.content);
+    } else {
+      throw new Error('No FORGE computation available - cannot compute metrics');
     }
-    const newCRIES = await computeCRIES(prompt, response.content);
-    console.log(`✅ Rerun FORGE v1: domain=${newCRIES.domain}, Ω=${newCRIES.Omega.toFixed(3)}`);
+    console.log(`✅ Rerun FORGE: domain=${newForge.sub_metrics?.domain || newForge.components?.domain || 'unknown'}, Φ=${Number(newForge.Φ || 0).toFixed(3)}`);
     
     // Get Lamport counter
     const lamportResult = await prisma.lamportCounter.findFirst();
@@ -2425,11 +2448,11 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
       response: response.content,
       model,
       governance: useGovernance,
-      cries: newCRIES,
+      forge: newForge,
       runType: 'rerun',
       originalRunId,
       timestamp: new Date().toISOString(),
-      version: 'CRIESv5'
+      version: 'FORGE-v2'
     };
     
     const analysisDigest = sha256Hex(JSON.stringify(analysisPayload));
@@ -2440,7 +2463,7 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
       data: {
         lamport: BigInt(newLamport),
         persona: 'Witness',
-        obligationsApplied: useGovernance ? ['CRIES_v4', 'Rosetta', `DOMAIN:${newCRIES.domain}`] : ['CRIES_v4'],
+        obligationsApplied: useGovernance ? ['FORGE_v2', 'Rosetta', `DOMAIN:${newForge.sub_metrics?.domain || newForge.components?.domain || 'unknown'}`] : ['FORGE_v2'],
         promptHash,
         outputHash,
         violations: [],
@@ -2453,19 +2476,19 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
         currDigest: analysisDigest,
         prevDigest: prev_digest,
         model,
-        criesCoherence: newCRIES.C,
-        criesRigor: newCRIES.R,
-        criesIntegrity: newCRIES.I,
-        criesEmpathy: newCRIES.E,
-        criesStrictness: newCRIES.S,
-        criesOmega: newCRIES.Omega,
-        criesSubMetrics: {
-          domain: newCRIES.domain,
-          weights: newCRIES.weights,
-          signals: newCRIES.signals,
-          components: newCRIES.components,
-          version: 'v4',
-          timestamp: newCRIES.timestamp,
+        forgeF: newForge.F,
+        forgeR: newForge.R,
+        forgeG: newForge.G,
+        forgeE: newForge.E,
+        forgeO: newForge.O,
+        forgeOverall: newForge.Φ,
+        forgeSubMetrics: {
+          domain: newForge.sub_metrics?.domain || newForge.components?.domain,
+          weights: newForge.sub_metrics?.weights || newForge.components?.weights,
+          signals: newForge.sub_metrics?.signals || newForge.components?.signals,
+          components: newForge.components || newForge.sub_metrics || {},
+          version: 'forge-v2',
+          timestamp: newForge.sub_metrics?.timestamp || new Date().toISOString(),
           originalRunId,
           runType: 'rerun'
         }
@@ -2483,40 +2506,40 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
     const safeDivide = (a, b) => b === 0 ? 0 : (a - b) / b * 100;
     
     const comparison = {
-      cries: {
-        original: originalCRIES,
+      forge: {
+        original: originalForge,
         rerun: {
-          C: newCRIES.C,
-          R: newCRIES.R,
-          I: newCRIES.I,
-          E: newCRIES.E,
-          S: newCRIES.S,
-          Omega: newCRIES.Omega,
-          domain: newCRIES.domain,
-          weights: newCRIES.weights,
-          signals: newCRIES.signals,
-          version: 'v4'
+          F: newForge.F,
+          O: newForge.O,
+          R: newForge.R,
+          G: newForge.G,
+          E: newForge.E,
+          Φ: newForge.Φ,
+          domain: newForge.sub_metrics?.domain || newForge.components?.domain,
+          weights: newForge.sub_metrics?.weights || newForge.components?.weights,
+          signals: newForge.sub_metrics?.signals || newForge.components?.signals,
+          version: 'forge-v2'
         },
         delta: {
-          C: (newCRIES.C - originalCRIES.C).toFixed(4),
-          R: (newCRIES.R - originalCRIES.R).toFixed(4),
-          I: (newCRIES.I - originalCRIES.I).toFixed(4),
-          E: (newCRIES.E - originalCRIES.E).toFixed(4),
-          S: (newCRIES.S - originalCRIES.S).toFixed(4),
-          Omega: (newCRIES.Omega - originalCRIES.Omega).toFixed(4)
+          F: (newForge.F - originalForge.F).toFixed(4),
+          R: (newForge.R - originalForge.R).toFixed(4),
+          O: (newForge.O - originalForge.O).toFixed(4),
+          G: (newForge.G - originalForge.G).toFixed(4),
+          E: (newForge.E - originalForge.E).toFixed(4),
+          Φ: (newForge.Φ - originalForge.Φ).toFixed(4)
         },
         percentChange: {
-          C: safeDivide(newCRIES.C, originalCRIES.C).toFixed(2),
-          R: safeDivide(newCRIES.R, originalCRIES.R).toFixed(2),
-          I: safeDivide(newCRIES.I, originalCRIES.I).toFixed(2),
-          E: safeDivide(newCRIES.E, originalCRIES.E).toFixed(2),
-          S: safeDivide(newCRIES.S, originalCRIES.S).toFixed(2),
-          Omega: safeDivide(newCRIES.Omega, originalCRIES.Omega).toFixed(2)
+          F: safeDivide(newForge.F, originalForge.F).toFixed(2),
+          R: safeDivide(newForge.R, originalForge.R).toFixed(2),
+          O: safeDivide(newForge.O, originalForge.O).toFixed(2),
+          G: safeDivide(newForge.G, originalForge.G).toFixed(2),
+          E: safeDivide(newForge.E, originalForge.E).toFixed(2),
+          Φ: safeDivide(newForge.Φ, originalForge.Φ).toFixed(2)
         },
         domainComparison: {
-          original: originalCRIES.domain,
-          rerun: newCRIES.domain,
-          changed: originalCRIES.domain !== newCRIES.domain
+          original: originalForge.domain,
+          rerun: newForge.sub_metrics?.domain || newForge.components?.domain,
+          changed: originalForge.domain !== (newForge.sub_metrics?.domain || newForge.components?.domain)
         }
       },
       execution: {
@@ -2528,8 +2551,8 @@ app.post('/api/pilot/rerun', llmRateLimiter, async (req, res) => {
         samePrompt: true,
         sameModel: true,
         sameGovernance: true,
-        criesVersion: 'v4',
-        note: 'LLM responses are non-deterministic due to temperature/sampling, but governance context and CRIES v5 scoring remain consistent'
+        forgeVersion: 'v2',
+        note: 'LLM responses are non-deterministic due to temperature/sampling, but governance context and FORGE scoring remain consistent'
       }
     };
     
@@ -2562,10 +2585,10 @@ POLICY SECTION:
 Identify the top 3 governance risks and suggest improvements.`,
     // Base LLM response (ungoverned)
     cachedBaseLLM: null,
-    cachedBaseCRIES: null,
+    cachedBaseForge: null,
     // AuditaAI Governed LLM response (with BEN governance context)
     cachedGovernedLLM: null,
-    cachedGovernedCRIES: null
+    cachedGovernedForge: null
   },
   dp2: {
     title: 'Bias Detection Quick Scan',
@@ -2576,9 +2599,9 @@ MODEL OUTPUT:
 
 Identify any bias or fairness concerns and explain your reasoning.`,
     cachedBaseLLM: null,
-    cachedBaseCRIES: null,
+    cachedBaseForge: null,
     cachedGovernedLLM: null,
-    cachedGovernedCRIES: null
+    cachedGovernedForge: null
   },
   dp3: {
     title: 'Assurance Summary',
@@ -2590,9 +2613,9 @@ AI RESPONSE: "Daily aspirin use can have several side effects including stomach 
 
 Provide: 1) Safety assessment, 2) Information quality, 3) Any concerns or recommendations.`,
     cachedBaseLLM: null,
-    cachedBaseCRIES: null,
+    cachedBaseForge: null,
     cachedGovernedLLM: null,
-    cachedGovernedCRIES: null
+    cachedGovernedForge: null
   }
 };
 
@@ -2681,12 +2704,12 @@ app.post('/api/pilot/run-test', async (req, res) => {
       //   data: {
       //     action: `Demo prompt: ${template.title}`,
       //     category: 'pilot_demo',
-      //     details: `AuditaAI Governed CRIES Ω: ${template.cachedGovernedCRIES.Omega}`,
+      //     details: `AuditaAI Governed FORGE Φ: ${template.cachedGovernedForge?.Φ || template.cachedGovernedForge?.overall}`,
       //     metadata: { 
       //       promptId, 
       //       mode: 'demo',
-      //       baseCRIES: template.cachedBaseCRIES,
-      //       governedCRIES: template.cachedGovernedCRIES
+      //       baseForge: template.cachedBaseForge,
+      //       governedForge: template.cachedGovernedForge
       //     },
       //     status: 'completed',
       //     userId: userId,
@@ -2704,12 +2727,12 @@ app.post('/api/pilot/run-test', async (req, res) => {
         // Base LLM response and analysis
         baseLLM: {
           response: template.cachedBaseLLM,
-          cries: template.cachedBaseCRIES
+          forge: template.cachedBaseForge
         },
         // AuditaAI Governed LLM response and analysis
         governedLLM: {
           response: template.cachedGovernedLLM,
-          cries: template.cachedGovernedCRIES
+          forge: template.cachedGovernedForge
         },
         mode: 'demo',
         message: 'Demo comparison completed successfully'
@@ -2878,19 +2901,22 @@ app.post('/api/pilot/run-test', async (req, res) => {
         modelResponse = await callLLM(modelId, currentPrompt, { ...llmOptions, apiKeys });
       }
       response = modelResponse.content;
-      // Compute CRIES analysis
-      const cries = await computeCRIES(currentPrompt, response);
-      console.log(`   ✅ ${modelId}: Ω = ${cries.Omega}`);
+      // Compute FORGE analysis (FORGE-only; CRIES removed)
+      if (typeof computeForge !== 'function') {
+        throw new Error('computeForge is not available; FORGE computation is required');
+      }
+      const forge = await computeForge(currentPrompt, response);
+      console.log(`   ✅ ${modelId}: Φ = ${forge.Φ}`);
       // Append model response to conversation history for this turn
       const updatedHistory = [
         ...conversationHistory,
-        { role: 'assistant', content: response, model: modelId, cries }
+        { role: 'assistant', content: response, model: modelId, forge }
       ];
       results.push({
         modelId,
         modelName: modelId,
         response,
-        cries,
+        forge,
         usage: modelResponse.usage || null,
         provider: modelResponse.provider || 'unknown',
         governance: modelResponse.governance || null,
@@ -2926,15 +2952,15 @@ app.post('/api/pilot/run-test', async (req, res) => {
 
     console.log(`✅ Live testing completed`);
 
-    // Broadcast CRIES scores to dashboard clients
+    // Broadcast FORGE scores to dashboard clients
     results.forEach(result => {
-      io.emit('cries-score', {
-        completeness: result.cries.C,
-        reliability: result.cries.R,
-        integrity: result.cries.I,
-        effectiveness: result.cries.E,
-        security: result.cries.S,
-        overall: result.cries.Omega,
+      io.emit('forge-score', {
+        F: result.forge?.F,
+        O: result.forge?.O,
+        R: result.forge?.R,
+        G: result.forge?.G,
+        E: result.forge?.E,
+        Φ: result.forge?.Φ,
         timestamp: new Date().toISOString(),
         modelName: result.modelId
       });
@@ -2960,14 +2986,14 @@ app.post('/api/pilot/run-test', async (req, res) => {
 // Get pilot stats for dashboard
 app.get('/api/pilot/stats', (req, res) => {
   const activeModels = demoState.models.filter(m => m.status === 'active').length;
-  const avgCries = demoState.models.reduce((sum, m) => sum + m.cries.overall, 0) / demoState.models.length;
+  const avgPhi = demoState.models.length > 0 ? demoState.models.reduce((sum, m) => sum + (m.forge?.Φ || 0), 0) / demoState.models.length : 0;
   const totalQueries = demoState.models.reduce((sum, m) => sum + m.queriesPerHour, 0);
   const totalAlerts = demoState.models.reduce((sum, m) => sum + m.alerts, 0);
 
   res.json({
     activeModels,
     totalModels: demoState.models.length,
-    avgCries: avgCries.toFixed(2),
+    avgPhi: avgPhi.toFixed(2),
     totalQueries,
     totalAlerts,
     demoActive: demoState.isActive
@@ -2993,7 +3019,7 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
     
     const where = {
       timestamp: { gte: startTime },
-      type: 'Δ-ANALYSIS' // Only analysis receipts have CRIES scores
+      type: 'Δ-ANALYSIS' // Only analysis receipts have FORGE scores
     };
     if (sessionId) where.session_id = sessionId;
     
@@ -3006,12 +3032,12 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
         timestamp: true,
         model: true,
         governanceMode: true,
-        cries_c: true,
-        cries_r: true,
-        cries_i: true,
-        cries_e: true,
-        cries_s: true,
-        cries_overall: true,
+        forgeF: true,
+        forgeR: true,
+        forgeG: true,
+        forgeE: true,
+        forgeO: true,
+        forgeOverall: true,
         session_id: true
       }
     });
@@ -3030,12 +3056,12 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
     
     // Calculate averages
     const averages = {
-      coherence: receipts.reduce((sum, r) => sum + (r.cries_c || 0), 0) / receipts.length,
-      rigor: receipts.reduce((sum, r) => sum + (r.cries_r || 0), 0) / receipts.length,
-      integration: receipts.reduce((sum, r) => sum + (r.cries_i || 0), 0) / receipts.length,
-      empathy: receipts.reduce((sum, r) => sum + (r.cries_e || 0), 0) / receipts.length,
-      strictness: receipts.reduce((sum, r) => sum + (r.cries_s || 0), 0) / receipts.length,
-      overall: receipts.reduce((sum, r) => sum + (r.cries_overall || 0), 0) / receipts.length
+      F: receipts.reduce((sum, r) => sum + (r.forgeF || 0), 0) / receipts.length,
+      O: receipts.reduce((sum, r) => sum + (r.forgeO || 0), 0) / receipts.length,
+      R: receipts.reduce((sum, r) => sum + (r.forgeR || 0), 0) / receipts.length,
+      G: receipts.reduce((sum, r) => sum + (r.forgeG || 0), 0) / receipts.length,
+      E: receipts.reduce((sum, r) => sum + (r.forgeE || 0), 0) / receipts.length,
+      overall: receipts.reduce((sum, r) => sum + (r.forgeOverall || 0), 0) / receipts.length
     };
     
     // Group by time buckets
@@ -3065,12 +3091,12 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
     const trends = Object.values(buckets).map(bucket => ({
       timestamp: bucket.timestamp,
       count: bucket.count,
-      avgCoherence: bucket.receipts.reduce((sum, r) => sum + (r.cries_c || 0), 0) / bucket.count,
-      avgRigor: bucket.receipts.reduce((sum, r) => sum + (r.cries_r || 0), 0) / bucket.count,
-      avgIntegration: bucket.receipts.reduce((sum, r) => sum + (r.cries_i || 0), 0) / bucket.count,
-      avgEmpathy: bucket.receipts.reduce((sum, r) => sum + (r.cries_e || 0), 0) / bucket.count,
-      avgStrictness: bucket.receipts.reduce((sum, r) => sum + (r.cries_s || 0), 0) / bucket.count,
-      avgOverall: bucket.receipts.reduce((sum, r) => sum + (r.cries_overall || 0), 0) / bucket.count
+      avgF: bucket.receipts.reduce((sum, r) => sum + (r.forgeF || 0), 0) / bucket.count,
+      avgO: bucket.receipts.reduce((sum, r) => sum + (r.forgeO || 0), 0) / bucket.count,
+      avgR: bucket.receipts.reduce((sum, r) => sum + (r.forgeR || 0), 0) / bucket.count,
+      avgG: bucket.receipts.reduce((sum, r) => sum + (r.forgeG || 0), 0) / bucket.count,
+      avgE: bucket.receipts.reduce((sum, r) => sum + (r.forgeE || 0), 0) / bucket.count,
+      avgOverall: bucket.receipts.reduce((sum, r) => sum + (r.forgeOverall || 0), 0) / bucket.count
     }));
     
     // Model comparison
@@ -3086,9 +3112,9 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
     const modelComparison = Object.entries(modelGroups).map(([model, recs]) => ({
       model,
       count: recs.length,
-      avgOverall: recs.reduce((sum, r) => sum + (r.cries_overall || 0), 0) / recs.length,
-      avgCoherence: recs.reduce((sum, r) => sum + (r.cries_c || 0), 0) / recs.length,
-      avgRigor: recs.reduce((sum, r) => sum + (r.cries_r || 0), 0) / recs.length
+      avgOverall: recs.reduce((sum, r) => sum + (r.forgeOverall || 0), 0) / recs.length,
+      avgF: recs.reduce((sum, r) => sum + (r.forgeF || 0), 0) / recs.length,
+      avgR: recs.reduce((sum, r) => sum + (r.forgeR || 0), 0) / recs.length
     })).sort((a, b) => b.avgOverall - a.avgOverall);
     
     // Governance mode analysis
@@ -3104,8 +3130,8 @@ app.get('/api/pilot/analytics', readOnlyRateLimiter, async (req, res) => {
     const governanceModeAnalysis = Object.entries(modeGroups).map(([mode, recs]) => ({
       mode,
       count: recs.length,
-      avgOverall: recs.reduce((sum, r) => sum + (r.cries_overall || 0), 0) / recs.length,
-      avgStrictness: recs.reduce((sum, r) => sum + (r.cries_s || 0), 0) / recs.length
+      avgOverall: recs.reduce((sum, r) => sum + (r.forgeOverall || 0), 0) / recs.length,
+      avgG: recs.reduce((sum, r) => sum + (r.forgeG || 0), 0) / recs.length
     }));
     
     res.json({
@@ -3132,11 +3158,11 @@ app.post('/api/pilot/simulate-update', (req, res) => {
 
   demoState.models = demoState.models.map(model => ({
     ...model,
-    cries: {
-      ...model.cries,
-      reliability: Math.max(0.6, Math.min(0.95, model.cries.reliability + (Math.random() - 0.5) * 0.05)),
-      completeness: Math.max(0.6, Math.min(0.95, model.cries.completeness + (Math.random() - 0.5) * 0.03)),
-      overall: Math.max(0.6, Math.min(0.95, model.cries.overall + (Math.random() - 0.5) * 0.02))
+    forge: {
+      ...(model.forge || {}),
+      R: Math.max(0.6, Math.min(0.95, (model.forge?.R || 0) + (Math.random() - 0.5) * 0.05)),
+      F: Math.max(0.6, Math.min(0.95, (model.forge?.F || 0) + (Math.random() - 0.5) * 0.03)),
+      overall: Math.max(0.6, Math.min(0.95, (model.forge?.overall || 0) + (Math.random() - 0.5) * 0.02))
     },
     queriesPerHour: Math.max(0, model.queriesPerHour + Math.floor((Math.random() - 0.5) * 10))
   }));
@@ -3235,19 +3261,19 @@ function loadGovernanceState() {
   };
 }
 
-// Math Canon vΩ.8: Tri-Track Weighted CRIES Calculator
+// Math Canon vΩ.8: Tri-Track Weighted FORGE Calculator
 // Weights: Completeness=0.4, Reliability=0.4, Integrity=0.2
-// NOTE: This calculates the weighted Tri-Track score from ACTUAL CRIES components
-// CRIES components must come from real Track-A/B/C analysis of LLM responses
-function calculateTriTrackCRIES(completeness, reliability, integrity, effectiveness, security) {
-  const triTrackScore = (completeness * 0.4) + (reliability * 0.4) + (integrity * 0.2);
-  const overall = (triTrackScore + effectiveness + security) / 3;
+// NOTE: This calculates the weighted Tri-Track score from FORGE components
+// FORGE components must come from real Track-A/B/C analysis of LLM responses
+function calculateTriTrackFORGE(F, R, G, E, O) {
+  const triTrackScore = (F * 0.4) + (R * 0.4) + (G * 0.2);
+  const overall = (triTrackScore + E + O) / 3;
   return {
-    completeness: Number(completeness.toFixed(4)),
-    reliability: Number(reliability.toFixed(4)),
-    integrity: Number(integrity.toFixed(4)),
-    effectiveness: Number(effectiveness.toFixed(4)),
-    security: Number(security.toFixed(4)),
+    F: Number(F.toFixed(4)),
+    R: Number(R.toFixed(4)),
+    G: Number(G.toFixed(4)),
+    E: Number(E.toFixed(4)),
+    O: Number(O.toFixed(4)),
     triTrackScore: Number(triTrackScore.toFixed(4)),
     overall: Number(overall.toFixed(4))
   };
@@ -3260,34 +3286,33 @@ app.post('/api/live-demo/import-model', async (req, res) => {
   
   const modelId = `model-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   
-  // Generate initial CRIES scores (realistic standard model performance)
-  const criesScores = {
-    completeness: 0.65 + Math.random() * 0.15, // 0.65-0.80
-    reliability: 0.60 + Math.random() * 0.15,   // 0.60-0.75
-    integrity: 0.70 + Math.random() * 0.10,     // 0.70-0.80
-    effectiveness: 0.62 + Math.random() * 0.13, // 0.62-0.75
-    security: 0.68 + Math.random() * 0.12       // 0.68-0.80
+  // Generate initial FORGE scores (realistic standard model performance)
+  const forgeScores = {
+    F: Number((0.65 + Math.random() * 0.15).toFixed(3)), // coherence/completeness
+    R: Number((0.60 + Math.random() * 0.15).toFixed(3)), // reliability
+    G: Number((0.62 + Math.random() * 0.13).toFixed(3)), // governance/strictness
+    E: Number((0.62 + Math.random() * 0.13).toFixed(3)), // empathy/effectiveness
+    O: Number((0.68 + Math.random() * 0.12).toFixed(3))  // legacy Omega-like value
   };
-  
-  criesScores.overall = Object.values(criesScores).reduce((a, b) => a + b) / 5;
-  
+  forgeScores.Φ = Number((Object.values(forgeScores).reduce((a, b) => a + b, 0) / 5).toFixed(3));
+
   const newModel = {
     id: modelId,
     name,
     type,
     endpoint,
-    status: criesScores.overall >= 0.7 ? 'active' : 'alert',
-    cries: criesScores,
+    status: forgeScores.Φ >= 0.7 ? 'active' : 'alert',
+    forge: forgeScores,
     rosettaBooted: false,
     queriesPerHour: Math.floor(50 + Math.random() * 100),
-    alerts: criesScores.overall < 0.7 ? Math.floor(2 + Math.random() * 3) : 0,
+    alerts: forgeScores.Φ < 0.7 ? Math.floor(2 + Math.random() * 3) : 0,
     lastUpdate: new Date().toISOString()
   };
-  
+
   liveDemoState.models.push(newModel);
-  
-  console.log(`📥 Model imported: ${name} (CRIES: ${criesScores.overall.toFixed(2)})`);
-  
+
+  console.log(`📥 Model imported: ${name} (FORGE Φ: ${forgeScores.Φ.toFixed(2)})`);
+
   res.json({
     success: true,
     model: newModel,
@@ -3328,13 +3353,13 @@ app.post('/api/live-demo/boot-rosetta', async (req, res) => {
       type: model.type,
       endpoint: model.endpoint,
       status: 'active',
-      cries: {
-        completeness: bootResult.rosettaCRIES.C,
-        reliability: bootResult.rosettaCRIES.R,
-        integrity: bootResult.rosettaCRIES.I,
-        effectiveness: bootResult.rosettaCRIES.E,
-        security: bootResult.rosettaCRIES.S,
-        overall: bootResult.rosettaCRIES.overall
+      forge: {
+        F: bootResult.rosettaFORGE.F,
+        R: bootResult.rosettaFORGE.R,
+        G: bootResult.rosettaFORGE.G,
+        E: bootResult.rosettaFORGE.E,
+        O: bootResult.rosettaFORGE.O,
+        overall: bootResult.rosettaFORGE.overall
       },
       rosettaBooted: true,
       rosettaMetadata: {
@@ -3389,7 +3414,7 @@ app.post('/api/live-demo/boot-rosetta', async (req, res) => {
       },
       governance: bootResult.governance,
       verification: bootResult.verification,
-      message: `Model booted with Rosetta Cognitive OS. Overall CRIES improved by ${(bootResult.improvements.overall * 100).toFixed(1)}%`
+      message: `Model booted with Rosetta Cognitive OS. Overall FORGE Φ improved by ${(bootResult.improvements.overall * 100).toFixed(1)}%`
     });
   } catch (error) {
     console.error('Rosetta boot error:', error);
@@ -3485,12 +3510,12 @@ app.post('/api/live-demo/compare', (req, res) => {
   }
   
   const improvement = {
-    completeness: (rosettaModel.cries.completeness - standardModel.cries.completeness) / standardModel.cries.completeness,
-    reliability: (rosettaModel.cries.reliability - standardModel.cries.reliability) / standardModel.cries.reliability,
-    integrity: (rosettaModel.cries.integrity - standardModel.cries.integrity) / standardModel.cries.integrity,
-    effectiveness: (rosettaModel.cries.effectiveness - standardModel.cries.effectiveness) / standardModel.cries.effectiveness,
-    security: (rosettaModel.cries.security - standardModel.cries.security) / standardModel.cries.security,
-    overall: (rosettaModel.cries.overall - standardModel.cries.overall) / standardModel.cries.overall
+    F: ((rosettaModel.forge?.F || 0) - (standardModel.forge?.F || 0)) / Math.max(1e-6, (standardModel.forge?.F || 0)),
+    R: ((rosettaModel.forge?.R || 0) - (standardModel.forge?.R || 0)) / Math.max(1e-6, (standardModel.forge?.R || 0)),
+    G: ((rosettaModel.forge?.G || 0) - (standardModel.forge?.G || 0)) / Math.max(1e-6, (standardModel.forge?.G || 0)),
+    E: ((rosettaModel.forge?.E || 0) - (standardModel.forge?.E || 0)) / Math.max(1e-6, (standardModel.forge?.E || 0)),
+    O: ((rosettaModel.forge?.O || 0) - (standardModel.forge?.O || 0)) / Math.max(1e-6, (standardModel.forge?.O || 0)),
+    Φ: ((rosettaModel.forge?.Φ || 0) - (standardModel.forge?.Φ || 0)) / Math.max(1e-6, (standardModel.forge?.Φ || 0))
   };
   
   liveDemoState.comparison = {
@@ -3513,27 +3538,28 @@ app.post('/api/live-demo/tracking', (req, res) => {
     if (!global.trackingInterval) {
       global.trackingInterval = setInterval(() => {
         if (liveDemoState.isTracking) {
-          // Simulate realistic metric fluctuations
-          liveDemoState.models.forEach(model => {
-            const metrics = ['completeness', 'reliability', 'integrity', 'effectiveness', 'security'];
-            metrics.forEach(metric => {
-              // Rosetta models have more stable metrics
-              const variance = model.rosettaBooted ? 0.01 : 0.02;
-              const change = (Math.random() - 0.5) * variance;
-              model.cries[metric] = Math.max(0.5, Math.min(0.99, model.cries[metric] + change));
-            });
-            
-            // Recalculate overall
-            model.cries.overall = Object.values(model.cries).slice(0, 5).reduce((a, b) => a + b) / 5;
-            
-            // Update status
-            model.status = model.cries.overall >= 0.7 ? 'active' : 'alert';
-            model.lastUpdate = new Date().toISOString();
-            
-            // Update queries per hour with small variance
-            model.queriesPerHour += Math.floor((Math.random() - 0.5) * 10);
-            model.queriesPerHour = Math.max(10, model.queriesPerHour);
-          });
+          // Simulate realistic metric fluctuations (update FORGE fields)
+              liveDemoState.models.forEach(model => {
+                const metricKeys = ['F','R','G','E','O'];
+                metricKeys.forEach(key => {
+                  const variance = model.rosettaBooted ? 0.01 : 0.02;
+                  const change = (Math.random() - 0.5) * variance;
+                  model.forge = model.forge || {};
+                  model.forge[key] = Math.max(0.5, Math.min(0.99, (model.forge[key] || 0.7) + change));
+                });
+
+                // Recalculate overall Φ as simple average of first five
+                const vals = ['F','R','G','E','O'].map(k => model.forge[k] || 0);
+                model.forge.Φ = vals.reduce((a, b) => a + b, 0) / vals.length;
+
+                // Update status
+                model.status = model.forge.Φ >= 0.7 ? 'active' : 'alert';
+                model.lastUpdate = new Date().toISOString();
+
+                // Update queries per hour with small variance
+                model.queriesPerHour += Math.floor((Math.random() - 0.5) * 10);
+                model.queriesPerHour = Math.max(10, model.queriesPerHour);
+              });
           
           // Record tracking snapshot
           liveDemoState.trackingHistory.push({
@@ -3541,7 +3567,7 @@ app.post('/api/live-demo/tracking', (req, res) => {
             models: liveDemoState.models.map(m => ({
               id: m.id,
               name: m.name,
-              overall: m.cries.overall,
+              overall: m.forge?.Φ,
               status: m.status
             }))
           });
@@ -3701,77 +3727,77 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       return logAndRespondError('Rosetta model response failed', e, 500);
     }
     
-    // Initialize conversation metrics if not exists
+    // Initialize conversation metrics if not exists (strict FORGE naming)
     if (!standardModel.conversationMetrics) {
       standardModel.conversationMetrics = {
         totalQueries: 0,
-        criesHistory: [],
-        averageCRIES: { C: 0, R: 0, I: 0, E: 0, S: 0, overall: 0 }
+        forgeHistory: [],
+        averageFORGE: { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 }
       };
     }
-    
+
     if (!rosettaModel.conversationMetrics) {
       rosettaModel.conversationMetrics = {
         totalQueries: 0,
-        criesHistory: [],
-        averageCRIES: { C: 0, R: 0, I: 0, E: 0, S: 0, overall: 0 }
+        forgeHistory: [],
+        averageFORGE: { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 }
       };
     }
-    
-    // Update metrics
-    updateConversationMetrics(standardModel, standardResponse.cries);
-    updateConversationMetrics(rosettaModel, rosettaResponse.cries);
-    
-    // Calculate improvement (if any - based on pure CRIES, not fake boosting)
-    const improvement = rosettaResponse.cries.overall - standardResponse.cries.overall;
-    
+
+    // Update metrics using strict FORGE shapes
+    updateConversationMetrics(standardModel, standardResponse.forge);
+    updateConversationMetrics(rosettaModel, rosettaResponse.forge);
+
+    // Calculate improvement (if any - based on strict FORGE overall)
+    const improvement = (rosettaResponse.forge?.overall || 0) - (standardResponse.forge?.overall || 0);
+
     // Guard against division by zero or NaN
     let improvementPercent;
-    if (standardResponse.cries.overall === 0 || !isFinite(standardResponse.cries.overall)) {
+    if ((standardResponse.forge?.overall === undefined) || !isFinite(standardResponse.forge?.overall)) {
       improvementPercent = 0;
-      console.warn(`⚠️  Standard CRIES score invalid (${standardResponse.cries.overall}), cannot calculate percentage`);
+      console.warn(`⚠️  Standard FORGE score invalid (${standardResponse.forge && standardResponse.forge.overall}), cannot calculate percentage`);
     } else {
-      improvementPercent = (improvement / standardResponse.cries.overall) * 100;
+      improvementPercent = (improvement / standardResponse.forge.overall) * 100;
     }
     
-    console.log(`\n📊 CRIES Comparison:`);
-    console.log(`   Standard CRIES: ${(standardResponse.cries.overall * 100).toFixed(1)}%`);
-    console.log(`   Rosetta CRIES:  ${(rosettaResponse.cries.overall * 100).toFixed(1)}%`);
+    console.log(`\n📊 FORGE Comparison:`);
+    console.log(`   Standard FORGE Overall: ${(standardResponse.forge.overall * 100).toFixed(1)}%`);
+    console.log(`   Rosetta FORGE Overall:  ${(rosettaResponse.forge.overall * 100).toFixed(1)}%`);
     console.log(`   Δ Difference: ${isFinite(improvementPercent) ? (improvement >= 0 ? '+' : '') + improvementPercent.toFixed(1) + '%' : 'NaN (invalid score)'} (${improvement >= 0 ? 'governance improved quality' : 'no improvement'})`);
     
     console.log(`\n📋 Governance Audit:`);
-    console.log(`   Standard Violations: ${standardResponse.cries.triTrackAudit?.track_B.violations.length || 0}`);
-    console.log(`   Rosetta Violations:  ${rosettaResponse.cries.triTrackAudit?.track_B.violations.length || 0}`);
-    console.log(`   Standard Determinism: ${standardResponse.cries.triTrackAudit?.track_C.deterministic ? 'High' : 'Low'}`);
-    console.log(`   Rosetta Determinism:  ${rosettaResponse.cries.triTrackAudit?.track_C.deterministic ? 'High' : 'Low'}`);
+    console.log(`   Standard Violations: ${standardResponse.forge.triTrackAudit?.track_B.violations.length || 0}`);
+    console.log(`   Rosetta Violations:  ${rosettaResponse.forge.triTrackAudit?.track_B.violations.length || 0}`);
+    console.log(`   Standard Determinism: ${standardResponse.forge.triTrackAudit?.track_C.deterministic ? 'High' : 'Low'}`);
+    console.log(`   Rosetta Determinism:  ${rosettaResponse.forge.triTrackAudit?.track_C.deterministic ? 'High' : 'Low'}`);
     
-    // Emit real-time CRIES metrics via WebSocket in frontend-compatible format
+    // Emit real-time FORGE metrics via WebSocket in frontend-compatible format
     try {
-      io.emit('cries-update', {
+      io.emit('forge-update', {
         standard: {
-          coherence: standardResponse.cries.C,
-          relevance: standardResponse.cries.R,
-          integrity: standardResponse.cries.I,
-          ethical_alignment: standardResponse.cries.E,
-          safety: standardResponse.cries.S,
-          overall: standardResponse.cries.overall,
-          triTrackAudit: standardResponse.cries.triTrackAudit
+          coherence: standardResponse.forge.C || standardResponse.forge.coherence,
+          relevance: standardResponse.forge.R || standardResponse.forge.relevance,
+          integrity: standardResponse.forge.I || standardResponse.forge.integrity,
+          ethical_alignment: standardResponse.forge.E || standardResponse.forge.ethical_alignment,
+          safety: standardResponse.forge.S || standardResponse.forge.safety,
+          overall: standardResponse.forge.overall,
+          triTrackAudit: standardResponse.forge.triTrackAudit
         },
         governed: {
-          coherence: rosettaResponse.cries.C,
-          relevance: rosettaResponse.cries.R,
-          integrity: rosettaResponse.cries.I,
-          ethical_alignment: rosettaResponse.cries.E,
-          safety: rosettaResponse.cries.S,
-          overall: rosettaResponse.cries.overall,
-          triTrackAudit: rosettaResponse.cries.triTrackAudit
+          coherence: rosettaResponse.forge.C || rosettaResponse.forge.coherence,
+          relevance: rosettaResponse.forge.R || rosettaResponse.forge.relevance,
+          integrity: rosettaResponse.forge.I || rosettaResponse.forge.integrity,
+          ethical_alignment: rosettaResponse.forge.E || rosettaResponse.forge.ethical_alignment,
+          safety: rosettaResponse.forge.S || rosettaResponse.forge.safety,
+          overall: rosettaResponse.forge.overall,
+          triTrackAudit: rosettaResponse.forge.triTrackAudit
         },
         improvement: isFinite(improvementPercent) ? improvementPercent / 100 : 0,  // Convert % back to decimal, guard against NaN
         improvementType: improvement > 0 ? 'real' : 'none',
         timestamp: new Date().toISOString(),
         model: standardModel.name
       });
-      console.log('   📡 WebSocket: CRIES metrics + audit metadata emitted');
+      console.log('   📡 WebSocket: FORGE metrics + audit metadata emitted');
     } catch (wsError) {
       console.warn('   ⚠️  WebSocket emission failed:', wsError.message);
     }
@@ -3783,7 +3809,7 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       standardReceipt = await generateLamportReceipt(
         prompt,
         standardResponse.content,
-        standardResponse.cries,
+        standardResponse.forge,
         standardModel.id,
         false,
         standardConversationId
@@ -3795,7 +3821,7 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       rosettaReceipt = await generateLamportReceipt(
         prompt,
         rosettaResponse.content,
-        rosettaResponse.cries,
+        rosettaResponse.forge,
         rosettaModel.id,
         true,
         rosettaConversationId
@@ -3834,32 +3860,30 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       },
       standardResponse: {
         content: standardResponse.content,
-        cries: {
-          C: standardResponse.cries.C,
-          R: standardResponse.cries.R,
-          I: standardResponse.cries.I,
-          E: standardResponse.cries.E,
-          S: standardResponse.cries.S,
-          Omega: standardResponse.cries.Omega || standardResponse.cries.overall || 0,
-          overall: standardResponse.cries.overall
+        forge: {
+          F: standardResponse.forge?.F || 0,
+          R: standardResponse.forge?.R || 0,
+          G: standardResponse.forge?.G || 0,
+          E: standardResponse.forge?.E || 0,
+          O: standardResponse.forge?.O || standardResponse.forge?.overall || 0,
+          overall: standardResponse.forge?.overall || 0
         },
-        audit: standardResponse.cries.triTrackAudit, // Tri-Track audit metadata
+        audit: standardResponse.forge?.triTrackAudit || null, // Tri-Track audit metadata
         receipt: standardReceiptData,
         governanceApplied: standardResponse.governanceApplied || false,
         governanceMetadata: standardResponse.governanceMetadata || null
       },
       rosettaResponse: {
         content: rosettaResponse.content,
-        cries: {
-          C: rosettaResponse.cries.C,
-          R: rosettaResponse.cries.R,
-          I: rosettaResponse.cries.I,
-          E: rosettaResponse.cries.E,
-          S: rosettaResponse.cries.S,
-          Omega: rosettaResponse.cries.Omega || rosettaResponse.cries.overall || 0,
-          overall: rosettaResponse.cries.overall
+        forge: {
+          F: rosettaResponse.forge?.F || 0,
+          R: rosettaResponse.forge?.R || 0,
+          G: rosettaResponse.forge?.G || 0,
+          E: rosettaResponse.forge?.E || 0,
+          O: rosettaResponse.forge?.O || rosettaResponse.forge?.overall || 0,
+          overall: rosettaResponse.forge?.overall || 0
         },
-        audit: rosettaResponse.cries.triTrackAudit, // Tri-Track audit metadata
+        audit: rosettaResponse.forge?.triTrackAudit || null, // Tri-Track audit metadata
         receipt: rosettaReceiptData,
         governanceApplied: rosettaResponse.governanceApplied || false,
         governanceMetadata: rosettaResponse.governanceMetadata || null
@@ -3871,20 +3895,20 @@ app.post('/api/live-demo/parallel-prompt', async (req, res) => {
       rosettaMetrics: rosettaModel.conversationMetrics,
       // Comparison metadata with safe percentage calculations
       comparison: {
-        criesDifference: rosettaResponse.cries.overall - standardResponse.cries.overall,
+        forgeDifference: (rosettaResponse.forge?.overall || 0) - (standardResponse.forge?.overall || 0),
         // Safe percentage calculation for each pillar - prevents Infinity/NaN
         pillarDeltas: {
-          C: calculateSafePercentage(rosettaResponse.cries.C, standardResponse.cries.C),
-          R: calculateSafePercentage(rosettaResponse.cries.R, standardResponse.cries.R),
-          I: calculateSafePercentage(rosettaResponse.cries.I, standardResponse.cries.I),
-          E: calculateSafePercentage(rosettaResponse.cries.E, standardResponse.cries.E),
-          S: calculateSafePercentage(rosettaResponse.cries.S, standardResponse.cries.S)
+          F: calculateSafePercentage(rosettaResponse.forge?.F || 0, standardResponse.forge?.F || 0),
+          R: calculateSafePercentage(rosettaResponse.forge?.R || 0, standardResponse.forge?.R || 0),
+          G: calculateSafePercentage(rosettaResponse.forge?.G || 0, standardResponse.forge?.G || 0),
+          E: calculateSafePercentage(rosettaResponse.forge?.E || 0, standardResponse.forge?.E || 0),
+          O: calculateSafePercentage(rosettaResponse.forge?.O || 0, standardResponse.forge?.O || 0)
         },
-        overallDeltaPercent: calculateSafePercentage(rosettaResponse.cries.overall, standardResponse.cries.overall),
-        violationReduction: (standardResponse.cries.triTrackAudit?.track_B.violations.length || 0) - 
-                           (rosettaResponse.cries.triTrackAudit?.track_B.violations.length || 0),
-        determinismImproved: !standardResponse.cries.triTrackAudit?.track_C.deterministic && 
-                            rosettaResponse.cries.triTrackAudit?.track_C.deterministic
+        overallDeltaPercent: calculateSafePercentage(rosettaResponse.forge?.overall || 0, standardResponse.forge?.overall || 0),
+        violationReduction: (standardResponse.forge?.triTrackAudit?.track_B.violations.length || 0) - 
+                           (rosettaResponse.forge?.triTrackAudit?.track_B.violations.length || 0),
+        determinismImproved: !standardResponse.forge?.triTrackAudit?.track_C.deterministic && 
+                            rosettaResponse.forge?.triTrackAudit?.track_C.deterministic
       }
     };
     
@@ -3924,7 +3948,8 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
         // Use proper Rosetta-specific governance functions (not generic callLLM)
         const rosettaContext = getRosettaGovernanceContext();
         if (modelId.startsWith('gpt-') || modelId.startsWith('o1')) {
-          llmResult = await callGPT4WithRosetta(prompt, rosettaContext, { model: modelId, apiKey: apiKeys?.openai });
+          // Use experimental self-verifying governance wrapper (FORGE metrics + self-check)
+          llmResult = await callGPT4WithSelfVerifyingGovernance(prompt, rosettaContext, { model: modelId, apiKey: apiKeys?.openai, domain: model.domain });
         } else if (modelId.startsWith('claude-')) {
           llmResult = await callClaudeWithRosetta(prompt, rosettaContext, { model: modelId, apiKey: apiKeys?.anthropic });
         } else if (modelId.startsWith('gemini-')) {
@@ -3943,20 +3968,19 @@ async function generateModelResponse(prompt, model, isRosetta, apiKeys) {
         usage = llmResult.usage;
       }
       
-      console.log(`✓ LLM response received: ${response.substring(0, 100)}...`);
+      const respPreview = response ? String(response).substring(0, 100) : '<no response>';
+      console.log(`✓ LLM response received: ${respPreview}...`);
       if (usage && usage.total_tokens) {
         console.log(`📊 Token usage: ${usage.total_tokens} total (${usage.prompt_tokens} prompt + ${usage.completion_tokens} completion)`);
       }
     }
     
-    // Calculate CRIES metrics based on actual response
-    // Use v4 by default (pure, honest scoring)
-    const criesVersion = process.env.CRIES_VERSION || 'v4';
-    const cries = await calculateResponseCRIES(prompt, response, isRosetta, llmResult?.governanceMetadata, criesVersion);
-    
-    return { 
-      content: response, 
-      cries, 
+    // Calculate FORGE-native analysis and return the FORGE shape only.
+    const forgeResult = await calculateResponseFORGE(prompt, response, isRosetta, llmResult?.governanceMetadata);
+    return {
+      content: response,
+      forge: forgeResult,
+      triTrackAudit: forgeResult.triTrackAudit || forgeResult.triTrack || null,
       usage,
       governanceApplied: llmResult?.governanceApplied || false,
       governanceMetadata: llmResult?.governanceMetadata || null
@@ -3990,164 +4014,103 @@ function generateResponseContent(prompt, modelName, isRosetta) {
   return responseSet[Math.floor(Math.random() * responseSet.length)];
 }
 
-// Helper: Calculate CRIES with Tri-Track Audit Metadata
+// Helper: Calculate FORGE with Tri-Track Audit Metadata
 // CRIES = Pure semantic scoring engine (measures actual quality)
 // Tri-Track = Audit metadata only (NOT weighted, NOT boosted)
 // 
 // @param version - 'v3' (default) or 'v4' (pure, honest scoring)
-async function calculateResponseCRIES(prompt, response, isRosetta, governanceMetadata = null, version = 'v4') {
-  console.log(`\n🔬 CRIES ${version.toUpperCase()} Semantic Analysis`);
-  console.log(`   Prompt length: ${prompt.length} chars`);
-  console.log(`   Response length: ${response.length} chars`);
+// Full migration: compute FORGE-native metrics and return native shape
+async function calculateResponseFORGE(prompt, response, isRosetta, governanceMetadata = null) {
+  console.log(`\n🔬 FORGE v2 Native Analysis (computeForge)`);
+  console.log(`   Prompt length: ${prompt?.length || 0} chars`);
+  console.log(`   Response length: ${response?.length || 0} chars`);
   console.log(`   Governance: ${isRosetta ? 'ENABLED' : 'DISABLED'}`);
-  
-  let cries;
-  
-  // ============================================
-  // FORGE v1: GOVERNANCE QUALITY MEASUREMENT
-  // 5 pillars (F-O-R-G-E), fabrication detection, refusal quality
-  // ============================================
-  if (version === 'v4' && computeCRIES) {
-    try {
-      const forgeResult = computeCRIES(prompt, response, { 
-        isGovernance: isRosetta,
-        metadata: governanceMetadata 
-      });
-      
-      console.log(`   ✅ FORGE v1 Score: ${(forgeResult.Omega * 100).toFixed(1)}% (Φ=${forgeResult.Omega.toFixed(2)})`);
-      console.log(`      F (Fabrication): ${forgeResult.S.toFixed(4)}`);
-      console.log(`      O (Oversight): ${forgeResult.C.toFixed(4)}`);
-      console.log(`      R (Refusal): ${forgeResult.R.toFixed(4)}`);
-      console.log(`      G (Guidance): ${forgeResult.E.toFixed(4)}`);
-      console.log(`      E (Evidence): ${forgeResult.R.toFixed(4)}`);
-      
-      // Convert to standard format
-      cries = {
-        C: forgeResult.C,  // Frontend expects C (mapped from O Oversight)
-        R: forgeResult.R,  // Frontend expects R (mapped from E Evidence)
-        I: forgeResult.I || 0,  // Integration deprecated
-        E: forgeResult.E,  // Frontend expects E (mapped from G Guidance)
-        S: forgeResult.S,  // Frontend expects S (mapped from F Fabrication)
-        Omega: forgeResult.Omega,
-        sub_metrics: {
-          domain: forgeResult.domain,
-          signals: forgeResult.signals,
-          components: forgeResult.components,
-          version: 'forge-v1'
-        }
-      };
-    } catch (forgeError) {
-      console.warn('FORGE v1 failed, falling back to v3:', forgeError.message);
-      version = 'v3';  // Fallback
+
+  try {
+    if (!computeForge || typeof computeForge !== 'function') {
+      console.warn('⚠️ computeForge not available; using conservative FORGE defaults');
+      // Conservative default FORGE shape
+      const conservative = { F: 0.5, O: 0.5, R: 0.5, G: 0.5, E: 0.5, overall: 0.5, components: { version: 'fallback' } };
+      const triFallback = await generateTriTrackAudit(prompt, response, conservative, isRosetta, governanceMetadata);
+      return { ...conservative, sub_metrics: conservative.components, triTrackAudit: triFallback, version: 'fallback' };
     }
+
+    // Compute native FORGE metrics
+    let forgeResult;
+    try {
+      forgeResult = await computeForge(prompt, response, { isGovernance: isRosetta, metadata: governanceMetadata });
+    } catch (err) {
+      // synchronous fallback
+      forgeResult = computeForge(prompt, response, { isGovernance: isRosetta, metadata: governanceMetadata });
+    }
+
+    // Ensure numeric shape and defaults
+    const native = {
+      F: Number((forgeResult.F ?? 0.0)),
+      O: Number((forgeResult.O ?? 0.0)),
+      R: Number((forgeResult.R ?? 0.0)),
+      G: Number((forgeResult.G ?? 0.0)),
+      E: Number((forgeResult.E ?? 0.0)),
+      Φ: Number((forgeResult.Φ ?? forgeResult.Phi ?? forgeResult.phi ?? forgeResult.overall ?? 0.0)),
+      components: forgeResult.components || forgeResult.sub_metrics || {}
+    };
+
+    const triTrackAudit = await generateTriTrackAudit(prompt, response, native, isRosetta, governanceMetadata);
+
+    return { ...native, sub_metrics: native.components, triTrackAudit, version: 'forge-v2' };
+  } catch (error) {
+    console.error('calculateResponseFORGE failed:', error);
+    throw error;
   }
-  
-  // ============================================
-  // CRIES v3: FALLBACK (if v4 unavailable or requested)
-  // ============================================
-  if (version === 'v3' || !cries) {
-    cries = await computeCRIES(prompt, response, { isRosetta });
-    
-    console.log(`   ✅ CRIES v3 Score: ${(cries.Omega * 100).toFixed(1)}%`);
-    console.log(`      C (Coherence): ${cries.C.toFixed(4)}`);
-    console.log(`      R (Rigor): ${cries.R.toFixed(4)}`);
-    console.log(`      I (Integration): ${cries.I.toFixed(4)}`);
-    console.log(`      E (Empathy): ${cries.E.toFixed(4)}`);
-    console.log(`      S (Strictness): ${cries.S.toFixed(4)}`);
-  }
-  
-  // ============================================
-  // TRI-TRACK: AUDIT METADATA (NOT SCORES)
-  // Track-A: Semantic quality measurement (CRIES itself)
-  // Track-B: Policy compliance audit
-  // Track-C: Execution determinism audit
-  // ============================================
-  
-  const triTrackAudit = await generateTriTrackAudit(prompt, response, cries, isRosetta, governanceMetadata);
-  
-  console.log(`\n📋 Tri-Track Audit Metadata:`);
-  console.log(`   Track-A (Analyst): Semantic quality measured`);
-  console.log(`   Track-B (Governor): ${triTrackAudit.track_B.violations.length} policy violations`);
-  console.log(`   Track-C (Executor): Determinism=${triTrackAudit.track_C.deterministic ? 'High' : 'Low'}`);
-  
-  // DIAGNOSTIC: Log CRIES object before return
-  console.log(`\n🔍 [DIAGNOSTIC] CRIES object before return:`);
-  console.log(`   cries.C: ${cries.C} (type: ${typeof cries.C}, isNaN: ${isNaN(cries.C)})`);
-  console.log(`   cries.R: ${cries.R} (type: ${typeof cries.R}, isNaN: ${isNaN(cries.R)})`);
-  console.log(`   cries.I: ${cries.I} (type: ${typeof cries.I}, isNaN: ${isNaN(cries.I)})`);
-  console.log(`   cries.E: ${cries.E} (type: ${typeof cries.E}, isNaN: ${isNaN(cries.E)})`);
-  console.log(`   cries.S: ${cries.S} (type: ${typeof cries.S}, isNaN: ${isNaN(cries.S)})`);
-  console.log(`   cries.Omega: ${cries.Omega} (type: ${typeof cries.Omega}, isNaN: ${isNaN(cries.Omega)})`);
-  
-  // Return PURE CRIES + audit metadata (no weighting, no boosting)
-  const returnObj = {
-    // Pure CRIES scores (unmodified)
-    C: Number(cries.C.toFixed(4)),
-    R: Number(cries.R.toFixed(4)),
-    I: Number(cries.I.toFixed(4)),
-    E: Number(cries.E.toFixed(4)),
-    S: Number(cries.S.toFixed(4)),
-    overall: Number(cries.Omega.toFixed(4)),
-    Omega: Number(cries.Omega.toFixed(4)),
-    
-    // Include sub-metrics for transparency
-    sub_metrics: cries.sub_metrics,
-    
-    // Tri-Track audit metadata (informational only)
-    triTrackAudit,
-    
-    // Version info
-    version: cries.sub_metrics?.version || 'v3'
-  };
-  
-  console.log(`\n🔍 [DIAGNOSTIC] Return object:`);
-  console.log(`   overall: ${returnObj.overall} (isNaN: ${isNaN(returnObj.overall)})`);
-  console.log(`   Omega: ${returnObj.Omega} (isNaN: ${isNaN(returnObj.Omega)})`);
-  
-  return returnObj;
 }
 
 // Generate Tri-Track audit metadata (NOT scores)
-async function generateTriTrackAudit(prompt, response, cries, isRosetta, governanceMetadata) {
-  // Track-A: Semantic Analysis (already done via CRIES)
+async function generateTriTrackAudit(prompt, response, forge, isRosetta, governanceMetadata) {
+  // Ensure response is a safe string for regex checks
+  const _response = response && typeof response === 'string' ? response : String(response || '');
+
+  // Map FORGE-native fields into Tri-Track audit metadata
+  const sub = forge.components || forge.sub_metrics || {};
+
+  // Track-A: Semantic Analysis
   const track_A = {
     role: 'Analyst',
     purpose: 'Semantic quality measurement',
-    cries_score: cries.Omega,
-    contradictions: cries.sub_metrics?.contradictions || 0,
+    forge_overall: forge.Φ,
+    contradictions: sub.contradictions || 0,
     coherence_metrics: {
-      C: cries.C,
-      logical_flow: cries.sub_metrics?.logical_flow || 0
+      F: forge.F,
+      logical_flow: sub.logical_flow || 0
     },
     rigor_metrics: {
-      R: cries.R,
-      claim_evidence: cries.sub_metrics?.claim_evidence || 0
+      R: forge.R,
+      claim_evidence: sub.claim_evidence || 0
     }
   };
-  
+
   // Track-B: Policy Compliance Audit (metadata only)
   const track_B = {
     role: 'Governor',
     purpose: 'Policy adherence audit',
     governance_active: isRosetta,
-    violations: detectPolicyViolations(response),
-    safety_disclaimers_found: /disclaimer|caution|note|important|warning/gi.test(response),
-    source_attribution_found: /source|reference|according to|based on/gi.test(response),
+    violations: detectPolicyViolations(_response),
+    safety_disclaimers_found: /disclaimer|caution|note|important|warning/gi.test(_response),
+    source_attribution_found: /source|reference|according to|based on/gi.test(_response),
     wrapper_obedience: isRosetta ? 'enforced' : 'none',
     compliance_metadata: governanceMetadata || {}
   };
-  
+
   // Track-C: Execution Audit (metadata only)
   const track_C = {
     role: 'Executor',
     purpose: 'Deterministic execution audit',
-    deterministic: isRosetta && response.length > 100,
-    formatting_valid: /\n/.test(response), // Has structure
+    deterministic: isRosetta && _response.length > 100,
+    formatting_valid: /\n/.test(_response),
     canonicalization_passed: isRosetta,
     receipt_chain_validated: isRosetta,
     replayable: isRosetta
   };
-  
+
   return {
     track_A,
     track_B,
@@ -4183,27 +4146,49 @@ function detectPolicyViolations(response) {
 }
 
 // Helper: Update conversation metrics
-function updateConversationMetrics(model, newCRIES) {
+function updateConversationMetrics(model, newForge) {
   const metrics = model.conversationMetrics;
-  
+  // Defensive: accept either legacy CRIES shape or FORGE-native shape.
+  // If `newForge` is undefined or missing fields, coerce safe defaults.
   metrics.totalQueries++;
-  metrics.criesHistory.push(newCRIES);
-  
-  // Calculate running average
-  const avg = metrics.averageCRIES;
+
+  const normalized = {
+    F: 0, R: 0, G: 0, E: 0, O: 0, overall: 0
+  };
+
+  if (newForge && typeof newForge === 'object') {
+    // Map legacy CRIES fields into FORGE where possible, otherwise use provided FORGE fields
+    normalized.F = Number(newForge.F ?? newForge.C ?? 0);
+    normalized.R = Number(newForge.R ?? 0);
+    normalized.G = Number(newForge.G ?? newForge.I ?? 0);
+    normalized.E = Number(newForge.E ?? 0);
+    normalized.O = Number(newForge.O ?? newForge.overall ?? 0);
+    normalized.overall = Number(newForge.overall ?? normalized.O || 0);
+  } else {
+    console.warn('updateConversationMetrics: received invalid metrics object, using zeros');
+  }
+
+  // Keep history of the raw object (for debugging/inspection)
+  metrics.forgeHistory = metrics.forgeHistory || [];
+  metrics.forgeHistory.push(newForge || normalized);
+
+  // Calculate running average using FORGE letters
+  const avg = metrics.averageFORGE || { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 };
   const n = metrics.totalQueries;
-  
-  avg.C = ((avg.C * (n - 1)) + newCRIES.C) / n;
-  avg.R = ((avg.R * (n - 1)) + newCRIES.R) / n;
-  avg.I = ((avg.I * (n - 1)) + newCRIES.I) / n;
-  avg.E = ((avg.E * (n - 1)) + newCRIES.E) / n;
-  avg.S = ((avg.S * (n - 1)) + newCRIES.S) / n;
-  avg.overall = ((avg.overall * (n - 1)) + newCRIES.overall) / n;
-  
+
+  avg.F = ((avg.F * (n - 1)) + normalized.F) / n;
+  avg.O = ((avg.O * (n - 1)) + normalized.O) / n;
+  avg.R = ((avg.R * (n - 1)) + normalized.R) / n;
+  avg.G = ((avg.G * (n - 1)) + normalized.G) / n;
+  avg.E = ((avg.E * (n - 1)) + normalized.E) / n;
+  avg.overall = ((avg.overall * (n - 1)) + normalized.overall) / n;
+
   // Round to 4 decimals
   Object.keys(avg).forEach(key => {
-    avg[key] = Number(avg[key].toFixed(4));
+    avg[key] = Number(Number(avg[key] || 0).toFixed(4));
   });
+
+  metrics.averageFORGE = avg;
 }
 
 // Reset live demo state
@@ -4374,13 +4359,13 @@ app.post('/api/pilot/receipt/:id/promote', async (req, res) => {
       prevDigest: receipt.prevDigest,
       promptHash: receipt.promptHash,
       outputHash: receipt.outputHash,
-      cries: {
-        coherence: receipt.criesCoherence,
-        rigor: receipt.criesRigor,
-        integrity: receipt.criesIntegrity,
-        empathy: receipt.criesEmpathy,
-        strictness: receipt.criesStrictness,
-        omega: receipt.criesOmega
+      forge: {
+        F: receipt.forgeF ?? null,
+        R: receipt.forgeR ?? null,
+        G: receipt.forgeG ?? null,
+        E: receipt.forgeE ?? null,
+        O: receipt.forgeOverall ?? null,
+        overall: receipt.forgeOverall ?? null
       },
       metadata: {
         archivedAt: new Date().toISOString(),
@@ -4417,6 +4402,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const RECEIPTS_DIR = path.join(__dirname, '../receipts');
 const REGISTRY_PATH = path.join(RECEIPTS_DIR, 'registry.json');
+// Ensure receipts directory exists (prevent ENOENT when writing receipts)
+try {
+  if (!fsSync.existsSync(RECEIPTS_DIR)) {
+    fsSync.mkdirSync(RECEIPTS_DIR, { recursive: true });
+    console.log(`✅ Created receipts directory at ${RECEIPTS_DIR}`);
+  }
+} catch (mkdirErr) {
+  console.warn(`⚠️ Failed to ensure receipts directory exists: ${mkdirErr && mkdirErr.message}`);
+}
 
 // Get receipts registry
 app.get('/api/receipts/registry', (req, res) => {
@@ -4610,8 +4604,19 @@ app.post('/api/receipts/verify-key', async (req, res) => {
 // This is called internally after parallel-prompt generates CRIES
 // Each conversation instance has its own Lamport chain starting from 0 on boot
 // Different users/sessions with same model = different chains
-async function generateLamportReceipt(prompt, response, cries, modelId, isRosetta, conversationId) {
+async function generateLamportReceipt(prompt, response, analysis, modelId, isRosetta, conversationId) {
   try {
+    // Normalize incoming analysis shape: support legacy CRIES and new FORGE-native shapes
+    const _raw = analysis || {};
+    const normalizedForge = {
+      F: Number(_raw.F ?? _raw.C ?? _raw.coherence ?? 0) || 0,
+      R: Number(_raw.R ?? _raw.R ?? _raw.rigor ?? 0) || 0,
+      G: Number(_raw.G ?? _raw.S ?? _raw.integrity ?? 0) || 0,
+      E: Number(_raw.E ?? _raw.E ?? _raw.empathy ?? 0) || 0,
+      O: Number(_raw.O ?? _raw.overall ?? _raw.Omega ?? 0) || 0,
+      overall: Number(_raw.overall ?? _raw.O ?? _raw.Omega ?? 0) || 0,
+      raw: _raw
+    };
     // Load conversation-specific state to get Lamport counter
     // conversationId uniquely identifies this user's session with this model
     const conversationStatePath = path.join(RECEIPTS_DIR, `state_${conversationId}.json`);
@@ -4639,21 +4644,22 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
       trace_id: `TRACE-${Date.now()}`,
       tri_actor_role: isRosetta ? 'Track-B/Governor' : 'Track-A/Analyst',
       governance_tier: isRosetta ? (modelId.includes('sonnet') || modelId.includes('opus') || modelId.includes('gpt-5') ? 'full' : 'lite') : null,
-      cries: {
-        C: cries.C,
-        R: cries.R,
-        I: cries.I,
-        E: cries.E,
-        S: cries.S
+      forge: {
+        F: normalizedForge.F,
+        R: normalizedForge.R,
+        G: normalizedForge.G,
+        E: normalizedForge.E,
+        O: normalizedForge.O,
+        overall: normalizedForge.overall
       },
       sigma_window: {
-        σ: cries.overall,
+        σ: normalizedForge.overall,
         'σ*': 0.15  // Default threshold
       },
       risk_flags: [],
       model_id: modelId,
       prompt_hash: crypto.createHash('sha256').update(prompt).digest('hex').substring(0, 16),
-      response_length: response.length,
+      response_length: (response || '').length,
       digest_verified: false,
       ts: new Date().toISOString()
     };
@@ -4676,11 +4682,11 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
           previousDigest: conversationState.prev_hash,
           witnessModel: modelId,
           metadata: {
-            conversationId,
-            promptHash: receipt.prompt_hash,
-            responseLength: receipt.response_length,
-            cries: receipt.cries
-          }
+                conversationId,
+                promptHash: receipt.prompt_hash,
+                responseLength: receipt.response_length,
+                forge: receipt.forge
+              }
         }
       });
       console.log(`   💾 Receipt saved to database (L${newLamport})`);
@@ -4736,7 +4742,7 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
       lamport: newLamport,
       prev_hash: receipt.self_hash,
       boot_time: conversationState.boot_time,
-      sigma: cries.overall,
+      sigma: normalizedCries.overall,
       omega: 0.88, // Default, can be updated with governance
       sigmaStar: 0.15,
       total_events: conversationRegistry.length,
@@ -4748,7 +4754,7 @@ async function generateLamportReceipt(prompt, response, cries, modelId, isRosett
     console.log(`   Model: ${modelId}`);
     console.log(`   Lamport: ${newLamport} (conversation-specific chain)`);
     console.log(`   Hash: ${receipt.self_hash.substring(0, 16)}...`);
-    console.log(`   CRIES Overall: ${cries.overall.toFixed(4)}`);
+    console.log(`   CRIES Overall: ${Number(normalizedCries.overall || 0).toFixed(4)}`);
     
     return receipt;
   } catch (error) {
@@ -5130,7 +5136,14 @@ app.get('/api/governance/audit/:conversationId', async (req, res) => {
     const auditTrail = registry.map(entry => ({
       lamport: entry.lamport,
       timestamp: entry.timestamp,
-      cries: entry.cries,
+      forge: entry.forge ?? (entry.cries ? {
+        F: entry.cries.S ?? 0,
+        O: entry.cries.C ?? 0,
+        R: entry.cries.R ?? 0,
+        G: entry.cries.I ?? 0,
+        E: entry.cries.E ?? 0,
+        overall: entry.cries.overall ?? 0
+      } : null),
       track_B_violations: entry.tri_track_audit?.track_B?.violations || [],
       track_C_deterministic: entry.tri_track_audit?.track_C?.deterministic || false,
       governance_active: entry.governance_active
@@ -5274,9 +5287,19 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
             
             // Read actual receipts to get CRIES scores
             for (const entry of registry.slice(-3)) { // Last 3 receipts per conversation
-              if (fsSync.existsSync(entry.path)) {
+                if (fsSync.existsSync(entry.path)) {
                 const receipt = JSON.parse(fsSync.readFileSync(entry.path, 'utf-8'));
-                if (receipt.cries) {
+                if (receipt.forge) {
+                  // Map FORGE fields into CRIES-like shape for downstream compatibility
+                  allScores.push({
+                    C: receipt.forge.O ?? receipt.forgeO ?? 0,
+                    R: receipt.forge.R ?? 0,
+                    I: receipt.forge.G ?? receipt.forgeG ?? 0,
+                    E: receipt.forge.E ?? 0,
+                    S: receipt.forge.F ?? receipt.forgeF ?? 0,
+                    overall: receipt.forge.overall ?? receipt.forgeOverall ?? 0
+                  });
+                } else if (receipt.cries) {
                   allScores.push(receipt.cries);
                 }
               }
@@ -5316,7 +5339,7 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
         trackB.sigma = (trackB.C + trackB.R + trackB.I + trackB.E + trackB.S) / 5;
       } else {
         // No real data yet - return zeros to indicate no activity
-        console.log('⚠️ No CRIES data found in receipts - system needs LLM analysis to generate real scores');
+        console.log('⚠️ No FORGE data found in receipts - system needs LLM analysis to generate real scores');
       }
     } else {
       console.log('⚠️ No conversation states found - run parallel prompts to generate real CRIES data');
@@ -6150,7 +6173,7 @@ app.get('/api/conversations/aggregate', async (req, res) => {
     
     const conversations = [];
     const allReceipts = [];
-    let totalCRIES = { C: 0, R: 0, I: 0, E: 0, S: 0, count: 0 };
+    let totalFORGE = { F: 0, O: 0, R: 0, G: 0, E: 0, count: 0 };
     
     for (const file of stateFiles) {
       try {
@@ -6175,14 +6198,22 @@ app.get('/api/conversations/aggregate', async (req, res) => {
               modelId: state.model_id
             });
             
-            // Aggregate CRIES if present
-            if (receipt.cries) {
-              totalCRIES.C += receipt.cries.C;
-              totalCRIES.R += receipt.cries.R;
-              totalCRIES.I += receipt.cries.I;
-              totalCRIES.E += receipt.cries.E;
-              totalCRIES.S += receipt.cries.S;
-              totalCRIES.count++;
+            // Aggregate FORGE-shaped metrics (compat: map legacy CRIES if present)
+            if (receipt.forge) {
+              totalFORGE.F += receipt.forge.F ?? receipt.forgeF ?? 0;
+              totalFORGE.O += receipt.forge.O ?? receipt.forgeO ?? 0;
+              totalFORGE.R += receipt.forge.R ?? 0;
+              totalFORGE.G += receipt.forge.G ?? receipt.forgeG ?? 0;
+              totalFORGE.E += receipt.forge.E ?? 0;
+              totalFORGE.count++;
+            } else if (receipt.cries) {
+              // Map legacy CRIES -> FORGE: F<-S, O<-C, R<-R, G<-I, E<-E
+              totalFORGE.F += receipt.cries.S ?? 0;
+              totalFORGE.O += receipt.cries.C ?? 0;
+              totalFORGE.R += receipt.cries.R ?? 0;
+              totalFORGE.G += receipt.cries.I ?? 0;
+              totalFORGE.E += receipt.cries.E ?? 0;
+              totalFORGE.count++;
             }
             
             allReceipts.push({
@@ -6210,13 +6241,13 @@ app.get('/api/conversations/aggregate', async (req, res) => {
     }
     
     // Calculate real averages
-    const avgCRIES = totalCRIES.count > 0 ? {
-      C: totalCRIES.C / totalCRIES.count,
-      R: totalCRIES.R / totalCRIES.count,
-      I: totalCRIES.I / totalCRIES.count,
-      E: totalCRIES.E / totalCRIES.count,
-      S: totalCRIES.S / totalCRIES.count,
-      overall: (totalCRIES.C + totalCRIES.R + totalCRIES.I + totalCRIES.E + totalCRIES.S) / (5 * totalCRIES.count)
+    const avgFORGE = totalFORGE.count > 0 ? {
+      F: totalFORGE.F / totalFORGE.count,
+      O: totalFORGE.O / totalFORGE.count,
+      R: totalFORGE.R / totalFORGE.count,
+      G: totalFORGE.G / totalFORGE.count,
+      E: totalFORGE.E / totalFORGE.count,
+      overall: (totalFORGE.F + totalFORGE.O + totalFORGE.R + totalFORGE.G + totalFORGE.E) / (5 * totalFORGE.count)
     } : null;
     
     res.json({
@@ -6226,9 +6257,9 @@ app.get('/api/conversations/aggregate', async (req, res) => {
       totalConversations: conversations.length,
       totalReceipts: allReceipts.length,
       receipts: allReceipts,
-      aggregateCRIES: avgCRIES,
-      hasRealData: totalCRIES.count > 0,
-      message: totalCRIES.count === 0 
+      aggregateFORGE: avgFORGE,
+      hasRealData: totalFORGE.count > 0,
+      message: totalFORGE.count === 0 
         ? 'No LLM conversations yet - run parallel prompts in Live Demo to generate real data'
         : `Aggregated from ${conversations.length} real conversations with ${allReceipts.length} receipts`
     });
@@ -6301,9 +6332,9 @@ app.post('/api/receipts/seed', async (req, res) => {
       const prompt = `${promptPrefix} ${i}`;
       const responseText = `${responsePrefix} ${i}`;
 
-      // Compute CRIES deterministically and generate receipt
-      const cries = receiptService.calculateCRIESMetrics(responseText, prompt);
-      const receipt = await receiptService.generateAnalysisReceipt(model, prompt, responseText, cries, null, { seeded: true });
+        // Compute FORGE deterministically and generate receipt
+        const forgeMetrics = receiptService.calculateFORGEMetrics(responseText, prompt);
+        const receipt = await receiptService.generateAnalysisReceipt(model, prompt, responseText, forgeMetrics, null, { seeded: true });
       created.push(receipt);
     }
 
@@ -6413,40 +6444,8 @@ app.get('/api/receipts/:id/verify', async (req, res) => {
       return res.status(404).json({ error: 'not_found' });
     }
 
-    // Return only the expected fields for API response
-    const apiResponse = {
-      valid: verification.valid,
-      hash_integrity: verification.hash_integrity,
-      chain_integrity: verification.chain_integrity,
-      chain_position: verification.chain_position,
-      violations: verification.valid ? [] : [verification.error || 'Unknown error']
-    };
-
-    // Add error field for invalid cases
-    if (!verification.valid && verification.error) {
-      apiResponse.error = verification.error;
-    }
-
-    res.json(apiResponse);
-  } catch (error) {
-    console.error('Failed to verify receipt:', error);
-    res.status(500).json({ error: 'Failed to verify receipt', detail: error.message });
-  }
-});
-
-// Get receipts registry (for frontend compatibility)
-app.get('/api/receipts/registry', async (req, res) => {
-  try {
-    const result = await receiptService.getReceipts(1, 100);
-    res.json({
-      receipts: result.receipts,
-      total: result.pagination.total
-    });
-  } catch (error) {
-    console.error('Failed to get receipts registry:', error);
-    res.status(500).json({ error: 'Failed to get receipts registry', detail: error.message });
-  }
-});
+    // Return verification result
+    res.json(verification);
 
 // Verify receipt with key (placeholder for future cryptographic verification)
 app.post('/api/receipts/verify-key', async (req, res) => {
@@ -6538,7 +6537,7 @@ app.get('/api/logs', async (req, res) => {
       startDate: req.query.start_date,
       endDate: req.query.end_date,
       receiptHash: req.query.receipt_hash,
-      includeCries: req.query.include_cries === 'true',
+      includeForge: (req.query.include_forge === 'true') || (req.query.include_cries === 'true'),
       userId: req.query.user_id,
       sortBy: req.query.sort_by || 'realTimestamp',
       sortOrder: req.query.sort_order || 'desc'
@@ -6599,7 +6598,7 @@ app.get('/api/logs/export', async (req, res) => {
       governanceDecision: req.query.governance_decision,
       startDate: req.query.start_date,
       endDate: req.query.end_date,
-      includeCries: req.query.include_cries === 'true'
+      includeForge: (req.query.include_forge === 'true') || (req.query.include_cries === 'true')
     };
 
     const exportedData = await auditLogsService.exportAuditLogs(options);
@@ -6686,8 +6685,8 @@ app.get('/api/dashboard/metrics/realtime', async (req, res) => {
   }
 });
 
-// Get CRIES metrics distribution
-app.get('/api/dashboard/cries-distribution', async (req, res) => {
+// Get FORGE metrics distribution
+app.get('/api/dashboard/forge-distribution', async (req, res) => {
   try {
     const options = {
       startDate: req.query.start_date,
@@ -6695,11 +6694,13 @@ app.get('/api/dashboard/cries-distribution', async (req, res) => {
       userId: req.query.user_id
     };
 
-    const distribution = await dashboardService.getCRIESDistribution(options);
-    res.json({ cries_distribution: distribution });
+    const distribution = await dashboardService.getFORGEDistribution
+      ? await dashboardService.getFORGEDistribution(options)
+      : await dashboardService.getCRIESDistribution(options);
+    res.json({ forge_distribution: distribution });
   } catch (error) {
-    console.error('Failed to get CRIES distribution:', error);
-    res.status(500).json({ error: 'Failed to get CRIES distribution', detail: error.message });
+    console.error('Failed to get FORGE distribution:', error);
+    res.status(500).json({ error: 'Failed to get FORGE distribution', detail: error.message });
   }
 });
 
@@ -6751,7 +6752,7 @@ app.get('/api/dashboard/health', async (req, res) => {
 app.get('/api/dashboard/custom', async (req, res) => {
   try {
     const options = {
-      metrics: req.query.metrics ? req.query.metrics.split(',') : ['approval_rate', 'cries_avg', 'throughput'],
+      metrics: req.query.metrics ? req.query.metrics.split(',') : ['approval_rate', 'forge_avg', 'throughput'],
       timeRange: req.query.time_range || '24h'
     };
 
@@ -6803,19 +6804,19 @@ app.get('/api/dashboard/performance-trend', async (req, res) => {
     const performance_trend = [
       {
         timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        accuracy_score: trend.cries_averages.overall,
+        accuracy_score: trend.forge_averages.overall,
         response_time: trend.evaluation_speed.average_ms,
         governance_decisions: Math.round(trend.throughput.evaluations_per_day)
       },
       {
         timestamp: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-        accuracy_score: trend.cries_averages.overall * 0.95,
+        accuracy_score: trend.forge_averages.overall * 0.95,
         response_time: trend.evaluation_speed.average_ms * 1.1,
         governance_decisions: Math.round(trend.throughput.evaluations_per_day * 0.9)
       },
       {
         timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        accuracy_score: trend.cries_averages.overall * 1.05,
+        accuracy_score: trend.forge_averages.overall * 1.05,
         response_time: trend.evaluation_speed.average_ms * 0.9,
         governance_decisions: Math.round(trend.throughput.evaluations_per_day * 1.1)
       }
@@ -6921,7 +6922,7 @@ async function startServer() {
       console.error('❌ Failed to initialize services:', error);
       // Fallback to no-op services
       receiptService = {
-        calculateCRIESMetrics: () => ({ coherence: 0.5, reliability: 0.5, integrity: 0.5, explainability: 0.5 }),
+        calculateFORGEMetrics: () => ({ coherence: 0.5, reliability: 0.5, integrity: 0.5, explainability: 0.5 }),
         generateAnalysisReceipt: async () => ({ id: 'fallback', digest: 'fallback' })
       };
       auditLogsService = {
@@ -6929,7 +6930,9 @@ async function startServer() {
         exportAuditLogs: async () => 'fallback export'
       };
       dashboardService = {
-        getDashboardOverview: async () => ({ total_evaluations: 0, cries_distribution: {}, system_health: {} }),
+        getDashboardOverview: async () => ({ total_evaluations: 0, forge_distribution: {}, system_health: {} }),
+        getFORGEDistribution: async () => ({ distribution: {} }),
+        // Back-compat: keep getCRIESDistribution alias if some older code still calls it
         getCRIESDistribution: async () => ({ distribution: {} }),
         getSystemHealthMetrics: async () => ({ status: 'degraded', services: {} })
       };
@@ -6953,14 +6956,14 @@ async function startServer() {
         const totalReceipts = await prisma.governanceReceipt.count();
         const totalSeals = await prisma.merkleSeal.count();
 
-        // Calculate CRIES statistics
-        const criesStats = {
-          coherence: receipts.reduce((a, r) => a + (r.criesCoherence || 0), 0) / (receipts.length || 1),
-          rigor: receipts.reduce((a, r) => a + (r.criesRigor || 0), 0) / (receipts.length || 1),
-          integrity: receipts.reduce((a, r) => a + (r.criesIntegrity || 0), 0) / (receipts.length || 1),
-          empathy: receipts.reduce((a, r) => a + (r.criesEmpathy || 0), 0) / (receipts.length || 1),
-          strictness: receipts.reduce((a, r) => a + (r.criesStrictness || 0), 0) / (receipts.length || 1),
-          omega: receipts.reduce((a, r) => a + (r.criesOmega || 0), 0) / (receipts.length || 1)
+        // Calculate FORGE statistics
+        const forgeStats = {
+          F: receipts.reduce((a, r) => a + (r.forgeF || 0), 0) / (receipts.length || 1),
+          R: receipts.reduce((a, r) => a + (r.forgeR || 0), 0) / (receipts.length || 1),
+          G: receipts.reduce((a, r) => a + (r.forgeG || 0), 0) / (receipts.length || 1),
+          E: receipts.reduce((a, r) => a + (r.forgeE || 0), 0) / (receipts.length || 1),
+          O: receipts.reduce((a, r) => a + (r.forgeO || 0), 0) / (receipts.length || 1),
+          overall: receipts.reduce((a, r) => a + (r.forgeOverall || 0), 0) / (receipts.length || 1)
         };
 
         const violationCount = receipts.filter(r => r.violations && r.violations.length > 0).length;
@@ -6983,7 +6986,7 @@ async function startServer() {
               total: totalSeals,
               recent: seals
             },
-            cries: criesStats,
+            forge: forgeStats,
             sealPercentage: totalReceipts > 0 ? ((totalSeals * 10) / totalReceipts * 100) : 0
           }
         });
@@ -7135,11 +7138,11 @@ async function startServer() {
             const count = await prisma.governanceReceipt.count({
               where: { conversationId: id }
             });
-            const avgCries = await prisma.governanceReceipt.aggregate({
+            const avgForge = await prisma.governanceReceipt.aggregate({
               where: { conversationId: id },
-              _avg: { criesOmega: true }
+              _avg: { forgeOverall: true }
             });
-            return { id, receiptCount: count, avgCries: avgCries._avg.criesOmega || 0 };
+            return { id, receiptCount: count, avgForge: avgForge._avg.forgeOverall || 0 };
           })
         );
 
@@ -7154,8 +7157,8 @@ async function startServer() {
       }
     });
 
-    // GET /api/lab/cries-trends - Get CRIES metric trends over time
-    app.get('/api/lab/cries-trends', async (req, res) => {
+    // GET /api/lab/forge-trends - Get FORGE metric trends over time
+    app.get('/api/lab/forge-trends', async (req, res) => {
       try {
         const { days = 7 } = req.query;
         const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
@@ -7165,7 +7168,7 @@ async function startServer() {
           orderBy: { createdAt: 'asc' }
         });
 
-        // Group by date
+        // Group by date into FORGE pillar sums
         const trends = {};
         receipts.forEach(r => {
           const date = r.createdAt.toISOString().split('T')[0];
@@ -7173,33 +7176,33 @@ async function startServer() {
             trends[date] = {
               date,
               count: 0,
-              coherence: 0,
-              rigor: 0,
-              integrity: 0,
-              empathy: 0,
-              strictness: 0,
-              omega: 0
+              F: 0,
+              O: 0,
+              R: 0,
+              G: 0,
+              E: 0,
+              overall: 0
             };
           }
           trends[date].count++;
-          trends[date].coherence += r.criesCoherence || 0;
-          trends[date].rigor += r.criesRigor || 0;
-          trends[date].integrity += r.criesIntegrity || 0;
-          trends[date].empathy += r.criesEmpathy || 0;
-          trends[date].strictness += r.criesStrictness || 0;
-          trends[date].omega += r.criesOmega || 0;
+          trends[date].F += r.forgeF || 0;
+          trends[date].O += r.forgeO || 0;
+          trends[date].R += r.forgeR || 0;
+          trends[date].G += r.forgeG || 0;
+          trends[date].E += r.forgeE || 0;
+          trends[date].overall += r.forgeOverall || 0;
         });
 
         // Calculate averages
         const trendData = Object.values(trends).map(t => ({
           date: t.date,
           count: t.count,
-          coherence: (t.coherence / t.count).toFixed(3),
-          rigor: (t.rigor / t.count).toFixed(3),
-          integrity: (t.integrity / t.count).toFixed(3),
-          empathy: (t.empathy / t.count).toFixed(3),
-          strictness: (t.strictness / t.count).toFixed(3),
-          omega: (t.omega / t.count).toFixed(3)
+          F: (t.F / t.count).toFixed(3),
+          O: (t.O / t.count).toFixed(3),
+          R: (t.R / t.count).toFixed(3),
+          G: (t.G / t.count).toFixed(3),
+          E: (t.E / t.count).toFixed(3),
+          overall: (t.overall / t.count).toFixed(3)
         }));
 
         res.json({
@@ -7209,7 +7212,7 @@ async function startServer() {
           totalReceipts: receipts.length
         });
       } catch (error) {
-        console.error('❌ /api/lab/cries-trends error:', error);
+        console.error('❌ /api/lab/forge-trends error:', error);
         res.status(500).json({ success: false, error: error.message });
       }
     });
@@ -7280,7 +7283,7 @@ async function startServer() {
     console.log('   GET /api/lab/seals');
     console.log('   GET /api/lab/seals/:id');
     console.log('   GET /api/lab/conversations');
-    console.log('   GET /api/lab/cries-trends');
+    console.log('   GET /api/lab/forge-trends');
     console.log('   GET /api/lab/violations');
     console.log('   GET /api/lab/export');
 
@@ -7302,8 +7305,8 @@ async function startServer() {
           endpoint: endpoint,
           rosettaBooted: false,
           free: false,
-          cries: { completeness: 0, reliability: 0, integrity: 0, effectiveness: 0, security: 0, overall: 0 },
-          conversationMetrics: { totalQueries: 0, criesHistory: [], averageCRIES: { C: 0, R: 0, I: 0, E: 0, S: 0, overall: 0 } }
+          forge: { F: 0, R: 0, G: 0, E: 0, O: 0, overall: 0 },
+          conversationMetrics: { totalQueries: 0, forgeHistory: [], averageFORGE: { F: 0, R: 0, G: 0, E: 0, O: 0, overall: 0 } }
         };
         
         const rosetta = {
@@ -7313,8 +7316,8 @@ async function startServer() {
           endpoint: endpoint,
           rosettaBooted: true,
           free: false,
-          cries: { completeness: 0, reliability: 0, integrity: 0, effectiveness: 0, security: 0, overall: 0 },
-          conversationMetrics: { totalQueries: 0, criesHistory: [], averageCRIES: { C: 0, R: 0, I: 0, E: 0, S: 0, overall: 0 } }
+          forge: { F: 0, R: 0, G: 0, E: 0, O: 0, overall: 0 },
+          conversationMetrics: { totalQueries: 0, forgeHistory: [], averageFORGE: { F: 0, R: 0, G: 0, E: 0, O: 0, overall: 0 } }
         };
         
         return [standard, rosetta];

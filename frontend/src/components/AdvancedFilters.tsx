@@ -196,7 +196,7 @@ export default function AdvancedFilters({ onFiltersChange, onReset }: AdvancedFi
             <div className="space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
                 <Sliders className="w-4 h-4" />
-                Overall CRIES Score
+                Overall FORGE Score
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -228,7 +228,7 @@ export default function AdvancedFilters({ onFiltersChange, onReset }: AdvancedFi
               </div>
             </div>
 
-            {/* Individual CRIES Dimensions */}
+            {/* Individual FORGE Dimensions */}
             <div className="space-y-3">
               <Label className="text-sm font-medium">Individual Dimensions (Minimum %)</Label>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

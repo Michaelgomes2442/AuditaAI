@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { BlockData, AuditRecord, CRIESMetrics } from '../types/audit';
+import { BlockData, AuditRecord, FORGEMetrics } from '../types/audit';
 
 export function generateBlockHash(blockData: BlockData): string {
   const blockString = JSON.stringify({
@@ -20,28 +20,16 @@ export function generateBlockHash(blockData: BlockData): string {
   return createHash('sha256').update(blockString).digest('hex');
 }
 
-export function calculateCRIESMetrics(records: AuditRecord[]): CRIESMetrics {
-  // Calculate Consistency Score (0-1)
-  const consistency = calculateConsistencyScore(records);
-  
-  // Calculate Reproducibility Score (0-1)
-  const reproducibility = calculateReproducibilityScore(records);
-  
-  // Calculate Integrity Score (0-1)
-  const integrity = calculateIntegrityScore(records);
-  
-  // Calculate Explainability Score (0-1)
-  const explainability = calculateExplainabilityScore(records);
-  
-  // Calculate Security Score (0-1)
-  const security = calculateSecurityScore(records);
 
+// calculateFORGEMetrics is the canonical entrypoint returning FORGE shaped metrics
+// (kept implementation aligned with previous calculations but named FORGE-native)
+export function calculateFORGEMetrics(records: AuditRecord[]): FORGEMetrics {
   return {
-    consistency,
-    reproducibility,
-    integrity,
-    explainability,
-    security,
+    consistency: calculateConsistencyScore(records),
+    reproducibility: calculateReproducibilityScore(records),
+    integrity: calculateIntegrityScore(records),
+    explainability: calculateExplainabilityScore(records),
+    security: calculateSecurityScore(records),
     timestamp: new Date(),
     recordsAnalyzed: records.length
   };

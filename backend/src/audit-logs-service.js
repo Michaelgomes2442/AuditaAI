@@ -22,7 +22,7 @@ class AuditLogsService {
       startDate,
       endDate,
       receiptHash,
-      includeCries = false,
+      includeForge = false,
       userId,
       sortBy = 'realTimestamp',
       sortOrder = 'desc'
@@ -86,7 +86,7 @@ class AuditLogsService {
     });
 
     // Transform receipts into audit log format
-    const logs = receipts.map(receipt => this.transformReceiptToAuditLog(receipt, includeCries));
+    const logs = receipts.map(receipt => this.transformReceiptToAuditLog(receipt, includeForge));
 
     // Apply governance decision filter if specified
     let filteredLogs = logs;
@@ -118,7 +118,7 @@ class AuditLogsService {
         startDate,
         endDate,
         receiptHash,
-        includeCries,
+        includeForge,
         userId
       }
     };
@@ -127,9 +127,9 @@ class AuditLogsService {
   /**
    * Transform receipt data into audit log format
    */
-  transformReceiptToAuditLog(receipt, includeCries = false) {
+  transformReceiptToAuditLog(receipt, includeForge = false) {
     const payload = receipt.payload || {};
-    const cries = payload.cries || {};
+    const forge = payload.forge || {};
 
     const log = {
       id: receipt.id,
@@ -150,14 +150,15 @@ class AuditLogsService {
       lamport_clock: receipt.lamportClock
     };
 
-    if (includeCries) {
-      log.cries_metrics = {
-        coherence: cries.C || 0,
-        reliability: cries.R || 0,
-        integrity: cries.I || 0,
-        effectiveness: cries.E || 0,
-        security: cries.S || 0,
-        overall: cries.overall || 0
+    if (includeForge) {
+      // Expose FORGE metrics. If code requested CRIES for compatibility, the same structure is provided under 'forge_metrics'.
+      log.forge_metrics = {
+        fabrication: forge.F || 0,
+        oversight: forge.O || 0,
+        refusal: forge.R || 0,
+        guidance: forge.G || 0,
+        evidence: forge.E || 0,
+        overall: forge.overall || 0
       };
     }
 
@@ -260,18 +261,18 @@ class AuditLogsService {
     ]);
 
     // Get CRIES averages (cache this aggregate for short periods to reduce DB load)
-    const cacheKey = `audit:stats:avgLamport:${JSON.stringify(where)}`;
-    let criesStats = await getCache(cacheKey);
-    if (!criesStats) {
-      criesStats = await this.prisma.bENReceipt.aggregate({
-        where,
-        _avg: {
-          lamportClock: true
-        }
-      });
-      // Cache for 60 seconds (stale-while-revalidate style can be implemented by returning cached then refreshing in background)
-      await setCache(cacheKey, criesStats, 60);
-    }
+      const cacheKey = `audit:stats:avgLamport:${JSON.stringify(where)}`;
+      let forgeStats = await getCache(cacheKey);
+      if (!forgeStats) {
+        forgeStats = await this.prisma.bENReceipt.aggregate({
+          where,
+          _avg: {
+            lamportClock: true
+          }
+        });
+        // Cache for 60 seconds
+        await setCache(cacheKey, forgeStats, 60);
+      }
 
     // Get recent activity (last 24 hours)
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -289,7 +290,7 @@ class AuditLogsService {
       flagged_logs: flaggedLogs,
       approval_rate: totalLogs > 0 ? (approvedLogs / totalLogs * 100).toFixed(2) : 0,
       recent_activity_24h: recentLogs,
-      average_lamport_clock: criesStats._avg.lamportClock || 0
+      average_lamport_clock: forgeStats._avg.lamportClock || 0
     };
   }
 

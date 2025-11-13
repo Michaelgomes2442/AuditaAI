@@ -10,23 +10,23 @@
 
 interface Delta {
   overall: number;
-  coherence: number;
-  rigor: number;
-  integration: number;
-  empathy: number;
-  strictness: number;
+  F: number; // Coherence -> FORGE F
+  R: number; // Rigor -> FORGE R
+  O: number; // Integration -> FORGE O
+  G: number; // Empathy -> FORGE G
+  E: number; // Strictness -> FORGE E
 }
 
 interface ObjectiveConfig {
   weights: {
     overall: number;
-    rigor: number;
-    integration: number;
+    R: number;
+    O: number;
   };
   constraints: {
-    coherence_min: number;   // ΔC must be >= this
-    empathy_min: number;     // ΔE must be >= this
-    strictness_min: number;  // ΔS must be >= this
+    F_min: number;   // ΔF must be >= this
+    G_min: number;   // ΔG must be >= this
+    E_min: number;   // ΔE must be >= this
   };
   penalties: {
     length_soft_limit: number;
@@ -40,13 +40,13 @@ interface ObjectiveConfig {
 export const DEFAULT_OBJECTIVE_CONFIG: ObjectiveConfig = {
   weights: {
     overall: 1.0,
-    rigor: 1.5,
-    integration: 1.5
+    R: 1.5,
+    O: 1.5
   },
   constraints: {
-    coherence_min: -0.01,
-    empathy_min: -0.01,
-    strictness_min: -0.01
+    F_min: -0.01,
+    G_min: -0.01,
+    E_min: -0.01
   },
   penalties: {
     length_soft_limit: 3000,
@@ -69,16 +69,16 @@ export function computeReward(
   // Base reward from primary objectives
   let reward = 
     config.weights.overall * delta.overall +
-    config.weights.rigor * delta.rigor +
-    config.weights.integration * delta.integration;
-  
-  // Coherence cliff protection
-  if (delta.coherence < config.penalties.coherence_cliff_threshold) {
-    console.log(`   🚨 Coherence cliff (Δ${delta.coherence.toFixed(4)}), capping reward at 0`);
+    config.weights.R * delta.R +
+    config.weights.O * delta.O;
+
+  // Coherence cliff protection (mapped to ΔF)
+  if (delta.F < config.penalties.coherence_cliff_threshold) {
+    console.log(`   🚨 Coherence cliff (ΔF=${delta.F.toFixed(4)}), capping reward at 0`);
     reward = Math.min(reward, 0);
   } else {
     // Coherence degradation penalty (if not cliff)
-    const coherencePenalty = Math.max(0, -delta.coherence) * 0.5;
+    const coherencePenalty = Math.max(0, -delta.F) * 0.5;
     reward -= coherencePenalty;
   }
   
@@ -112,9 +112,9 @@ export function isFeasible(
   config: ObjectiveConfig = DEFAULT_OBJECTIVE_CONFIG
 ): boolean {
   return (
-    delta.coherence >= config.constraints.coherence_min &&
-    delta.empathy >= config.constraints.empathy_min &&
-    delta.strictness >= config.constraints.strictness_min
+    delta.F >= config.constraints.F_min &&
+    delta.G >= config.constraints.G_min &&
+    delta.E >= config.constraints.E_min
   );
 }
 
@@ -131,15 +131,15 @@ export function formatRewardBreakdown(
   const lines: string[] = [];
   
   lines.push(`Reward Breakdown:`);
-  lines.push(`  Base: ${config.weights.overall * delta.overall + config.weights.rigor * delta.rigor + config.weights.integration * delta.integration >= 0 ? '+' : ''}${(config.weights.overall * delta.overall + config.weights.rigor * delta.rigor + config.weights.integration * delta.integration).toFixed(4)}`);
+  lines.push(`  Base: ${config.weights.overall * delta.overall + config.weights.R * delta.R + config.weights.O * delta.O >= 0 ? '+' : ''}${(config.weights.overall * delta.overall + config.weights.R * delta.R + config.weights.O * delta.O).toFixed(4)}`);
   lines.push(`    ΔΩ: ${delta.overall >= 0 ? '+' : ''}${delta.overall.toFixed(4)} × ${config.weights.overall} = ${(config.weights.overall * delta.overall).toFixed(4)}`);
-  lines.push(`    ΔR: ${delta.rigor >= 0 ? '+' : ''}${delta.rigor.toFixed(4)} × ${config.weights.rigor} = ${(config.weights.rigor * delta.rigor).toFixed(4)}`);
-  lines.push(`    ΔI: ${delta.integration >= 0 ? '+' : ''}${delta.integration.toFixed(4)} × ${config.weights.integration} = ${(config.weights.integration * delta.integration).toFixed(4)}`);
-  
-  const coherencePenalty = delta.coherence < config.penalties.coherence_cliff_threshold ? 
+  lines.push(`    ΔR: ${delta.R >= 0 ? '+' : ''}${delta.R.toFixed(4)} × ${config.weights.R} = ${(config.weights.R * delta.R).toFixed(4)}`);
+  lines.push(`    ΔO: ${delta.O >= 0 ? '+' : ''}${delta.O.toFixed(4)} × ${config.weights.O} = ${(config.weights.O * delta.O).toFixed(4)}`);
+
+  const coherencePenalty = delta.F < config.penalties.coherence_cliff_threshold ? 
     'CLIFF' : 
-    `-${(Math.max(0, -delta.coherence) * 0.5).toFixed(4)}`;
-  lines.push(`  Coherence penalty: ${coherencePenalty} (ΔC = ${delta.coherence >= 0 ? '+' : ''}${delta.coherence.toFixed(4)})`);
+    `-${(Math.max(0, -delta.F) * 0.5).toFixed(4)}`;
+  lines.push(`  Coherence penalty: ${coherencePenalty} (ΔF = ${delta.F >= 0 ? '+' : ''}${delta.F.toFixed(4)})`);
   
   if (wrapperLength > config.penalties.length_soft_limit) {
     const overage = wrapperLength - config.penalties.length_soft_limit;

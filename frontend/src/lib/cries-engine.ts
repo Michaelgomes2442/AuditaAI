@@ -1,7 +1,11 @@
 /**
- * CRIES Engine
+ * CRIES Engine (DEPRECATED)
  * Citation-based Research Integrity & Epistemic Score
- * 
+ *
+ * NOTE: This legacy engine is preserved for historical/testing purposes.
+ * New code should use the FORGE computation engine. CRIES exports will
+ * be removed in a future release after migration is complete.
+ *
  * Computes quality scores for AI interactions based on:
  * - σ (sigma) windows: Prompt quality analysis
  * - τ (tau) thresholds: Response coherence measurement

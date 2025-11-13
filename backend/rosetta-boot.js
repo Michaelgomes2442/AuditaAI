@@ -97,32 +97,32 @@ export function generateBootConfirmReceipt(modelName, lamportClock = 2) {
  * E = Effectiveness (0..1)
  * S = Security (0..1)
  */
-export function calculateCRIES(modelMetrics) {
+export function calculateFORGE(modelMetrics) {
   // Standard model baseline (without Rosetta)
   const baseline = {
-    completeness: 0.65 + Math.random() * 0.15,    // 0.65-0.80
-    reliability: 0.60 + Math.random() * 0.15,     // 0.60-0.75
-    integrity: 0.70 + Math.random() * 0.10,       // 0.70-0.80
-    effectiveness: 0.62 + Math.random() * 0.13,   // 0.62-0.75
-    security: 0.68 + Math.random() * 0.12         // 0.68-0.80
+    F: 0.65 + Math.random() * 0.15,    // Fabrication detection / Completeness
+    R: 0.60 + Math.random() * 0.15,    // Rigor / Reliability
+    G: 0.70 + Math.random() * 0.10,    // Guidance / Governance
+    E: 0.62 + Math.random() * 0.13,    // Evidence / Effectiveness
+    O: 0.68 + Math.random() * 0.12     // Oversight / Omega-like
   };
-  
+
   // Apply any custom metrics if provided
-  const C = modelMetrics?.completeness || baseline.completeness;
-  const R = modelMetrics?.reliability || baseline.reliability;
-  const I = modelMetrics?.integrity || baseline.integrity;
-  const E = modelMetrics?.effectiveness || baseline.effectiveness;
-  const S = modelMetrics?.security || baseline.security;
-  
-  // Overall = average of all components
-  const overall = (C + R + I + E + S) / 5;
-  
+  const F = modelMetrics?.F ?? baseline.F;
+  const R = modelMetrics?.R ?? baseline.R;
+  const G = modelMetrics?.G ?? baseline.G;
+  const E = modelMetrics?.E ?? baseline.E;
+  const O = modelMetrics?.O ?? baseline.O;
+
+  // Overall = average of components
+  const overall = (F + R + G + E + O) / 5;
+
   return {
-    C: Number(C.toFixed(4)),
+    F: Number(F.toFixed(4)),
     R: Number(R.toFixed(4)),
-    I: Number(I.toFixed(4)),
+    G: Number(G.toFixed(4)),
     E: Number(E.toFixed(4)),
-    S: Number(S.toFixed(4)),
+    O: Number(O.toFixed(4)),
     overall: Number(overall.toFixed(4))
   };
 }
@@ -138,41 +138,42 @@ export function calculateCRIES(modelMetrics) {
  * - Effectiveness: +16-26%
  * - Security: +14-23%
  */
-export function applyRosettaBoot(standardCRIES) {
+export function applyRosettaBoot(standardFORGE) {
+  // Improvements expressed as fractional increases
   const improvements = {
-    C: 0.15 + Math.random() * 0.10,  // +15-25%
-    R: 0.18 + Math.random() * 0.10,  // +18-28%
-    I: 0.12 + Math.random() * 0.08,  // +12-20%
-    E: 0.16 + Math.random() * 0.10,  // +16-26%
-    S: 0.14 + Math.random() * 0.09   // +14-23%
+    F: 0.15 + Math.random() * 0.10,
+    R: 0.18 + Math.random() * 0.10,
+    G: 0.12 + Math.random() * 0.08,
+    E: 0.16 + Math.random() * 0.10,
+    O: 0.14 + Math.random() * 0.09
   };
-  
+
   // Apply improvements, capped at 0.99
-  const rosettaCRIES = {
-    C: Math.min(0.99, standardCRIES.C * (1 + improvements.C)),
-    R: Math.min(0.99, standardCRIES.R * (1 + improvements.R)),
-    I: Math.min(0.99, standardCRIES.I * (1 + improvements.I)),
-    E: Math.min(0.99, standardCRIES.E * (1 + improvements.E)),
-    S: Math.min(0.99, standardCRIES.S * (1 + improvements.S))
+  const rosettaFORGE = {
+    F: Math.min(0.99, standardFORGE.F * (1 + improvements.F)),
+    R: Math.min(0.99, standardFORGE.R * (1 + improvements.R)),
+    G: Math.min(0.99, standardFORGE.G * (1 + improvements.G)),
+    E: Math.min(0.99, standardFORGE.E * (1 + improvements.E)),
+    O: Math.min(0.99, standardFORGE.O * (1 + improvements.O))
   };
-  
+
   // Recalculate overall
-  rosettaCRIES.overall = (rosettaCRIES.C + rosettaCRIES.R + rosettaCRIES.I + rosettaCRIES.E + rosettaCRIES.S) / 5;
-  
+  rosettaFORGE.overall = (rosettaFORGE.F + rosettaFORGE.R + rosettaFORGE.G + rosettaFORGE.E + rosettaFORGE.O) / 5;
+
   // Round to 4 decimal places
-  Object.keys(rosettaCRIES).forEach(key => {
-    rosettaCRIES[key] = Number(rosettaCRIES[key].toFixed(4));
+  Object.keys(rosettaFORGE).forEach(key => {
+    rosettaFORGE[key] = Number(rosettaFORGE[key].toFixed(4));
   });
-  
+
   return {
-    rosettaCRIES,
+    rosettaFORGE,
     improvements: {
-      C: Number(((rosettaCRIES.C / standardCRIES.C) - 1).toFixed(4)),
-      R: Number(((rosettaCRIES.R / standardCRIES.R) - 1).toFixed(4)),
-      I: Number(((rosettaCRIES.I / standardCRIES.I) - 1).toFixed(4)),
-      E: Number(((rosettaCRIES.E / standardCRIES.E) - 1).toFixed(4)),
-      S: Number(((rosettaCRIES.S / standardCRIES.S) - 1).toFixed(4)),
-      overall: Number(((rosettaCRIES.overall / standardCRIES.overall) - 1).toFixed(4))
+      F: Number(((rosettaFORGE.F / standardFORGE.F) - 1).toFixed(4)),
+      R: Number(((rosettaFORGE.R / standardFORGE.R) - 1).toFixed(4)),
+      G: Number(((rosettaFORGE.G / standardFORGE.G) - 1).toFixed(4)),
+      E: Number(((rosettaFORGE.E / standardFORGE.E) - 1).toFixed(4)),
+      O: Number(((rosettaFORGE.O / standardFORGE.O) - 1).toFixed(4)),
+      overall: Number(((rosettaFORGE.overall / standardFORGE.overall) - 1).toFixed(4))
     }
   };
 }
@@ -202,16 +203,17 @@ export function calculateOmega(currentOmega, deltaClarity, sigma, sigmaStar, eta
  * Generate Δ-ANALYSIS receipt
  * From Rosetta.html line 461
  */
-export function generateAnalysisReceipt(modelId, cries, sigma, sigmaStar, lamportClock) {
+export function generateAnalysisReceipt(modelId, forge, sigma, sigmaStar, lamportClock) {
   const prevDigest = crypto.randomBytes(32).toString('hex'); // In real implementation, use actual prev receipt hash
   const receiptData = {
     analysis_id: `ANALYSIS-${modelId}-${Date.now()}`,
-    cries: {
-      C: cries.C,
-      R: cries.R,
-      I: cries.I,
-      E: cries.E,
-      S: cries.S
+    forge: {
+      F: forge.F,
+      R: forge.R,
+      G: forge.G,
+      E: forge.E,
+      O: forge.O,
+      overall: forge.overall
     },
     digest_verified: false,
     lamport: lamportClock,
@@ -246,7 +248,7 @@ export function performZScanVerification(model) {
     structural_integrity: true,  // No nested DOCTYPE; all tags closed
     lamport_monotonicity: true,  // prev_digest matches prior self_hash
     trace_discipline: true,      // Every example includes trace_id
-    cries_windows: model.cries.overall <= 0.85,  // CRIES windows ≤ εₜ
+    forge_windows: (model.forge?.overall ?? model.forge?.O ?? 0) <= 0.85,  // FORGE windows ≤ εₜ
     twin_parity: true,          // Must pass Golden Page parity checklist
     promotion_rehearsal: true    // Present and filled
   };
@@ -283,16 +285,16 @@ export async function bootModelWithRosetta(standardModel) {
   console.log(`✅ Δ-BOOTCONFIRM emitted: ${bootConfirm.trace_id}`);
   
   // 4. Calculate standard CRIES
-  const standardCRIES = calculateCRIES({
-    completeness: standardModel.cries.C,
-    reliability: standardModel.cries.R,
-    integrity: standardModel.cries.I,
-    effectiveness: standardModel.cries.E,
-    security: standardModel.cries.S
+  const standardFORGE = calculateFORGE({
+    F: standardModel.forge?.F,
+    R: standardModel.forge?.R,
+    G: standardModel.forge?.G,
+    E: standardModel.forge?.E,
+    O: standardModel.forge?.O
   });
   
   // 5. Apply Rosetta Boot improvements
-  const { rosettaCRIES, improvements } = applyRosettaBoot(standardCRIES);
+  const { rosettaFORGE, improvements } = applyRosettaBoot(standardFORGE);
   console.log(`📈 Rosetta Boot applied - Overall improvement: +${(improvements.overall * 100).toFixed(1)}%`);
   
   // 6. Calculate governance metrics
@@ -303,7 +305,7 @@ export async function bootModelWithRosetta(standardModel) {
   // 7. Generate Analysis Receipt
   const analysisReceipt = generateAnalysisReceipt(
     standardModel.id,
-    rosettaCRIES,
+    rosettaFORGE,
     sigma,
     sigmaStar,
     3
@@ -312,7 +314,7 @@ export async function bootModelWithRosetta(standardModel) {
   // 8. Perform Z-Scan Verification
   const zScanResult = performZScanVerification({
     ...standardModel,
-    cries: rosettaCRIES
+    forge: rosettaFORGE
   });
   
   console.log(`🔍 Z-Scan verification: ${zScanResult.passed ? 'PASSED' : 'FAILED'}`);
@@ -328,8 +330,8 @@ export async function bootModelWithRosetta(standardModel) {
         loaded: true
       }
     },
-    standardCRIES,
-    rosettaCRIES,
+    standardFORGE,
+    rosettaFORGE,
     improvements,
     governance: {
       sigma,

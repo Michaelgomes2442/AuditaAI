@@ -19,8 +19,9 @@ class DashboardService {
     // Get audit stats
     const stats = await this.auditLogsService.getAuditStats({ startDate, endDate, userId });
 
-    // Get CRIES distribution
-    const criesDistribution = await this.getCRIESDistribution({ startDate, endDate, userId });
+    // Get FORGE distribution (keep CRIES alias for compatibility)
+    const forgeDistribution = await this.getForgeDistribution({ startDate, endDate, userId });
+    const criesDistribution = forgeDistribution; // alias for compatibility
 
     // Get recent activity (last 7 days)
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -41,6 +42,7 @@ class DashboardService {
         average_confidence_score: parseFloat(stats.approval_rate),
         uptime_percentage: 99.9
       },
+      forge_distribution: forgeDistribution,
       cries_distribution: criesDistribution,
       policy_enforcement: policyStats,
       system_health: await this.getSystemHealthMetrics(),
@@ -119,32 +121,41 @@ class DashboardService {
   }
 
   /**
-   * Get CRIES metrics distribution
+   * Get FORGE metrics distribution
    */
-  async getCRIESDistribution(options = {}) {
+  async getForgeDistribution(options = {}) {
     const { startDate, endDate, userId } = options;
 
     const result = await this.auditLogsService.getAuditLogs({
       ...options,
-      includeCries: true,
+      includeForge: true,
       page: 1,
       limit: 1000
     });
 
     const distribution = {
-      coherence: { excellent: 0, good: 0, fair: 0, poor: 0 },
-      reliability: { excellent: 0, good: 0, fair: 0, poor: 0 },
-      integrity: { excellent: 0, good: 0, fair: 0, poor: 0 },
-      effectiveness: { excellent: 0, good: 0, fair: 0, poor: 0 },
-      security: { excellent: 0, good: 0, fair: 0, poor: 0 },
+      fabrication: { excellent: 0, good: 0, fair: 0, poor: 0 },
+      oversight: { excellent: 0, good: 0, fair: 0, poor: 0 },
+      refusal: { excellent: 0, good: 0, fair: 0, poor: 0 },
+      guidance: { excellent: 0, good: 0, fair: 0, poor: 0 },
+      evidence: { excellent: 0, good: 0, fair: 0, poor: 0 },
       overall: { excellent: 0, good: 0, fair: 0, poor: 0 }
     };
 
     result.logs.forEach(log => {
-      if (log.cries_metrics) {
-        const metrics = ['coherence', 'reliability', 'integrity', 'effectiveness', 'security', 'overall'];
-        metrics.forEach(metric => {
-          const value = log.cries_metrics[metric];
+      // Support both new FORGE metrics and legacy CRIES metrics for migration
+      const metricsSource = log.forge_metrics || log.cries_metrics;
+      if (metricsSource) {
+        const mapping = {
+          fabrication: metricsSource.fabrication ?? metricsSource.F ?? 0,
+          oversight: metricsSource.oversight ?? metricsSource.O ?? 0,
+          refusal: metricsSource.refusal ?? metricsSource.R ?? 0,
+          guidance: metricsSource.guidance ?? metricsSource.G ?? 0,
+          evidence: metricsSource.evidence ?? metricsSource.E ?? 0,
+          overall: metricsSource.overall ?? metricsSource.overall ?? 0
+        };
+
+        Object.entries(mapping).forEach(([metric, value]) => {
           if (typeof value === 'number') {
             const range = this.getScoreRange(value);
             distribution[metric][range]++;
@@ -308,7 +319,7 @@ class DashboardService {
     const result = await this.auditLogsService.getAuditLogs({
       startDate,
       endDate,
-      includeCries: true,
+      includeForge: true,
       page: 1,
       limit: 1000
     });
@@ -342,31 +353,42 @@ class DashboardService {
     };
 
     if (result.logs.length > 0) {
-      // Calculate CRIES averages
-      const criesSums = { coherence: 0, reliability: 0, integrity: 0, effectiveness: 0, security: 0, overall: 0 };
-      let criesCount = 0;
+      // Calculate FORGE averages (with CRIES legacy fallback)
+      const forgeSums = { fabrication: 0, oversight: 0, refusal: 0, guidance: 0, evidence: 0, overall: 0 };
+      let forgeCount = 0;
 
       result.logs.forEach(log => {
-        if (log.cries_metrics) {
-          criesCount++;
-          criesSums.coherence += log.cries_metrics.coherence || 0;
-          criesSums.reliability += log.cries_metrics.reliability || 0;
-          criesSums.integrity += log.cries_metrics.integrity || 0;
-          criesSums.effectiveness += log.cries_metrics.effectiveness || 0;
-          criesSums.security += log.cries_metrics.security || 0;
-          criesSums.overall += log.cries_metrics.overall || 0;
+        const src = log.forge_metrics || log.cries_metrics;
+        if (src) {
+          forgeCount++;
+          // If legacy CRIES shape present, map fields conservatively
+          forgeSums.fabrication += src.fabrication ?? src.F ?? 0;
+          forgeSums.oversight += src.oversight ?? src.O ?? 0;
+          forgeSums.refusal += src.refusal ?? src.R ?? 0;
+          forgeSums.guidance += src.guidance ?? src.G ?? 0;
+          forgeSums.evidence += src.evidence ?? src.E ?? 0;
+          forgeSums.overall += src.overall ?? 0;
         }
       });
 
-      if (criesCount > 0) {
-        benchmarks.cries_averages = {
-          coherence: Number((criesSums.coherence / criesCount).toFixed(3)),
-          reliability: Number((criesSums.reliability / criesCount).toFixed(3)),
-          integrity: Number((criesSums.integrity / criesCount).toFixed(3)),
-          effectiveness: Number((criesSums.effectiveness / criesCount).toFixed(3)),
-          security: Number((criesSums.security / criesCount).toFixed(3)),
-          overall: Number((criesSums.overall / criesCount).toFixed(3))
+      if (forgeCount > 0) {
+        benchmarks.forge_averages = {
+          fabrication: Number((forgeSums.fabrication / forgeCount).toFixed(3)),
+          oversight: Number((forgeSums.oversight / forgeCount).toFixed(3)),
+          refusal: Number((forgeSums.refusal / forgeCount).toFixed(3)),
+          guidance: Number((forgeSums.guidance / forgeCount).toFixed(3)),
+          evidence: Number((forgeSums.evidence / forgeCount).toFixed(3)),
+          overall: Number((forgeSums.overall / forgeCount).toFixed(3))
         };
+        // Keep legacy key for compatibility
+        benchmarks.cries_averages = Object.assign({}, {
+          coherence: benchmarks.forge_averages.oversight,
+          reliability: benchmarks.forge_averages.refusal,
+          integrity: benchmarks.forge_averages.evidence,
+          effectiveness: benchmarks.forge_averages.guidance,
+          security: benchmarks.forge_averages.fabrication,
+          overall: benchmarks.forge_averages.overall
+        });
       }
 
       // Calculate throughput
@@ -431,13 +453,13 @@ class DashboardService {
       });
     }
 
-    // Check for low CRIES scores
-    const lowCriesLogs = result.logs.filter(l => l.cries_metrics?.overall < 0.5);
-    if (lowCriesLogs.length > result.logs.length * 0.2) {
+    // Check for low FORGE scores (legacy CRIES fallback supported)
+    const lowForgeLogs = result.logs.filter(l => (l.forge_metrics?.overall ?? l.cries_metrics?.overall) < 0.5);
+    if (lowForgeLogs.length > result.logs.length * 0.2) {
       alerts.push({
-        id: 'low-cries-scores',
+        id: 'low-forge-scores',
         severity: 'warning',
-        title: 'Low CRIES Evaluation Scores',
+        title: 'Low FORGE Evaluation Scores',
         message: 'Multiple evaluations have low governance scores',
         timestamp: new Date().toISOString(),
         actionable: true,
@@ -480,7 +502,7 @@ class DashboardService {
 
     const result = await this.auditLogsService.getAuditLogs({
       startDate,
-      includeCries: true,
+      includeForge: true,
       page: 1,
       limit: 1000
     });
@@ -496,7 +518,7 @@ class DashboardService {
 
         case 'cries_scores':
           const criesScores = result.logs
-            .map(l => l.cries_metrics?.overall)
+            .map(l => (l.forge_metrics?.overall ?? l.cries_metrics?.overall))
             .filter(score => typeof score === 'number');
           customMetrics.cries_scores = criesScores.length > 0 ?
             criesScores.reduce((a, b) => a + b, 0) / criesScores.length : 0;

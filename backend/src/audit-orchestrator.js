@@ -8,7 +8,7 @@
  */
 
 import { computeForge } from './forge/v1/index.js';
-import { classifyDomain } from './cries/v5/classifier.js';  // Keep domain classifier
+import { classifyDomain } from './forge/classifier.js';  // Migrated classifier (FORGE)
 import { 
   callGPT4WithRosetta, 
   callClaudeWithRosetta,
@@ -60,7 +60,7 @@ export async function loadDomainGovernance(domain) {
 }
 
 /**
- * Execute LLM call with CRIES v4 domain-adaptive governance
+ * Execute LLM call with FORGE domain-adaptive governance
  * 
  * @param {Object} params
  * @param {string} params.prompt - User's prompt
@@ -68,7 +68,7 @@ export async function loadDomainGovernance(domain) {
  * @param {boolean} params.useGovernance - Apply governance wrapper
  * @param {string} params.userId - User identifier for audit trail
  * @param {string} params.conversationId - Optional conversation context
- * @returns {Promise<Object>} Response with CRIES scores, receipt, and LLM output
+ * @returns {Promise<Object>} Response with FORGE scores, receipt, and LLM output
  */
 export async function executeGovernedLLMCall(params) {
   const { prompt, model, useGovernance = true, userId, conversationId } = params;
@@ -138,48 +138,11 @@ export async function executeGovernedLLMCall(params) {
   console.log(`      G (Guidance): ${forgeResult.G.toFixed(3)}`);
   console.log(`      E (Evidence): ${forgeResult.E.toFixed(3)}`);
   
-  // Legacy CRIES compatibility (for gradual migration)
-  const criesResult = {
-    // FORGE native format (primary)
-    Phi: forgeResult.Φ,
-    Φ: forgeResult.Φ,
-    domain: domain,
-    F: forgeResult.F,
-    O: forgeResult.O,
-    R: forgeResult.R,
-    G: forgeResult.G,
-    E: forgeResult.E,
-    components: forgeResult.components,
-    system: 'FORGE-v1',
-    // CRIES compatibility mapping
-    omega: forgeResult.Φ,
-    Omega: forgeResult.Φ,
-    C: forgeResult.O,  // Coherence ← Oversight
-    I: 0,  // Integration REMOVED
-    pillars: {
-      C: forgeResult.O,
-      R: forgeResult.E,  // Rigor ← Evidence
-      E: forgeResult.G,  // Empathy ← Guidance
-      S: forgeResult.F   // Strictness ← Fabrication
-    },
-    signals: {
-      fs: forgeResult.F < 0.50 ? 1.0 - forgeResult.F : 0,  // Invert Fabrication detection
-      rqs: forgeResult.R,
-      ald: 0,
-      lcb: 0,
-      overRefusal: forgeResult.R < 0.50 ? 1.0 - forgeResult.R : 0
-    },
-    metadata: {
-      system: 'FORGE-v1',
-      weights: { F: 0.30, O: 0.25, R: 0.20, G: 0.15, E: 0.10 }
-    }
-  };
-  
-  // Step 5: Generate audit receipt
+  // Step 5: Generate audit receipt (strict FORGE output)
   const receipt = generateAuditReceipt({
     prompt,
     response: llmResponse.content,
-    cries: criesResult,
+    forge: forgeResult,
     model,
     userId,
     conversationId,
@@ -190,15 +153,15 @@ export async function executeGovernedLLMCall(params) {
   console.log(`   🧾 Receipt Generated: ${receipt.id}`);
   console.log(`   🔐 Lamport: ${receipt.lamport}`);
   
-  // Step 6: Return complete result
+  // Step 6: Return complete result (FORGE native shape)
   return {
     response: llmResponse.content,
-    cries: criesResult,
+    forge: forgeResult,
     receipt,
     tokens: llmResponse.usage,
     metadata: {
       model,
-      domain: criesResult.domain,
+      domain: forgeResult.domain || domain,
       governanceEnabled: useGovernance,
       duration: callDuration,
       timestamp: new Date().toISOString()
@@ -228,7 +191,7 @@ function generateAuditReceipt(params) {
   const {
     prompt,
     response,
-    cries,
+    forge,
     model,
     userId,
     conversationId,
@@ -251,23 +214,23 @@ function generateAuditReceipt(params) {
     lamport,
     promptHash,
     responseHash,
-    domain: cries.domain,
-    omega: cries.Omega,
-    criesScores: {
-      C: cries.C,
-      R: cries.R,
-      I: cries.I,
-      E: cries.E,
-      S: cries.S
+    domain: forge?.domain || null,
+    forgeOverall: forge?.Φ ?? forge?.overall ?? null,
+    forgeScores: {
+      F: forge?.F ?? null,
+      O: forge?.O ?? null,
+      R: forge?.R ?? null,
+      G: forge?.G ?? null,
+      E: forge?.E ?? null
     },
-    signals: cries.signals,
+    signals: forge?.signals ?? null,
     model,
     userId,
     conversationId,
     governanceEnabled,
     tokens,
     timestamp: new Date().toISOString(),
-    version: 'CRIESv4',
+    version: 'FORGEv1',
     sealed: false,
     merkleSealId: null
   };
@@ -312,7 +275,7 @@ export async function batchExecuteGovernance(prompts, model = 'gpt-4', useGovern
   const successful = results.filter(r => r.success).length;
   const avgOmega = results
     .filter(r => r.success)
-    .reduce((sum, r) => sum + r.cries.Omega, 0) / successful;
+    .reduce((sum, r) => sum + (r.forge?.Φ ?? r.forge?.overall ?? 0), 0) / successful;
   
   console.log(`\n📊 Batch Summary:`);
   console.log(`   Total: ${prompts.length}`);
@@ -349,12 +312,12 @@ export async function compareGovernanceImpact(prompt, model = 'gpt-4') {
   });
   
   // Calculate improvement
-  const omegaDelta = treatmentResult.cries.Omega - controlResult.cries.Omega;
-  const omegaImprovement = (omegaDelta / controlResult.cries.Omega) * 100;
+  const omegaDelta = (treatmentResult.forge?.Φ ?? treatmentResult.forge?.overall ?? 0) - (controlResult.forge?.Φ ?? controlResult.forge?.overall ?? 0);
+  const omegaImprovement = controlResult.forge?.Φ ? (omegaDelta / (controlResult.forge.Φ)) * 100 : 0;
   
   console.log(`\n📊 Results:`);
-  console.log(`   Control Ω: ${controlResult.cries.Omega.toFixed(3)}`);
-  console.log(`   Treatment Ω: ${treatmentResult.cries.Omega.toFixed(3)}`);
+  console.log(`   Control Ω: ${((controlResult.forge?.Φ ?? controlResult.forge?.overall ?? 0)).toFixed(3)}`);
+  console.log(`   Treatment Ω: ${((treatmentResult.forge?.Φ ?? treatmentResult.forge?.overall ?? 0)).toFixed(3)}`);
   console.log(`   Delta: ${omegaDelta >= 0 ? '+' : ''}${omegaDelta.toFixed(3)} (${omegaImprovement >= 0 ? '+' : ''}${omegaImprovement.toFixed(1)}%)`);
   
   return {

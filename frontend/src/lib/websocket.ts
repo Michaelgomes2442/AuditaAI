@@ -93,12 +93,19 @@ export class AuditWebSocketService {
     try {
       const blockHash = await this.governance.createAuditBlock(records);
       
-      // Calculate CRIES metrics for affected organizations
+      // Calculate FORGE metrics for affected organizations
       const orgIds = new Set(records.map(r => r.user?.orgId).filter(Boolean));
       
       for (const orgId of orgIds) {
-        const metrics = await this.governance.calculateCRIESMetrics(orgId);
-        
+        // Prefer FORGE calculation; fall back to legacy calculation if available
+        let metrics = null;
+        if (typeof (this.governance as any).calculateFORGEMetrics === 'function') {
+          metrics = await (this.governance as any).calculateFORGEMetrics(orgId);
+        } else if (typeof (this.governance as any).calculateLegacyMetrics === 'function') {
+          // Legacy metric function name may vary across older deployments
+          metrics = await (this.governance as any).calculateLegacyMetrics(orgId);
+        }
+
         // Notify organization members about new metrics
         this.io?.to(`org:${orgId}`).emit('metrics-update', {
           blockHash,

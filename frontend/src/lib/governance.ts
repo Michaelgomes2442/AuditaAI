@@ -214,8 +214,8 @@ export class GovernanceService {
     };
   }
 
-  // CRIES metrics calculation
-  async calculateCRIESMetrics(orgId: number) {
+  // FORGE metrics calculation (new canonical method)
+  async calculateFORGEMetrics(orgId: number) {
     const records = await prisma.auditRecord.findMany({
       where: {
         user: {
@@ -231,27 +231,19 @@ export class GovernanceService {
       take: 1000, // Analyze last 1000 records
     });
 
-    // Calculate Consistency metric
+    // Compute legacy metrics
     const consistency = this.calculateConsistencyScore(records);
-    
-    // Calculate Reproducibility metric
     const reproducibility = this.calculateReproducibilityScore(records);
-    
-    // Calculate Integrity metric
     const integrity = this.calculateIntegrityScore(records);
-    
-    // Calculate Explainability metric
     const explainability = this.calculateExplainabilityScore(records);
-    
-    // Calculate Security metric
     const security = this.calculateSecurityScore(records);
 
     return {
-      consistency,
-      reproducibility,
-      integrity,
-      explainability,
-      security,
+      forgeF: consistency,
+      forgeO: reproducibility,
+      forgeR: integrity,
+      forgeG: explainability,
+      forgeE: security,
       timestamp: new Date(),
       recordsAnalyzed: records.length,
     };

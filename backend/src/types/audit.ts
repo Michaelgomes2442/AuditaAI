@@ -43,7 +43,7 @@ export interface BlockData {
   lamportClock: number;
 }
 
-export interface CRIESMetrics {
+export interface FORGEMetrics {
   consistency: number;
   reproducibility: number;
   integrity: number;
@@ -61,7 +61,7 @@ export interface AuditUpdatePayload {
 
 export interface MetricsUpdatePayload {
   blockHash: string;
-  metrics: CRIESMetrics;
+  metrics: FORGEMetrics;
   timestamp: Date;
 }
 
