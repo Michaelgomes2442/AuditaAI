@@ -903,48 +903,31 @@ app.post('/api/analyze', async (req, res) => {
       metadata
     );
 
-    // Build response based on policy actions
-      standardResponse: {
-        content: standardResponse.content,
-        forge: {
-          F: standardResponse.forge?.F,
-          O: standardResponse.forge?.O,
-          R: standardResponse.forge?.R,
-          G: standardResponse.forge?.G,
-          E: standardResponse.forge?.E,
-          overall: standardResponse.forge?.overall || 0
-        },
-        audit: standardResponse.forge?.triTrackAudit || null,
-        receipt: standardReceiptData,
-        governanceApplied: standardResponse.governanceApplied || false,
-        governanceMetadata: standardResponse.governanceMetadata || null
+    // Build response payload based on policy actions (simple, safe shape)
+    const apiResponse = {
+      success: true,
+      prompt,
+      model,
+      response,
+      forge,
+      receipt: {
+        id: receipt.id || null,
+        hash: receipt.self_hash || receipt.digest || null,
+        lamport: receipt.lamport || receipt.lamportClock || null,
+        timestamp: receipt.ts || receipt.timestamp || new Date().toISOString()
       },
-      rosettaResponse: {
-        content: rosettaResponse.content,
-        forge: {
-          F: rosettaResponse.forge?.F,
-          O: rosettaResponse.forge?.O,
-          R: rosettaResponse.forge?.R,
-          G: rosettaResponse.forge?.G,
-          E: rosettaResponse.forge?.E,
-          overall: rosettaResponse.forge?.overall || 0
-        },
-        audit: rosettaResponse.forge?.triTrackAudit || null,
-        receipt: rosettaReceiptData,
-        governanceApplied: rosettaResponse.governanceApplied || false,
-        governanceMetadata: rosettaResponse.governanceMetadata || null
+      policy: {
+        allowed: policyResult.allowed,
+        actions: policyResult.actions || [],
+        appliedPolicies: policyResult.appliedPolicies || [],
+        redactedContent: policyResult.redactedContent || null,
+        policy_applied: (policyResult.appliedPolicies || []).length > 0
+      },
+      metadata: receipt.metadata || {
+        model: model,
+        temperature: 0.7,
+        user_id: context.userId || 'test-user-123'
       }
-        hash: receipt.hash || receipt.self_hash || receipt.digest || 'hash_' + Date.now(),
-        previous_hash: receipt.previous_hash || receipt.previousDigest || null,
-        timestamp: receipt.timestamp || receipt.ts || new Date().toISOString(),
-        policy_applied: policyResult.appliedPolicies.length > 0,
-        metadata: receipt.metadata || {
-          model: model,
-          temperature: 0.7,
-          user_id: context.userId || 'test-user-123'
-        }
-      },
-      actions: policyResult.actions // Add actions property for test compatibility
     };
 
     // Add policy-specific response properties
@@ -4163,7 +4146,7 @@ function updateConversationMetrics(model, newForge) {
     normalized.G = Number(newForge.G ?? newForge.I ?? 0);
     normalized.E = Number(newForge.E ?? 0);
     normalized.O = Number(newForge.O ?? newForge.overall ?? 0);
-    normalized.overall = Number(newForge.overall ?? normalized.O || 0);
+    normalized.overall = Number((newForge.overall ?? normalized.O) || 0);
   } else {
     console.warn('updateConversationMetrics: received invalid metrics object, using zeros');
   }
@@ -5262,7 +5245,7 @@ app.get('/api/math-canon/tritrack-state', async (req, res) => {
     } else {
       // Query all conversations (aggregate)
       stateFiles = fsSync.existsSync(receiptsDir) 
-        ? fs.readdirSync(receiptsDir).filter(f => f.startsWith('state_') && f.endsWith('.json') && f !== 'state.json')
+        ? fsSync.readdirSync(receiptsDir).filter(f => f.startsWith('state_') && f.endsWith('.json') && f !== 'state.json')
         : [];
     }
     
@@ -6446,6 +6429,11 @@ app.get('/api/receipts/:id/verify', async (req, res) => {
 
     // Return verification result
     res.json(verification);
+  } catch (error) {
+    console.error('Failed to verify receipt:', error);
+    res.status(500).json({ error: 'Failed to verify receipt', detail: error.message });
+  }
+});
 
 // Verify receipt with key (placeholder for future cryptographic verification)
 app.post('/api/receipts/verify-key', async (req, res) => {

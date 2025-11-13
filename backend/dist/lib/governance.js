@@ -16,25 +16,46 @@ export function generateBlockHash(blockData) {
     });
     return createHash('sha256').update(blockString).digest('hex');
 }
-export function calculateCRIESMetrics(records) {
-    // Calculate Consistency Score (0-1)
-    const consistency = calculateConsistencyScore(records);
-    // Calculate Reproducibility Score (0-1)
-    const reproducibility = calculateReproducibilityScore(records);
-    // Calculate Integrity Score (0-1)
-    const integrity = calculateIntegrityScore(records);
-    // Calculate Explainability Score (0-1)
-    const explainability = calculateExplainabilityScore(records);
-    // Calculate Security Score (0-1)
-    const security = calculateSecurityScore(records);
+export function calculateFORGEMetrics(records) {
+    // Aggregate FORGE pillars from individual receipts/records.
+    // For each record, prefer `record.forge` (FORGE-native), then legacy mappings.
+    if (!records || records.length === 0) {
+        return { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0, timestamp: new Date(), recordsAnalyzed: 0 };
+    }
+
+    const totals = { F: 0, O: 0, R: 0, G: 0, E: 0 };
+    let count = 0;
+
+    for (const r of records) {
+        const f = r.forge || r.forgeMetrics || r.cries || {};
+        // Support several legacy shapes
+        const F = Number(f.F ?? f.S ?? f.coherence ?? 0) || 0;
+        const R = Number(f.R ?? f.reproducibility ?? 0) || 0;
+        const G = Number(f.G ?? f.I ?? f.integrity ?? 0) || 0;
+        const E = Number(f.E ?? f.E ?? f.effectiveness ?? 0) || 0;
+        const O = Number(f.O ?? f.overall ?? f.C ?? 0) || 0;
+
+        totals.F += F;
+        totals.R += R;
+        totals.G += G;
+        totals.E += E;
+        totals.O += O;
+        count++;
+    }
+
+    const avg = {
+        F: Number((totals.F / count).toFixed(4)),
+        R: Number((totals.R / count).toFixed(4)),
+        G: Number((totals.G / count).toFixed(4)),
+        E: Number((totals.E / count).toFixed(4)),
+        O: Number((totals.O / count).toFixed(4))
+    };
+    avg.overall = Number(((avg.F + avg.R + avg.G + avg.E + avg.O) / 5).toFixed(4));
+
     return {
-        consistency,
-        reproducibility,
-        integrity,
-        explainability,
-        security,
+        ...avg,
         timestamp: new Date(),
-        recordsAnalyzed: records.length
+        recordsAnalyzed: count
     };
 }
 function calculateConsistencyScore(records) {

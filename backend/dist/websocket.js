@@ -1,5 +1,5 @@
 import { Server as SocketServer } from "socket.io";
-import { generateBlockHash, calculateCRIESMetrics } from "./lib/governance";
+import { generateBlockHash, calculateFORGEMetrics } from "./lib/governance";
 export function setupWebSocket(server, prisma) {
     const io = new SocketServer(server, {
         cors: {
@@ -131,14 +131,15 @@ export function setupWebSocket(server, prisma) {
                             blockHash
                         }
                     });
-                    // Calculate CRIES metrics for the block
-                    const metrics = calculateCRIESMetrics(recentRecords);
+                    // Calculate FORGE-aggregated metrics for the block
+                    const metrics = calculateFORGEMetrics(recentRecords);
                     const metricsJson = {
-                        consistency: metrics.consistency,
-                        reproducibility: metrics.reproducibility,
-                        integrity: metrics.integrity,
-                        explainability: metrics.explainability,
-                        security: metrics.security,
+                        F: metrics.F,
+                        R: metrics.R,
+                        G: metrics.G,
+                        E: metrics.E,
+                        O: metrics.O,
+                        overall: metrics.overall,
                         timestamp: metrics.timestamp.toISOString(),
                         recordsAnalyzed: metrics.recordsAnalyzed
                     };

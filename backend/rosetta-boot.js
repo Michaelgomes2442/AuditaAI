@@ -355,7 +355,7 @@ export default {
   loadRosettaMonolith,
   initializeBENRuntime,
   generateBootConfirmReceipt,
-  calculateCRIES,
+  calculateFORGE,
   applyRosettaBoot,
   calculateSigma,
   calculateOmega,
