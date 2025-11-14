@@ -51,3 +51,8 @@ export default {
   computeFORGE,
   generateAnalysisReceipt
 };
+
+// Backwards-compatible re-exports: some callers import `computeForge` directly
+// from this module. Re-export the underlying `computeForge` from the
+// production pillars implementation to keep imports stable during migration.
+export { computeForge } from './forge/v2/pillars-production.js';

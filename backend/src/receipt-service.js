@@ -1,6 +1,7 @@
   import crypto from 'crypto';
 import { createOptimizedPrismaClient } from './prisma-optimize.js';
-import { computeForge } from './forge/v1/index.js';
+import { computeFORGE } from './track-a-analyzer.js';
+import { normalizeLLMResult } from './llm-client.js';
 
 // Helper function to recursively sort object keys for consistent hashing
 function sortObjectKeys(obj) {
@@ -76,7 +77,16 @@ class ReceiptService {
    */
   async calculateFORGEMetrics(text, prompt = '') {
     // Use FORGE computation (domain-adaptive)
-    const forgeResult = await computeForge(prompt, text);
+    const forgeResultRaw = await computeFORGE(prompt, text);
+    const forgeResult = {
+      F: Number(forgeResultRaw.F ?? forgeResultRaw.f ?? 0),
+      O: Number(forgeResultRaw.O ?? forgeResultRaw.o ?? 0),
+      R: Number(forgeResultRaw.R ?? forgeResultRaw.r ?? 0),
+      G: Number(forgeResultRaw.G ?? forgeResultRaw.g ?? 0),
+      E: Number(forgeResultRaw.E ?? forgeResultRaw.e ?? 0),
+      Φ: Number(forgeResultRaw.Φ ?? forgeResultRaw.overall ?? 0),
+      components: forgeResultRaw.components ?? forgeResultRaw.sub_metrics ?? {}
+    };
 
     if (!text || typeof text !== 'string') {
       return {
@@ -297,6 +307,19 @@ class ReceiptService {
       previousReceipt = null;
     }
 
+    // Normalize response: accept either raw string or an LLM result object
+    let responseText = response;
+    let responseTokens = null;
+    try {
+      if (response && typeof response === 'object') {
+        const _llm = normalizeLLMResult(response);
+        responseText = _llm.content;
+        responseTokens = _llm.usage;
+      }
+    } catch (e) {
+      responseText = typeof response === 'string' ? response : String(response || '');
+    }
+
     const receiptData = {
       analysis_id: `ANALYSIS-${modelId}-L${lamportClock}-${Date.now()}`,
       conversation_id: 'default',
@@ -323,7 +346,7 @@ class ReceiptService {
       ts: new Date().toISOString(),
       model: modelId,
       prompt: prompt,
-      response: response,
+      response: responseText,
       metadata: {
         ...metadata,
         governance_version: 'FORGEv1',
@@ -474,8 +497,9 @@ class ReceiptService {
         witnessModel: modelId,
         metadata: {
           prompt_length: prompt.length,
-          response_length: response.length,
-          forge_overall: forgeMetrics.overall
+          response_length: responseText ? responseText.length : 0,
+          forge_overall: forgeMetrics.overall,
+          llm_tokens: responseTokens || null
         }
       }
     });

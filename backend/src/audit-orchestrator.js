@@ -7,13 +7,14 @@
  * Date: November 11, 2025
  */
 
-import { computeForge } from './forge/v1/index.js';
+import { computeFORGE } from './track-a-analyzer.js';
 import { classifyDomain } from './forge/classifier.js';  // Migrated classifier (FORGE)
 import { 
   callGPT4WithRosetta, 
   callClaudeWithRosetta,
   callGPT4,
-  callClaude 
+  callClaude,
+  normalizeLLMResult
 } from './llm-client.js';
 import fs from 'fs/promises';
 import path from 'path';
@@ -124,30 +125,42 @@ export async function executeGovernedLLMCall(params) {
   }
   
   const callDuration = Date.now() - startTime;
+  // Normalize provider return shapes to a canonical object with `.content` and `.usage`
+  const llmResult = normalizeLLMResult(llmResponse);
   console.log(`   ⏱️ LLM Call Duration: ${callDuration}ms`);
   
-  // Step 4: Compute FORGE v1 governance scores (F-O-R-G-E)
-  const forgeResult = computeForge(prompt, llmResponse.content, domain);
-  
-  console.log(`   📈 FORGE v1 Scores (F-O-R-G-E):`);
+  // Step 4: Compute FORGE governance scores (FORGE v2 native)
+  const forgeResultRaw = await computeFORGE(prompt, llmResult.content, {}, domain);
+  // Normalize returned shape (accept Φ or overall)
+  const forgeResult = {
+    F: Number(forgeResultRaw.F ?? forgeResultRaw.f ?? 0),
+    O: Number(forgeResultRaw.O ?? forgeResultRaw.o ?? 0),
+    R: Number(forgeResultRaw.R ?? forgeResultRaw.r ?? 0),
+    G: Number(forgeResultRaw.G ?? forgeResultRaw.g ?? 0),
+    E: Number(forgeResultRaw.E ?? forgeResultRaw.e ?? 0),
+    Φ: Number(forgeResultRaw.Φ ?? forgeResultRaw.overall ?? forgeResultRaw.Phi ?? forgeResultRaw.phi ?? 0),
+    components: forgeResultRaw.components ?? forgeResultRaw.sub_metrics ?? {}
+  };
+
+  console.log(`   📈 FORGE Scores (F-O-R-G-E):`);
   console.log(`      Domain: ${domain}`);
-  console.log(`      Φ (Phi): ${forgeResult.Φ.toFixed(3)}`);
-  console.log(`      F (Fabrication): ${forgeResult.F.toFixed(3)}`);
-  console.log(`      O (Oversight): ${forgeResult.O.toFixed(3)}`);
-  console.log(`      R (Refusal): ${forgeResult.R.toFixed(3)}`);
-  console.log(`      G (Guidance): ${forgeResult.G.toFixed(3)}`);
-  console.log(`      E (Evidence): ${forgeResult.E.toFixed(3)}`);
+  console.log(`      Φ (Phi): ${Number(forgeResult.Φ || 0).toFixed(3)}`);
+  console.log(`      F (Fabrication): ${Number(forgeResult.F || 0).toFixed(3)}`);
+  console.log(`      O (Oversight): ${Number(forgeResult.O || 0).toFixed(3)}`);
+  console.log(`      R (Refusal): ${Number(forgeResult.R || 0).toFixed(3)}`);
+  console.log(`      G (Guidance): ${Number(forgeResult.G || 0).toFixed(3)}`);
+  console.log(`      E (Evidence): ${Number(forgeResult.E || 0).toFixed(3)}`);
   
   // Step 5: Generate audit receipt (strict FORGE output)
   const receipt = generateAuditReceipt({
     prompt,
-    response: llmResponse.content,
+    response: llmResult.content,
     forge: forgeResult,
     model,
     userId,
     conversationId,
     governanceEnabled: useGovernance,
-    tokens: llmResponse.usage
+    tokens: llmResult.usage
   });
   
   console.log(`   🧾 Receipt Generated: ${receipt.id}`);
@@ -155,10 +168,10 @@ export async function executeGovernedLLMCall(params) {
   
   // Step 6: Return complete result (FORGE native shape)
   return {
-    response: llmResponse.content,
+    response: llmResult.content,
     forge: forgeResult,
     receipt,
-    tokens: llmResponse.usage,
+    tokens: llmResult.usage,
     metadata: {
       model,
       domain: forgeResult.domain || domain,
@@ -230,7 +243,7 @@ function generateAuditReceipt(params) {
     governanceEnabled,
     tokens,
     timestamp: new Date().toISOString(),
-    version: 'FORGEv1',
+    version: 'FORGEv2',
     sealed: false,
     merkleSealId: null
   };

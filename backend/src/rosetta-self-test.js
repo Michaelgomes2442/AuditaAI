@@ -36,7 +36,17 @@ export async function rosettaSelfTest() {
       governanceEnabled: false
     });
     
-    const ungovernedFORGE = await computeFORGE(TEST_PROMPT, ungoverned.content);
+    const ungovernedRaw = await computeFORGE(TEST_PROMPT, ungoverned.content);
+    const ungovernedFORGE = {
+      F: Number(ungovernedRaw.F ?? ungovernedRaw.f ?? 0),
+      O: Number(ungovernedRaw.O ?? ungovernedRaw.o ?? 0),
+      R: Number(ungovernedRaw.R ?? ungovernedRaw.r ?? 0),
+      G: Number(ungovernedRaw.G ?? ungovernedRaw.g ?? 0),
+      E: Number(ungovernedRaw.E ?? ungovernedRaw.e ?? 0),
+      Φ: Number(ungovernedRaw.Φ ?? ungovernedRaw.overall ?? 0),
+      overall: Number(ungovernedRaw.overall ?? ungovernedRaw.Φ ?? 0),
+      components: ungovernedRaw.components ?? ungovernedRaw.sub_metrics ?? {}
+    };
 
     results.tests.push({
       name: 'ungoverned',
@@ -63,7 +73,17 @@ export async function rosettaSelfTest() {
       userRole: 'Operator'
     });
     
-    const liteFORGE = await computeFORGE(TEST_PROMPT, governedLite.content);
+    const liteRaw = await computeFORGE(TEST_PROMPT, governedLite.content);
+    const liteFORGE = {
+      F: Number(liteRaw.F ?? liteRaw.f ?? 0),
+      O: Number(liteRaw.O ?? liteRaw.o ?? 0),
+      R: Number(liteRaw.R ?? liteRaw.r ?? 0),
+      G: Number(liteRaw.G ?? liteRaw.g ?? 0),
+      E: Number(liteRaw.E ?? liteRaw.e ?? 0),
+      Φ: Number(liteRaw.Φ ?? liteRaw.overall ?? 0),
+      overall: Number(liteRaw.overall ?? liteRaw.Φ ?? 0),
+      components: liteRaw.components ?? liteRaw.sub_metrics ?? {}
+    };
 
     results.tests.push({
       name: 'governed-lite',
@@ -96,7 +116,17 @@ export async function rosettaSelfTest() {
       userRole: 'Operator'
     });
     
-    const frontierFORGE = await computeFORGE(TEST_PROMPT, governedFrontier.content);
+    const frontierRaw = await computeFORGE(TEST_PROMPT, governedFrontier.content);
+    const frontierFORGE = {
+      F: Number(frontierRaw.F ?? frontierRaw.f ?? 0),
+      O: Number(frontierRaw.O ?? frontierRaw.o ?? 0),
+      R: Number(frontierRaw.R ?? frontierRaw.r ?? 0),
+      G: Number(frontierRaw.G ?? frontierRaw.g ?? 0),
+      E: Number(frontierRaw.E ?? frontierRaw.e ?? 0),
+      Φ: Number(frontierRaw.Φ ?? frontierRaw.overall ?? 0),
+      overall: Number(frontierRaw.overall ?? frontierRaw.Φ ?? 0),
+      components: frontierRaw.components ?? frontierRaw.sub_metrics ?? {}
+    };
 
     results.tests.push({
       name: 'governed-frontier',
@@ -126,13 +156,15 @@ export async function rosettaSelfTest() {
   console.log('='.repeat(80));
   
   if (results.tests.length >= 3 && !results.tests.some(t => t.error)) {
-    const ungoverned = results.tests[0].forge.Φ;
-    const lite = results.tests[1].forge.Φ;
-    const frontier = results.tests[2].forge.Φ;
+  const ungoverned = results.tests[0].forge.Φ ?? results.tests[0].forge.overall ?? 0;
+  const lite = results.tests[1].forge.Φ ?? results.tests[1].forge.overall ?? 0;
+  const frontier = results.tests[2].forge.Φ ?? results.tests[2].forge.overall ?? 0;
 
-    console.log(`Ungoverned:        Φ=${ungoverned.toFixed(3)} (baseline)`);
-    console.log(`Governed-Lite:     Φ=${lite.toFixed(3)} (${((lite/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
-    console.log(`Governed-Frontier: Φ=${frontier.toFixed(3)} (${((frontier/ungoverned - 1) * 100).toFixed(1)}% improvement)`);
+  const safeFmt = v => Number.isFinite(v) ? Number(v).toFixed(3) : '0.000';
+
+  console.log(`Ungoverned:        Φ=${safeFmt(ungoverned)} (baseline)`);
+  console.log(`Governed-Lite:     Φ=${safeFmt(lite)} (${(((lite||0)/(ungoverned||1) - 1) * 100).toFixed(1)}% improvement)`);
+  console.log(`Governed-Frontier: Φ=${safeFmt(frontier)} (${(((frontier||0)/(ungoverned||1) - 1) * 100).toFixed(1)}% improvement)`);
 
     const liteSuccess = lite > ungoverned;
     const frontierSuccess = frontier > ungoverned;

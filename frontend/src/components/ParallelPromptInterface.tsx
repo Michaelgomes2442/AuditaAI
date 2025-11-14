@@ -142,6 +142,10 @@ export default function ParallelPromptInterface({
 
       // Append user + both model responses to conversation
       setMessages((prev) => [...prev, userMessage, standardResponse, rosettaResponse]);
+
+      // Update conversation metrics so the header and deltas render
+      setStandardMetrics(result.standardMetrics || result.standardMetricsForge || { totalQueries: 0, averageFORGE: { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 } });
+      setRosettaMetrics(result.rosettaMetrics || result.rosettaMetricsForge || { totalQueries: 0, averageFORGE: { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 } });
     } catch (error: any) {
       setErrorMsg(error?.message || 'Failed to send prompt.');
       console.error('Failed to send prompt:', error);

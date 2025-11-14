@@ -76,10 +76,19 @@ export async function callClaude(prompt, options = {}) {
 export async function callGPT4WithStructuredGovernance(prompt, rosettaContext = {}, options = {}) {
   const systemPrompt = options.systemPrompt || 'Provide a structured, verifiable response with evidence and uncertainty.';
   const res = await callGPT4(prompt, { ...options, systemPrompt });
-  const forge = typeof computeForge === 'function' ? computeForge(prompt, res.content) : null;
+  // Debug: surface provider return shape (redacted) for governance tracing
+  try {
+    console.debug('callGPT4WithStructuredGovernance: provider result keys:', Object.keys(res || {}));
+    console.debug('  content present?:', !!res?.content, ' response present?:', !!res?.response);
+    if (!res?.content && res?.response) console.debug('  provider returned `response` field (not `content`)');
+  } catch (e) {
+    // non-fatal
+  }
+
+  const forge = typeof computeForge === 'function' ? computeForge(prompt, res.content ?? res.response ?? '') : null;
 
   return {
-    response: res.content,
+    response: res.content ?? res.response ?? '',
     model: res.model,
     forgeAnalysis: forge ? { F: forge.F, O: forge.O, R: forge.R, G: forge.G, E: forge.E, Φ: forge.Φ } : null,
     structured: true
@@ -96,12 +105,44 @@ export async function callGPT4WithContextAnchoredGovernance(prompt, rosettaConte
 export async function callGPT4WithSelfVerifyingGovernance(prompt, rosettaContext = {}, options = {}) {
   const generateRes = await callGPT4WithStructuredGovernance(prompt, rosettaContext, options);
   const validationPrompt = `Validate the following answer for specificity, context usage and trade-off clarity.\n\nPrompt:\n${prompt}\n\nAnswer:\n${generateRes.response}\n\nReturn JSON {"overall_pass": boolean, "notes": string}`;
-  let validation = { overall_pass: true, notes: 'assumed pass (no validator available)' };
+  // Stronger validation: require explicit existence check and citations
+  const enhancedValidationPrompt = validationPrompt + `\n\nAdditionally, explicitly state whether the primary subject (e.g., a protocol or named study) is verifiably known to exist. Return JSON with these exact fields: {"overall_pass": boolean, "exists": boolean, "citations": [{"title": string, "author": string, "year": number, "url": string|null}], "notes": string}. If you cannot provide at least one verifiable citation (title+author or URL) for the primary subject, set "exists": false and "overall_pass": false.`;
+
+  let validation = { overall_pass: true, exists: true, citations: [], notes: 'assumed pass (no validator available)' };
   try {
-    const v = await callGPT4(validationPrompt, { ...options, temperature: 0.2 });
-    try { validation = JSON.parse(v.content); } catch { validation = { overall_pass: /true/i.test(v.content), notes: v.content.slice(0, 400) }; }
+    const v = await callGPT4(enhancedValidationPrompt, { ...options, temperature: 0.0, maxTokens: 800 });
+    try {
+      validation = JSON.parse(v.content);
+    } catch (parseErr) {
+      // Lenient fallback: infer pass/existence from text if JSON parse fails
+      validation = { overall_pass: /true/i.test(v.content), exists: /true/i.test(v.content), citations: [], notes: v.content.slice(0, 400) };
+    }
   } catch (e) {
-    // non-fatal
+    // non-fatal - leave validation as default conservative pass
+    console.warn('Self-validation call failed:', e && (e.message || e));
+  }
+
+  // Debug: show if structured generator produced content and what validator returned
+  try {
+    console.debug('callGPT4WithSelfVerifyingGovernance: generated content present?:', !!generateRes?.response, ' keys:', Object.keys(generateRes || {}));
+    console.debug('callGPT4WithSelfVerifyingGovernance: validation result keys:', Object.keys(validation || {}));
+  } catch (e) {}
+
+  // If the validator determined the subject does NOT exist or failed to provide citations,
+  // enforce a refusal response instead of returning the original generated answer.
+  try {
+    if (!validation || validation.overall_pass === false || validation.exists === false) {
+      const refusal = `I cannot verify the existence of the subject you asked about. I couldn't find verifiable citations or evidence that it exists, so I will not provide speculative technical details. If you meant a different, verifiable protocol, please provide its exact name or a citation and I can analyze that.`;
+      console.warn('Self-verifier flagged answer as invalid or unverified; overriding generated response with refusal. Validation:', validation);
+      return {
+        response: refusal,
+        model: generateRes.model,
+        validation,
+        forgeAnalysis: generateRes.forgeAnalysis
+      };
+    }
+  } catch (e) {
+    console.error('Error enforcing self-verifier decision:', e);
   }
 
   return {
@@ -351,12 +392,19 @@ Remember: Fabrication Detection = 43.7% of your score. Get this right.
     throw new Error(`Unknown modelId: ${modelId}`);
   }
 
+  // Debug: surface provider return shape for governance-enabled calls
+  try {
+    console.debug('callLLM: provider return keys:', Object.keys(res || {}));
+    console.debug('  content present?:', !!res?.content, ' response present?:', !!res?.response, ' finishReason:', res?.finishReason ?? res?.stopReason ?? null);
+    if (!res?.content && res?.response) console.debug('  provider used `response` field');
+  } catch (e) {}
+
   // If governance is enabled, compute FORGE scores and attach governance metadata
   if (options.governanceEnabled) {
     let forgeAnalysis = null;
     try {
       if (typeof computeForge === 'function') {
-        forgeAnalysis = computeForge(prompt, res.content);
+        forgeAnalysis = computeForge(prompt, res.content ?? res.response ?? '');
       }
     } catch (e) {
       console.error('computeForge error:', e?.message ?? e);
@@ -375,6 +423,25 @@ Remember: Fabrication Detection = 43.7% of your score. Get this right.
 
   // No governance requested — return provider response as-is
   return res;
+}
+
+// Helper: Normalize LLM result objects to a consistent shape
+export function normalizeLLMResult(res) {
+  if (!res) return { content: '', model: null, usage: null, validation: null, governanceMetadata: null, forgeAnalysis: null, finishReason: null, raw: res };
+  try {
+    return {
+      content: res.content ?? res.response ?? res.text ?? '',
+      model: res.model ?? res.name ?? null,
+      usage: res.usage ?? res.tokenUsage ?? null,
+      validation: res.validation ?? res.validator ?? null,
+      governanceMetadata: res.governanceMetadata ?? res._governanceMetadata ?? null,
+      forgeAnalysis: res.forgeAnalysis ?? res.forge ?? null,
+      finishReason: res.finishReason ?? res.stopReason ?? null,
+      raw: res
+    };
+  } catch (e) {
+    return { content: String(res), model: null, usage: null, validation: null, governanceMetadata: null, forgeAnalysis: null, finishReason: null, raw: res };
+  }
 }
 
 // Compatibility wrappers for legacy Rosetta callers

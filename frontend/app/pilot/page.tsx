@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
 import { io, Socket } from 'socket.io-client';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 // ============ TYPES ============
@@ -26,6 +27,17 @@ interface Receipt {
   traceId?: string;
   persona: string;
   model?: string;
+  // New FORGE fields (preferred)
+  forge?: {
+    F?: number;
+    O?: number;
+    R?: number;
+    G?: number;
+    E?: number;
+    overall?: number;
+    triTrackAudit?: any;
+  };
+  // Legacy CRIES fallbacks (kept for compatibility)
   criesCoherence?: number;
   criesRigor?: number;
   criesIntegrity?: number;
@@ -41,13 +53,15 @@ interface Receipt {
 interface PilotRunResult {
   success: boolean;
   response: string;
-  cries: {
-    C: number;
-    R: number;
-    I: number;
-    E: number;
-    S: number;
-    Omega: number;
+  // New FORGE-native result
+  forge?: {
+    F?: number;
+    O?: number;
+    R?: number;
+    G?: number;
+    E?: number;
+    overall?: number;
+    triTrackAudit?: any;
   };
   receipts: Array<{
     id: number;
@@ -317,21 +331,29 @@ export default function PilotPageNew() {
       const data = await response.json();
 
       if (response.ok && data.standardResponse && data.rosettaResponse) {
+        // Build comparison result using strict FORGE naming (remove legacy CRIES usage)
         const comparison = {
           prompt: data.prompt || prompt,
           modelName: standardModelId,
           baseLLM: {
             response: data.standardResponse.content,
-            cries: data.standardResponse.cries,
+            forge: data.standardResponse.forge || null,
+            audit: data.standardResponse.audit || null,
+            governanceApplied: data.standardResponse.governanceApplied || false,
+            governanceMetadata: data.standardResponse.governanceMetadata || null,
             provider: 'standard'
           },
           governedLLM: {
             response: data.rosettaResponse.content,
-            cries: data.rosettaResponse.cries,
+            forge: data.rosettaResponse.forge || null,
+            audit: data.rosettaResponse.audit || null,
+            governanceApplied: data.rosettaResponse.governanceApplied || false,
+            governanceMetadata: data.rosettaResponse.governanceMetadata || null,
             provider: 'rosetta'
           },
           standardReceipt: data.standardReceipt,
-          rosettaReceipt: data.rosettaReceipt
+          rosettaReceipt: data.rosettaReceipt,
+          comparison: data.comparison || null
         };
 
         setComparisonResult(comparison);
@@ -441,6 +463,31 @@ export default function PilotPageNew() {
     } catch (error) {
       console.error('Verification failed:', error);
     }
+  };
+
+  // ---- FORGE helpers for Fabrication (F) display ----
+  const PASS_F_THRESHOLD = 0.99;
+  const FAIL_F_THRESHOLD = 0.01;
+
+  const formatFLabel = (v?: number) => {
+    const val = Number(v ?? 0) || 0;
+    if (val >= PASS_F_THRESHOLD) return { text: 'PASS', kind: 'pass' };
+    if (val <= FAIL_F_THRESHOLD) return { text: 'FAIL', kind: 'fail' };
+    return { text: `${(val * 100).toFixed(1)}%`, kind: 'neutral' };
+  };
+
+  const formatFComparisonStatus = (base?: number, gov?: number) => {
+    const b = Number(base ?? 0) || 0;
+    const g = Number(gov ?? 0) || 0;
+    const bPass = b >= PASS_F_THRESHOLD;
+    const bFail = b <= FAIL_F_THRESHOLD;
+    const gPass = g >= PASS_F_THRESHOLD;
+    const gFail = g <= FAIL_F_THRESHOLD;
+
+    if ((bPass && gPass) || (bFail && gFail)) return { text: 'Unchanged', kind: 'unchanged' };
+    if (gPass && !bPass) return { text: 'PASS', kind: 'pass' };
+    if (gFail && !bFail) return { text: 'FAIL', kind: 'fail' };
+    return { text: '--', kind: 'neutral' };
   };
 
   // ============ RENDER HELPERS ============
@@ -625,18 +672,65 @@ export default function PilotPageNew() {
           />
         </div>
         
-        {currentResult.cries && (
+        {currentResult.forge && (
           <div className="bg-slate-950 border border-white/10 rounded-lg p-4">
-            <h4 className="text-sm font-bold font-mono text-cyan-400 mb-2">CRIES Metrics</h4>
+            <h4 className="text-sm font-bold font-mono text-cyan-400 mb-2">FORGE Metrics</h4>
             <div className="grid grid-cols-3 gap-3">
-              {typeof currentResult.cries === 'object' && Object.entries(currentResult.cries).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="text-xs text-slate-500 font-mono">{key}</div>
-                  <div className="text-lg font-bold font-mono text-white">
-                    {typeof value === 'number' ? value.toFixed(2) : String(value)}
+              {['F','O','R','G','E'].map((k) => {
+                const v = (currentResult.forge as any)?.[k] ?? undefined;
+                if (k === 'F') {
+                  const f = formatFLabel(v);
+                  const cls = f.kind === 'pass' ? 'text-green-400' : f.kind === 'fail' ? 'text-red-400' : 'text-white';
+                  const components = (currentResult.forge as any)?.components?.fabrication;
+                  const numeric = typeof v === 'number' ? (v * 100).toFixed(2) + '%' : null;
+                  return (
+                    <div key={k} className="text-center">
+                      <div className="text-xs text-slate-500 font-mono">{k}</div>
+                      <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                          <div className={`text-lg font-bold font-mono ${cls} cursor-default`}>{f.text}</div>
+                        </Tooltip.Trigger>
+                        <Tooltip.Portal>
+                          <Tooltip.Content side="top" align="center" className="z-50 w-64">
+                            <div className="bg-slate-800 border border-white/5 p-3 rounded text-xs text-slate-300">
+                              {components ? (
+                                <div>
+                                  <div className="font-mono text-xs text-slate-400 mb-2">Fabrication Signals</div>
+                                  <div className="grid grid-cols-2 gap-1 text-sm">
+                                    <div className="text-slate-300">Explicit Callout</div>
+                                    <div className={components.explicitCallout ? 'text-green-300' : 'text-slate-500'}>{components.explicitCallout ? 'Yes' : 'No'}</div>
+                                    <div className="text-slate-300">Professional Refusal</div>
+                                    <div className={components.professionalRefusal ? 'text-green-300' : 'text-slate-500'}>{components.professionalRefusal ? 'Yes' : 'No'}</div>
+                                    <div className="text-slate-300">Epistemic Humility</div>
+                                    <div className={components.epistemicHumility ? 'text-green-300' : 'text-slate-500'}>{components.epistemicHumility ? 'Yes' : 'No'}</div>
+                                    <div className="text-slate-300">False Refusal</div>
+                                    <div className={components.falseRefusal ? 'text-orange-300' : 'text-slate-500'}>{components.falseRefusal ? 'Yes' : 'No'}</div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-slate-500">No fabrication details available</div>
+                              )}
+                            </div>
+                            <Tooltip.Arrow className="fill-slate-800" />
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={k} className="text-center">
+                    <div className="text-xs text-slate-500 font-mono">{k}</div>
+                    <div className="text-lg font-bold font-mono text-white">
+                      {typeof v === 'number' ? (v * 100).toFixed(1) + '%' : 'N/A'}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
+              <div className="text-center col-span-3">
+                <div className="text-xs text-slate-500 font-mono">Overall Φ</div>
+                <div className="text-2xl font-bold text-cyan-400">{(((currentResult.forge?.overall ?? 0) * 100)).toFixed(1)}%</div>
+              </div>
             </div>
           </div>
         )}
@@ -752,11 +846,11 @@ export default function PilotPageNew() {
                 </div>
               )}
               
-              {typeof receipt.criesOmega === 'number' && (
+              {(receipt.forge?.overall || receipt.criesOmega) && (
                 <div className="flex gap-2 text-xs font-mono">
-                  <span className="text-slate-500">Ω={receipt.criesOmega.toFixed(2)}</span>
-                  <span className="text-slate-500">C={receipt.criesCoherence?.toFixed(1)}</span>
-                  <span className="text-slate-500">R={receipt.criesRigor?.toFixed(1)}</span>
+                  <span className="text-slate-500">Φ={(receipt.forge?.overall ? (receipt.forge.overall * 100).toFixed(1) : receipt.criesOmega?.toFixed(2))}</span>
+                  <span className="text-slate-500">F={receipt.forge?.F ? (receipt.forge.F * 100).toFixed(0) : receipt.criesCoherence?.toFixed(1)}</span>
+                  <span className="text-slate-500">R={receipt.forge?.R ? (receipt.forge.R * 100).toFixed(0) : receipt.criesRigor?.toFixed(1)}</span>
                 </div>
               )}
             </div>
@@ -809,15 +903,12 @@ export default function PilotPageNew() {
                 )}
               </div>
               
-              {typeof receipt.criesOmega === 'number' && (
+              {(receipt.forge?.overall || receipt.criesOmega) && (
                 <div className="mt-2 pt-2 border-t border-white/10">
                   <div className="text-xs font-mono text-slate-500">
-                    CRIES: Ω={receipt.criesOmega.toFixed(2)} | 
-                    C={receipt.criesCoherence?.toFixed(1)} | 
-                    R={receipt.criesRigor?.toFixed(1)} | 
-                    I={receipt.criesIntegrity?.toFixed(1)} | 
-                    E={receipt.criesEmpathy?.toFixed(1)} | 
-                    S={receipt.criesStrictness?.toFixed(1)}
+                    FORGE: Φ={receipt.forge?.overall ? (receipt.forge.overall * 100).toFixed(1) : receipt.criesOmega?.toFixed(2)} | 
+                    F={receipt.forge?.F ? (receipt.forge.F * 100).toFixed(0) : receipt.criesCoherence?.toFixed(1)} | 
+                    R={receipt.forge?.R ? (receipt.forge.R * 100).toFixed(0) : receipt.criesRigor?.toFixed(1)}
                   </div>
                 </div>
               )}
@@ -829,33 +920,34 @@ export default function PilotPageNew() {
   );
 
   const renderAnalytics = () => {
-    const analysisReceipts = filteredReceipts.filter(r => r.persona === 'Witness' && r.criesOmega);
+    const analysisReceipts = filteredReceipts.filter(r => r.persona === 'Witness' && (r.forge?.overall || r.criesOmega));
     
     if (analysisReceipts.length === 0) {
       return (
         <div className="bg-slate-900/50 border border-white/10 rounded-lg p-6 text-center">
           <BarChart3 className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <p className="text-slate-400 font-mono text-sm">
-            No CRIES data yet. Run some prompts to see analytics.
+            No FORGE data yet. Run some prompts to see analytics.
           </p>
         </div>
       );
     }
     
-    const avgCRIES = analysisReceipts.reduce((acc, r) => {
-      if (!r.criesOmega) return acc;
+    const avgFORGE = analysisReceipts.reduce((acc, r) => {
+      const hasForge = !!r.forge?.overall;
+      if (!hasForge && !r.criesOmega) return acc;
       return {
-        C: acc.C + (r.criesCoherence || 0),
-        R: acc.R + (r.criesRigor || 0),
-        I: acc.I + (r.criesIntegrity || 0),
-        E: acc.E + (r.criesEmpathy || 0),
-        S: acc.S + (r.criesStrictness || 0),
-        Omega: acc.Omega + r.criesOmega
+        F: acc.F + (hasForge ? (r.forge?.F ?? 0) : (r.criesCoherence ?? 0)),
+        O: acc.O + (hasForge ? (r.forge?.O ?? 0) : 0),
+        R: acc.R + (hasForge ? (r.forge?.R ?? 0) : (r.criesRigor ?? 0)),
+        G: acc.G + (hasForge ? (r.forge?.G ?? 0) : 0),
+        E: acc.E + (hasForge ? (r.forge?.E ?? 0) : (r.criesEmpathy ?? 0)),
+        overall: acc.overall + (hasForge ? (r.forge?.overall ?? 0) : (r.criesOmega ?? 0))
       };
-    }, { C: 0, R: 0, I: 0, E: 0, S: 0, Omega: 0 });
+    }, { F: 0, O: 0, R: 0, G: 0, E: 0, overall: 0 });
     
-    Object.keys(avgCRIES).forEach(key => {
-      avgCRIES[key as keyof typeof avgCRIES] /= analysisReceipts.length;
+    Object.keys(avgFORGE).forEach(key => {
+      avgFORGE[key as keyof typeof avgFORGE] /= analysisReceipts.length;
     });
     
     return (
@@ -869,30 +961,30 @@ export default function PilotPageNew() {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-slate-950 border border-white/10 rounded-lg p-4">
               <div className="text-xs text-slate-500 font-mono mb-1">Total Runs</div>
-              <div className="text-2xl font-bold font-mono text-white">{analysisReceipts.length}</div>
+                <div className="text-2xl font-bold font-mono text-white">{analysisReceipts.length}</div>
             </div>
             
             <div className="bg-slate-950 border border-white/10 rounded-lg p-4">
               <div className="text-xs text-slate-500 font-mono mb-1">Avg Ω Score</div>
               <div className="text-2xl font-bold font-mono text-cyan-400">
-                {avgCRIES.Omega.toFixed(2)}
+                {(avgFORGE.overall * 100).toFixed(1)}%
               </div>
             </div>
           </div>
           
-          <h4 className="text-sm font-bold font-mono text-white mb-3">Average CRIES Breakdown</h4>
+          <h4 className="text-sm font-bold font-mono text-white mb-3">Average FORGE Breakdown</h4>
           <div className="space-y-2">
-            {typeof avgCRIES === 'object' && Object.entries(avgCRIES).map(([key, value]) => (
-              <div key={key} className="flex items-center gap-3">
-                <span className="text-xs font-mono text-slate-400 w-16">{key}</span>
+            {['F','O','R','G','E'].map((k) => (
+              <div key={k} className="flex items-center gap-3">
+                <span className="text-xs font-mono text-slate-400 w-16">{k}</span>
                 <div className="flex-1 bg-slate-950 rounded-full h-4 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-cyan-500 to-cyan-400 h-full rounded-full"
-                    style={{ width: `${((value as number) / 10) * 100}%` }}
+                    style={{ width: `${((avgFORGE[k as keyof typeof avgFORGE] as number) * 100)}%` }}
                   />
                 </div>
                 <span className="text-sm font-mono text-white w-12 text-right">
-                  {(value as number).toFixed(2)}
+                  {((avgFORGE[k as keyof typeof avgFORGE] as number) * 100).toFixed(1)}%
                 </span>
               </div>
             ))}
@@ -917,9 +1009,9 @@ export default function PilotPageNew() {
                   </div>
                 </div>
                 
-                {receipt.criesOmega && (
+                {(receipt.forge?.overall || receipt.criesOmega) && (
                   <div className="text-lg font-bold font-mono text-cyan-400">
-                    Ω={receipt.criesOmega.toFixed(2)}
+                    Φ={receipt.forge?.overall ? (receipt.forge.overall * 100).toFixed(1) : receipt.criesOmega?.toFixed(2)}
                   </div>
                 )}
               </div>
@@ -973,36 +1065,77 @@ export default function PilotPageNew() {
                         className="text-sm text-slate-300"
                       />
                     </div>
-                    {comparisonResult.baseLLM.cries && (
+                    {comparisonResult.baseLLM.forge && (
                       <div className="space-y-2">
                         <p className="text-xs font-mono text-slate-500 mb-2">FORGE ANALYSIS</p>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">F</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                            <div className="relative group inline-block">
+                              <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                  {(() => {
+                                    const f = formatFLabel(comparisonResult.baseLLM.forge.F);
+                                    const cls = f.kind === 'pass' ? 'text-green-400' : f.kind === 'fail' ? 'text-red-400' : 'text-orange-400';
+                                    return <p className={`text-lg font-mono ${cls} cursor-default`}>{f.text}</p>;
+                                  })()}
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content side="top" align="center" className="z-50 w-64">
+                                    <div className="bg-slate-800 border border-white/5 p-3 rounded text-xs text-slate-300">
+                                      {comparisonResult.baseLLM.forge?.components?.fabrication ? (
+                                        <div>
+                                          <div className="font-mono text-xs text-slate-400 mb-2">Fabrication Signals</div>
+                                          <div className="grid grid-cols-2 gap-1 text-sm">
+                                            <div className="text-slate-300">Explicit Callout</div>
+                                            <div className={comparisonResult.baseLLM.forge.components.fabrication.explicitCallout ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.baseLLM.forge.components.fabrication.explicitCallout ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">Professional Refusal</div>
+                                            <div className={comparisonResult.baseLLM.forge.components.fabrication.professionalRefusal ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.baseLLM.forge.components.fabrication.professionalRefusal ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">Epistemic Humility</div>
+                                            <div className={comparisonResult.baseLLM.forge.components.fabrication.epistemicHumility ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.baseLLM.forge.components.fabrication.epistemicHumility ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">False Refusal</div>
+                                            <div className={comparisonResult.baseLLM.forge.components.fabrication.falseRefusal ? 'text-orange-300' : 'text-slate-500'}>{comparisonResult.baseLLM.forge.components.fabrication.falseRefusal ? 'Yes' : 'No'}</div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="text-slate-500">No fabrication details available</div>
+                                      )}
+                                    </div>
+                                    <Tooltip.Arrow className="fill-slate-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            </div>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">O</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.C?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-orange-400">{(comparisonResult.baseLLM.forge.O * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">R</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.R?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-orange-400">{(comparisonResult.baseLLM.forge.R * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">G</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.E?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-orange-400">{(comparisonResult.baseLLM.forge.G * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">E</p>
-                            <p className="text-lg font-mono text-orange-400">{comparisonResult.baseLLM.cries.R?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-orange-400">{(comparisonResult.baseLLM.forge.E * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-orange-500/20 p-2 rounded border border-orange-500/30">
                             <p className="text-xs text-orange-300 font-bold">Φ</p>
                             <p className="text-xl font-mono text-orange-300 font-bold">
-                              {comparisonResult.baseLLM.cries.Omega?.toFixed(2) || 'N/A'}
+                              {(comparisonResult.baseLLM.forge.overall * 100).toFixed(1)}%
                             </p>
                           </div>
+                        </div>
+
+                        <div className="text-xs text-slate-400 mt-2">
+                          <div>Violations: {comparisonResult.baseLLM.audit?.track_B?.violations?.length || 0}</div>
+                          {comparisonResult.baseLLM.governanceMetadata?.validation && (
+                            <div>Validation: {comparisonResult.baseLLM.governanceMetadata.validation.overall_pass ? 'Pass' : 'Fail'}</div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1022,36 +1155,77 @@ export default function PilotPageNew() {
                         className="text-sm text-slate-300"
                       />
                     </div>
-                    {comparisonResult.governedLLM.cries && (
+                    {comparisonResult.governedLLM.forge && (
                       <div className="space-y-2">
                         <p className="text-xs font-mono text-slate-500 mb-2">FORGE ANALYSIS</p>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">F</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.S?.toFixed(2) || 'N/A'}</p>
+                            <div className="relative group inline-block">
+                              <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                  {(() => {
+                                    const f = formatFLabel(comparisonResult.governedLLM.forge.F);
+                                    const cls = f.kind === 'pass' ? 'text-green-400' : f.kind === 'fail' ? 'text-red-400' : 'text-green-400';
+                                    return <p className={`text-lg font-mono ${cls} cursor-default`}>{f.text}</p>;
+                                  })()}
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content side="top" align="center" className="z-50 w-64">
+                                    <div className="bg-slate-800 border border-white/5 p-3 rounded text-xs text-slate-300">
+                                      {comparisonResult.governedLLM.forge?.components?.fabrication ? (
+                                        <div>
+                                          <div className="font-mono text-xs text-slate-400 mb-2">Fabrication Signals</div>
+                                          <div className="grid grid-cols-2 gap-1 text-sm">
+                                            <div className="text-slate-300">Explicit Callout</div>
+                                            <div className={comparisonResult.governedLLM.forge.components.fabrication.explicitCallout ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.governedLLM.forge.components.fabrication.explicitCallout ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">Professional Refusal</div>
+                                            <div className={comparisonResult.governedLLM.forge.components.fabrication.professionalRefusal ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.governedLLM.forge.components.fabrication.professionalRefusal ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">Epistemic Humility</div>
+                                            <div className={comparisonResult.governedLLM.forge.components.fabrication.epistemicHumility ? 'text-green-300' : 'text-slate-500'}>{comparisonResult.governedLLM.forge.components.fabrication.epistemicHumility ? 'Yes' : 'No'}</div>
+                                            <div className="text-slate-300">False Refusal</div>
+                                            <div className={comparisonResult.governedLLM.forge.components.fabrication.falseRefusal ? 'text-orange-300' : 'text-slate-500'}>{comparisonResult.governedLLM.forge.components.fabrication.falseRefusal ? 'Yes' : 'No'}</div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="text-slate-500">No fabrication details available</div>
+                                      )}
+                                    </div>
+                                    <Tooltip.Arrow className="fill-slate-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            </div>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">O</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.C?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-green-400">{(comparisonResult.governedLLM.forge.O * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">R</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.R?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-green-400">{(comparisonResult.governedLLM.forge.R * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">G</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.E?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-green-400">{(comparisonResult.governedLLM.forge.G * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-slate-900/50 p-2 rounded">
                             <p className="text-xs text-slate-500">E</p>
-                            <p className="text-lg font-mono text-green-400">{comparisonResult.governedLLM.cries.R?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-lg font-mono text-green-400">{(comparisonResult.governedLLM.forge.E * 100).toFixed(1)}%</p>
                           </div>
                           <div className="bg-green-500/20 p-2 rounded border border-green-500/30">
                             <p className="text-xs text-green-300 font-bold">Φ</p>
                             <p className="text-xl font-mono text-green-300 font-bold">
-                              {comparisonResult.governedLLM.cries.Omega?.toFixed(2) || 'N/A'}
+                              {(comparisonResult.governedLLM.forge.overall * 100).toFixed(1)}%
                             </p>
                           </div>
+                        </div>
+
+                        <div className="text-xs text-slate-400 mt-2">
+                          <div>Violations: {comparisonResult.governedLLM.audit?.track_B?.violations?.length || 0}</div>
+                          {comparisonResult.governedLLM.governanceMetadata?.validation && (
+                            <div>Validation: {comparisonResult.governedLLM.governanceMetadata.validation.overall_pass ? 'Pass' : 'Fail'}</div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1060,49 +1234,62 @@ export default function PilotPageNew() {
               </div>
 
               {/* Improvement Summary */}
-              {comparisonResult.baseLLM.cries && comparisonResult.governedLLM.cries && (
+              {comparisonResult.baseLLM.forge && comparisonResult.governedLLM.forge && (
                 <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-lg p-4">
                   <h3 className="text-sm font-bold font-mono text-emerald-400 mb-3">GOVERNANCE IMPACT</h3>
                   <div className="grid grid-cols-6 gap-3">
-                    {[
-                      { key: 'S', label: 'F' },  // Fabrication (from S)
-                      { key: 'C', label: 'O' },  // Oversight (from C)
-                      { key: 'R', label: 'R' },  // Refusal (from R)
-                      { key: 'E', label: 'G' },  // Guidance (from E)
-                      { key: 'R', label: 'E' }   // Evidence (from R)
-                    ].map(({ key, label }) => {
-                      const base = comparisonResult.baseLLM.cries[key] || 0;
-                      const governed = comparisonResult.governedLLM.cries[key] || 0;
-                      const improvement = ((governed - base) / base * 100).toFixed(1);
-                      const isPositive = parseFloat(improvement) > 0;
-                      return (
-                        <div key={label} className="text-center">
-                          <p className="text-xs text-slate-500 mb-1">{label}</p>
-                          <p className={`text-lg font-mono font-bold ${isPositive ? 'text-green-400' : 'text-orange-400'}`}>
-                            {isPositive ? '+' : ''}{improvement}%
-                          </p>
-                        </div>
-                      );
-                    })}
+                    {(() => {
+                      // Compute absolute percentage-point deltas (governed - base) * 100
+                      const labels = ['F','O','R','G','E'];
+                      return labels.map((label) => {
+                        const base = (comparisonResult.baseLLM.forge && (Number(comparisonResult.baseLLM.forge[label]) || 0)) || 0;
+                        const gov = (comparisonResult.governedLLM.forge && (Number(comparisonResult.governedLLM.forge[label]) || 0)) || 0;
+                        // Special-case Fabrication (F): show PASS/FAIL instead of numeric delta
+                        if (label === 'F') {
+                          const status = formatFComparisonStatus(base, gov);
+                          const cls = status.kind === 'pass' ? 'text-green-400' : status.kind === 'fail' ? 'text-red-400' : 'text-slate-400';
+                          return (
+                            <div key={label} className="text-center">
+                              <p className="text-xs text-slate-500 mb-1">{label}</p>
+                              <p className={`text-lg font-mono font-bold ${cls}`}>{status.text}</p>
+                            </div>
+                          );
+                        }
+
+                        // Absolute percentage-point delta for other pillars (e.g., 0.8 - 0.2 => 60.0)
+                        const deltaPoints = (gov - base) * 100;
+                        const deltaNum = Number(deltaPoints) || 0;
+                        const isPositive = deltaNum > 0;
+                        return (
+                          <div key={label} className="text-center">
+                            <p className="text-xs text-slate-500 mb-1">{label}</p>
+                            <p className={`text-lg font-mono font-bold ${isPositive ? 'text-green-400' : 'text-orange-400'}`}>
+                              {deltaNum >= 0 ? '+' : ''}{deltaNum.toFixed(1)}pt
+                            </p>
+                          </div>
+                        );
+                      });
+                    })()}
+
                     <div className="text-center">
                       <p className="text-xs text-emerald-300 font-bold mb-1">Overall</p>
                       <p className="text-lg font-mono font-bold text-emerald-300">
                         {(() => {
-                          const baseOmega = comparisonResult.baseLLM.cries.Omega;
-                          const governedOmega = comparisonResult.governedLLM.cries.Omega;
-                          
-                          // Check for undefined, null, or NaN values
-                          if (baseOmega == null || governedOmega == null || 
-                              isNaN(baseOmega) || isNaN(governedOmega) || baseOmega === 0) {
-                            return 'N/A';
-                          }
-                          
-                          const improvement = ((governedOmega - baseOmega) / baseOmega * 100).toFixed(1);
-                          return `+${improvement}%`;
+                          // Show absolute overall improvement in percentage points
+                          const baseOmega = Number(comparisonResult.baseLLM.forge?.overall || 0) || 0;
+                          const governedOmega = Number(comparisonResult.governedLLM.forge?.overall || 0) || 0;
+                          const deltaOverallPoints = (governedOmega - baseOmega) * 100;
+                          return `${deltaOverallPoints >= 0 ? '+' : ''}${deltaOverallPoints.toFixed(1)}pt`;
                         })()}
                       </p>
                     </div>
                   </div>
+                  {comparisonResult.comparison && (
+                    <div className="text-xs text-slate-400 mt-3">
+                      <div>Violation reduction: {comparisonResult.comparison.violationReduction ?? 'N/A'}</div>
+                      <div>Determinism improved: {comparisonResult.comparison.determinismImproved ? 'Yes' : 'No'}</div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
